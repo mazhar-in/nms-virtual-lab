@@ -1371,12 +1371,14 @@
           }
         });
 
-        // Toggle Empty State
-        if (visibleTotal === 0) {
-          emptyState.classList.add('show');
-        } else {
-          emptyState.classList.remove('show');
-        }
+        // Auto fullscreen on clicking Launch Lab
+        document.querySelectorAll('.btn-launch').forEach(btn => {
+          btn.addEventListener('click', () => {
+            if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+              document.documentElement.requestFullscreen().catch(() => {});
+            }
+          });
+        });
       }
     });
   </script>

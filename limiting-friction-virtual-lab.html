@@ -606,6 +606,105 @@ body.is-fullscreen .nms-lab-footer {
   }
 }
 
+
+/* Fullscreen Entry Splash Overlay */
+.fs-prompt-overlay {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  background: radial-gradient(circle at center, rgba(15, 23, 42, 0.95) 0%, rgba(7, 12, 24, 0.99) 100%);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  z-index: 999999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: opacity 0.35s ease, visibility 0.35s ease;
+}
+.fs-prompt-overlay.dismissed {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+.fs-prompt-card {
+  background: rgba(18, 28, 51, 0.9);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.75), 0 0 40px rgba(56, 189, 248, 0.25);
+  border-radius: 24px;
+  padding: 2.2rem 1.8rem;
+  max-width: 460px;
+  width: 88%;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  animation: fsCardPop 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes fsCardPop {
+  0% { transform: scale(0.9); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.fs-prompt-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.12);
+  padding: 0.3rem 0.8rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(56, 189, 248, 0.25);
+}
+.fs-prompt-icon {
+  font-size: 3.2rem;
+  line-height: 1;
+  filter: drop-shadow(0 0 14px rgba(56, 189, 248, 0.45));
+}
+.fs-prompt-title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+}
+.fs-prompt-desc {
+  font-size: 0.88rem;
+  color: #94a3b8;
+  line-height: 1.5;
+}
+.btn-enter-fs {
+  width: 100%;
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  color: #ffffff;
+  border: 1px solid rgba(56, 189, 248, 0.5);
+  padding: 0.85rem 1.25rem;
+  border-radius: 14px;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(2, 132, 199, 0.4);
+  transition: all 0.2s ease;
+  touch-action: manipulation;
+}
+.btn-enter-fs:hover {
+  background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+  box-shadow: 0 8px 28px rgba(14, 165, 233, 0.6);
+  transform: translateY(-2px);
+}
+.fs-prompt-hint {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
 </style>
 </head>
 <body>
@@ -1484,6 +1583,73 @@ body.is-fullscreen .nms-lab-footer {
     gestureEvents.forEach(evt => window.removeEventListener(evt, onFirstGesture));
   };
   gestureEvents.forEach(evt => window.addEventListener(evt, onFirstGesture, { passive: true }));
+})();
+</script>
+
+
+<!-- Fullscreen Entry Splash Overlay -->
+<div id="fsPromptOverlay" class="fs-prompt-overlay">
+  <div class="fs-prompt-card">
+    <div class="fs-prompt-badge">National Model Schools</div>
+    <div class="fs-prompt-icon">🔬</div>
+    <h2 class="fs-prompt-title">Senior Secondary Physics Virtual Lab</h2>
+    <p class="fs-prompt-desc">Tap or click below to launch the laboratory in immersive fullscreen mode for precision experiments.</p>
+    <button id="btnEnterLabFS" class="btn-enter-fs">
+      <span style="font-size:1.25rem;">⛶</span> Start in Fullscreen
+    </button>
+    <div class="fs-prompt-hint">Tap anywhere to enter simulation</div>
+  </div>
+</div>
+
+<script>
+(function setupFullscreenController() {
+  const overlay = document.getElementById('fsPromptOverlay');
+  const btnEnter = document.getElementById('btnEnterLabFS');
+
+  function requestFS() {
+    const el = document.documentElement;
+    if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+      if (el.requestFullscreen) {
+        el.requestFullscreen().catch(() => {});
+      } else if (el.webkitRequestFullscreen) {
+        el.webkitRequestFullscreen();
+      }
+    }
+  }
+
+  function dismissOverlay() {
+    if (overlay && !overlay.classList.contains('dismissed')) {
+      overlay.classList.add('dismissed');
+      setTimeout(() => { overlay.style.display = 'none'; }, 350);
+    }
+    window.dispatchEvent(new Event('resize'));
+  }
+
+  function enterFullscreenAndStart() {
+    requestFS();
+    dismissOverlay();
+  }
+
+  // If already in fullscreen, dismiss immediately
+  if (document.fullscreenElement || document.webkitFullscreenElement) {
+    dismissOverlay();
+  }
+
+  if (overlay) {
+    overlay.addEventListener('click', enterFullscreenAndStart);
+  }
+  if (btnEnter) {
+    btnEnter.addEventListener('click', (e) => {
+      e.stopPropagation();
+      enterFullscreenAndStart();
+    });
+  }
+
+  document.addEventListener('fullscreenchange', () => {
+    if (document.fullscreenElement) {
+      dismissOverlay();
+    }
+  });
 })();
 </script>
 
