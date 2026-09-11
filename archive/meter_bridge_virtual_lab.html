@@ -1,0 +1,2168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
+  <title>Virtual Laboratory: Meter Bridge (Slide Wire Bridge)</title>
+
+  <!-- KaTeX for Crisp LaTeX Math Formula Rendering -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous" onload="initKaTeX()"></script>
+
+  <style>
+    :root {
+      --bg-main: #0f172a;
+      --bg-panel: #1e293b;
+      --bg-card: #283548;
+      --bg-subtle: #334155;
+      --accent: #38bdf8;
+      --accent-hover: #0284c7;
+      --accent-glow: rgba(56, 189, 248, 0.25);
+      --copper: #d97706;
+      --copper-light: #fbbf24;
+      --wood-base: #2a1b12;
+      --wood-grain: #3d271a;
+      --wire-color: #94a3b8;
+      --jockey-color: #ef4444;
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --border: #475569;
+      --border-light: #64748b;
+      --success: #22c55e;
+      --success-glow: rgba(34, 197, 94, 0.25);
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --circuit-bg: #0b1220;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-primary);
+      line-height: 1.5;
+      padding: 0.75rem;
+      overflow-x: hidden;
+      font-size: 1.05rem;
+    }
+
+    @media (min-width: 768px) {
+      body {
+        padding: 1.15rem;
+      }
+    }
+
+    .app-wrapper {
+      max-width: 1440px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+      min-height: 100vh;
+    }
+
+    :fullscreen,
+    :-webkit-full-screen {
+      overflow: hidden !important;
+      background-color: var(--bg-main) !important;
+    }
+
+    body.is-fullscreen {
+      overflow: hidden !important;
+      padding: 0.4rem !important;
+      height: 100vh !important;
+      width: 100vw !important;
+    }
+
+    :fullscreen .app-wrapper,
+    :-webkit-full-screen .app-wrapper,
+    .app-wrapper.is-fullscreen {
+      width: 100vw !important;
+      height: 100vh !important;
+      max-width: 100vw !important;
+      max-height: 100vh !important;
+      padding: 0.4rem 0.6rem !important;
+      margin: 0 !important;
+      background-color: var(--bg-main);
+      overflow: hidden !important;
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 0.35rem !important;
+    }
+
+    .app-wrapper.is-fullscreen header {
+      padding: 0.4rem 0.8rem !important;
+      gap: 0.4rem !important;
+      flex-shrink: 0;
+      border-radius: 8px;
+    }
+
+    .app-wrapper.is-fullscreen h1 {
+      font-size: 1.22rem !important;
+    }
+
+    .app-wrapper.is-fullscreen .badge {
+      font-size: 0.72rem;
+      padding: 0.2rem 0.55rem;
+    }
+
+    .app-wrapper.is-fullscreen .btn {
+      min-height: 36px !important;
+      padding: 0.25rem 0.65rem !important;
+      font-size: 0.88rem !important;
+    }
+
+    .app-wrapper.is-fullscreen .mode-nav {
+      padding: 0.25rem;
+      gap: 0.25rem;
+      flex-shrink: 0;
+    }
+
+    .app-wrapper.is-fullscreen .mode-tab {
+      min-height: 34px !important;
+      padding: 0.25rem 0.6rem !important;
+      font-size: 0.9rem !important;
+    }
+
+    .app-wrapper.is-fullscreen .workspace-grid {
+      display: grid !important;
+      grid-template-columns: 1.18fr 0.82fr !important;
+      gap: 0.45rem !important;
+      flex: 1 1 auto !important;
+      min-height: 0 !important;
+      overflow: hidden !important;
+    }
+
+    .app-wrapper.is-fullscreen .card {
+      padding: 0.55rem 0.75rem !important;
+      gap: 0.4rem !important;
+      height: 100% !important;
+      min-height: 0 !important;
+      overflow: hidden !important;
+      display: flex !important;
+      flex-direction: column !important;
+    }
+
+    .app-wrapper.is-fullscreen .card-header {
+      padding-bottom: 0.3rem !important;
+      font-size: 0.95rem !important;
+      flex-shrink: 0;
+    }
+
+    .app-wrapper.is-fullscreen .canvas-container {
+      flex: 1 1 auto !important;
+      height: auto !important;
+      min-height: 0 !important;
+    }
+
+    .app-wrapper.is-fullscreen .circuit-switches-bar {
+      padding: 0.35rem 0.65rem !important;
+      gap: 0.4rem !important;
+      flex-shrink: 0;
+    }
+
+    .app-wrapper.is-fullscreen .controls-grid {
+      grid-template-columns: 1fr 1fr !important;
+      gap: 0.35rem !important;
+      flex: 1 1 auto !important;
+      min-height: 0 !important;
+      overflow-y: auto;
+    }
+
+    .app-wrapper.is-fullscreen .param-card {
+      padding: 0.35rem 0.55rem !important;
+      gap: 0.2rem !important;
+    }
+
+    .app-wrapper.is-fullscreen .dashboard-panel {
+      flex-shrink: 0;
+    }
+
+    .app-wrapper.is-fullscreen .metrics-grid {
+      grid-template-columns: repeat(3, 1fr) !important;
+    }
+
+    .app-wrapper.is-fullscreen .metric-cell {
+      padding: 0.35rem 0.5rem !important;
+      gap: 0.1rem !important;
+    }
+
+    .app-wrapper.is-fullscreen .metric-num {
+      font-size: 0.92rem !important;
+    }
+
+    header {
+      background: var(--bg-panel);
+      padding: 0.95rem 1.25rem;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    }
+
+    .header-left {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      align-items: center;
+    }
+
+    .badge {
+      display: inline-block;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 0.25rem 0.65rem;
+      border-radius: 9999px;
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--accent);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+
+    .badge-sub {
+      background: rgba(217, 119, 6, 0.15);
+      color: var(--copper-light);
+      border-color: rgba(217, 119, 6, 0.35);
+    }
+
+    h1 {
+      font-size: 1.45rem;
+      font-weight: 700;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    @media (min-width: 640px) {
+      h1 {
+        font-size: 1.7rem;
+      }
+    }
+
+    .header-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .btn {
+      min-height: 44px;
+      padding: 0.55rem 1.05rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+      border: 1px solid transparent;
+      transition: all 0.18s ease;
+      touch-action: manipulation;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #0f172a;
+    }
+
+    .btn-primary:hover {
+      background: #7dd3fc;
+      box-shadow: 0 0 12px var(--accent-glow);
+    }
+
+    .btn-outline {
+      background: var(--bg-card);
+      color: var(--text-primary);
+      border-color: var(--border);
+    }
+
+    .btn-outline:hover {
+      background: var(--bg-subtle);
+      border-color: var(--accent);
+    }
+
+    .btn-toggle-switch {
+      background: #334155;
+      color: #f8fafc;
+      border: 1px solid var(--border);
+    }
+
+    .btn-toggle-switch.active {
+      background: var(--success);
+      color: #ffffff;
+      box-shadow: 0 0 12px var(--success-glow);
+      border-color: #86efac;
+    }
+
+    .btn-toggle-switch.off {
+      background: #475569;
+      color: #cbd5e1;
+    }
+
+    /* Mode Navigation bar */
+    .mode-nav {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      background: var(--bg-panel);
+      padding: 0.35rem;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      gap: 0.35rem;
+    }
+
+    .mode-tab {
+      min-height: 44px;
+      padding: 0.55rem 0.85rem;
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 0.98rem;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+    }
+
+    .mode-tab.active {
+      background: var(--accent);
+      color: #0b1120;
+      font-weight: 700;
+      box-shadow: 0 2px 8px var(--accent-glow);
+    }
+
+    /* Workspace Layout */
+    .workspace-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.95rem;
+    }
+
+    @media (min-width: 1080px) {
+      .workspace-grid {
+        grid-template-columns: 1.32fr 0.88fr;
+      }
+    }
+
+    .card {
+      background: var(--bg-panel);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      padding: 1.15rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    }
+
+    .card-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+      padding-bottom: 0.55rem;
+      border-bottom: 1px solid var(--bg-subtle);
+    }
+
+    .card-title {
+      font-size: 1.18rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .canvas-container {
+      position: relative;
+      width: 100%;
+      height: 480px;
+      min-height: 400px;
+      background: var(--circuit-bg);
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      touch-action: none;
+      box-shadow: inset 0 0 24px rgba(0,0,0,0.6);
+      user-select: none;
+    }
+
+    @media (max-width: 600px) {
+      .canvas-container {
+        height: 420px;
+        min-height: 380px;
+      }
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      cursor: grab;
+    }
+
+    canvas:active {
+      cursor: grabbing;
+    }
+
+    .bridge-status-badge {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      padding: 0.45rem 0.85rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      border: 1px solid;
+      pointer-events: none;
+      transition: all 0.2s ease;
+      z-index: 10;
+    }
+
+    .bridge-status-badge.balanced {
+      background: rgba(34, 197, 94, 0.22);
+      color: #86efac;
+      border-color: rgba(34, 197, 94, 0.55);
+      box-shadow: 0 0 16px var(--success-glow);
+    }
+
+    .bridge-status-badge.unbalanced {
+      background: rgba(239, 68, 68, 0.22);
+      color: #fca5a5;
+      border-color: rgba(239, 68, 68, 0.5);
+    }
+
+    .bridge-status-badge.open {
+      background: rgba(148, 163, 184, 0.2);
+      color: #cbd5e1;
+      border-color: rgba(148, 163, 184, 0.4);
+    }
+
+    .jockey-floating-readout {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      background: rgba(15, 23, 42, 0.88);
+      border: 1px solid var(--border);
+      padding: 0.35rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.88rem;
+      font-family: monospace;
+      color: #f8fafc;
+      pointer-events: none;
+      backdrop-filter: blur(4px);
+    }
+
+    .circuit-switches-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg-card);
+      padding: 0.65rem 0.85rem;
+      border-radius: 8px;
+      border: 1px solid var(--bg-subtle);
+    }
+
+    .switches-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    /* Parameter Controls */
+    .controls-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+    }
+
+    @media (min-width: 580px) {
+      .controls-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .param-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.8rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+    }
+
+    .param-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+
+    .param-val {
+      font-family: monospace;
+      color: var(--accent);
+      font-size: 1.05rem;
+      font-weight: 700;
+    }
+
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 8px;
+      background: var(--bg-subtle);
+      border-radius: 5px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+      box-shadow: 0 0 6px rgba(0,0,0,0.5);
+      border: 2px solid #ffffff;
+      transition: transform 0.1s;
+    }
+
+    input[type="range"]::-webkit-slider-thumb:active {
+      transform: scale(1.15);
+    }
+
+    .btn-step {
+      width: 38px;
+      height: 38px;
+      min-width: 38px;
+      min-height: 38px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--bg-subtle);
+      color: #ffffff;
+      font-size: 1.1rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    .btn-step:hover {
+      background: #475569;
+    }
+
+    .dashboard-panel {
+      background: var(--bg-card);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1px;
+      background: var(--border);
+    }
+
+    @media (min-width: 640px) {
+      .metrics-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .metric-cell {
+      background: var(--bg-card);
+      padding: 0.65rem 0.8rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+
+    .metric-cell.highlight {
+      background: rgba(56, 189, 248, 0.08);
+    }
+
+    .metric-lbl {
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      font-weight: 600;
+    }
+
+    .metric-num {
+      font-size: 1.05rem;
+      font-weight: 700;
+      font-family: monospace;
+      color: #ffffff;
+    }
+
+    .metric-num.green { color: #4ade80; }
+    .metric-num.red { color: #f87171; }
+    .metric-num.blue { color: #38bdf8; }
+    .metric-num.amber { color: #fbbf24; }
+
+    /* Unknown Mystery Wire Section */
+    .mystery-box {
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(51, 65, 85, 0.95));
+      border: 2px dashed #38bdf8;
+      border-radius: 10px;
+      padding: 0.95rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+    }
+
+    .mystery-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #38bdf8;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .mystery-inputs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.6rem;
+    }
+
+    @media (max-width: 540px) {
+      .mystery-inputs {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .mystery-input-field {
+      width: 100%;
+      min-height: 42px;
+      padding: 0.45rem 0.75rem;
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: #ffffff;
+      font-size: 0.95rem;
+      font-family: monospace;
+    }
+
+    .mystery-input-field:focus {
+      outline: 2px solid var(--accent);
+      border-color: transparent;
+    }
+
+    .mystery-feedback {
+      padding: 0.6rem 0.85rem;
+      border-radius: 6px;
+      font-size: 0.92rem;
+      font-weight: 600;
+      display: none;
+      line-height: 1.45;
+    }
+
+    .mystery-feedback.show {
+      display: block;
+    }
+
+    .mystery-feedback.success {
+      background: rgba(34, 197, 94, 0.2);
+      color: #86efac;
+      border: 1px solid rgba(34, 197, 94, 0.4);
+    }
+
+    .mystery-feedback.error {
+      background: rgba(239, 68, 68, 0.2);
+      color: #fca5a5;
+      border: 1px solid rgba(239, 68, 68, 0.4);
+    }
+
+    /* Modals for Lab Manual & Theory */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.78);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .modal-backdrop.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-window {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      width: 100%;
+      max-width: 800px;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+      overflow: hidden;
+    }
+
+    .modal-head {
+      padding: 1.1rem 1.35rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .modal-body {
+      padding: 1.35rem;
+      overflow-y: auto;
+      font-size: 1.02rem;
+      color: #cbd5e1;
+      display: flex;
+      flex-direction: column;
+      gap: 1.1rem;
+      line-height: 1.65;
+    }
+
+    .modal-body h3 {
+      color: var(--accent);
+      font-size: 1.15rem;
+      margin-bottom: 0.4rem;
+      border-left: 3px solid var(--accent);
+      padding-left: 0.6rem;
+    }
+
+    .formula-callout {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.95rem;
+      text-align: center;
+      margin: 0.45rem 0;
+      font-size: 1.15rem;
+    }
+
+    .instruction-steps {
+      padding-left: 1.35rem;
+    }
+
+    .instruction-steps li {
+      margin-bottom: 0.6rem;
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-wrapper" id="appWrapper">
+  <!-- Top Navigation Bar -->
+  <header>
+    <div class="header-left">
+      <div class="tag-row">
+        <span class="badge">Physics Virtual Lab</span>
+        <span class="badge badge-sub">Class XII • Current Electricity</span>
+      </div>
+      <h1>
+        <span>Meter Bridge (Slide Wire) Simulator</span>
+      </h1>
+    </div>
+
+    <div class="header-actions">
+      <button class="btn btn-outline" id="btnInstructions" onclick="openModal('instructions')">
+        📘 Manual &amp; Steps
+      </button>
+      <button class="btn btn-outline" id="btnTheory" onclick="openModal('theory')">
+        📐 Theory &amp; KaTeX
+      </button>
+      <button class="btn btn-primary" id="btnFullscreen" onclick="toggleFullscreen()">
+        ⛶ Fullscreen
+      </button>
+    </div>
+  </header>
+
+  <!-- Mode Selection Tabs -->
+  <nav class="mode-nav" aria-label="Experiment Mode Navigation">
+    <button class="mode-tab active" id="tabModeStudy" onclick="setLabMode('study')">
+      <span>🔬 Mode 1: Bridge Balancing &amp; Null Search</span>
+    </button>
+    <button class="mode-tab" id="tabModeUnknown" onclick="setLabMode('unknown')">
+      <span>🎯 Mode 2: Determine Unknown Resistance &amp; Resistivity ($\rho$)</span>
+    </button>
+  </nav>
+
+  <!-- Main Laboratory Workspace -->
+  <main class="workspace-grid">
+    <!-- Left Column: Interactive Wooden Board, Strips, Wire & Scale -->
+    <section class="card">
+      <div class="card-header">
+        <div class="card-title">
+          <span>Meter Bridge Board, Scale &amp; Movable Jockey</span>
+        </div>
+        <div style="display:flex; gap:0.4rem; align-items:center;">
+          <button class="btn btn-outline" style="min-height:36px; padding:0.25rem 0.65rem; font-size:0.8rem;" onclick="resetToDefaults()">
+            ↺ Reset Defaults
+          </button>
+          <button class="btn btn-primary" style="min-height:36px; padding:0.25rem 0.65rem; font-size:0.8rem;" onclick="autoSeekNullPoint()">
+            ⚖ Seek Null ($l_0$)
+          </button>
+        </div>
+      </div>
+
+      <!-- Canvas Display -->
+      <div class="canvas-container" id="canvasBox">
+        <canvas id="meterCanvas"></canvas>
+
+        <div class="bridge-status-badge open" id="bridgeStatusBadge">
+          <span id="bridgeStatusDot">⚪</span>
+          <span id="bridgeStatusText">Circuit Open (Close Key K)</span>
+        </div>
+
+        <div class="jockey-floating-readout" id="jockeyReadout">
+          l = 50.0 cm | (100 - l) = 50.0 cm
+        </div>
+      </div>
+
+      <!-- Circuit Control Switch Bar -->
+      <div class="circuit-switches-bar">
+        <div class="switches-group">
+          <!-- Main Battery Plug Key K -->
+          <button class="btn btn-toggle-switch active" id="btnSwitchK" onclick="toggleMainKey()">
+            <span>Plug Key $K$:</span> <strong id="lblKeyK">CLOSED [ON]</strong>
+          </button>
+
+          <!-- Jockey Contact Switch (Touch wire vs Lifted) -->
+          <button class="btn btn-toggle-switch active" id="btnJockeyTouch" onclick="toggleJockeyContact()">
+            <span>Jockey:</span> <strong id="lblJockeyTouch">ON WIRE [CONTACT]</strong>
+          </button>
+        </div>
+
+        <div class="switches-group">
+          <!-- Interchange Gaps Toggle (to eliminate end errors) -->
+          <button class="btn btn-outline" id="btnInterchangeGaps" onclick="toggleInterchangeGaps()" title="Interchange Left Gap and Right Gap to cancel end resistance asymmetry">
+            Interchange Gaps: <strong id="lblInterchange" style="color:var(--accent); margin-left:4px;">NORMAL (L=R, R=S)</strong>
+          </button>
+
+          <!-- Galvanometer Sensitivity Shunt Switch -->
+          <button class="btn btn-outline" id="btnShuntToggle" onclick="toggleGalvSensitivity()" title="Toggle Shunt (simulate laboratory coarse/fine setting)">
+            Sens: <strong id="lblSensitivity" style="color:var(--accent); margin-left:4px;">HIGH</strong>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="card-header">
+        <div class="card-title">
+          <span>Bridge Resistors &amp; Jockey Control</span>
+        </div>
+        <div style="font-size:0.95rem; color:var(--text-secondary);">
+          Principle: <strong style="color:var(--accent); font-size:1.05rem;">$\frac{R}{S} = \frac{l_1}{100 - l_1}$</strong>
+        </div>
+      </div>
+
+      <!-- Mode 2 Mystery Wire Specimen Box (Shown only in Unknown Mode) -->
+      <div class="mystery-box" id="mysteryWireBox" style="display: none;">
+        <div class="mystery-title">
+          <span>🎯 Unknown Specimen Wire in Right Gap</span>
+          <select id="selMysterySpecimen" onchange="onMysterySpecimenChange()" style="background:var(--bg-panel); color:#fff; border:1px solid var(--border); border-radius:6px; padding:0.3rem 0.6rem; font-size:0.9rem;">
+            <option value="1">Specimen #1: Constantan Wire (L = 100 cm, d = 0.40 mm)</option>
+            <option value="2">Specimen #2: Nichrome Wire (L = 75 cm, d = 0.32 mm)</option>
+            <option value="3">Specimen #3: Manganin Wire (L = 120 cm, d = 0.45 mm)</option>
+            <option value="4">Specimen #4: High-Resistance Alloy (L = 80 cm, d = 0.28 mm)</option>
+          </select>
+        </div>
+        <p style="font-size:0.88rem; color:var(--text-secondary);">
+          Find the balance length $l$ where deflection is $0\,\mu\text{A}$. Then calculate unknown resistance $S = R \frac{100 - l}{l}$ and specific resistance $\rho = \frac{S \cdot \pi r^2}{L}$.
+        </p>
+        <div class="mystery-inputs">
+          <input type="number" step="0.01" id="inputStudentX" class="mystery-input-field" placeholder="Calculated S (Ω)">
+          <input type="number" step="1e-8" id="inputStudentRho" class="mystery-input-field" placeholder="Resistivity ρ (Ω·m) e.g. 4.9e-7">
+        </div>
+        <button class="btn btn-primary" style="margin-top:0.3rem;" onclick="checkMysteryCalculations()">Verify S &amp; Resistivity ρ</button>
+        <div class="mystery-feedback" id="mysteryFeedback"></div>
+      </div>
+
+      <!-- Parameter Sliders & Jockey Fine Stepper -->
+      <div class="controls-grid">
+        <!-- Jockey Position Slider -->
+        <div class="param-card" style="grid-column: 1 / -1;">
+          <div class="param-header">
+            <span>Movable Jockey Knife Position ($l$)</span>
+            <span class="param-val" id="valJockey">50.0 cm</span>
+          </div>
+          <div class="slider-row">
+            <button class="btn-step" onclick="stepJockey(-1.0)" title="Step -1.0 cm">−1</button>
+            <button class="btn-step" onclick="stepJockey(-0.1)" title="Step -0.1 cm" style="font-size:0.9rem;">−0.1</button>
+            <input type="range" id="rngJockey" min="1.0" max="99.0" step="0.1" value="50.0" oninput="onJockeyInput(this.value)">
+            <button class="btn-step" onclick="stepJockey(+0.1)" title="Step +0.1 cm" style="font-size:0.9rem;">+0.1</button>
+            <button class="btn-step" onclick="stepJockey(+1.0)" title="Step +1.0 cm">+1</button>
+          </div>
+        </div>
+
+        <!-- Known Resistance Box R (Left Gap in normal orientation) -->
+        <div class="param-card">
+          <div class="param-header">
+            <span id="lblBoxR">Resistance Box ($R$)</span>
+            <span class="param-val" id="valR">5.0 Ω</span>
+          </div>
+          <div class="slider-row">
+            <button class="btn-step" onclick="stepParam('R', -0.5)">−</button>
+            <input type="range" id="rngR" min="0.5" max="50.0" step="0.5" value="5.0" oninput="onParamInput('R', this.value)">
+            <button class="btn-step" onclick="stepParam('R', +0.5)">+</button>
+          </div>
+        </div>
+
+        <!-- Right Gap Resistor S (in Mode 1 customizable, in Mode 2 locked to mystery wire) -->
+        <div class="param-card" id="cardResistorS">
+          <div class="param-header">
+            <span id="lblResistorS">Right Gap ($S$)</span>
+            <span class="param-val" id="valS">5.0 Ω</span>
+          </div>
+          <div class="slider-row" id="rowSliderS">
+            <button class="btn-step" onclick="stepParam('S', -0.5)">−</button>
+            <input type="range" id="rngS" min="0.5" max="50.0" step="0.5" value="5.0" oninput="onParamInput('S', this.value)">
+            <button class="btn-step" onclick="stepParam('S', +0.5)">+</button>
+          </div>
+          <div id="lockedSNotice" style="display:none; font-size:0.8rem; color:var(--accent); font-style:italic;">
+            🔒 Locked mystery specimen. Adjust $R$ and jockey $l$ to balance.
+          </div>
+        </div>
+
+        <!-- Driver Cell Battery EMF (E) -->
+        <div class="param-card">
+          <div class="param-header">
+            <span>Driver Cell EMF ($E$)</span>
+            <span class="param-val" id="valEMF">3.0 V</span>
+          </div>
+          <div class="slider-row">
+            <button class="btn-step" onclick="stepParam('EMF', -0.5)">−</button>
+            <input type="range" id="rngEMF" min="1.0" max="6.0" step="0.5" value="3.0" oninput="onParamInput('EMF', this.value)">
+            <button class="btn-step" onclick="stepParam('EMF', +0.5)">+</button>
+          </div>
+        </div>
+
+        <!-- Meter Bridge Wire Total Resistance (R_wire for 100 cm) -->
+        <div class="param-card">
+          <div class="param-header">
+            <span>Wire Resistance ($R_{100}$)</span>
+            <span class="param-val" id="valWireR">4.0 Ω</span>
+          </div>
+          <div class="slider-row">
+            <button class="btn-step" onclick="stepParam('WireR', -0.5)">−</button>
+            <input type="range" id="rngWireR" min="1.0" max="10.0" step="0.5" value="4.0" oninput="onParamInput('WireR', this.value)">
+            <button class="btn-step" onclick="stepParam('WireR', +0.5)">+</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Real-Time Metrics & Physics Dashboard -->
+      <div class="dashboard-panel">
+        <div class="metrics-grid">
+          <div class="metric-cell highlight">
+            <span class="metric-lbl">Galv. Current ($I_g$)</span>
+            <span class="metric-num blue" id="metricIg">0.00 µA</span>
+          </div>
+          <div class="metric-cell highlight">
+            <span class="metric-lbl">Balancing Length ($l$)</span>
+            <span class="metric-num amber" id="metricBalL">50.00 cm</span>
+          </div>
+          <div class="metric-cell">
+            <span class="metric-lbl">Complement ($100 - l$)</span>
+            <span class="metric-num" id="metricCompL">50.00 cm</span>
+          </div>
+          <div class="metric-cell">
+            <span class="metric-lbl">Ratio $l / (100 - l)$</span>
+            <span class="metric-num" id="metricRatioL">1.0000</span>
+          </div>
+          <div class="metric-cell">
+            <span class="metric-lbl">Ratio $R / S$</span>
+            <span class="metric-num" id="metricRatioRS">1.0000</span>
+          </div>
+          <div class="metric-cell">
+            <span class="metric-lbl">Null Deflection</span>
+            <span class="metric-num green" id="metricStatus">BALANCED</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- Modal Dialog for Theory & Step-by-Step Manual -->
+<div class="modal-backdrop" id="modalBackdrop" onclick="closeModal(event)">
+  <div class="modal-window" onclick="event.stopPropagation()">
+    <div class="modal-head">
+      <div class="modal-title" id="modalTitle">Laboratory Reference</div>
+      <button class="btn-step" onclick="closeModalDirect()" style="width:34px; height:34px; min-width:34px; min-height:34px;">✕</button>
+    </div>
+    <div class="modal-body" id="modalContent"></div>
+  </div>
+</div>
+
+<script>
+  const state = {
+    mode: 'study', // 'study' | 'unknown'
+    jockeyL: 50.0, // Jockey position along the wire in cm (0 to 100)
+    R: 5.0,        // Standard Resistance Box (Ohms)
+    S: 5.0,        // Right Gap Resistance (Ohms)
+    EMF: 3.0,      // Battery EMF in Volts
+    wireTotalR: 4.0, // Total resistance of 100 cm manganin/constantan wire (e.g. 0.04 Ohm/cm)
+    galvRg: 40.0,  // Galvanometer internal resistance (Ohms)
+    keyClosed: true,
+    jockeyContact: true,
+    interchanged: false, // false: Left=R, Right=S; true: Left=S, Right=R
+    highSensitivity: true,
+    endCorrectionAlpha: 0.0, // Left end error in cm (zero in default calibration)
+    endCorrectionBeta: 0.0,  // Right end error in cm
+    // Mystery specimens for Mode 2
+    specimens: [
+      { id: '1', name: 'Constantan Wire', S: 3.85, lengthCm: 100.0, diamMm: 0.40, trueRho: 4.9e-7 },
+      { id: '2', name: 'Nichrome Wire', S: 10.40, lengthCm: 75.0, diamMm: 0.32, trueRho: 1.1e-6 },
+      { id: '3', name: 'Manganin Wire', S: 3.32, lengthCm: 120.0, diamMm: 0.45, trueRho: 4.4e-7 },
+      { id: '4', name: 'High-Resist Alloy', S: 7.20, lengthCm: 80.0, diamMm: 0.28, trueRho: 5.5e-7 }
+    ],
+    activeSpecimenIdx: 0,
+    // Physics output states
+    Ig: 0.0,          // Galvanometer current in Amperes
+    V_bridge: 0.0,    // Potential difference across galvanometer terminals
+    P_wire: 0.0,      // Resistance of left wire section (0 to l)
+    Q_wire: 0.0,      // Resistance of right wire section (l to 100)
+    theoreticalNullL: 50.0, // Position where Ig == 0
+    isBalanced: true,
+    // Damped harmonic galvanometer needle physics
+    needleAngle: 0.0,
+    needleVelocity: 0.0,
+    targetAngle: 0.0,
+    // UI Interaction state
+    isDraggingJockey: false
+  };
+
+  function triggerMath(target) {
+    if (window.renderMathInElement) {
+      try {
+        window.renderMathInElement(target || document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false },
+            { left: "\\[", right: "\\]", display: true },
+            { left: "\\(", right: "\\)", display: false }
+          ],
+          throwOnError: false
+        });
+      } catch (err) {
+        console.warn("KaTeX render notice:", err);
+      }
+    }
+  }
+
+  function initKaTeX() {
+    triggerMath(document.body);
+  }
+
+  function solveMeterBridge() {
+    const l = Math.max(0.1, Math.min(99.9, state.jockeyL));
+    const r_per_cm = state.wireTotalR / 100.0;
+
+    // Resistance of wire segments AJ and JB:
+    state.P_wire = (l + state.endCorrectionAlpha) * r_per_cm;
+    state.Q_wire = (100.0 - l + state.endCorrectionBeta) * r_per_cm;
+
+    // Left gap resistance (R_left) and Right gap resistance (R_right)
+    const R_left = state.interchanged ? state.S : state.R;
+    const R_right = state.interchanged ? state.R : state.S;
+
+    // Theoretical null balancing position:
+    // R_left / R_right = l_0 / (100 - l_0)
+    // l_0 = 100 * R_left / (R_left + R_right)
+    state.theoreticalNullL = (100.0 * R_left) / (R_left + R_right);
+
+    // If main battery key is OPEN or Jockey is lifted from the wire, no current through galvanometer
+    if (!state.keyClosed || !state.jockeyContact) {
+      state.Ig = 0;
+      state.V_bridge = 0;
+      state.isBalanced = false;
+      return;
+    }
+
+    const E = state.EMF;
+    const effectiveRg = state.highSensitivity ? state.galvRg : (state.galvRg * 8.0) / (state.galvRg + 8.0);
+
+    // Thevenin equivalent looking from Central Terminal D to Jockey Contact Point B (on wire):
+    // Potential at Central Junction D:
+    const V_D = E * (R_right / (R_left + R_right));
+    // Potential at Wire contact point B (distance l from left end A):
+    const V_B = E * (state.Q_wire / (state.P_wire + state.Q_wire));
+
+    // Open-circuit potential difference V_th = V_D - V_B:
+    const V_th = V_D - V_B;
+
+    // Thevenin source resistance R_th:
+    const R_th = ((R_left * R_right) / (R_left + R_right)) + ((state.P_wire * state.Q_wire) / (state.P_wire + state.Q_wire));
+
+    // Galvanometer Current Ig:
+    const Ig = V_th / (R_th + effectiveRg);
+    state.Ig = Ig;
+    state.V_bridge = Ig * effectiveRg;
+
+    // Check balance condition (within ±0.08 cm of true null point or |Ig| < 0.5 µA)
+    state.isBalanced = Math.abs(state.jockeyL - state.theoreticalNullL) < 0.08 || Math.abs(state.Ig) < 5e-7;
+  }
+
+  const canvas = document.getElementById('meterCanvas');
+  const ctx = canvas.getContext('2d');
+  const canvasBox = document.getElementById('canvasBox');
+
+  function resizeCanvas() {
+    if (!canvas || !canvasBox) return;
+    const rect = canvasBox.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    const w = Math.max(rect.width, 320);
+    const h = Math.max(rect.height, 360);
+
+    canvas.width = Math.round(w * dpr);
+    canvas.height = Math.round(h * dpr);
+    ctx.resetTransform();
+    ctx.scale(dpr, dpr);
+  }
+
+  window.addEventListener('resize', resizeCanvas);
+
+  function updateNeedlePhysics(dt) {
+    // Full scale deflection at 150 µA (High Sensitivity) or 1500 µA (Low Sensitivity)
+    const fullScaleCurrent = state.highSensitivity ? 140e-6 : 1400e-6;
+    let targetFraction = 0;
+
+    if (state.keyClosed && state.jockeyContact) {
+      targetFraction = state.Ig / fullScaleCurrent;
+      // Needle stops at dial boundaries (±1.15)
+      targetFraction = Math.max(-1.15, Math.min(1.15, targetFraction));
+    }
+
+    const maxSweepRad = 0.733; // ~42 degrees
+    state.targetAngle = targetFraction * maxSweepRad;
+
+    // Damped harmonic spring simulation
+    const springK = 38.0;
+    const dampingC = 8.5;
+    const accel = -springK * (state.needleAngle - state.targetAngle) - dampingC * state.needleVelocity;
+
+    state.needleVelocity += accel * dt;
+    state.needleAngle += state.needleVelocity * dt;
+  }
+
+  function renderMeterBridge() {
+    const rect = canvasBox.getBoundingClientRect();
+    const w = rect.width;
+    const h = rect.height;
+    ctx.clearRect(0, 0, w, h);
+
+    const isMobile = w < 640;
+
+    // 1. Draw Sturdy Polished Wooden Base
+    const padX = isMobile ? 12 : 24;
+    const boardTop = isMobile ? 18 : 26;
+    const boardH = h - boardTop - (isMobile ? 18 : 24);
+    const boardW = w - padX * 2;
+
+    // Wooden base outer bevel & grain
+    ctx.fillStyle = '#22140c';
+    ctx.beginPath();
+    ctx.roundRect(padX - 4, boardTop - 4, boardW + 8, boardH + 8, 12);
+    ctx.fill();
+
+    ctx.fillStyle = '#3a2012';
+    ctx.beginPath();
+    ctx.roundRect(padX, boardTop, boardW, boardH, 10);
+    ctx.fill();
+
+    // Subtle wooden grain stripes
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.035)';
+    ctx.lineWidth = 2;
+    for (let y = boardTop + 15; y < boardTop + boardH; y += 18) {
+      ctx.beginPath();
+      ctx.moveTo(padX + 8, y);
+      ctx.lineTo(padX + boardW - 8, y);
+      ctx.stroke();
+    }
+
+    // 2. Copper / Brass Strip Geometry
+    // Wire spans horizontally from Left strip A to Right strip C
+    const wireY = boardTop + boardH * (isMobile ? 0.75 : 0.72);
+    const wireStartX = padX + (isMobile ? 38 : 55);
+    const wireEndX = padX + boardW - (isMobile ? 38 : 55);
+    const wirePixelLen = wireEndX - wireStartX;
+
+    // Thick Copper Strips:
+    // Left L-strip (Terminal A), Central Strip (with Terminal D), Right L-strip (Terminal C)
+    const stripThick = isMobile ? 18 : 24;
+    const topStripY = boardTop + (isMobile ? 36 : 48);
+
+    ctx.fillStyle = '#d97706';
+    ctx.strokeStyle = '#b45309';
+    ctx.lineWidth = 2;
+
+    // (a) Left L-strip
+    ctx.beginPath();
+    ctx.roundRect(wireStartX - stripThick, topStripY, stripThick, wireY - topStripY + stripThick, 4);
+    ctx.roundRect(wireStartX - stripThick, topStripY, (wirePixelLen * 0.22), stripThick, 4);
+    ctx.fill();
+    ctx.stroke();
+
+    // (b) Right L-strip
+    ctx.beginPath();
+    ctx.roundRect(wireEndX, topStripY, stripThick, wireY - topStripY + stripThick, 4);
+    ctx.roundRect(wireEndX - (wirePixelLen * 0.22) + stripThick, topStripY, (wirePixelLen * 0.22), stripThick, 4);
+    ctx.fill();
+    ctx.stroke();
+
+    // (c) Central Straight Brass Strip (holds central terminal D)
+    const gapLeftEnd = wireStartX - stripThick + (wirePixelLen * 0.22);
+    const gapRightStart = wireEndX - (wirePixelLen * 0.22) + stripThick;
+    const midStripW = wirePixelLen * 0.38;
+    const midStripX = (wireStartX + wireEndX - midStripW) / 2;
+
+    ctx.beginPath();
+    ctx.roundRect(midStripX, topStripY, midStripW, stripThick, 4);
+    ctx.fill();
+    ctx.stroke();
+
+    // Binding Screw Terminals on Copper Strips
+    drawBrassScrew(wireStartX, wireY, 'A');
+    drawBrassScrew(wireEndX, wireY, 'C');
+    drawBrassScrew(midStripX + midStripW / 2, topStripY + stripThick / 2, 'D');
+
+    // 3. Components across Left Gap & Right Gap
+    const leftGapCenter = (gapLeftEnd + midStripX) / 2;
+    const rightGapCenter = (midStripX + midStripW + gapRightStart) / 2;
+
+    const leftCompName = state.interchanged ? 'S (Right Specimen)' : 'R (Resist. Box)';
+    const leftCompVal = state.interchanged ? state.S : state.R;
+    const rightCompName = state.interchanged ? 'R (Resist. Box)' : (state.mode === 'unknown' ? 'S [Unknown Wire]' : 'S (Standard)');
+    const rightCompVal = state.interchanged ? state.R : state.S;
+
+    drawGapComponent(leftGapCenter, topStripY + stripThick / 2, leftCompName, leftCompVal, '#38bdf8', gapLeftEnd, midStripX);
+    drawGapComponent(rightGapCenter, topStripY + stripThick / 2, rightCompName, rightCompVal, (state.mode === 'unknown' && !state.interchanged) ? '#f43f5e' : '#38bdf8', midStripX + midStripW, gapRightStart);
+
+    // 4. One-Meter Wooden Millimeter Scale (0 to 100 cm)
+    const scaleY = wireY + (isMobile ? 14 : 18);
+    const scaleH = isMobile ? 26 : 32;
+
+    ctx.fillStyle = '#fef3c7'; // Light boxwood scale color
+    ctx.strokeStyle = '#92400e';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.roundRect(wireStartX, scaleY, wirePixelLen, scaleH, 3);
+    ctx.fill();
+    ctx.stroke();
+
+    // Millimeter & Centimeter ticks
+    ctx.fillStyle = '#1e293b';
+    ctx.font = 'bold 9px monospace';
+    ctx.textAlign = 'center';
+
+    for (let cm = 0; cm <= 100; cm += 2) {
+      const tx = wireStartX + (cm / 100.0) * wirePixelLen;
+      const isMajor = cm % 10 === 0;
+      const isMid = cm % 5 === 0;
+      const tickLen = isMajor ? (scaleH * 0.55) : (isMid ? scaleH * 0.38 : scaleH * 0.22);
+
+      ctx.beginPath();
+      ctx.moveTo(tx, scaleY);
+      ctx.lineTo(tx, scaleY + tickLen);
+      ctx.stroke();
+
+      if (isMajor && (!isMobile || cm % 20 === 0)) {
+        ctx.fillText(cm.toString(), tx, scaleY + scaleH - 4);
+      }
+    }
+
+    // 5. Stretched Uniform Resistance Wire (Manganin / Constantan)
+    ctx.beginPath();
+    ctx.strokeStyle = '#e2e8f0';
+    ctx.lineWidth = isMobile ? 3 : 4;
+    ctx.lineCap = 'round';
+    ctx.moveTo(wireStartX, wireY);
+    ctx.lineTo(wireEndX, wireY);
+    ctx.stroke();
+
+    // 6. Galvanometer Instrument Dial in Center-Upper Bay
+    const dialCenterX = midStripX + midStripW / 2;
+    const dialCenterY = isMobile ? (topStripY + 115) : (topStripY + 130);
+    const dialRadius = isMobile ? 48 : 58;
+
+    // Galvanometer connecting wire from Terminal D to meter
+    ctx.beginPath();
+    ctx.strokeStyle = '#f59e0b';
+    ctx.lineWidth = 2.5;
+    ctx.moveTo(dialCenterX, topStripY + stripThick);
+    ctx.lineTo(dialCenterX, dialCenterY - dialRadius);
+    ctx.stroke();
+
+    drawGalvanometerDial(dialCenterX, dialCenterY, dialRadius);
+
+    // 7. Movable Jockey Knife-Edge Assembly
+    const currentJockeyX = wireStartX + (state.jockeyL / 100.0) * wirePixelLen;
+
+    // Wire from Galvanometer Bottom to Jockey Knife
+    ctx.beginPath();
+    ctx.strokeStyle = state.jockeyContact ? '#38bdf8' : '#64748b';
+    ctx.lineWidth = 2.2;
+    ctx.setLineDash(state.jockeyContact ? [] : [4, 4]);
+    ctx.moveTo(dialCenterX, dialCenterY + dialRadius);
+    ctx.bezierCurveTo(dialCenterX, wireY - 40, currentJockeyX, wireY - 45, currentJockeyX, wireY - (state.jockeyContact ? 14 : 28));
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Draw Jockey Handle & Knife Blade
+    drawJockeyHandle(currentJockeyX, wireY, state.jockeyContact);
+
+    // 8. Battery supply circuit connected to ends A & C below the scale
+    const battY = scaleY + scaleH + (isMobile ? 22 : 28);
+    drawBatterySupplyCircuit(wireStartX, wireEndX, wireY, battY, stripThick);
+  }
+
+  function drawBrassScrew(x, y, label) {
+    ctx.beginPath();
+    ctx.arc(x, y, 9, 0, Math.PI * 2);
+    ctx.fillStyle = '#fbbf24';
+    ctx.fill();
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = '#78350f';
+    ctx.stroke();
+
+    ctx.fillStyle = '#0f172a';
+    ctx.font = 'bold 11px monospace';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(label, x, y);
+  }
+
+  function drawGapComponent(cx, cy, name, val, color, xLeft, xRight) {
+    // Lead wires from copper strips to component
+    ctx.beginPath();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2.2;
+    ctx.moveTo(xLeft, cy);
+    ctx.lineTo(cx - 30, cy);
+    ctx.moveTo(cx + 30, cy);
+    ctx.lineTo(xRight, cy);
+    ctx.stroke();
+
+    // Resistor / Resistance box rectangle body
+    const rw = 60;
+    const rh = 24;
+    ctx.fillStyle = '#1e293b';
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2.2;
+    ctx.beginPath();
+    ctx.roundRect(cx - rw/2, cy - rh/2, rw, rh, 5);
+    ctx.fill();
+    ctx.stroke();
+
+    // Internal copper resistance coils styling
+    ctx.strokeStyle = '#64748b';
+    ctx.lineWidth = 1.6;
+    ctx.strokeRect(cx - 16, cy - rh/2, 8, rh);
+    ctx.strokeRect(cx + 8, cy - rh/2, 8, rh);
+
+    // Component Name Label above
+    ctx.fillStyle = '#f8fafc';
+    ctx.font = 'bold 12px -apple-system, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText(name, cx, cy - rh/2 - 3);
+
+    // Value display below
+    ctx.font = 'bold 12px monospace';
+    ctx.fillStyle = color;
+    ctx.textBaseline = 'top';
+    const displayVal = (name.includes('Unknown') && state.mode === 'unknown') ? '??? Ω' : `${val.toFixed(1)} Ω`;
+    ctx.fillText(displayVal, cx, cy + rh/2 + 3);
+  }
+
+  function drawJockeyHandle(x, wireY, inContact) {
+    const tipY = inContact ? wireY : wireY - 14;
+
+    // Jockey metal wedge tip
+    ctx.beginPath();
+    ctx.moveTo(x - 6, tipY - 16);
+    ctx.lineTo(x + 6, tipY - 16);
+    ctx.lineTo(x, tipY);
+    ctx.closePath();
+    ctx.fillStyle = '#e2e8f0';
+    ctx.fill();
+    ctx.lineWidth = 1.5;
+    ctx.strokeStyle = '#0f172a';
+    ctx.stroke();
+
+    // Cylindrical brass/insulating grip handle
+    const handleH = 34;
+    ctx.fillStyle = inContact ? '#ef4444' : '#64748b';
+    ctx.beginPath();
+    ctx.roundRect(x - 7, tipY - 16 - handleH, 14, handleH, 3);
+    ctx.fill();
+    ctx.stroke();
+
+    // Handle ribs
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(x - 5, tipY - 16 - handleH + 6, 10, 3);
+    ctx.fillRect(x - 5, tipY - 16 - handleH + 16, 10, 3);
+
+    // Position pointer marker on scale
+    if (inContact) {
+      ctx.beginPath();
+      ctx.moveTo(x, wireY + 2);
+      ctx.lineTo(x - 4, wireY + 8);
+      ctx.lineTo(x + 4, wireY + 8);
+      ctx.closePath();
+      ctx.fillStyle = '#38bdf8';
+      ctx.fill();
+    }
+  }
+
+  function drawBatterySupplyCircuit(xStart, xEnd, wireY, battY, stripThick) {
+    ctx.beginPath();
+    ctx.strokeStyle = state.keyClosed ? '#22c55e' : '#64748b';
+    ctx.lineWidth = 2.5;
+
+    // Leads running from strip A down to battery line
+    ctx.moveTo(xStart - stripThick / 2, wireY + 12);
+    ctx.lineTo(xStart - stripThick / 2, battY);
+    ctx.lineTo(xStart + 60, battY);
+
+    // Right lead running from strip C down to battery line
+    ctx.moveTo(xEnd + stripThick / 2, wireY + 12);
+    ctx.lineTo(xEnd + stripThick / 2, battY);
+    ctx.lineTo(xEnd - 60, battY);
+    ctx.stroke();
+
+    // Battery symbol in center-bottom
+    const midX = (xStart + xEnd) / 2;
+    // Long plate (+)
+    ctx.lineWidth = 3.5;
+    ctx.strokeStyle = state.keyClosed ? '#22c55e' : '#94a3b8';
+    ctx.beginPath();
+    ctx.moveTo(midX - 10, battY - 14);
+    ctx.lineTo(midX - 10, battY + 14);
+    ctx.stroke();
+
+    // Short thick plate (-)
+    ctx.lineWidth = 5;
+    ctx.beginPath();
+    ctx.moveTo(midX + 10, battY - 9);
+    ctx.lineTo(midX + 10, battY + 9);
+    ctx.stroke();
+
+    // Battery Polarity text
+    ctx.fillStyle = '#22c55e';
+    ctx.font = 'bold 13px monospace';
+    ctx.fillText('+', midX - 22, battY + 4);
+    ctx.fillStyle = '#ef4444';
+    ctx.fillText('−', midX + 22, battY + 4);
+
+    ctx.fillStyle = '#f8fafc';
+    ctx.font = 'bold 12px monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText(`Driver Cell: ${state.EMF.toFixed(1)}V`, midX, battY + 24);
+  }
+
+  function drawGalvanometerDial(x, y, r) {
+    ctx.save();
+    ctx.translate(x, y);
+
+    // Dial background casing
+    ctx.beginPath();
+    ctx.arc(0, 0, r, 0, Math.PI * 2);
+    ctx.fillStyle = '#fffdf5';
+    ctx.fill();
+    ctx.lineWidth = 4;
+    ctx.strokeStyle = '#334155';
+    ctx.stroke();
+
+    // Inner bronze ring
+    ctx.lineWidth = 1.5;
+    ctx.strokeStyle = '#d97706';
+    ctx.beginPath();
+    ctx.arc(0, 0, r - 3, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // Zero-center scale: -30 to +30 divisions
+    const totalDivisions = 30;
+    const maxAngle = 0.733; // 42 deg sweep each side
+
+    ctx.fillStyle = '#0f172a';
+    ctx.strokeStyle = '#0f172a';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
+    for (let div = -totalDivisions; div <= totalDivisions; div += 5) {
+      const angle = (div / totalDivisions) * maxAngle - Math.PI / 2;
+      const isMajor = div % 10 === 0;
+      const isZero = div === 0;
+      const tickLen = isZero ? 13 : (isMajor ? 10 : 5);
+      const tickR1 = r - 8;
+      const tickR2 = tickR1 - tickLen;
+
+      const x1 = Math.cos(angle) * tickR1;
+      const y1 = Math.sin(angle) * tickR1;
+      const x2 = Math.cos(angle) * tickR2;
+      const y2 = Math.sin(angle) * tickR2;
+
+      ctx.lineWidth = isZero ? 2.5 : (isMajor ? 1.8 : 1.0);
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2, y2);
+      ctx.stroke();
+
+      if (isMajor) {
+        const textR = tickR2 - 8;
+        const tx = Math.cos(angle) * textR;
+        const ty = Math.sin(angle) * textR;
+        ctx.font = 'bold 9px -apple-system, sans-serif';
+        ctx.fillText(Math.abs(div).toString(), tx, ty);
+      }
+    }
+
+    // Central 'G' emblem
+    ctx.fillStyle = '#0284c7';
+    ctx.font = 'bold 14px -apple-system, sans-serif';
+    ctx.fillText('G', 0, r * 0.35);
+
+    ctx.fillStyle = '#475569';
+    ctx.font = 'bold 7.5px -apple-system, sans-serif';
+    ctx.fillText(state.highSensitivity ? 'HIGH SENS' : 'LOW SENS', 0, r * 0.52);
+
+    // Deflected needle
+    const needleAngle = state.needleAngle - Math.PI / 2;
+    const needleLength = r - 14;
+    const nx = Math.cos(needleAngle) * needleLength;
+    const ny = Math.sin(needleAngle) * needleLength;
+
+    // Needle shadow
+    ctx.beginPath();
+    ctx.strokeStyle = 'rgba(0,0,0,0.2)';
+    ctx.lineWidth = 2.2;
+    ctx.moveTo(1, 1);
+    ctx.lineTo(nx + 1.5, ny + 1.5);
+    ctx.stroke();
+
+    // Needle blade
+    ctx.beginPath();
+    ctx.strokeStyle = '#dc2626';
+    ctx.lineWidth = 1.8;
+    ctx.lineCap = 'round';
+    ctx.moveTo(0, 0);
+    ctx.lineTo(nx, ny);
+    ctx.stroke();
+
+    // Central pivot cap
+    ctx.beginPath();
+    ctx.arc(0, 0, 4.5, 0, Math.PI * 2);
+    ctx.fillStyle = '#1e293b';
+    ctx.fill();
+    ctx.lineWidth = 1.2;
+    ctx.strokeStyle = '#cbd5e1';
+    ctx.stroke();
+
+    ctx.restore();
+  }
+
+  function updateDashboard() {
+    const l = state.jockeyL;
+    const compL = 100.0 - l;
+    const igMicroA = state.Ig * 1e6;
+
+    const elIg = document.getElementById('metricIg');
+    const elBalL = document.getElementById('metricBalL');
+    const elCompL = document.getElementById('metricCompL');
+    const elRatioL = document.getElementById('metricRatioL');
+    const elRatioRS = document.getElementById('metricRatioRS');
+    const elStatus = document.getElementById('metricStatus');
+
+    const badge = document.getElementById('bridgeStatusBadge');
+    const badgeDot = document.getElementById('bridgeStatusDot');
+    const badgeText = document.getElementById('bridgeStatusText');
+    const jockeyReadout = document.getElementById('jockeyReadout');
+
+    if (elIg) elIg.textContent = (Math.abs(igMicroA) < 0.001 ? "0.00" : igMicroA.toFixed(2)) + ' µA';
+    if (elBalL) elBalL.textContent = l.toFixed(2) + ' cm';
+    if (elCompL) elCompL.textContent = compL.toFixed(2) + ' cm';
+    if (elRatioL) elRatioL.textContent = (l / compL).toFixed(4);
+
+    const R_left = state.interchanged ? state.S : state.R;
+    const R_right = state.interchanged ? state.R : state.S;
+    if (elRatioRS) elRatioRS.textContent = (R_left / R_right).toFixed(4);
+
+    if (jockeyReadout) {
+      jockeyReadout.textContent = `l = ${l.toFixed(1)} cm | (100 - l) = ${compL.toFixed(1)} cm`;
+    }
+
+    if (!state.keyClosed) {
+      badge.className = 'bridge-status-badge open';
+      badgeDot.textContent = '⚪';
+      badgeText.textContent = 'Circuit Open (Plug Key K is OFF)';
+      if (elStatus) {
+        elStatus.textContent = 'CIRCUIT OPEN';
+        elStatus.style.color = '#94a3b8';
+      }
+    } else if (!state.jockeyContact) {
+      badge.className = 'bridge-status-badge open';
+      badgeDot.textContent = '🟡';
+      badgeText.textContent = 'Jockey Lifted (Tap to touch wire)';
+      if (elStatus) {
+        elStatus.textContent = 'JOCKEY LIFTED';
+        elStatus.style.color = '#fbbf24';
+      }
+    } else if (state.isBalanced) {
+      badge.className = 'bridge-status-badge balanced';
+      badgeDot.textContent = '🟢';
+      badgeText.textContent = `Null Deflection Reached at l = ${l.toFixed(1)} cm!`;
+      if (elStatus) {
+        elStatus.textContent = 'NULL (BALANCED)';
+        elStatus.style.color = '#4ade80';
+      }
+    } else {
+      badge.className = 'bridge-status-badge unbalanced';
+      badgeDot.textContent = '🔴';
+      const dirText = state.Ig > 0 ? 'Deflected Right (V_D > V_B)' : 'Deflected Left (V_B > V_D)';
+      badgeText.textContent = `Unbalanced — ${dirText}`;
+      if (elStatus) {
+        elStatus.textContent = 'UNBALANCED';
+        elStatus.style.color = '#f87171';
+      }
+    }
+  }
+
+  function updateUIReadouts() {
+    document.getElementById('valJockey').textContent = `${state.jockeyL.toFixed(1)} cm`;
+    document.getElementById('rngJockey').value = state.jockeyL;
+    document.getElementById('valR').textContent = `${state.R.toFixed(1)} Ω`;
+    document.getElementById('valS').textContent = (state.mode === 'unknown' && !state.interchanged) ? '??? Ω' : `${state.S.toFixed(1)} Ω`;
+    document.getElementById('valEMF').textContent = `${state.EMF.toFixed(1)} V`;
+    document.getElementById('valWireR').textContent = `${state.wireTotalR.toFixed(1)} Ω`;
+  }
+
+  function getCanvasWireMetrics() {
+    const rect = canvasBox.getBoundingClientRect();
+    const w = rect.width;
+    const h = rect.height;
+    const isMobile = w < 640;
+    const padX = isMobile ? 12 : 24;
+    const boardTop = isMobile ? 18 : 26;
+    const boardH = h - boardTop - (isMobile ? 18 : 24);
+    const boardW = w - padX * 2;
+
+    const wireY = boardTop + boardH * (isMobile ? 0.75 : 0.72);
+    const wireStartX = padX + (isMobile ? 38 : 55);
+    const wireEndX = padX + boardW - (isMobile ? 38 : 55);
+    return { wireStartX, wireEndX, wireY, wirePixelLen: wireEndX - wireStartX };
+  }
+
+  function setJockeyFromPointer(clientX) {
+    const rect = canvas.getBoundingClientRect();
+    const metrics = getCanvasWireMetrics();
+    const touchX = clientX - rect.left;
+
+    let fraction = (touchX - metrics.wireStartX) / metrics.wirePixelLen;
+    fraction = Math.max(0.01, Math.min(0.99, fraction));
+
+    state.jockeyL = Math.round(fraction * 1000) / 10.0;
+    updateUIReadouts();
+    solveMeterBridge();
+    updateDashboard();
+  }
+
+  canvas.addEventListener('mousedown', (e) => {
+    const metrics = getCanvasWireMetrics();
+    const rect = canvas.getBoundingClientRect();
+    const my = e.clientY - rect.top;
+
+    // If click is near wire level (±40px)
+    if (Math.abs(my - metrics.wireY) < 45) {
+      state.isDraggingJockey = true;
+      setJockeyFromPointer(e.clientX);
+    }
+  });
+
+  window.addEventListener('mousemove', (e) => {
+    if (state.isDraggingJockey) {
+      setJockeyFromPointer(e.clientX);
+    }
+  });
+
+  window.addEventListener('mouseup', () => {
+    state.isDraggingJockey = false;
+  });
+
+  // Touch handlers for mobile/tablet screens
+  canvas.addEventListener('touchstart', (e) => {
+    if (!e.touches.length) return;
+    const metrics = getCanvasWireMetrics();
+    const rect = canvas.getBoundingClientRect();
+    const my = e.touches[0].clientY - rect.top;
+
+    if (Math.abs(my - metrics.wireY) < 55) {
+      state.isDraggingJockey = true;
+      setJockeyFromPointer(e.touches[0].clientX);
+      e.preventDefault();
+    }
+  }, { passive: false });
+
+  canvas.addEventListener('touchmove', (e) => {
+    if (state.isDraggingJockey && e.touches.length) {
+      setJockeyFromPointer(e.touches[0].clientX);
+      e.preventDefault();
+    }
+  }, { passive: false });
+
+  window.addEventListener('touchend', () => {
+    state.isDraggingJockey = false;
+  });
+
+  function onJockeyInput(val) {
+    state.jockeyL = parseFloat(val);
+    updateUIReadouts();
+    solveMeterBridge();
+    updateDashboard();
+  }
+
+  function stepJockey(delta) {
+    state.jockeyL = Math.max(1.0, Math.min(99.0, Math.round((state.jockeyL + delta) * 10) / 10));
+    updateUIReadouts();
+    solveMeterBridge();
+    updateDashboard();
+  }
+
+  function onParamInput(param, value) {
+    const num = parseFloat(value);
+    if (param === 'R') state.R = num;
+    if (param === 'S' && state.mode !== 'unknown') state.S = num;
+    if (param === 'EMF') state.EMF = num;
+    if (param === 'WireR') state.wireTotalR = num;
+
+    updateUIReadouts();
+    solveMeterBridge();
+    updateDashboard();
+  }
+
+  function stepParam(param, delta) {
+    const input = document.getElementById(`rng${param}`);
+    if (!input) return;
+    let nextVal = parseFloat(input.value) + delta;
+    nextVal = Math.max(parseFloat(input.min), Math.min(parseFloat(input.max), nextVal));
+    input.value = nextVal;
+    onParamInput(param, nextVal);
+  }
+
+  function toggleMainKey() {
+    state.keyClosed = !state.keyClosed;
+    const btn = document.getElementById('btnSwitchK');
+    const lbl = document.getElementById('lblKeyK');
+    if (state.keyClosed) {
+      btn.className = 'btn btn-toggle-switch active';
+      lbl.textContent = 'CLOSED [ON]';
+    } else {
+      btn.className = 'btn btn-toggle-switch off';
+      lbl.textContent = 'OPEN [OFF]';
+    }
+    solveMeterBridge();
+    updateDashboard();
+  }
+
+  function toggleJockeyContact() {
+    state.jockeyContact = !state.jockeyContact;
+    const btn = document.getElementById('btnJockeyTouch');
+    const lbl = document.getElementById('lblJockeyTouch');
+    if (state.jockeyContact) {
+      btn.className = 'btn btn-toggle-switch active';
+      lbl.textContent = 'ON WIRE [CONTACT]';
+    } else {
+      btn.className = 'btn btn-toggle-switch off';
+      lbl.textContent = 'LIFTED [DISCONNECTED]';
+    }
+    solveMeterBridge();
+    updateDashboard();
+  }
+
+  function toggleGalvSensitivity() {
+    state.highSensitivity = !state.highSensitivity;
+    const lbl = document.getElementById('lblSensitivity');
+    lbl.textContent = state.highSensitivity ? 'HIGH' : 'LOW';
+    lbl.style.color = state.highSensitivity ? 'var(--accent)' : 'var(--warning)';
+    solveMeterBridge();
+    updateDashboard();
+  }
+
+  function toggleInterchangeGaps() {
+    state.interchanged = !state.interchanged;
+    const lbl = document.getElementById('lblInterchange');
+    const lblBoxR = document.getElementById('lblBoxR');
+    const lblResistorS = document.getElementById('lblResistorS');
+
+    if (state.interchanged) {
+      lbl.textContent = 'INTERCHANGED (L=S, R=R)';
+      lblBoxR.textContent = 'Right Gap (R)';
+      lblResistorS.textContent = 'Left Gap (S)';
+    } else {
+      lbl.textContent = 'NORMAL (L=R, R=S)';
+      lblBoxR.textContent = 'Left Gap (R)';
+      lblResistorS.textContent = 'Right Gap (S)';
+    }
+
+    solveMeterBridge();
+    updateUIReadouts();
+    updateDashboard();
+  }
+
+  function autoSeekNullPoint() {
+    // Automatically slides jockey to exact theoretical balance length l0
+    solveMeterBridge();
+    state.jockeyL = Math.round(state.theoreticalNullL * 10) / 10.0;
+    state.keyClosed = true;
+    state.jockeyContact = true;
+
+    document.getElementById('btnSwitchK').className = 'btn btn-toggle-switch active';
+    document.getElementById('lblKeyK').textContent = 'CLOSED [ON]';
+    document.getElementById('btnJockeyTouch').className = 'btn btn-toggle-switch active';
+    document.getElementById('lblJockeyTouch').textContent = 'ON WIRE [CONTACT]';
+
+    updateUIReadouts();
+    solveMeterBridge();
+    updateDashboard();
+  }
+
+  function resetToDefaults() {
+    state.jockeyL = 50.0;
+    state.R = 5.0;
+    if (state.mode === 'study') {
+      state.S = 5.0;
+    }
+    state.EMF = 3.0;
+    state.wireTotalR = 4.0;
+    state.keyClosed = true;
+    state.jockeyContact = true;
+    state.interchanged = false;
+    state.highSensitivity = true;
+
+    document.getElementById('rngJockey').value = 50.0;
+    document.getElementById('rngR').value = 5.0;
+    if (document.getElementById('rngS')) document.getElementById('rngS').value = 5.0;
+    document.getElementById('rngEMF').value = 3.0;
+    document.getElementById('rngWireR').value = 4.0;
+
+    document.getElementById('btnSwitchK').className = 'btn btn-toggle-switch active';
+    document.getElementById('lblKeyK').textContent = 'CLOSED [ON]';
+    document.getElementById('btnJockeyTouch').className = 'btn btn-toggle-switch active';
+    document.getElementById('lblJockeyTouch').textContent = 'ON WIRE [CONTACT]';
+    document.getElementById('lblSensitivity').textContent = 'HIGH';
+    document.getElementById('lblInterchange').textContent = 'NORMAL (L=R, R=S)';
+
+    updateUIReadouts();
+    solveMeterBridge();
+    updateDashboard();
+  }
+
+  function setLabMode(newMode) {
+    state.mode = newMode;
+    const tabStudy = document.getElementById('tabModeStudy');
+    const tabUnknown = document.getElementById('tabModeUnknown');
+    const mysteryBox = document.getElementById('mysteryWireBox');
+    const rowSliderS = document.getElementById('rowSliderS');
+    const lockedSNotice = document.getElementById('lockedSNotice');
+    const lblResistorS = document.getElementById('lblResistorS');
+
+    if (newMode === 'study') {
+      tabStudy.classList.add('active');
+      tabUnknown.classList.remove('active');
+      mysteryBox.style.display = 'none';
+      rowSliderS.style.display = 'flex';
+      lockedSNotice.style.display = 'none';
+      lblResistorS.textContent = 'Right Gap (S)';
+      state.S = parseFloat(document.getElementById('rngS').value);
+    } else {
+      tabStudy.classList.remove('active');
+      tabUnknown.classList.add('active');
+      mysteryBox.style.display = 'flex';
+      rowSliderS.style.display = 'none';
+      lockedSNotice.style.display = 'block';
+      lblResistorS.textContent = 'Right Gap [Specimen Wire]';
+      onMysterySpecimenChange();
+    }
+
+    updateUIReadouts();
+    solveMeterBridge();
+    updateDashboard();
+  }
+
+  function onMysterySpecimenChange() {
+    const sel = document.getElementById('selMysterySpecimen');
+    const specimen = state.specimens[parseInt(sel.value) - 1];
+    state.S = specimen.S;
+
+    document.getElementById('inputStudentX').value = '';
+    document.getElementById('inputStudentRho').value = '';
+    const feedback = document.getElementById('mysteryFeedback');
+    feedback.className = 'mystery-feedback';
+    feedback.textContent = '';
+
+    solveMeterBridge();
+    updateDashboard();
+  }
+
+  function checkMysteryCalculations() {
+    const sel = document.getElementById('selMysterySpecimen');
+    const specimen = state.specimens[parseInt(sel.value) - 1];
+    const inputX = parseFloat(document.getElementById('inputStudentX').value);
+    const inputRho = parseFloat(document.getElementById('inputStudentRho').value);
+    const feedback = document.getElementById('mysteryFeedback');
+
+    if (isNaN(inputX) || inputX <= 0) {
+      feedback.className = 'mystery-feedback error show';
+      feedback.innerHTML = '⚠️ Please enter your calculated value of resistance $S$ in Ohms (Ω).';
+      triggerMath(feedback);
+      return;
+    }
+
+    const actualS = specimen.S;
+    const errorS = Math.abs((inputX - actualS) / actualS) * 100;
+
+    // True resistivity: rho = S * pi * r^2 / L
+    const radiusM = (specimen.diamMm * 1e-3) / 2.0;
+    const areaM2 = Math.PI * Math.pow(radiusM, 2);
+    const lengthM = specimen.lengthCm * 1e-2;
+    const actualRho = (actualS * areaM2) / lengthM;
+
+    let rhoMessage = '';
+    if (!isNaN(inputRho) && inputRho > 0) {
+      const errorRho = Math.abs((inputRho - actualRho) / actualRho) * 100;
+      if (errorRho <= 5.0) {
+        rhoMessage = `<br>✨ <strong>Resistivity ($\rho$) calculation is highly accurate!</strong> (Discrepancy: ${errorRho.toFixed(1)}%).`;
+      } else {
+        rhoMessage = `<br>🔍 Calculated $\\rho = ${inputRho.toExponential(2)}\\,\\Omega\\cdot\\text{m}$, Actual $\\rho = ${actualRho.toExponential(2)}\\,\\Omega\\cdot\\text{m}$ (Error: ${errorRho.toFixed(1)}%). Check your wire radius $r = d/2$ units!`;
+      }
+    }
+
+    if (errorS <= 2.5) {
+      feedback.className = 'mystery-feedback success show';
+      feedback.innerHTML = `🎉 <strong>Excellent Observation!</strong><br>Calculated $S = ${inputX.toFixed(2)}\\,\\Omega$ matches actual value $S = ${actualS.toFixed(2)}\\,\\Omega$ within ${errorS.toFixed(2)}% accuracy.${rhoMessage}`;
+    } else {
+      feedback.className = 'mystery-feedback error show';
+      feedback.innerHTML = `❌ <strong>Not quite balanced.</strong> Entered $S = ${inputX.toFixed(2)}\\,\\Omega$ deviates by ${errorS.toFixed(1)}% from actual $S = ${actualS.toFixed(2)}\\,\\Omega$. Ensure galvanometer reads exactly $0.00\\,\\mu\\text{A}$ at null point!${rhoMessage}`;
+    }
+    triggerMath(feedback);
+  }
+
+  function updateFullscreenState() {
+    const isFS = !!(document.fullscreenElement || document.webkitFullscreenElement);
+    const wrapper = document.getElementById('appWrapper');
+    const btn = document.getElementById('btnFullscreen');
+
+    if (isFS) {
+      document.body.classList.add('is-fullscreen');
+      wrapper.classList.add('is-fullscreen');
+      if (btn) btn.innerHTML = '⛶ Exit Fullscreen';
+    } else {
+      document.body.classList.remove('is-fullscreen');
+      wrapper.classList.remove('is-fullscreen');
+      if (btn) btn.innerHTML = '⛶ Fullscreen';
+    }
+
+    resizeCanvas();
+    setTimeout(resizeCanvas, 50);
+    setTimeout(resizeCanvas, 150);
+  }
+
+  function toggleFullscreen() {
+    const elem = document.documentElement;
+    if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+      if (elem.requestFullscreen) {
+        elem.requestFullscreen().catch(err => console.warn(err));
+      } else if (elem.webkitRequestFullscreen) {
+        elem.webkitRequestFullscreen();
+      }
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen().catch(err => console.warn(err));
+      } else if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+      }
+    }
+  }
+
+  document.addEventListener('fullscreenchange', updateFullscreenState);
+  document.addEventListener('webkitfullscreenchange', updateFullscreenState);
+
+  function openModal(type) {
+    const backdrop = document.getElementById('modalBackdrop');
+    const title = document.getElementById('modalTitle');
+    const content = document.getElementById('modalContent');
+
+    if (type === 'theory') {
+      title.textContent = "Meter Bridge: Principle, Derivation & Specific Resistance";
+      content.innerHTML = `
+        <div>
+          <h3>1. Principle of the Meter Bridge</h3>
+          <p>
+            The Meter Bridge (or slide wire bridge) operates on the principle of the balanced Wheatstone's Bridge. When four resistances $P, Q, R, S$ are connected such that no current flows through the central galvanometer ($I_g = 0$), the condition is:
+          </p>
+          <div class="formula-callout">
+            $$\\frac{P}{Q} = \\frac{R}{S}$$
+          </div>
+        </div>
+
+        <div>
+          <h3>2. Derivation for Uniform Wire</h3>
+          <p>
+            If a uniform wire of length $100\\,\\text{cm}$ and resistance per unit length $r$ has a balancing null point at distance $l_1\\,\\text{cm}$ from end $A$:
+          </p>
+          <ul class="instruction-steps">
+            <li>Resistance of segment $AJ$: $P = l_1 \\cdot r$</li>
+            <li>Resistance of segment $JB$: $Q = (100 - l_1) \\cdot r$</li>
+          </ul>
+          <p>Substituting into the Wheatstone bridge condition:</p>
+          <div class="formula-callout">
+            $$\\frac{R}{S} = \\frac{P}{Q} = \\frac{l_1 \\cdot r}{(100 - l_1) \\cdot r} = \\frac{l_1}{100 - l_1}$$
+          </div>
+          <p>Hence, the unknown resistance $S$ in the right gap is determined by:</p>
+          <div class="formula-callout">
+            $$S = R \\cdot \\left(\\frac{100 - l_1}{l_1}\\right)$$
+          </div>
+        </div>
+
+        <div>
+          <h3>3. Specific Resistance (Resistivity $\\rho$)</h3>
+          <p>
+            If $L$ is the total length of the experimental unknown wire, $d$ is its diameter, and $r = d/2$ is its radius, the specific resistance $\\rho$ is given by:
+          </p>
+          <div class="formula-callout">
+            $$\\rho = \\frac{S \\cdot A}{L} = \\frac{S \\cdot \\pi r^2}{L} = \\frac{S \\cdot \\pi d^2}{4 L}$$
+          </div>
+        </div>
+
+        <div>
+          <h3>4. End Errors &amp; Elimination</h3>
+          <p>
+            End resistance occurs at the metallic solder joints of strips $A$ and $C$. It is eliminated in standard practice by <strong>interchanging resistances $R$ and $S$</strong> in the gaps and averaging the balancing lengths.
+          </p>
+        </div>
+      `;
+    } else {
+      title.textContent = "Laboratory Instructions & Practical Steps";
+      content.innerHTML = `
+        <div>
+          <h3>Experimental Procedure:</h3>
+          <ol class="instruction-steps">
+            <li><strong>Close the Circuit:</strong> Turn on Plug Key $K$ and confirm that the driver cell powers the bridge wire.</li>
+            <li><strong>Check Opposing Deflections:</strong> Touch the jockey knife at the extreme left ($l \\approx 2\\,\\text{cm}$) and extreme right ($l \\approx 98\\,\\text{cm}$) of the wire. The galvanometer needle must deflect in opposite directions.</li>
+            <li><strong>Locate the Null Point:</strong> Gently slide the jockey along the meter wire (or use the position slider and $\\pm0.1\\,\\text{cm}$ buttons) until the galvanometer needle reads exactly $0.00\\,\\mu\\text{A}$.</li>
+            <li><strong>Sensitivity Adjustment:</strong> Begin with <em>LOW SENSITIVITY</em>. Once within $2\\,\\text{cm}$ of balance, toggle to <em>HIGH SENSITIVITY</em> to achieve a pinpoint null reading.</li>
+            <li><strong>Calculate Unknown $S$:</strong> In Mode 2, use $S = R \\frac{100 - l_1}{l_1}$ and compute resistivity $\\rho = \\frac{S \\cdot \\pi r^2}{L}$. Verify your answer with the instant checker.</li>
+          </ol>
+        </div>
+      `;
+    }
+
+    backdrop.classList.add('open');
+    triggerMath(content);
+  }
+
+  function closeModal(e) {
+    if (e.target.id === 'modalBackdrop') {
+      document.getElementById('modalBackdrop').classList.remove('open');
+    }
+  }
+
+  function closeModalDirect() {
+    document.getElementById('modalBackdrop').classList.remove('open');
+  }
+
+  let lastTimestamp = performance.now();
+
+  function simulationLoop(now) {
+    const dt = Math.min((now - lastTimestamp) / 1000, 0.1);
+    lastTimestamp = now;
+
+    // Update damped galvanometer needle dynamics
+    updateNeedlePhysics(dt);
+
+    // Render wooden base, metallic strips, and moving jockey
+    renderMeterBridge();
+
+    requestAnimationFrame(simulationLoop);
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    resizeCanvas();
+    solveMeterBridge();
+    updateUIReadouts();
+    updateDashboard();
+    requestAnimationFrame(simulationLoop);
+  });
+
+  window.addEventListener('load', () => {
+    resizeCanvas();
+    solveMeterBridge();
+    updateDashboard();
+    triggerMath(document.body);
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,1422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Beam Balance Virtual Laboratory | National Model Schools Physics Virtual Lab</title>
+
+  <!-- KaTeX for mathematical typesetting -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" />
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+
+  <style>
+    :root {
+      --bg: #090e17;
+      --card-bg: #141e2e;
+      --card-surface: #1a273a;
+      --card-border: #2c3e55;
+      --accent: #38bdf8;
+      --accent-hover: #0284c7;
+      --success: #22c55e;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --brass-base: #a16207;
+      --brass-light: #fef08a;
+      --brass-dark: #713f12;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      width: 100%;
+      min-height: 100vh;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-size: 14.5px;
+      line-height: 1.45;
+    }
+
+    /* Zero-Scroll Fullscreen Locks */
+    body.is-fullscreen,
+    :fullscreen body,
+    :-webkit-full-screen body {
+      height: 100vh !important;
+      max-height: 100vh !important;
+      overflow: hidden !important;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 0.65rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      min-height: 100vh;
+    }
+
+    body.is-fullscreen .app-container,
+    :fullscreen .app-container,
+    :-webkit-full-screen .app-container {
+      max-width: 100vw !important;
+      height: 100vh !important;
+      max-height: 100vh !important;
+      padding: 0.35rem 0.5rem !important;
+      gap: 0.35rem !important;
+      overflow: hidden !important;
+    }
+
+    header {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 0.55rem 0.9rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+      flex-shrink: 0;
+    }
+
+    .badge {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    h1 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 0.4rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      padding: 0.4rem 0.75rem;
+      font-size: 0.88rem;
+      font-weight: 600;
+      border-radius: 6px;
+      border: 1px solid var(--card-border);
+      background: var(--card-surface);
+      color: var(--text);
+      cursor: pointer;
+      min-height: 36px;
+      transition: all 0.15s ease;
+      touch-action: manipulation;
+      user-select: none;
+    }
+
+    .btn:hover {
+      background: #24354d;
+      color: #fff;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #042f2e;
+      font-weight: 700;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      color: #fff;
+    }
+
+    .btn-active {
+      background: #0284c7 !important;
+      border-color: #38bdf8 !important;
+      color: #fff !important;
+      font-weight: 700;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.65rem;
+      flex: 1;
+      min-height: 0;
+    }
+
+    @media (min-width: 1024px) {
+      .workspace {
+        grid-template-columns: 1.2fr 0.8fr;
+      }
+    }
+
+    body.is-fullscreen .workspace,
+    :fullscreen .workspace,
+    :-webkit-full-screen .workspace {
+      display: grid !important;
+      grid-template-columns: 1.25fr 0.75fr !important;
+      gap: 0.4rem !important;
+      flex: 1 !important;
+      height: calc(100vh - 62px) !important;
+      max-height: calc(100vh - 62px) !important;
+      min-height: 0 !important;
+      overflow: hidden !important;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 0.65rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+      min-height: 0;
+    }
+
+    .left-column {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      min-height: 0;
+    }
+
+    body.is-fullscreen .left-column,
+    :fullscreen .left-column,
+    :-webkit-full-screen .left-column {
+      height: 100% !important;
+      max-height: 100% !important;
+      overflow: hidden !important;
+    }
+
+    .canvas-wrap {
+      position: relative;
+      width: 100%;
+      flex: 1.4;
+      min-height: 230px;
+      background: #111722;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      overflow: hidden;
+      touch-action: none;
+    }
+
+    body.is-fullscreen .canvas-wrap,
+    :fullscreen .canvas-wrap,
+    :-webkit-full-screen .canvas-wrap {
+      min-height: 180px !important;
+    }
+
+    .loupe-wrap {
+      position: relative;
+      width: 100%;
+      flex: 0.75;
+      min-height: 140px;
+      background: #0a0f18;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    body.is-fullscreen .loupe-wrap,
+    :fullscreen .loupe-wrap,
+    :-webkit-full-screen .loupe-wrap {
+      min-height: 110px !important;
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .right-column {
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+      min-height: 0;
+      overflow-y: auto;
+    }
+
+    body.is-fullscreen .right-column,
+    :fullscreen .right-column,
+    :-webkit-full-screen .right-column {
+      height: 100% !important;
+      max-height: 100% !important;
+      overflow-y: auto !important;
+      padding-right: 0.2rem;
+    }
+
+    .right-column::-webkit-scrollbar {
+      width: 5px;
+    }
+    .right-column::-webkit-scrollbar-thumb {
+      background: var(--card-border);
+      border-radius: 3px;
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.35rem;
+      flex-shrink: 0;
+    }
+
+    .metric-badge {
+      background: var(--card-surface);
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      padding: 0.35rem 0.25rem;
+      text-align: center;
+    }
+
+    .metric-label {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .metric-val {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--accent);
+      font-family: monospace;
+    }
+
+    .control-group {
+      background: var(--card-surface);
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      padding: 0.45rem 0.6rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .control-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .btn-grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.35rem;
+    }
+
+    /* Weight Box Grids */
+    .weight-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 0.25rem;
+      margin-top: 0.25rem;
+    }
+
+    .weight-grid-mg {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 0.25rem;
+      margin-top: 0.25rem;
+    }
+
+    .btn-weight {
+      padding: 0.32rem 0;
+      font-size: 0.78rem;
+      font-weight: bold;
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: #e2e8f0;
+      border-radius: 4px;
+      cursor: pointer;
+      text-align: center;
+    }
+    
+    .btn-weight:hover {
+      background: #38bdf8;
+      color: #0f172a;
+      border-color: #38bdf8;
+    }
+
+    .weight-chips-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+      min-height: 38px;
+      background: #0f172a;
+      border: 1px inset #1e293b;
+      border-radius: 4px;
+      padding: 0.35rem;
+    }
+
+    .weight-chip {
+      background: #38bdf8;
+      color: #0f172a;
+      font-size: 0.75rem;
+      font-weight: bold;
+      padding: 0.15rem 0.4rem;
+      border-radius: 12px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.2rem;
+    }
+
+    .weight-chip:hover {
+      background: #ef4444;
+      color: #fff;
+    }
+
+    .weight-chip::after {
+      content: '×';
+      font-weight: bold;
+    }
+
+    .table-wrap {
+      width: 100%;
+      border-radius: 6px;
+      border: 1px solid var(--card-border);
+      overflow-x: auto;
+      max-height: 120px;
+      background: var(--card-surface);
+    }
+
+    body.is-fullscreen .table-wrap,
+    :fullscreen .table-wrap,
+    :-webkit-full-screen .table-wrap {
+      max-height: 100px !important;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.78rem;
+      text-align: center;
+    }
+
+    th, td {
+      padding: 0.28rem 0.35rem;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    th {
+      background: #141e2e;
+      color: var(--text-muted);
+      font-weight: 700;
+      position: sticky;
+      top: 0;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(3px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      z-index: 9999;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      max-width: 620px;
+      width: 100%;
+      max-height: 85vh;
+      overflow-y: auto;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 0.4rem;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+  
+/* Touchscreen & Mobile / Tablet Ergonomics + National Model Schools Branding */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+button, .btn, input[type="range"], select {
+  touch-action: manipulation;
+}
+input[type="range"] {
+  min-height: 38px;
+  cursor: pointer;
+}
+.btn, button {
+  min-height: 40px;
+  touch-action: manipulation;
+}
+.btn-hub {
+  background: rgba(56, 189, 248, 0.15) !important;
+  color: #38bdf8 !important;
+  border: 1px solid rgba(56, 189, 248, 0.35) !important;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 8px;
+  padding: 0.45rem 0.85rem;
+  transition: all 0.2s ease;
+}
+.btn-hub:hover {
+  background: rgba(56, 189, 248, 0.28) !important;
+  color: #ffffff !important;
+  transform: translateY(-1px);
+}
+.nms-lab-footer {
+  margin-top: 2.5rem;
+  padding: 1.2rem 1.5rem;
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.9) 0%, rgba(10, 15, 29, 0.98) 100%);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.36);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: #94a3b8;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  font-size: 0.9rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+.nms-lab-footer-inner {
+  max-width: 1440px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.25rem;
+}
+.nms-brand-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+.nms-brand-title {
+  font-weight: 700;
+  font-size: 1rem;
+  color: #f8fafc;
+  letter-spacing: -0.01em;
+}
+.nms-brand-sub {
+  font-size: 0.8rem;
+  color: #38bdf8;
+}
+.nms-credit-col {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 0.45rem 1rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.nms-dev-text {
+  color: #cbd5e1;
+  font-size: 0.88rem;
+}
+.nms-dev-text strong {
+  color: #ffffff;
+}
+.nms-gh-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: #0f172a;
+  color: #38bdf8;
+  padding: 0.3rem 0.7rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.82rem;
+  transition: all 0.2s ease;
+}
+.nms-gh-btn:hover {
+  background: #0284c7;
+  color: #ffffff;
+  border-color: #0284c7;
+  transform: translateY(-1px);
+}
+.nms-copy-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.3rem;
+  font-size: 0.8rem;
+  color: #64748b;
+}
+.nms-portal-link {
+  color: #38bdf8;
+  text-decoration: none;
+  font-weight: 500;
+}
+.nms-portal-link:hover {
+  text-decoration: underline;
+  color: #7dd3fc;
+}
+/* In Fullscreen simulator mode, hide footer to reserve 100% viewport for simulation workbench */
+:fullscreen .nms-lab-footer,
+:-webkit-full-screen .nms-lab-footer,
+body.is-fullscreen .nms-lab-footer {
+  display: none !important;
+}
+@media (max-width: 768px) {
+  .nms-lab-footer-inner {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .nms-copy-col {
+    align-items: center;
+  }
+}
+
+</style>
+</head>
+<body>
+
+  <div class="app-container" id="appRoot">
+    <header>
+      <div>
+        <span class="badge">National Model Schools • Class XI Physics</span>
+        <h1>Physical Beam Balance: Determination of Mass</h1>
+      </div>
+      <div class="header-actions">
+        <a href="index.html" class="btn btn-hub" title="Return to All Labs Hub">🏠 All Labs</a>
+        
+        <button class="btn" id="btnTheory">📖 Theory</button>
+        <button class="btn" id="btnReset">↺ Reset</button>
+        <button class="btn btn-primary" id="btnFullscreen">⛶ Fullscreen</button>
+      </div>
+    </header>
+
+    <main class="workspace">
+      <!-- Left Column: Front Elevation Apparatus & Magnified Pointer Loupe -->
+      <div class="left-column">
+        <div class="card canvas-card" style="flex: 1.4;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <strong style="font-size:0.85rem; color:var(--text-muted);">Physical Balance: Central Pillar, Beam, Stirrups &amp; Pans</strong>
+            <span style="font-size:0.78rem; color:var(--danger); font-weight:700; font-family:monospace;" id="txtArrestStatus">Beam Arrested (Locked)</span>
+          </div>
+          <div class="canvas-wrap" id="balanceWrap">
+            <canvas id="balanceCanvas"></canvas>
+          </div>
+        </div>
+
+        <div class="card canvas-card" style="flex: 0.75;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <strong style="font-size:0.85rem; color:var(--text-muted);">Magnified Pointer &amp; Ivory Scale Loupe</strong>
+            <span style="font-size:0.78rem; color:var(--warning); font-weight:700;" id="txtPointerDiv">Deflection: 0 Div</span>
+          </div>
+          <div class="loupe-wrap" id="loupeWrap">
+            <canvas id="loupeCanvas"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Settings, Controls, Observations -->
+      <div class="right-column">
+        <!-- Live Instantaneous Metrics -->
+        <div class="metrics-grid">
+          <div class="metric-badge">
+            <div class="metric-label">Left Pan Mass ($m_1$)</div>
+            <div class="metric-val" id="valLeftMass">0.00 g</div>
+          </div>
+          <div class="metric-badge">
+            <div class="metric-label">Right Pan Mass ($m_2$)</div>
+            <div class="metric-val" id="valRightMass">0.00 g</div>
+          </div>
+          <div class="metric-badge">
+            <div class="metric-label">Tilt State</div>
+            <div class="metric-val" id="valTiltState" style="font-size:0.92rem;">Arrested</div>
+          </div>
+        </div>
+
+        <!-- Specimen Selection (Placed in Left Pan) -->
+        <div class="control-group">
+          <div class="control-header">
+            <span>Unknown Object (Placed in Left Pan)</span>
+          </div>
+          <div class="btn-grid-3">
+            <button class="btn btn-specimen btn-active" data-obj="brass">Brass Cylinder</button>
+            <button class="btn btn-specimen" data-obj="iron">Iron Block</button>
+            <button class="btn btn-specimen" data-obj="glass">Glass Prism</button>
+          </div>
+        </div>
+
+        <!-- Arresting Knob Control -->
+        <div class="control-group" style="background:#0f172a; border-color:#1e293b;">
+          <div class="control-header">
+            <span>Beam Arresting Knob</span>
+            <span style="font-size:0.7rem; color:var(--text-muted);">Always lock before adding/removing weights</span>
+          </div>
+          <button class="btn btn-primary" id="btnToggleArrest" style="width:100%; font-size:1rem; padding:0.6rem;">
+            ⏏ Release Beam (Start Weighing)
+          </button>
+        </div>
+
+        <!-- Standard Weight Box (Right Pan) -->
+        <div class="control-group">
+          <div class="control-header">
+            <span>Fractional Weight Box (Click to Add to Right Pan)</span>
+            <button class="btn" id="btnClearWeights" style="padding:0.15rem 0.4rem; font-size:0.7rem;">Clear All</button>
+          </div>
+          
+          <div style="font-size:0.7rem; color:var(--text-muted); margin-top:0.2rem;">Grams (g):</div>
+          <div class="weight-grid">
+            <button class="btn-weight" data-mass="100">+100g</button>
+            <button class="btn-weight" data-mass="50">+50g</button>
+            <button class="btn-weight" data-mass="20">+20g</button>
+            <button class="btn-weight" data-mass="10">+10g</button>
+            <button class="btn-weight" data-mass="5">+5g</button>
+            <button class="btn-weight" data-mass="2">+2g</button>
+            <button class="btn-weight" data-mass="1">+1g</button>
+          </div>
+
+          <div style="font-size:0.7rem; color:var(--text-muted); margin-top:0.35rem;">Milligrams (mg):</div>
+          <div class="weight-grid-mg">
+            <button class="btn-weight" data-mass="0.500">+500mg</button>
+            <button class="btn-weight" data-mass="0.200">+200mg</button>
+            <button class="btn-weight" data-mass="0.100">+100mg</button>
+            <button class="btn-weight" data-mass="0.050">+50mg</button>
+            <button class="btn-weight" data-mass="0.020">+20mg</button>
+            <button class="btn-weight" data-mass="0.010">+10mg</button>
+          </div>
+
+          <div style="font-size:0.75rem; color:var(--text-muted); margin-top:0.4rem; margin-bottom:0.1rem;">Weights Currently on Right Pan (Click chip to remove):</div>
+          <div class="weight-chips-container" id="weightsOnPan">
+            <!-- Chips injected here -->
+          </div>
+        </div>
+
+        <!-- Observation Record Table -->
+        <div class="card" style="padding:0.45rem; gap:0.35rem;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <strong style="font-size:0.82rem;">Observation Table</strong>
+            <div style="display:flex; gap:0.3rem;">
+              <button class="btn" id="btnRecord" style="padding:0.2rem 0.5rem; font-size:0.75rem; background:var(--accent); color:#042f2e; font-weight:700;">+ Log Balance</button>
+              <button class="btn" id="btnClearTable" style="padding:0.2rem 0.5rem; font-size:0.75rem;">Clear</button>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Object</th>
+                  <th>Mass in Right Pan ($m_2$)</th>
+                  <th>Equilibrium State</th>
+                </tr>
+              </thead>
+              <tbody id="obsTableBody">
+                <tr><td colspan="4" style="color:var(--text-muted);">No records logged yet. Achieve balance and log.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Theory Modal -->
+  <div class="modal-backdrop" id="theoryModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Theory: Physical Beam Balance</h3>
+        <button class="modal-close" id="btnCloseModal">&times;</button>
+      </div>
+      <div style="font-size:0.9rem; line-height:1.55; color:#cbd5e1; display:flex; flex-direction:column; gap:0.6rem;">
+        <p><strong>Principle of Moments:</strong> A beam balance works on the principle of moments. When the beam is freely suspended and horizontal:</p>
+        <div style="text-align:center; padding:0.4rem; background:#0b111c; border-radius:6px; color:var(--accent);">
+          $$\text{Anti-clockwise Moment} = \text{Clockwise Moment} \iff m_1 g \cdot l_1 = m_2 g \cdot l_2$$
+        </div>
+        <p>For equal-arm laboratory balances ($l_1 = l_2$):</p>
+        <div style="text-align:center; padding:0.4rem; background:#0b111c; border-radius:6px; color:var(--accent);">
+          $$m_1 = m_2$$
+        </div>
+        <p><strong>Physical Tilting &amp; Pointer Behavior:</strong></p>
+        <ul style="padding-left:1.2rem; font-size:0.85rem;">
+          <li><strong>Left Pan Heavier ($m_1 > m_2$):</strong> The left pan sinks downwards. The downward-pointing needle tilts towards the <strong>RIGHT</strong> side of the ivory scale.</li>
+          <li><strong>Right Pan Heavier ($m_2 > m_1$):</strong> The right pan sinks downwards. The downward-pointing needle tilts towards the <strong>LEFT</strong> side of the ivory scale.</li>
+          <li><strong>Equilibrium ($m_1 \approx m_2$):</strong> The pointer oscillates symmetrically on either side of the zero division.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Physics & State Parameters
+    let isArrested = true;
+    let currentObject = 'brass';
+    let addedWeights = [];
+    
+    // Sensitivity & Angular constants
+    // In 2D canvas: counter-clockwise (angle < 0) moves Left arm DOWN, Right arm UP
+    // Clockwise (angle > 0) moves Right arm DOWN, Left arm UP
+    const sensitivityDivPerGram = 100.0; 
+    const maxDivisions = 14; 
+    const divToRad = (Math.PI / 180) * 0.7; // ~0.7 degree per division
+
+    let currentAngle = 0; // radians
+    let velocity = 0;
+
+    // Specimen Database (True Masses in grams)
+    const objects = {
+      brass: { name: 'Brass Cylinder', mass: 73.45, color: '#ca8a04', w: 24, h: 40 },
+      iron:  { name: 'Iron Block', mass: 42.12, color: '#475569', w: 30, h: 30 },
+      glass: { name: 'Glass Prism', mass: 28.76, color: 'rgba(56, 189, 248, 0.45)', w: 30, h: 25 }
+    };
+
+    let observations = [];
+
+    // Canvas Contexts
+    const balanceCanvas = document.getElementById('balanceCanvas');
+    const bCtx = balanceCanvas.getContext('2d');
+    const loupeCanvas = document.getElementById('loupeCanvas');
+    const lCtx = loupeCanvas.getContext('2d');
+
+    // UI Elements
+    const txtArrestStatus = document.getElementById('txtArrestStatus');
+    const txtPointerDiv = document.getElementById('txtPointerDiv');
+    const valLeftMass = document.getElementById('valLeftMass');
+    const valRightMass = document.getElementById('valRightMass');
+    const valTiltState = document.getElementById('valTiltState');
+    const btnToggleArrest = document.getElementById('btnToggleArrest');
+    const weightsOnPan = document.getElementById('weightsOnPan');
+    const btnClearWeights = document.getElementById('btnClearWeights');
+    const obsTableBody = document.getElementById('obsTableBody');
+
+    // Theory Modal
+    const theoryModal = document.getElementById('theoryModal');
+    document.getElementById('btnTheory').onclick = () => theoryModal.classList.add('open');
+    document.getElementById('btnCloseModal').onclick = () => theoryModal.classList.remove('open');
+    theoryModal.onclick = (e) => { if (e.target === theoryModal) theoryModal.classList.remove('open'); };
+
+    // Fullscreen
+    const btnFullscreen = document.getElementById('btnFullscreen');
+    btnFullscreen.addEventListener('click', () => {
+      if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+        const root = document.documentElement;
+        if (root.requestFullscreen) root.requestFullscreen();
+        else if (root.webkitRequestFullscreen) root.webkitRequestFullscreen();
+        document.body.classList.add('is-fullscreen');
+        btnFullscreen.innerText = '🗗 Exit Fullscreen';
+      } else {
+        if (document.exitFullscreen) document.exitFullscreen();
+        else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+        document.body.classList.remove('is-fullscreen');
+        btnFullscreen.innerText = '⛶ Fullscreen';
+      }
+      setTimeout(resizeCanvases, 100);
+    });
+
+    // Reset Lab
+    document.getElementById('btnReset').addEventListener('click', () => {
+      isArrested = true;
+      updateArrestUI();
+      addedWeights = [];
+      updateWeightsUI();
+      observations = [];
+      renderTable();
+    });
+
+    // Object Selection
+    document.querySelectorAll('.btn-specimen').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (!isArrested) {
+          alert("Please ARREST the beam before changing the object on the left pan.");
+          return;
+        }
+        document.querySelectorAll('.btn-specimen').forEach(b => b.classList.remove('btn-active'));
+        btn.classList.add('btn-active');
+        currentObject = btn.getAttribute('data-obj');
+        updateMetrics();
+      });
+    });
+
+    // Arrest Knob Toggle
+    btnToggleArrest.addEventListener('click', () => {
+      isArrested = !isArrested;
+      updateArrestUI();
+      if (isArrested) {
+        velocity = 0;
+        currentAngle = 0;
+      } else {
+        // Slight perturbation on release
+        velocity = (Math.random() - 0.5) * 0.04;
+      }
+    });
+
+    function updateArrestUI() {
+      if (isArrested) {
+        btnToggleArrest.innerText = "⏏ Release Beam (Start Weighing)";
+        btnToggleArrest.style.background = 'var(--accent)';
+        txtArrestStatus.innerText = "Beam Arrested (Locked)";
+        txtArrestStatus.style.color = 'var(--danger)';
+        valTiltState.innerText = "Arrested";
+        valTiltState.style.color = "var(--text-muted)";
+      } else {
+        btnToggleArrest.innerText = "⏬ Arrest Beam (Lock)";
+        btnToggleArrest.style.background = 'var(--danger)';
+        txtArrestStatus.innerText = "Beam Released (Oscillating)";
+        txtArrestStatus.style.color = 'var(--success)';
+      }
+    }
+
+    // Weight Box Logic
+    document.querySelectorAll('.btn-weight').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (!isArrested) {
+          alert("Please ARREST the beam before placing weights in the right pan.");
+          return;
+        }
+        const m = parseFloat(btn.getAttribute('data-mass'));
+        addedWeights.push(m);
+        addedWeights.sort((a, b) => b - a);
+        updateWeightsUI();
+      });
+    });
+
+    btnClearWeights.addEventListener('click', () => {
+      if (!isArrested) {
+        alert("Please ARREST the beam before removing weights.");
+        return;
+      }
+      addedWeights = [];
+      updateWeightsUI();
+    });
+
+    function removeWeight(index) {
+      if (!isArrested) {
+        alert("Please ARREST the beam before removing weights.");
+        return;
+      }
+      addedWeights.splice(index, 1);
+      updateWeightsUI();
+    }
+
+    function formatMass(m) {
+      if (m >= 1) return `${m}g`;
+      return `${Math.round(m * 1000)}mg`;
+    }
+
+    function updateWeightsUI() {
+      weightsOnPan.innerHTML = '';
+      if (addedWeights.length === 0) {
+        weightsOnPan.innerHTML = '<span style="color:var(--text-muted); font-size:0.75rem;">Pan is empty</span>';
+      } else {
+        addedWeights.forEach((m, idx) => {
+          const chip = document.createElement('div');
+          chip.className = 'weight-chip';
+          chip.innerText = formatMass(m);
+          chip.onclick = () => removeWeight(idx);
+          weightsOnPan.appendChild(chip);
+        });
+      }
+      updateMetrics();
+    }
+
+    // Target angle calculation
+    let targetAngle = 0;
+    
+    function updateMetrics() {
+      const objMass = objects[currentObject].mass;
+      const weightsMass = addedWeights.reduce((a, b) => a + b, 0);
+      const diff = objMass - weightsMass; // Positive => Left is heavier, Negative => Right is heavier
+
+      valLeftMass.innerText = `${objMass.toFixed(2)} g`;
+      valRightMass.innerText = `${weightsMass.toFixed(2)} g`;
+
+      if (!isArrested) {
+        if (Math.abs(diff) < 0.008) {
+          valTiltState.innerText = "Balanced";
+          valTiltState.style.color = "var(--success)";
+        } else if (diff > 0) {
+          valTiltState.innerText = "Left Sinks Down ↓";
+          valTiltState.style.color = "var(--warning)";
+        } else {
+          valTiltState.innerText = "Right Sinks Down ↓";
+          valTiltState.style.color = "var(--warning)";
+        }
+      }
+
+      // PHYSICAL ROTATION CONVENTION:
+      // In Canvas 2D:
+      // - Positive rotation (+angle, clockwise) moves left side UP and right side DOWN.
+      // - Negative rotation (-angle, counter-clockwise) moves left side DOWN and right side UP.
+      // Therefore:
+      // When diff > 0 (Left is heavier), we need angle < 0 so Left arm moves DOWN.
+      // When diff < 0 (Right is heavier), we need angle > 0 so Right arm moves DOWN.
+      let targetDivs = -diff * sensitivityDivPerGram;
+
+      // Mechanical stops
+      if (targetDivs > maxDivisions) targetDivs = maxDivisions;
+      if (targetDivs < -maxDivisions) targetDivs = -maxDivisions;
+
+      targetAngle = targetDivs * divToRad;
+    }
+
+    // Table Logging
+    document.getElementById('btnRecord').addEventListener('click', () => {
+      const objMass = objects[currentObject].mass;
+      const weightsMass = addedWeights.reduce((a, b) => a + b, 0);
+      const diff = objMass - weightsMass;
+      
+      let state = "";
+      if (Math.abs(diff) < 0.008) state = "Balanced Equilibrium";
+      else if (diff > 0) state = `Left Pan Down (Δ = +${diff.toFixed(2)}g)`;
+      else state = `Right Pan Down (Δ = ${diff.toFixed(2)}g)`;
+
+      observations.push({
+        obj: objects[currentObject].name,
+        m2: weightsMass.toFixed(3),
+        state: state
+      });
+      renderTable();
+    });
+
+    document.getElementById('btnClearTable').addEventListener('click', () => {
+      observations = [];
+      renderTable();
+    });
+
+    function renderTable() {
+      if (observations.length === 0) {
+        obsTableBody.innerHTML = '<tr><td colspan="4" style="color:var(--text-muted);">No records logged yet.</td></tr>';
+        return;
+      }
+      obsTableBody.innerHTML = observations.map((r, i) => `
+        <tr>
+          <td>${i + 1}</td>
+          <td>${r.obj}</td>
+          <td>${r.m2} g</td>
+          <td><strong style="color:${r.state.includes('Balanced') ? 'var(--success)' : 'var(--warning)'};">${r.state}</strong></td>
+        </tr>
+      `).join('');
+    }
+
+    // Canvas Resizing
+    function resizeCanvases() {
+      const dpr = window.devicePixelRatio || 1;
+
+      const bWrap = document.getElementById('balanceWrap');
+      balanceCanvas.width = bWrap.clientWidth * dpr;
+      balanceCanvas.height = bWrap.clientHeight * dpr;
+      bCtx.setTransform(1, 0, 0, 1, 0, 0);
+      bCtx.scale(dpr, dpr);
+
+      const lWrap = document.getElementById('loupeWrap');
+      loupeCanvas.width = lWrap.clientWidth * dpr;
+      loupeCanvas.height = lWrap.clientHeight * dpr;
+      lCtx.setTransform(1, 0, 0, 1, 0, 0);
+      lCtx.scale(dpr, dpr);
+    }
+    window.addEventListener('resize', resizeCanvases);
+
+    // Damped Harmonic Oscillator Engine
+    function updatePhysics() {
+      if (isArrested) {
+        currentAngle = 0;
+        velocity = 0;
+      } else {
+        const k = 0.075; // restoring moment
+        const damping = 0.94; // damping
+        
+        const force = (targetAngle - currentAngle) * k;
+        velocity = (velocity + force) * damping;
+        currentAngle += velocity;
+      }
+
+      // Pointer deflection on the ivory scale
+      // When beam tilts counter-clockwise (angle < 0, Left down), the pointer points to the RIGHT (> 0)
+      const scaleDivs = -currentAngle / divToRad;
+      txtPointerDiv.innerText = `Deflection: ${scaleDivs > 0 ? '+' : ''}${scaleDivs.toFixed(1)} Div`;
+    }
+
+    function renderLoop() {
+      updatePhysics();
+      drawBalance();
+      drawLoupe();
+      requestAnimationFrame(renderLoop);
+    }
+
+    // DRAW MAIN APPARATUS
+    function drawBalance() {
+      const w = balanceCanvas.width / (window.devicePixelRatio || 1);
+      const h = balanceCanvas.height / (window.devicePixelRatio || 1);
+      bCtx.clearRect(0, 0, w, h);
+
+      // Workbench background
+      bCtx.fillStyle = '#111722';
+      bCtx.fillRect(0, 0, w, h);
+
+      const cx = w * 0.5;
+      const cy = h * 0.26; // Fulcrum center
+      const baseTop = h * 0.84;
+      const pillarW = 16;
+      const beamHalfLen = Math.min(w * 0.35, 175);
+      const pointerLen = baseTop - cy - 14;
+
+      // 1. Heavy Wooden Base & Levelling Feet
+      bCtx.fillStyle = '#451a03';
+      bCtx.fillRect(cx - 150, baseTop, 300, 20);
+      bCtx.fillStyle = '#78350f';
+      bCtx.fillRect(cx - 160, baseTop + 20, 320, 15);
+      
+      // Brass leveling feet
+      bCtx.fillStyle = '#cbd5e1';
+      bCtx.fillRect(cx - 140, baseTop + 35, 14, 10);
+      bCtx.fillRect(cx + 126, baseTop + 35, 14, 10);
+
+      // Central Arresting Knob
+      bCtx.fillStyle = isArrested ? '#ef4444' : '#22c55e';
+      bCtx.beginPath();
+      bCtx.arc(cx, baseTop + 10, 13, 0, Math.PI * 2);
+      bCtx.fill();
+      bCtx.strokeStyle = '#0f172a';
+      bCtx.lineWidth = 2;
+      bCtx.stroke();
+
+      // Pan stop blocks under both pans
+      bCtx.fillStyle = '#334155';
+      bCtx.fillRect(cx - beamHalfLen - 12, baseTop - 12, 24, 12);
+      bCtx.fillRect(cx + beamHalfLen - 12, baseTop - 12, 24, 12);
+
+      // 2. Brass Central Pillar & Agate Knife-Edge Mount
+      const pGrad = bCtx.createLinearGradient(cx - pillarW/2, 0, cx + pillarW/2, 0);
+      pGrad.addColorStop(0, '#a16207');
+      pGrad.addColorStop(0.5, '#fef08a');
+      pGrad.addColorStop(1, '#713f12');
+
+      bCtx.fillStyle = pGrad;
+      bCtx.fillRect(cx - pillarW/2, cy, pillarW, baseTop - cy);
+      bCtx.fillRect(cx - 16, cy - 8, 32, 12);
+
+      // 3. Ivory Scale at Pillar Foot
+      const scaleY = cy + pointerLen;
+      bCtx.fillStyle = '#f8fafc';
+      bCtx.beginPath();
+      bCtx.arc(cx, scaleY - 32, 46, Math.PI * 0.18, Math.PI * 0.82);
+      bCtx.fill();
+      bCtx.strokeStyle = '#0f172a';
+      bCtx.lineWidth = 1;
+      bCtx.stroke();
+
+      // Graduations
+      bCtx.strokeStyle = '#0f172a';
+      for (let i = -15; i <= 15; i += 3) {
+        const rad = -i * divToRad; // matching scale convention
+        const tx = cx + 38 * Math.sin(rad);
+        const ty = scaleY - 32 + 38 * Math.cos(rad);
+        bCtx.beginPath();
+        bCtx.moveTo(cx + 46 * Math.sin(rad), scaleY - 32 + 46 * Math.cos(rad));
+        bCtx.lineTo(tx, ty);
+        bCtx.stroke();
+      }
+
+      // ================= TRANSFORM FOR ROTATING BEAM =================
+      bCtx.save();
+      bCtx.translate(cx, cy);
+      
+      if (isArrested) {
+        bCtx.translate(0, -5); // Lifted off agate knife edge
+      } else {
+        bCtx.rotate(currentAngle);
+      }
+
+      // 4. Solid Brass Beam
+      const bGrad = bCtx.createLinearGradient(0, -8, 0, 8);
+      bGrad.addColorStop(0, '#fef08a');
+      bGrad.addColorStop(1, '#a16207');
+
+      bCtx.fillStyle = bGrad;
+      bCtx.beginPath();
+      bCtx.moveTo(-beamHalfLen, -4);
+      bCtx.lineTo(beamHalfLen, -4);
+      bCtx.lineTo(beamHalfLen - 12, 6);
+      bCtx.lineTo(-beamHalfLen + 12, 6);
+      bCtx.closePath();
+      bCtx.fill();
+      bCtx.strokeStyle = '#713f12';
+      bCtx.stroke();
+
+      // Knife-edge stirrup mounts at ends
+      bCtx.fillStyle = '#e2e8f0';
+      bCtx.beginPath();
+      bCtx.moveTo(-beamHalfLen, -4);
+      bCtx.lineTo(-beamHalfLen - 4, -10);
+      bCtx.lineTo(-beamHalfLen + 4, -10);
+      bCtx.closePath();
+      bCtx.fill();
+      
+      bCtx.beginPath();
+      bCtx.moveTo(beamHalfLen, -4);
+      bCtx.lineTo(beamHalfLen - 4, -10);
+      bCtx.lineTo(beamHalfLen + 4, -10);
+      bCtx.closePath();
+      bCtx.fill();
+
+      // 5. Central Vertical Pointer Needle
+      bCtx.fillStyle = '#dc2626';
+      bCtx.beginPath();
+      bCtx.moveTo(-2.5, 6);
+      bCtx.lineTo(2.5, 6);
+      bCtx.lineTo(0.6, pointerLen);
+      bCtx.lineTo(-0.6, pointerLen);
+      bCtx.closePath();
+      bCtx.fill();
+
+      bCtx.restore();
+      // ================= END BEAM TRANSFORM =================
+
+      // Exact Screen Position for Pans
+      const beamRot = isArrested ? 0 : currentAngle;
+      const cyBeam = isArrested ? cy - 5 : cy;
+
+      // Coordinate math:
+      // Left arm (-beamHalfLen, -4):
+      const leftHookX = cx + (-beamHalfLen) * Math.cos(beamRot) - (-4) * Math.sin(beamRot);
+      const leftHookY = cyBeam + (-beamHalfLen) * Math.sin(beamRot) + (-4) * Math.cos(beamRot);
+
+      // Right arm (+beamHalfLen, -4):
+      const rightHookX = cx + (beamHalfLen) * Math.cos(beamRot) - (-4) * Math.sin(beamRot);
+      const rightHookY = cyBeam + (beamHalfLen) * Math.sin(beamRot) + (-4) * Math.cos(beamRot);
+
+      // 6. Draw Suspended Pans (Always hang vertically straight down from hooks)
+      drawPan(leftHookX, leftHookY, 'left', baseTop);
+      drawPan(rightHookX, rightHookY, 'right', baseTop);
+    }
+
+    function drawPan(hx, hy, side, baseTop) {
+      const dropHeight = 125;
+      const panW = 68;
+      let panY = hy + dropHeight;
+
+      // Physical stop check: pan cannot go deeper than the wooden base
+      if (panY > baseTop - 6) {
+        panY = baseTop - 6;
+      }
+
+      // Suspension wires (Stirrups)
+      bCtx.strokeStyle = '#94a3b8';
+      bCtx.lineWidth = 1;
+      bCtx.beginPath();
+      bCtx.moveTo(hx, hy);
+      bCtx.lineTo(hx - panW/2 + 5, panY);
+      bCtx.moveTo(hx, hy);
+      bCtx.lineTo(hx + panW/2 - 5, panY);
+      bCtx.moveTo(hx, hy);
+      bCtx.lineTo(hx, panY);
+      bCtx.stroke();
+
+      // The Shallow Metallic Pan
+      bCtx.fillStyle = '#cbd5e1';
+      bCtx.beginPath();
+      bCtx.ellipse(hx, panY, panW/2, 6, 0, 0, Math.PI * 2);
+      bCtx.fill();
+      bCtx.strokeStyle = '#64748b';
+      bCtx.lineWidth = 2;
+      bCtx.stroke();
+
+      // Contents
+      if (side === 'left') {
+        const obj = objects[currentObject];
+        bCtx.fillStyle = obj.color;
+        bCtx.fillRect(hx - obj.w/2, panY - obj.h - 2, obj.w, obj.h);
+        bCtx.strokeStyle = '#1e293b';
+        bCtx.strokeRect(hx - obj.w/2, panY - obj.h - 2, obj.w, obj.h);
+      } else {
+        // Standard Weights piled cleanly on pan
+        addedWeights.forEach((m, idx) => {
+          const ww = Math.max(9, Math.min(20, m / 2.2));
+          const wh = Math.max(4, Math.min(14, m / 3.2));
+          
+          const ox = ((idx * 11) % (panW - ww - 8)) - (panW - ww - 8)/2;
+          const oy = ((idx * 5) % 6);
+          
+          bCtx.fillStyle = m >= 1 ? '#eab308' : '#e2e8f0';
+          bCtx.fillRect(hx + ox, panY - wh - oy - 2, ww, wh);
+          bCtx.strokeStyle = '#334155';
+          bCtx.lineWidth = 1;
+          bCtx.strokeRect(hx + ox, panY - wh - oy - 2, ww, wh);
+        });
+      }
+    }
+
+    // DRAW LOUPE: Magnified Pointer and Scale
+    function drawLoupe() {
+      const w = loupeCanvas.width / (window.devicePixelRatio || 1);
+      const h = loupeCanvas.height / (window.devicePixelRatio || 1);
+      lCtx.clearRect(0, 0, w, h);
+
+      lCtx.fillStyle = '#0a0f18';
+      lCtx.fillRect(0, 0, w, h);
+
+      const cx = w * 0.5;
+      const cy = -h * 0.45; 
+      const scaleRadius = h * 1.18;
+
+      // Ivory Scale Band
+      lCtx.fillStyle = '#f8fafc';
+      lCtx.beginPath();
+      lCtx.arc(cx, cy, scaleRadius + 40, 0, Math.PI, false);
+      lCtx.lineTo(cx, cy);
+      lCtx.fill();
+
+      lCtx.fillStyle = '#0f172a';
+      lCtx.strokeStyle = '#0f172a';
+      lCtx.lineWidth = 1.5;
+      lCtx.font = 'bold 12px sans-serif';
+      lCtx.textAlign = 'center';
+
+      // Draw magnified divisions (-15 to +15)
+      for (let i = -15; i <= 15; i++) {
+        // Scale math: positive divisions on right, negative divisions on left
+        const rad = i * divToRad * 2.5; 
+        const txOuter = cx + (scaleRadius + 35) * Math.sin(rad);
+        const tyOuter = cy + (scaleRadius + 35) * Math.cos(rad);
+        const txInner = cx + (scaleRadius + (i % 5 === 0 ? 15 : 25)) * Math.sin(rad);
+        const tyInner = cy + (scaleRadius + (i % 5 === 0 ? 15 : 25)) * Math.cos(rad);
+
+        lCtx.beginPath();
+        lCtx.moveTo(txInner, tyInner);
+        lCtx.lineTo(txOuter, tyOuter);
+        lCtx.stroke();
+
+        if (i % 5 === 0) {
+          const nx = cx + (scaleRadius + 5) * Math.sin(rad);
+          const ny = cy + (scaleRadius + 5) * Math.cos(rad);
+          lCtx.fillText(Math.abs(i), nx, ny + 4);
+        }
+      }
+
+      // Pointer Needle in Loupe
+      // When beam tilts counter-clockwise (Left down, angle < 0), downward pointer deflects to the RIGHT (+x)
+      const pRad = isArrested ? 0 : -currentAngle * 2.5; 
+      const px = cx + (scaleRadius + 28) * Math.sin(pRad);
+      const py = cy + (scaleRadius + 28) * Math.cos(pRad);
+
+      lCtx.fillStyle = '#dc2626';
+      lCtx.beginPath();
+      lCtx.moveTo(cx + 8 * Math.cos(pRad), cy - 8 * Math.sin(pRad)); 
+      lCtx.lineTo(cx - 8 * Math.cos(pRad), cy + 8 * Math.sin(pRad));
+      lCtx.lineTo(px, py);
+      lCtx.closePath();
+      lCtx.fill();
+    }
+
+    // Initialization
+    window.addEventListener('DOMContentLoaded', () => {
+      if (window.renderMathInElement) {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: '$$', right: '$$', display: true },
+            { left: '$', right: '$', display: false }
+          ]
+        });
+      }
+      updateWeightsUI();
+      setTimeout(resizeCanvases, 50);
+      renderLoop();
+    });
+  </script>
+<footer class="nms-lab-footer">
+  <div class="nms-lab-footer-inner">
+    <div class="nms-brand-col">
+      <div class="nms-brand-title">🏛️ National Model Schools</div>
+      <div class="nms-brand-sub">Senior Secondary Physics Virtual Laboratory</div>
+    </div>
+    <div class="nms-credit-col">
+      <span class="nms-dev-text">Developed with <span style="color:#ef4444;">❤</span> by <strong>Syed Mazhar Ali</strong></span>
+      <a href="https://github.com/mazhar-in" target="_blank" rel="noopener noreferrer" class="nms-gh-btn" title="Syed Mazhar Ali on GitHub">
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
+        <span>mazhar-in</span>
+      </a>
+    </div>
+    <div class="nms-copy-col">
+      <span>© National Model Schools. All rights reserved.</span>
+      <a href="index.html" class="nms-portal-link">← Return to All Labs</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Force Fullscreen on loading & first user gesture
+(function initAutoFullscreen() {
+  function tryFullscreen() {
+    if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+      const elem = document.documentElement;
+      if (elem.requestFullscreen) {
+        elem.requestFullscreen().catch(() => {});
+      } else if (elem.webkitRequestFullscreen) {
+        elem.webkitRequestFullscreen();
+      }
+    }
+  }
+  // Attempt immediately on loading
+  if (document.readyState === 'complete' || document.readyState === 'interactive') {
+    tryFullscreen();
+  } else {
+    window.addEventListener('DOMContentLoaded', tryFullscreen);
+    window.addEventListener('load', tryFullscreen);
+  }
+  // Auto-engage on first user gesture if browser blocked initial load request
+  const gestureEvents = ['click', 'touchstart', 'pointerdown'];
+  const onFirstGesture = () => {
+    tryFullscreen();
+    gestureEvents.forEach(evt => window.removeEventListener(evt, onFirstGesture));
+  };
+  gestureEvents.forEach(evt => window.addEventListener(evt, onFirstGesture, { passive: true }));
+})();
+</script>
+
+</body>
+</html>

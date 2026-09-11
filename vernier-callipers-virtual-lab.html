@@ -1,0 +1,2308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
+  <title>Vernier Callipers Virtual Laboratory | National Model Schools Physics Virtual Lab</title>
+
+  <!-- KaTeX for high-fidelity mathematical formulas -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous" />
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous" onload="initMathTypesetting()"></script>
+
+  <style>
+    :root {
+      --bg-main: #070d18;
+      --bg-panel: #101a2b;
+      --bg-card: #17243b;
+      --bg-subtle: #203150;
+      --accent: #38bdf8;
+      --accent-hover: #0284c7;
+      --accent-glow: rgba(56, 189, 248, 0.28);
+      --steel-light: #e2e8f0;
+      --steel-base: #94a3b8;
+      --steel-dark: #475569;
+      --steel-edge: #cbd5e1;
+      --brass: #eab308;
+      --brass-dark: #a16207;
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --border: #293b58;
+      --border-light: #3d547b;
+      --success: #22c55e;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --specimen-bronze: #d97706;
+      --glass-cyan: rgba(56, 189, 248, 0.15);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-primary);
+      line-height: 1.48;
+      padding: 0.65rem;
+      overflow-x: hidden;
+      font-size: 0.96rem;
+    }
+
+    @media (min-width: 768px) {
+      body {
+        padding: 0.95rem;
+      }
+    }
+
+    .app-wrapper {
+      max-width: 1480px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+      min-height: 100vh;
+    }
+
+    /* Zero-Scroll Fullscreen Lock Rules */
+    :fullscreen,
+    :-webkit-full-screen {
+      overflow: hidden !important;
+      background-color: var(--bg-main) !important;
+    }
+
+    body.is-fullscreen {
+      overflow: hidden !important;
+      padding: 0.35rem !important;
+      height: 100vh !important;
+      width: 100vw !important;
+    }
+
+    :fullscreen .app-wrapper,
+    :-webkit-full-screen .app-wrapper,
+    .app-wrapper.is-fullscreen {
+      width: 100vw !important;
+      height: 100vh !important;
+      max-width: 100vw !important;
+      max-height: 100vh !important;
+      padding: 0.35rem 0.55rem !important;
+      margin: 0 !important;
+      overflow: hidden !important;
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 0.35rem !important;
+    }
+
+    .app-wrapper.is-fullscreen header {
+      padding: 0.35rem 0.65rem !important;
+      gap: 0.35rem !important;
+      flex-shrink: 0;
+      border-radius: 8px;
+    }
+
+    .app-wrapper.is-fullscreen h1 {
+      font-size: 1.15rem !important;
+    }
+
+    .app-wrapper.is-fullscreen .badge {
+      font-size: 0.7rem;
+      padding: 0.15rem 0.45rem;
+    }
+
+    .app-wrapper.is-fullscreen .btn {
+      min-height: 36px !important;
+      padding: 0.25rem 0.6rem !important;
+      font-size: 0.85rem !important;
+    }
+
+    .app-wrapper.is-fullscreen .task-nav-bar {
+      padding: 0.2rem;
+      gap: 0.25rem;
+      flex-shrink: 0;
+    }
+
+    .app-wrapper.is-fullscreen .task-tab {
+      min-height: 32px !important;
+      padding: 0.2rem 0.45rem !important;
+      font-size: 0.82rem !important;
+    }
+
+    .app-wrapper.is-fullscreen .workspace-grid {
+      display: grid !important;
+      grid-template-columns: 1.22fr 0.78fr !important;
+      gap: 0.4rem !important;
+      flex: 1 1 auto !important;
+      min-height: 0 !important;
+      overflow: hidden !important;
+    }
+
+    .app-wrapper.is-fullscreen .card {
+      padding: 0.5rem 0.65rem !important;
+      gap: 0.35rem !important;
+      height: 100% !important;
+      min-height: 0 !important;
+      overflow: hidden !important;
+      display: flex !important;
+      flex-direction: column !important;
+    }
+
+    .app-wrapper.is-fullscreen .canvas-container {
+      flex: 1 1 auto !important;
+      height: auto !important;
+      min-height: 0 !important;
+    }
+
+    .app-wrapper.is-fullscreen .right-column-scroll {
+      flex: 1 1 auto !important;
+      min-height: 0 !important;
+      overflow-y: auto !important;
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 0.35rem !important;
+      padding-right: 0.25rem;
+    }
+
+    /* Standard Header */
+    header {
+      background: var(--bg-panel);
+      padding: 0.8rem 1.1rem;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.65rem;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+      flex-shrink: 0;
+    }
+
+    .header-left {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      align-items: center;
+    }
+
+    .badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 0.2rem 0.55rem;
+      border-radius: 9999px;
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--accent);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+
+    .badge-sub {
+      background: rgba(234, 179, 8, 0.15);
+      color: #facc15;
+      border-color: rgba(234, 179, 8, 0.35);
+    }
+
+    h1 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+
+    @media (min-width: 640px) {
+      h1 {
+        font-size: 1.55rem;
+      }
+    }
+
+    .header-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn {
+      min-height: 42px;
+      padding: 0.5rem 0.95rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      border: 1px solid transparent;
+      transition: all 0.16s ease;
+      touch-action: manipulation;
+      user-select: none;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #070d18;
+      font-weight: 700;
+    }
+
+    .btn-primary:hover {
+      background: #7dd3fc;
+      box-shadow: 0 0 12px var(--accent-glow);
+    }
+
+    .btn-outline {
+      background: var(--bg-card);
+      color: var(--text-primary);
+      border-color: var(--border);
+    }
+
+    .btn-outline:hover {
+      background: var(--bg-subtle);
+      border-color: var(--accent);
+    }
+
+    .btn-success {
+      background: var(--success);
+      color: #ffffff;
+    }
+
+    .btn-success:hover {
+      background: #16a34a;
+    }
+
+    .btn-lock {
+      background: #334155;
+      color: #f8fafc;
+      border: 1px solid var(--border);
+    }
+
+    .btn-lock.locked {
+      background: rgba(239, 68, 68, 0.2);
+      border-color: #f87171;
+      color: #fca5a5;
+    }
+
+    /* Task Navigation Tabs */
+    .task-nav-bar {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      background: var(--bg-panel);
+      padding: 0.3rem;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      gap: 0.3rem;
+      flex-shrink: 0;
+    }
+
+    @media (min-width: 860px) {
+      .task-nav-bar {
+        grid-template-columns: repeat(5, 1fr);
+      }
+    }
+
+    .task-tab {
+      min-height: 42px;
+      padding: 0.45rem 0.6rem;
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+    }
+
+    .task-tab.active {
+      background: var(--accent);
+      color: #070d18;
+      font-weight: 700;
+      box-shadow: 0 2px 8px var(--accent-glow);
+    }
+
+    /* Workspace Layout */
+    .workspace-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+      flex: 1 1 auto;
+      min-height: 0;
+    }
+
+    @media (min-width: 1080px) {
+      .workspace-grid {
+        grid-template-columns: 1.24fr 0.76fr;
+      }
+    }
+
+    .card {
+      background: var(--bg-panel);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      padding: 0.95rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+      min-height: 0;
+    }
+
+    .card-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+      padding-bottom: 0.45rem;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .card-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+
+    /* Canvas Workbench */
+    .canvas-container {
+      position: relative;
+      width: 100%;
+      height: 480px;
+      min-height: 380px;
+      background: #090f1d;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      touch-action: none;
+      box-shadow: inset 0 0 28px rgba(0,0,0,0.7);
+      user-select: none;
+    }
+
+    @media (max-width: 600px) {
+      .canvas-container {
+        height: 400px;
+        min-height: 350px;
+      }
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      cursor: grab;
+    }
+
+    canvas:active {
+      cursor: grabbing;
+    }
+
+    .loupe-overlay-tag {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid var(--border-light);
+      padding: 0.35rem 0.7rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--accent);
+      pointer-events: none;
+      backdrop-filter: blur(4px);
+      z-index: 10;
+    }
+
+    .jaw-contact-badge {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      padding: 0.35rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      backdrop-filter: blur(6px);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      border: 1px solid;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .jaw-contact-badge.snug {
+      background: rgba(34, 197, 94, 0.2);
+      color: #86efac;
+      border-color: rgba(34, 197, 94, 0.5);
+    }
+
+    .jaw-contact-badge.loose {
+      background: rgba(148, 163, 184, 0.18);
+      color: #cbd5e1;
+      border-color: rgba(148, 163, 184, 0.4);
+    }
+
+    /* Bench Utility Bar */
+    .bench-actions-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg-card);
+      padding: 0.5rem 0.75rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .button-subgroup {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      align-items: center;
+    }
+
+    /* Right Column Controls & Analytics */
+    .right-column-scroll {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      min-height: 0;
+      overflow-y: auto;
+    }
+
+    .right-column-scroll::-webkit-scrollbar {
+      width: 6px;
+    }
+    .right-column-scroll::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 4px;
+    }
+
+    /* Fine Slider & Steppers Card */
+    .param-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.7rem 0.85rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+      flex-shrink: 0;
+    }
+
+    .param-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.88rem;
+      font-weight: 700;
+    }
+
+    .param-val {
+      font-family: monospace;
+      color: var(--accent);
+      font-size: 1.05rem;
+      font-weight: 700;
+    }
+
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 8px;
+      background: var(--bg-subtle);
+      border-radius: 5px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+      box-shadow: 0 0 6px rgba(0,0,0,0.5);
+      border: 2px solid #ffffff;
+      transition: transform 0.1s;
+    }
+
+    input[type="range"]::-webkit-slider-thumb:active {
+      transform: scale(1.15);
+    }
+
+    .btn-step {
+      width: 38px;
+      height: 38px;
+      min-width: 38px;
+      min-height: 38px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--bg-subtle);
+      color: #ffffff;
+      font-size: 0.95rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    .btn-step:hover {
+      background: #334155;
+    }
+
+    /* Live Digital Vernier Dashboard */
+    .dashboard-panel {
+      background: var(--bg-card);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1px;
+      background: var(--border);
+    }
+
+    @media (min-width: 580px) {
+      .metrics-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    .metric-cell {
+      background: var(--bg-card);
+      padding: 0.55rem 0.65rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+
+    .metric-cell.highlight {
+      background: rgba(56, 189, 248, 0.08);
+    }
+
+    .metric-lbl {
+      font-size: 0.7rem;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      font-weight: 700;
+    }
+
+    .metric-num {
+      font-size: 1.02rem;
+      font-weight: 800;
+      font-family: monospace;
+      color: #ffffff;
+    }
+
+    .metric-num.blue { color: #38bdf8; }
+    .metric-num.amber { color: #fbbf24; }
+    .metric-num.green { color: #4ade80; }
+    .metric-num.red { color: #f87171; }
+
+    /* Observation Table Box */
+    .obs-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+      flex-shrink: 0;
+    }
+
+    .obs-table-container {
+      max-height: 180px;
+      overflow-y: auto;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--bg-panel);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+      text-align: center;
+    }
+
+    th, td {
+      padding: 0.4rem 0.45rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      background: #1e2c45;
+      color: #f8fafc;
+      font-weight: 700;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+
+    /* Volumetric Assessment Card */
+    .quiz-calc-box {
+      background: linear-gradient(135deg, rgba(23, 36, 59, 0.95), rgba(32, 49, 80, 0.95));
+      border: 2px dashed #38bdf8;
+      border-radius: 8px;
+      padding: 0.85rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+      flex-shrink: 0;
+    }
+
+    .quiz-inputs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+    }
+
+    @media (max-width: 520px) {
+      .quiz-inputs {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .input-field {
+      width: 100%;
+      min-height: 38px;
+      padding: 0.35rem 0.65rem;
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: #ffffff;
+      font-size: 0.9rem;
+      font-family: monospace;
+    }
+
+    .input-field:focus {
+      outline: 2px solid var(--accent);
+      border-color: transparent;
+    }
+
+    .calc-feedback {
+      padding: 0.5rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: none;
+      line-height: 1.4;
+    }
+
+    .calc-feedback.show { display: block; }
+    .calc-feedback.success {
+      background: rgba(34, 197, 94, 0.2);
+      color: #86efac;
+      border: 1px solid rgba(34, 197, 94, 0.4);
+    }
+    .calc-feedback.error {
+      background: rgba(239, 68, 68, 0.2);
+      color: #fca5a5;
+      border: 1px solid rgba(239, 68, 68, 0.4);
+    }
+
+    /* Modal Sheet for Theory & Manual */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .modal-backdrop.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-window {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      width: 100%;
+      max-width: 820px;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.7);
+      overflow: hidden;
+    }
+
+    .modal-head {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .modal-body {
+      padding: 1.25rem;
+      overflow-y: auto;
+      font-size: 0.96rem;
+      color: #cbd5e1;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      line-height: 1.6;
+    }
+
+    .modal-body h3 {
+      color: var(--accent);
+      font-size: 1.1rem;
+      margin-bottom: 0.35rem;
+      border-left: 3px solid var(--accent);
+      padding-left: 0.55rem;
+    }
+
+    .formula-callout {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.85rem;
+      text-align: center;
+      margin: 0.35rem 0;
+      font-size: 1.05rem;
+    }
+
+    .instruction-steps {
+      padding-left: 1.25rem;
+    }
+
+    .instruction-steps li {
+      margin-bottom: 0.5rem;
+    }
+  
+/* Touchscreen & Mobile / Tablet Ergonomics + National Model Schools Branding */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+button, .btn, input[type="range"], select {
+  touch-action: manipulation;
+}
+input[type="range"] {
+  min-height: 38px;
+  cursor: pointer;
+}
+.btn, button {
+  min-height: 40px;
+  touch-action: manipulation;
+}
+.btn-hub {
+  background: rgba(56, 189, 248, 0.15) !important;
+  color: #38bdf8 !important;
+  border: 1px solid rgba(56, 189, 248, 0.35) !important;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 8px;
+  padding: 0.45rem 0.85rem;
+  transition: all 0.2s ease;
+}
+.btn-hub:hover {
+  background: rgba(56, 189, 248, 0.28) !important;
+  color: #ffffff !important;
+  transform: translateY(-1px);
+}
+.nms-lab-footer {
+  margin-top: 2.5rem;
+  padding: 1.2rem 1.5rem;
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.9) 0%, rgba(10, 15, 29, 0.98) 100%);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.36);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: #94a3b8;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  font-size: 0.9rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+.nms-lab-footer-inner {
+  max-width: 1440px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.25rem;
+}
+.nms-brand-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+.nms-brand-title {
+  font-weight: 700;
+  font-size: 1rem;
+  color: #f8fafc;
+  letter-spacing: -0.01em;
+}
+.nms-brand-sub {
+  font-size: 0.8rem;
+  color: #38bdf8;
+}
+.nms-credit-col {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 0.45rem 1rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.nms-dev-text {
+  color: #cbd5e1;
+  font-size: 0.88rem;
+}
+.nms-dev-text strong {
+  color: #ffffff;
+}
+.nms-gh-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: #0f172a;
+  color: #38bdf8;
+  padding: 0.3rem 0.7rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.82rem;
+  transition: all 0.2s ease;
+}
+.nms-gh-btn:hover {
+  background: #0284c7;
+  color: #ffffff;
+  border-color: #0284c7;
+  transform: translateY(-1px);
+}
+.nms-copy-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.3rem;
+  font-size: 0.8rem;
+  color: #64748b;
+}
+.nms-portal-link {
+  color: #38bdf8;
+  text-decoration: none;
+  font-weight: 500;
+}
+.nms-portal-link:hover {
+  text-decoration: underline;
+  color: #7dd3fc;
+}
+/* In Fullscreen simulator mode, hide footer to reserve 100% viewport for simulation workbench */
+:fullscreen .nms-lab-footer,
+:-webkit-full-screen .nms-lab-footer,
+body.is-fullscreen .nms-lab-footer {
+  display: none !important;
+}
+@media (max-width: 768px) {
+  .nms-lab-footer-inner {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .nms-copy-col {
+    align-items: center;
+  }
+}
+
+</style>
+</head>
+<body>
+<div class="app-wrapper" id="appWrapper">
+  <!-- Top Navigation Header -->
+  <header>
+    <div class="header-left">
+      <div class="tag-row">
+        <span class="badge">National Model Schools • Physics Lab</span>
+        <span class="badge badge-sub">Class XI • Exp 1: Vernier Callipers</span>
+      </div>
+      <h1>
+        <span>Vernier Callipers: Dimensions &amp; Volume Lab</span>
+      </h1>
+    </div>
+
+    <div class="header-actions">
+        <a href="index.html" class="btn btn-hub" title="Return to All Labs Hub">🏠 All Labs</a>
+        
+      <button class="btn btn-outline" id="btnManual" onclick="openModal('manual')">
+        📘 Manual &amp; Steps
+      </button>
+      <button class="btn btn-outline" id="btnTheory" onclick="openModal('theory')">
+        📐 Theory &amp; Formulas
+      </button>
+      <button class="btn btn-primary" id="btnFullscreen" onclick="toggleFullscreen()">
+        ⛶ Fullscreen
+      </button>
+    </div>
+  </header>
+
+  <!-- 5 Task Selector Tabs -->
+  <nav class="task-nav-bar" aria-label="Experiment Task Navigation">
+    <button class="task-tab active" id="tabTaskSphere" onclick="selectTask('sphere')">
+      <span>⚽ 1. Sphere Diameter</span>
+    </button>
+    <button class="task-tab" id="tabTaskCylinder" onclick="selectTask('cylinder')">
+      <span>🔩 2. Cylinder ($D$ &amp; $L$)</span>
+    </button>
+    <button class="task-tab" id="tabTaskBeakerID" onclick="selectTask('beakerID')">
+      <span>🧪 3. Beaker Int. Diameter</span>
+    </button>
+    <button class="task-tab" id="tabTaskBeakerDepth" onclick="selectTask('beakerDepth')">
+      <span>📏 4. Beaker Depth</span>
+    </button>
+    <button class="task-tab" id="tabTaskZeroError" onclick="selectTask('zeroError')">
+      <span>🎯 5. Zero Error Test</span>
+    </button>
+  </nav>
+
+  <!-- Main Laboratory Workspace -->
+  <main class="workspace-grid">
+    <!-- Left Column: Interactive Vernier Calliper Canvas & Magnified Inset -->
+    <section class="card">
+      <div class="card-header">
+        <div class="card-title">
+          <span id="canvasTitle">Vernier Callipers Workbench: External &amp; Internal Jaws + Depth Gauge</span>
+        </div>
+        <div style="display:flex; gap:0.4rem; align-items:center;">
+          <button class="btn btn-outline" style="min-height:34px; padding:0.2rem 0.6rem; font-size:0.78rem;" onclick="resetCallipers()">
+            ↺ Reset
+          </button>
+          <button class="btn btn-outline" style="min-height:34px; padding:0.2rem 0.6rem; font-size:0.78rem;" onclick="snapFitSpecimen()">
+            🧲 Snug Fit Jaws
+          </button>
+        </div>
+      </div>
+
+      <!-- Canvas Display -->
+      <div class="canvas-container" id="canvasBox">
+        <canvas id="calliperCanvas"></canvas>
+
+        <div class="jaw-contact-badge loose" id="contactBadge">
+          <span id="contactDot">⚪</span>
+          <span id="contactText">Jaws Open (Slide to grip specimen)</span>
+        </div>
+
+        <div class="loupe-overlay-tag">
+          🔎 4× Vernier Loupe View (Inset Top-Right)
+        </div>
+      </div>
+
+      <!-- Bench Actions Bar -->
+      <div class="bench-actions-bar">
+        <div class="button-subgroup">
+          <!-- Clamp Lock Screw Toggle -->
+          <button class="btn btn-lock" id="btnLockScrew" onclick="toggleClampLock()">
+            <span id="lockIcon">🔓</span> <strong id="lblLockScrew">Slide Unlocked</strong>
+          </button>
+
+          <!-- Zero Error Setting Dropdown -->
+          <div style="display:flex; align-items:center; gap:0.35rem; font-size:0.82rem; color:var(--text-secondary);">
+            <span>Zero Error:</span>
+            <select id="selZeroError" onchange="onZeroErrorChange()" style="background:var(--bg-panel); color:#fff; border:1px solid var(--border); border-radius:6px; padding:0.3rem 0.5rem; font-size:0.82rem;">
+              <option value="0.00">Nil Error (e = 0.00 cm)</option>
+              <option value="+0.02">Positive Error (+0.02 cm / +2 div)</option>
+              <option value="-0.03">Negative Error (-0.03 cm / -3 div)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="button-subgroup">
+          <button class="btn btn-primary" style="min-height:36px; padding:0.3rem 0.75rem; font-size:0.82rem;" onclick="logCurrentTrial()">
+            ➕ Log Trial Reading
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Right Column: Fine Steppers, Readouts, Observation Table & Calculations -->
+    <div class="right-column-scroll">
+      <!-- Vernier Jaw Position Slider & Fine Step Adjusters -->
+      <div class="param-card">
+        <div class="param-header">
+          <span>Sliding Jaw Position ($x_{\text{jaw}}$)</span>
+          <span class="param-val" id="valJawPosition">0.00 cm</span>
+        </div>
+        <div class="slider-row">
+          <button class="btn-step" onclick="stepJaw(-1.0)" title="Step -1.0 cm">−10</button>
+          <button class="btn-step" onclick="stepJaw(-0.1)" title="Step -1.0 mm">−1</button>
+          <button class="btn-step" onclick="stepJaw(-0.01)" title="Step -0.1 mm (Least Count)" style="font-size:0.75rem;">−0.1</button>
+          <input type="range" id="rngJaw" min="0.00" max="10.50" step="0.01" value="0.00" oninput="onJawSliderInput(this.value)">
+          <button class="btn-step" onclick="stepJaw(+0.01)" title="Step +0.1 mm (Least Count)" style="font-size:0.75rem;">+0.1</button>
+          <button class="btn-step" onclick="stepJaw(+0.1)" title="Step +1.0 mm">+1</button>
+          <button class="btn-step" onclick="stepJaw(+1.0)" title="Step +1.0 cm">+10</button>
+        </div>
+      </div>
+
+      <!-- Real-Time Readout Dashboard -->
+      <div class="dashboard-panel">
+        <div class="metrics-grid">
+          <div class="metric-cell highlight">
+            <span class="metric-lbl">Main Scale ($MSR$)</span>
+            <span class="metric-num blue" id="metricMSR">0.0 cm</span>
+          </div>
+          <div class="metric-cell highlight">
+            <span class="metric-lbl">Coinciding Div ($n$)</span>
+            <span class="metric-num amber" id="metricVSD">0</span>
+          </div>
+          <div class="metric-cell">
+            <span class="metric-lbl">Vernier Val ($VSR$)</span>
+            <span class="metric-num" id="metricVSR">0.00 cm</span>
+          </div>
+          <div class="metric-cell highlight">
+            <span class="metric-lbl">Corrected Reading</span>
+            <span class="metric-num green" id="metricCorrected">0.00 cm</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Specimen Dimension Checker & Volumetric Calculation -->
+      <div class="quiz-calc-box">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.4rem;">
+          <strong style="color:var(--accent); font-size:0.95rem;" id="specimenTitle">Target: Small Spherical Metallic Bob</strong>
+          <span style="font-size:0.8rem; color:var(--text-secondary);" id="specimenHint">Measure external diameter $D$ across 3 orientations.</span>
+        </div>
+
+        <div class="quiz-inputs" id="quizInputRow">
+          <input type="number" step="0.01" id="inputUserDim" class="input-field" placeholder="Mean Diameter D (cm)">
+          <input type="number" step="0.01" id="inputUserVol" class="input-field" placeholder="Calculated Volume V (cm³)">
+        </div>
+
+        <div style="display:flex; gap:0.4rem; align-items:center;">
+          <button class="btn btn-primary" style="flex:1; min-height:36px; font-size:0.84rem;" onclick="checkVolumetricCalculation()">
+            Verify Measured Volume &amp; Accuracy
+          </button>
+          <button class="btn btn-outline" style="min-height:36px; font-size:0.84rem;" onclick="autoSolveCalculation()">
+            💡 Reveal
+          </button>
+        </div>
+        <div class="calc-feedback" id="calcFeedback"></div>
+      </div>
+
+      <!-- Interactive Observation Table -->
+      <div class="obs-card">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <strong style="font-size:0.9rem; color:#ffffff;">📋 Observation Table</strong>
+          <div style="display:flex; gap:0.35rem;">
+            <button class="btn btn-outline" style="min-height:30px; padding:0.2rem 0.5rem; font-size:0.75rem;" onclick="clearObservations()">
+              Clear
+            </button>
+            <button class="btn btn-primary" style="min-height:30px; padding:0.2rem 0.55rem; font-size:0.75rem;" onclick="logCurrentTrial()">
+              ➕ Add Trial
+            </button>
+          </div>
+        </div>
+        <div class="obs-table-container">
+          <table id="obsTable">
+            <thead>
+              <tr>
+                <th>Trial</th>
+                <th>$MSR$ (cm)</th>
+                <th>$n$ (div)</th>
+                <th>$VSR$ (cm)</th>
+                <th>Observed (cm)</th>
+                <th>Corrected (cm)</th>
+              </tr>
+            </thead>
+            <tbody id="obsTableBody">
+              <!-- Observation rows dynamic -->
+            </tbody>
+          </table>
+        </div>
+        <div style="font-size:0.82rem; color:var(--text-secondary); display:flex; justify-content:space-between;">
+          <span>Trials Logged: <strong id="lblTrialsCount" style="color:#fff;">0</strong></span>
+          <span>Mean Measured Dimension: <strong id="lblMeanDimension" style="color:var(--accent);">—</strong></span>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Modal Dialog for Theory & Step-by-Step Manual -->
+<div class="modal-backdrop" id="modalBackdrop" onclick="closeModal(event)">
+  <div class="modal-window" onclick="event.stopPropagation()">
+    <div class="modal-head">
+      <div class="modal-title" id="modalTitle">Laboratory Reference</div>
+      <button class="btn-step" onclick="closeModalDirect()" style="width:34px; height:34px; min-width:34px; min-height:34px;">✕</button>
+    </div>
+    <div class="modal-body" id="modalContent"></div>
+  </div>
+</div>
+
+<script>
+  const state = {
+    task: 'sphere', // 'sphere' | 'cylinder' | 'beakerID' | 'beakerDepth' | 'zeroError'
+    jawPos: 0.0,    // Jaw opening in cm (0.00 to 10.50 cm)
+    zeroError: 0.00,// Zero error in cm (+0.02, 0.00, -0.03)
+    isLocked: false,// Clamp lock screw status
+    isDragging: false,
+    dragStartX: 0,
+    dragStartJaw: 0,
+    // True specimen dimensions for simulation fidelity
+    specimens: {
+      sphere: { name: 'Spherical Metallic Bob', diam: 2.34, label: 'Sphere Diameter (D)' },
+      cylinder: { name: 'Solid Metallic Cylinder', diam: 1.86, length: 4.52, mode: 'diam' },
+      beakerID: { name: 'Calorimeter / Beaker Internal', internalDiam: 4.82 },
+      beakerDepth: { name: 'Calorimeter / Beaker Depth', depth: 6.45 }
+    },
+    // Recorded observation trials per task
+    trials: {
+      sphere: [],
+      cylinder: [],
+      beakerID: [],
+      beakerDepth: [],
+      zeroError: []
+    }
+  };
+
+  // Least Count constant: 1 MSD (1 mm) - 1 VSD (0.9 mm) = 0.1 mm = 0.01 cm
+  const LC = 0.01; // cm
+
+  function triggerMath(target) {
+    if (window.renderMathInElement) {
+      try {
+        window.renderMathInElement(target || document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false },
+            { left: "\\[", right: "\\]", display: true },
+            { left: "\\(", right: "\\)", display: false }
+          ],
+          throwOnError: false
+        });
+      } catch (err) {
+        console.warn("KaTeX notice:", err);
+      }
+    }
+  }
+
+  function initMathTypesetting() {
+    triggerMath(document.body);
+  }
+
+  // Get current raw total reading, MSR, and VSR
+  function computeCalliperReading(jaw) {
+    // Total physical position measured by callipers:
+    const physicalOpening = jaw + state.zeroError;
+    const clamped = Math.max(0, Math.min(10.5, physicalOpening));
+
+    // MSR is the largest full millimeter (0.1 cm) mark before or at Vernier zero
+    const msr = Math.floor(clamped * 10.0 + 1e-6) / 10.0;
+
+    // Difference in mm
+    const diffMm = (clamped - msr) * 10.0;
+
+    // Vernier coincidence index n (0 to 9, or 10)
+    let n = Math.round(diffMm);
+    if (n > 9) n = 9;
+    if (n < 0) n = 0;
+
+    const vsr = n * LC; // cm
+    const observed = msr + vsr;
+    const corrected = observed - state.zeroError;
+
+    return {
+      msr: parseFloat(msr.toFixed(2)),
+      n: n,
+      vsr: parseFloat(vsr.toFixed(3)),
+      observed: parseFloat(observed.toFixed(3)),
+      corrected: parseFloat(corrected.toFixed(3))
+    };
+  }
+
+  const canvas = document.getElementById('calliperCanvas');
+  const ctx = canvas.getContext('2d');
+  const canvasBox = document.getElementById('canvasBox');
+
+  function resizeWorkbenchCanvas() {
+    if (!canvas || !canvasBox) return;
+    const dpr = window.devicePixelRatio || 1;
+    const rect = canvasBox.getBoundingClientRect();
+    const w = Math.max(rect.width, 320);
+    const h = Math.max(rect.height, 360);
+
+    canvas.width = Math.round(w * dpr);
+    canvas.height = Math.round(h * dpr);
+    ctx.resetTransform();
+    ctx.scale(dpr, dpr);
+  }
+
+  window.addEventListener('resize', () => {
+    resizeWorkbenchCanvas();
+    renderCallipersScene();
+  });
+
+  function renderCallipersScene() {
+    const rect = canvasBox.getBoundingClientRect();
+    const w = rect.width;
+    const h = rect.height;
+    ctx.clearRect(0, 0, w, h);
+
+    const isMobile = w < 640;
+
+    // Visual theme: polished stainless steel with graduation markings
+    // Scale transformation: 1 cm on Calliper = ~42 pixels on desktop, ~32 on mobile
+    const pxPerCm = isMobile ? 32.0 : 42.0;
+
+    // Calliper origins
+    const originX = isMobile ? 80 : 130;
+    const beamY = isMobile ? 190 : 210;
+    const beamH = isMobile ? 48 : 56;
+    const jawDrop = isMobile ? 125 : 155;
+    const upperJawH = isMobile ? 55 : 68;
+
+    // Current sliding displacement in pixels
+    const slidePixels = state.jawPos * pxPerCm;
+    const slideX = originX + slidePixels;
+
+    // 1. Specimen Rendering (Placed between Jaws, on Internal Jaws, or under Depth Gauge)
+    drawActiveSpecimen(originX, slideX, beamY, jawDrop, upperJawH, pxPerCm, isMobile);
+
+    // 2. Extending Depth Gauge Strip (Slides out from right tail)
+    drawDepthGaugeStrip(originX + 11.5 * pxPerCm, beamY + beamH * 0.45, slidePixels, isMobile);
+
+    // 3. Fixed Main Beam & Fixed Jaws (Frame)
+    drawFixedMainFrame(originX, beamY, beamH, jawDrop, upperJawH, pxPerCm, isMobile);
+
+    // 4. Main Scale Millimeter Graduations (0 to 11 cm visible)
+    drawMainScaleGraduations(originX, beamY, beamH, pxPerCm, isMobile);
+
+    // 5. Sliding Vernier Vernier Block & Sliding Jaws
+    drawSlidingVernierAssembly(slideX, beamY, beamH, jawDrop, upperJawH, pxPerCm, isMobile);
+
+    // 6. High-Magnification Zoom Loupe (4x Inset Window)
+    drawMagnificationLoupe(w, h, originX, slideX, beamY, beamH, pxPerCm, isMobile);
+  }
+
+  function drawFixedMainFrame(ox, by, bh, jd, uj, pxPerCm, isMobile) {
+    const beamTotalW = 12.0 * pxPerCm;
+
+    // Main steel beam
+    ctx.save();
+    const beamGrad = ctx.createLinearGradient(ox, by, ox, by + bh);
+    beamGrad.addColorStop(0, '#f1f5f9');
+    beamGrad.addColorStop(0.3, '#cbd5e1');
+    beamGrad.addColorStop(0.7, '#94a3b8');
+    beamGrad.addColorStop(1, '#64748b');
+
+    ctx.fillStyle = beamGrad;
+    ctx.strokeStyle = '#334155';
+    ctx.lineWidth = 1.5;
+
+    ctx.beginPath();
+    ctx.roundRect(ox - 30, by, beamTotalW + 40, bh, 3);
+    ctx.fill();
+    ctx.stroke();
+
+    // Fixed Lower Jaw (External Measurement Reference)
+    const jawGrad = ctx.createLinearGradient(ox - 30, by, ox, by + jd);
+    jawGrad.addColorStop(0, '#cbd5e1');
+    jawGrad.addColorStop(0.5, '#94a3b8');
+    jawGrad.addColorStop(1, '#475569');
+
+    ctx.fillStyle = jawGrad;
+    ctx.beginPath();
+    ctx.moveTo(ox - 30, by + bh - 2);
+    ctx.lineTo(ox, by + bh - 2);
+    // Vertical reference contact face
+    ctx.lineTo(ox, by + bh + jd);
+    // Curved outer ergonomic taper
+    ctx.bezierCurveTo(ox - 8, by + bh + jd, ox - 28, by + bh + jd * 0.4, ox - 30, by + bh - 2);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // Precision ground contact tip highlight
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 1.8;
+    ctx.beginPath();
+    ctx.moveTo(ox, by + bh + 4);
+    ctx.lineTo(ox, by + bh + jd);
+    ctx.stroke();
+
+    // Fixed Upper Jaw (Internal Measurement Reference)
+    ctx.fillStyle = jawGrad;
+    ctx.beginPath();
+    ctx.moveTo(ox - 24, by + 2);
+    ctx.lineTo(ox, by + 2);
+    ctx.lineTo(ox, by - uj);
+    ctx.bezierCurveTo(ox - 6, by - uj, ox - 22, by - uj * 0.3, ox - 24, by + 2);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.restore();
+  }
+
+  function drawMainScaleGraduations(ox, by, bh, pxPerCm, isMobile) {
+    ctx.save();
+    ctx.fillStyle = '#0f172a';
+    ctx.strokeStyle = '#0f172a';
+    ctx.lineWidth = 1.0;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+
+    const maxCm = 11;
+    // Draw in mm
+    for (let mm = 0; mm <= maxCm * 10; mm++) {
+      const x = ox + (mm / 10.0) * pxPerCm;
+      const isCm = mm % 10 === 0;
+      const isHalfCm = mm % 5 === 0;
+      const tickH = isCm ? 18 : (isHalfCm ? 12 : 7);
+
+      ctx.lineWidth = isCm ? 1.4 : 0.8;
+      ctx.beginPath();
+      ctx.moveTo(x, by + bh - 1);
+      ctx.lineTo(x, by + bh - 1 - tickH);
+      ctx.stroke();
+
+      if (isCm) {
+        ctx.font = 'bold 10px monospace';
+        ctx.fillText((mm / 10).toString(), x, by + bh - tickH - 13);
+      }
+    }
+
+    // Main Scale Label
+    ctx.fillStyle = '#1e293b';
+    ctx.font = 'bold 9px -apple-system, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('MAIN SCALE (1 div = 1 mm)', ox + 15, by + 6);
+    ctx.restore();
+  }
+
+  function drawSlidingVernierAssembly(sx, by, bh, jd, uj, pxPerCm, isMobile) {
+    ctx.save();
+    const vernierW = 2.4 * pxPerCm; // Width of sliding carriage
+
+    // Sliding vernier carriage gradient
+    const vGrad = ctx.createLinearGradient(sx - 15, by - 12, sx + vernierW, by + bh + 12);
+    vGrad.addColorStop(0, '#f8fafc');
+    vGrad.addColorStop(0.4, '#cbd5e1');
+    vGrad.addColorStop(0.8, '#94a3b8');
+    vGrad.addColorStop(1, '#64748b');
+
+    ctx.fillStyle = vGrad;
+    ctx.strokeStyle = '#1e293b';
+    ctx.lineWidth = 1.8;
+
+    // Vernier outer carriage frame surrounding main beam
+    ctx.beginPath();
+    ctx.roundRect(sx - 8, by - 8, vernierW + 16, bh + 16, 4);
+    ctx.fill();
+    ctx.stroke();
+
+    // Rectangular observation window exposing Main Scale
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.08)';
+    ctx.beginPath();
+    ctx.roundRect(sx + 2, by + 6, vernierW - 4, bh - 18, 2);
+    ctx.fill();
+    ctx.stroke();
+
+    // Sliding Lower Jaw (External Contact Face at sx)
+    ctx.fillStyle = vGrad;
+    ctx.beginPath();
+    ctx.moveTo(sx, by + bh + 8);
+    ctx.lineTo(sx + 28, by + bh + 8);
+    ctx.bezierCurveTo(sx + 26, by + bh + jd * 0.5, sx + 8, by + bh + jd, sx, by + bh + jd);
+    ctx.lineTo(sx, by + bh + 8);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // Precision ground contact edge
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 1.8;
+    ctx.beginPath();
+    ctx.moveTo(sx, by + bh + 8);
+    ctx.lineTo(sx, by + bh + jd);
+    ctx.stroke();
+
+    // Sliding Upper Jaw (Internal Contact Face at sx)
+    ctx.fillStyle = vGrad;
+    ctx.beginPath();
+    ctx.moveTo(sx, by - 8);
+    ctx.lineTo(sx + 20, by - 8);
+    ctx.bezierCurveTo(sx + 18, by - uj * 0.4, sx + 6, by - uj, sx, by - uj);
+    ctx.lineTo(sx, by - 8);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // Clamp Locking Screw on top of slider
+    ctx.fillStyle = state.isLocked ? '#ef4444' : '#eab308';
+    ctx.beginPath();
+    ctx.roundRect(sx + vernierW * 0.45, by - 22, 14, 14, 2);
+    ctx.fill();
+    ctx.strokeStyle = '#78350f';
+    ctx.lineWidth = 1.2;
+    ctx.stroke();
+    // Screw knurls
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(sx + vernierW * 0.45 + 3, by - 20, 2, 10);
+    ctx.fillRect(sx + vernierW * 0.45 + 9, by - 20, 2, 10);
+
+    // Vernier Scale Graduations on bottom lip
+    // 10 VSD = 9 MSD = 0.9 cm. Thus each VSD = 0.09 cm
+    const vsdCm = 0.09;
+    ctx.fillStyle = '#0f172a';
+    ctx.strokeStyle = '#0f172a';
+
+    for (let n = 0; n <= 10; n++) {
+      const vx = sx + (n * vsdCm) * pxPerCm;
+      const isEnd = n === 0 || n === 10 || n === 5;
+      const tickH = isEnd ? 12 : 7;
+
+      ctx.lineWidth = isEnd ? 1.4 : 0.8;
+      ctx.beginPath();
+      ctx.moveTo(vx, by + bh - 1);
+      ctx.lineTo(vx, by + bh - 1 + tickH);
+      ctx.stroke();
+
+      if (n === 0 || n === 5 || n === 10) {
+        ctx.font = 'bold 8.5px monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText(n.toString(), vx, by + bh + tickH + 2);
+      }
+    }
+
+    ctx.fillStyle = '#1e293b';
+    ctx.font = 'bold 8px -apple-system, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('VERNIER (LC = 0.01 cm)', sx + 4, by + bh + 24);
+
+    ctx.restore();
+  }
+
+  function drawDepthGaugeStrip(tailStartX, tailY, slidePixels, isMobile) {
+    ctx.save();
+    // Thin metallic probe strip that emerges from right tail
+    const stripLen = 60 + slidePixels;
+    ctx.fillStyle = '#cbd5e1';
+    ctx.strokeStyle = '#475569';
+    ctx.lineWidth = 1.2;
+    ctx.fillRect(tailStartX, tailY - 3, stripLen, 6);
+    ctx.strokeRect(tailStartX, tailY - 3, stripLen, 6);
+    ctx.restore();
+  }
+
+  function drawActiveSpecimen(ox, sx, by, jd, uj, pxPerCm, isMobile) {
+    ctx.save();
+    const task = state.task;
+
+    if (task === 'sphere') {
+      // Metallic Sphere Bob between Lower Jaws
+      const d = state.specimens.sphere.diam; // cm
+      const rPx = (d * pxPerCm) / 2.0;
+      const cx = ox + rPx;
+      const cy = by + jd * 0.72;
+
+      // Radial 3D bronze ball shading
+      const sphereGrad = ctx.createRadialGradient(cx - rPx * 0.35, cy - rPx * 0.35, rPx * 0.1, cx, cy, rPx);
+      sphereGrad.addColorStop(0, '#fef08a');
+      sphereGrad.addColorStop(0.35, '#eab308');
+      sphereGrad.addColorStop(0.75, '#ca8a04');
+      sphereGrad.addColorStop(1, '#713f12');
+
+      ctx.fillStyle = sphereGrad;
+      ctx.beginPath();
+      ctx.arc(cx, cy, rPx, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#854d0e';
+      ctx.lineWidth = 1.8;
+      ctx.stroke();
+
+      // Suspension ring hook
+      ctx.strokeStyle = '#cbd5e1';
+      ctx.lineWidth = 2.0;
+      ctx.beginPath();
+      ctx.arc(cx, cy - rPx - 4, 4, 0, Math.PI * 2);
+      ctx.stroke();
+
+    } else if (task === 'cylinder') {
+      // Solid Metal Cylinder
+      const d = state.specimens.cylinder.diam; // cm
+      const wPx = d * pxPerCm;
+      const hPx = state.specimens.cylinder.length * pxPerCm * 0.55;
+      const cx = ox;
+      const cy = by + jd * 0.45;
+
+      const cylGrad = ctx.createLinearGradient(cx, cy, cx + wPx, cy);
+      cylGrad.addColorStop(0, '#94a3b8');
+      cylGrad.addColorStop(0.3, '#f1f5f9');
+      cylGrad.addColorStop(0.7, '#cbd5e1');
+      cylGrad.addColorStop(1, '#475569');
+
+      ctx.fillStyle = cylGrad;
+      ctx.strokeStyle = '#334155';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.roundRect(cx, cy, wPx, hPx, 4);
+      ctx.fill();
+      ctx.stroke();
+
+    } else if (task === 'beakerID') {
+      // Hollow Beaker / Calorimeter (Upper Internal Jaws inserted into rim)
+      const intD = state.specimens.beakerID.internalDiam; // cm
+      const intW = intD * pxPerCm;
+      const cx = ox - 20;
+      const cy = by - uj - 20;
+
+      // Beaker glass wall
+      ctx.fillStyle = 'rgba(56, 189, 248, 0.16)';
+      ctx.strokeStyle = 'rgba(56, 189, 248, 0.65)';
+      ctx.lineWidth = 2.5;
+
+      ctx.beginPath();
+      ctx.roundRect(ox - 10, cy, intW + 20, 110, [0, 0, 12, 12]);
+      ctx.fill();
+      ctx.stroke();
+
+      // Inner cavity
+      ctx.fillStyle = 'rgba(15, 23, 42, 0.35)';
+      ctx.beginPath();
+      ctx.roundRect(ox, cy, intW, 100, [0, 0, 8, 8]);
+      ctx.fill();
+
+    } else if (task === 'beakerDepth') {
+      // Beaker upright under Depth Gauge Probe on the right
+      const tailX = ox + 11.5 * pxPerCm + 50;
+      const depthVal = state.specimens.beakerDepth.depth;
+      const bkW = 70;
+      const bkH = depthVal * pxPerCm * 0.58;
+      const topY = by + bh * 0.45 + 3;
+
+      ctx.fillStyle = 'rgba(56, 189, 248, 0.18)';
+      ctx.strokeStyle = 'rgba(56, 189, 248, 0.7)';
+      ctx.lineWidth = 2.0;
+
+      ctx.beginPath();
+      ctx.roundRect(tailX - bkW * 0.5, topY, bkW, bkH, [0, 0, 10, 10]);
+      ctx.fill();
+      ctx.stroke();
+    }
+
+    ctx.restore();
+  }
+
+  function drawMagnificationLoupe(w, h, ox, sx, by, bh, pxPerCm, isMobile) {
+    ctx.save();
+    // Magnified Loupe window positioned at top-right
+    const loupeW = isMobile ? 160 : 250;
+    const loupeH = isMobile ? 110 : 135;
+    const loupeX = w - loupeW - (isMobile ? 8 : 16);
+    const loupeY = isMobile ? 38 : 46;
+
+    // Loupe frame & circular glass look
+    ctx.fillStyle = '#09101d';
+    ctx.strokeStyle = '#38bdf8';
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.roundRect(loupeX, loupeY, loupeW, loupeH, 10);
+    ctx.fill();
+    ctx.stroke();
+
+    // Clip rendering inside the loupe boundary
+    ctx.save();
+    ctx.beginPath();
+    ctx.roundRect(loupeX + 2, loupeY + 2, loupeW - 4, loupeH - 4, 8);
+    ctx.clip();
+
+    // Loupe Magnification Factor (4x)
+    const zoom = 4.2;
+    const reading = computeCalliperReading(state.jawPos);
+
+    // Center loupe view right around current vernier index
+    const focusCalliperX = sx;
+    const lMidX = loupeX + loupeW * 0.35;
+    const lMidY = loupeY + loupeH * 0.52;
+
+    // 1. Draw Zoomed Main Scale
+    const maxCm = 11;
+    for (let mm = 0; mm <= maxCm * 10; mm++) {
+      const worldX = ox + (mm / 10.0) * pxPerCm;
+      const zx = lMidX + (worldX - focusCalliperX) * zoom;
+
+      if (zx > loupeX - 20 && zx < loupeX + loupeW + 20) {
+        const isCm = mm % 10 === 0;
+        const isHalfCm = mm % 5 === 0;
+        const tickLen = (isCm ? 28 : (isHalfCm ? 18 : 12));
+
+        ctx.strokeStyle = '#e2e8f0';
+        ctx.lineWidth = isCm ? 2.4 : 1.4;
+        ctx.beginPath();
+        ctx.moveTo(zx, lMidY - 2);
+        ctx.lineTo(zx, lMidY - 2 - tickLen);
+        ctx.stroke();
+
+        if (isCm) {
+          ctx.fillStyle = '#38bdf8';
+          ctx.font = 'bold 13px monospace';
+          ctx.textAlign = 'center';
+          ctx.fillText((mm / 10).toString(), zx, lMidY - tickLen - 18);
+        }
+      }
+    }
+
+    // 2. Draw Zoomed Vernier Scale
+    const vsdCm = 0.09;
+    for (let n = 0; n <= 10; n++) {
+      const worldVx = sx + (n * vsdCm) * pxPerCm;
+      const zx = lMidX + (worldVx - focusCalliperX) * zoom;
+
+      if (zx > loupeX - 20 && zx < loupeX + loupeW + 20) {
+        const isCoinciding = (n === reading.n);
+        const isEnd = n === 0 || n === 10 || n === 5;
+        const tickLen = (isEnd ? 26 : 16);
+
+        // Highlight coinciding division in glowing green/amber
+        ctx.strokeStyle = isCoinciding ? '#4ade80' : '#f8fafc';
+        ctx.lineWidth = isCoinciding ? 3.0 : (isEnd ? 2.0 : 1.4);
+
+        ctx.beginPath();
+        ctx.moveTo(zx, lMidY + 2);
+        ctx.lineTo(zx, lMidY + 2 + tickLen);
+        ctx.stroke();
+
+        if (isCoinciding) {
+          // Arrow indicator for coinciding division
+          ctx.fillStyle = '#4ade80';
+          ctx.beginPath();
+          ctx.moveTo(zx, lMidY + tickLen + 14);
+          ctx.lineTo(zx - 5, lMidY + tickLen + 22);
+          ctx.lineTo(zx + 5, lMidY + tickLen + 22);
+          ctx.closePath();
+          ctx.fill();
+        }
+
+        ctx.fillStyle = isCoinciding ? '#4ade80' : '#94a3b8';
+        ctx.font = isCoinciding ? 'bold 12px monospace' : '10px monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText(n.toString(), zx, lMidY + tickLen + 12);
+      }
+    }
+
+    // Coincidence badge inside loupe
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.9)';
+    ctx.fillRect(loupeX + 6, loupeY + 6, loupeW - 12, 18);
+    ctx.fillStyle = '#86efac';
+    ctx.font = 'bold 10px monospace';
+    ctx.textAlign = 'left';
+    ctx.fillText(`Coinciding n = ${reading.n} (VSR = ${(reading.n * 0.01).toFixed(2)} cm)`, loupeX + 10, loupeY + 18);
+
+    ctx.restore();
+    ctx.restore();
+  }
+
+  function getCanvasPointerPos(evt) {
+    const rect = canvas.getBoundingClientRect();
+    const clientX = evt.touches && evt.touches.length > 0 ? evt.touches[0].clientX : evt.clientX;
+    const clientY = evt.touches && evt.touches.length > 0 ? evt.touches[0].clientY : evt.clientY;
+    return {
+      x: clientX - rect.left,
+      y: clientY - rect.top
+    };
+  }
+
+  canvas.addEventListener('mousedown', (e) => {
+    if (state.isLocked) return;
+    state.isDragging = true;
+    const pos = getCanvasPointerPos(e);
+    state.dragStartX = pos.x;
+    state.dragStartJaw = state.jawPos;
+  });
+
+  window.addEventListener('mousemove', (e) => {
+    if (!state.isDragging || state.isLocked) return;
+    const pos = getCanvasPointerPos(e);
+    const rect = canvasBox.getBoundingClientRect();
+    const isMobile = rect.width < 640;
+    const pxPerCm = isMobile ? 32.0 : 42.0;
+
+    const deltaCm = (pos.x - state.dragStartX) / pxPerCm;
+    let nextJaw = state.dragStartJaw + deltaCm;
+    setJawPosition(nextJaw);
+  });
+
+  window.addEventListener('mouseup', () => {
+    state.isDragging = false;
+  });
+
+  // Touch handlers for mobile
+  canvas.addEventListener('touchstart', (e) => {
+    if (state.isLocked || !e.touches.length) return;
+    state.isDragging = true;
+    const pos = getCanvasPointerPos(e);
+    state.dragStartX = pos.x;
+    state.dragStartJaw = state.jawPos;
+    e.preventDefault();
+  }, { passive: false });
+
+  canvas.addEventListener('touchmove', (e) => {
+    if (!state.isDragging || state.isLocked || !e.touches.length) return;
+    const pos = getCanvasPointerPos(e);
+    const rect = canvasBox.getBoundingClientRect();
+    const isMobile = rect.width < 640;
+    const pxPerCm = isMobile ? 32.0 : 42.0;
+
+    const deltaCm = (pos.x - state.dragStartX) / pxPerCm;
+    setJawPosition(state.dragStartJaw + deltaCm);
+    e.preventDefault();
+  }, { passive: false });
+
+  window.addEventListener('touchend', () => {
+    state.isDragging = false;
+  });
+
+  function setJawPosition(posCm) {
+    const clamped = Math.max(0.00, Math.min(10.50, Math.round(posCm * 100.0) / 100.0));
+    state.jawPos = clamped;
+    document.getElementById('rngJaw').value = clamped.toFixed(2);
+    document.getElementById('valJawPosition').textContent = `${clamped.toFixed(2)} cm`;
+
+    updateReadingMetrics();
+    checkSnugContactState();
+    renderCallipersScene();
+  }
+
+  function onJawSliderInput(val) {
+    if (state.isLocked) return;
+    setJawPosition(parseFloat(val));
+  }
+
+  function stepJaw(delta) {
+    if (state.isLocked) return;
+    setJawPosition(state.jawPos + delta);
+  }
+
+  function toggleClampLock() {
+    state.isLocked = !state.isLocked;
+    const btn = document.getElementById('btnLockScrew');
+    const icon = document.getElementById('lockIcon');
+    const lbl = document.getElementById('lblLockScrew');
+
+    if (state.isLocked) {
+      btn.className = 'btn btn-lock locked';
+      icon.textContent = '🔒';
+      lbl.textContent = 'Slide Locked';
+    } else {
+      btn.className = 'btn btn-lock';
+      icon.textContent = '🔓';
+      lbl.textContent = 'Slide Unlocked';
+    }
+    renderCallipersScene();
+  }
+
+  function onZeroErrorChange() {
+    state.zeroError = parseFloat(document.getElementById('selZeroError').value);
+    updateReadingMetrics();
+    renderCallipersScene();
+  }
+
+  function updateReadingMetrics() {
+    const r = computeCalliperReading(state.jawPos);
+    document.getElementById('metricMSR').textContent = `${r.msr.toFixed(1)} cm`;
+    document.getElementById('metricVSD').textContent = r.n.toString();
+    document.getElementById('metricVSR').textContent = `${r.vsr.toFixed(2)} cm`;
+    document.getElementById('metricCorrected').textContent = `${r.corrected.toFixed(2)} cm`;
+  }
+
+  function checkSnugContactState() {
+    const badge = document.getElementById('contactBadge');
+    const dot = document.getElementById('contactDot');
+    const txt = document.getElementById('contactText');
+
+    let targetDim = 0;
+    if (state.task === 'sphere') targetDim = state.specimens.sphere.diam;
+    else if (state.task === 'cylinder') targetDim = state.specimens.cylinder.diam;
+    else if (state.task === 'beakerID') targetDim = state.specimens.beakerID.internalDiam;
+    else if (state.task === 'beakerDepth') targetDim = state.specimens.beakerDepth.depth;
+    else targetDim = 0.0;
+
+    const diff = Math.abs(state.jawPos - targetDim);
+
+    if (diff < 0.02) {
+      badge.className = 'jaw-contact-badge snug';
+      dot.textContent = '🟢';
+      txt.textContent = 'Jaws in Snug Contact with Specimen';
+    } else if (state.jawPos < targetDim && state.task !== 'zeroError') {
+      badge.className = 'jaw-contact-badge loose';
+      dot.textContent = '🟡';
+      txt.textContent = 'Specimen compressed or not fully seated';
+    } else {
+      badge.className = 'jaw-contact-badge loose';
+      dot.textContent = '⚪';
+      txt.textContent = 'Jaws open (slide or click Snug Fit)';
+    }
+  }
+
+  function snapFitSpecimen() {
+    if (state.isLocked) return;
+    let targetDim = 0;
+    if (state.task === 'sphere') targetDim = state.specimens.sphere.diam;
+    else if (state.task === 'cylinder') targetDim = state.specimens.cylinder.diam;
+    else if (state.task === 'beakerID') targetDim = state.specimens.beakerID.internalDiam;
+    else if (state.task === 'beakerDepth') targetDim = state.specimens.beakerDepth.depth;
+    else targetDim = 0.00;
+
+    setJawPosition(targetDim);
+  }
+
+  function resetCallipers() {
+    setJawPosition(0.0);
+    if (state.isLocked) toggleClampLock();
+  }
+
+  function selectTask(newTask) {
+    state.task = newTask;
+
+    // Update active tab buttons
+    const tabs = ['sphere', 'cylinder', 'beakerID', 'beakerDepth', 'zeroError'];
+    tabs.forEach(t => {
+      const el = document.getElementById(`tabTask${t.charAt(0).toUpperCase() + t.slice(1)}`);
+      if (el) el.classList.toggle('active', t === newTask);
+    });
+
+    const canvasTitle = document.getElementById('canvasTitle');
+    const specTitle = document.getElementById('specimenTitle');
+    const specHint = document.getElementById('specimenHint');
+    const inputDim = document.getElementById('inputUserDim');
+    const inputVol = document.getElementById('inputUserVol');
+    const feedback = document.getElementById('calcFeedback');
+    feedback.className = 'calc-feedback';
+    feedback.textContent = '';
+
+    if (newTask === 'sphere') {
+      canvasTitle.textContent = "Task A: Measure External Diameter of Small Spherical Metallic Bob";
+      specTitle.textContent = "Target: Small Spherical Bob (External Diameter D)";
+      specHint.innerHTML = "Fit sphere between lower jaws. Compute volume $V = \\frac{4}{3}\\pi (D/2)^3$.";
+      inputDim.placeholder = "Mean Diameter D (cm)";
+      inputVol.placeholder = "Calculated Volume V (cm³)";
+      setJawPosition(0.0);
+    } else if (newTask === 'cylinder') {
+      canvasTitle.textContent = "Task B: Measure Diameter & Length of Solid Metallic Cylinder";
+      specTitle.textContent = "Target: Solid Cylinder (Diameter D & Length L)";
+      specHint.innerHTML = "Measure diameter $D$ & length $L$. Compute volume $V = \\pi (D/2)^2 L$.";
+      inputDim.placeholder = "Mean Diameter D (cm)";
+      inputVol.placeholder = "Calculated Volume V (cm³)";
+      setJawPosition(0.0);
+    } else if (newTask === 'beakerID') {
+      canvasTitle.textContent = "Task C: Measure Internal Diameter of Calorimeter / Beaker";
+      specTitle.textContent = "Target: Beaker / Calorimeter (Internal Diameter D)";
+      specHint.innerHTML = "Insert upper internal jaws inside rim. Note $MSR$ and coinciding division.";
+      inputDim.placeholder = "Internal Diameter D (cm)";
+      inputVol.placeholder = "Cross-sectional Area A (cm²)";
+      setJawPosition(0.0);
+    } else if (newTask === 'beakerDepth') {
+      canvasTitle.textContent = "Task D: Measure Depth of Calorimeter / Beaker";
+      specTitle.textContent = "Target: Beaker / Calorimeter (Depth h)";
+      specHint.innerHTML = "Place calliper edge on rim and slide depth probe to base. Compute volume.";
+      inputDim.placeholder = "Depth h (cm)";
+      inputVol.placeholder = "Total Internal Volume V (cm³)";
+      setJawPosition(0.0);
+    } else if (newTask === 'zeroError') {
+      canvasTitle.textContent = "Task E: Zero Error Determination & Calibration";
+      specTitle.textContent = "Zero Error Check (Jaws in Full Contact)";
+      specHint.innerHTML = "Close jaws completely. Check if zero of Vernier coincides with zero of Main Scale.";
+      inputDim.placeholder = "Observed Zero Error (cm)";
+      inputVol.placeholder = "Zero Correction (-e) (cm)";
+      setJawPosition(0.0);
+    }
+
+    renderObservationTable();
+    triggerMath(specHint);
+    renderCallipersScene();
+  }
+
+  function logCurrentTrial() {
+    const reading = computeCalliperReading(state.jawPos);
+    const taskList = state.trials[state.task];
+    const trialNo = taskList.length + 1;
+
+    taskList.push({
+      no: trialNo,
+      msr: reading.msr,
+      n: reading.n,
+      vsr: reading.vsr,
+      observed: reading.observed,
+      corrected: reading.corrected
+    });
+
+    renderObservationTable();
+  }
+
+  function renderObservationTable() {
+    const list = state.trials[state.task] || [];
+    const tbody = document.getElementById('obsTableBody');
+    tbody.innerHTML = '';
+
+    list.forEach(t => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${t.no}</td>
+        <td>${t.msr.toFixed(1)}</td>
+        <td>${t.n}</td>
+        <td>${t.vsr.toFixed(2)}</td>
+        <td>${t.observed.toFixed(2)}</td>
+        <td><strong>${t.corrected.toFixed(2)}</strong></td>
+      `;
+      tbody.appendChild(row);
+    });
+
+    document.getElementById('lblTrialsCount').textContent = list.length.toString();
+
+    if (list.length > 0) {
+      const meanVal = list.reduce((acc, c) => acc + c.corrected, 0) / list.length;
+      document.getElementById('lblMeanDimension').textContent = `${meanVal.toFixed(2)} cm`;
+    } else {
+      document.getElementById('lblMeanDimension').textContent = '—';
+    }
+  }
+
+  function clearObservations() {
+    state.trials[state.task] = [];
+    renderObservationTable();
+  }
+
+  function checkVolumetricCalculation() {
+    const userDim = parseFloat(document.getElementById('inputUserDim').value);
+    const userVol = parseFloat(document.getElementById('inputUserVol').value);
+    const feedback = document.getElementById('calcFeedback');
+
+    if (isNaN(userDim) || userDim <= 0) {
+      feedback.className = 'calc-feedback error show';
+      feedback.innerHTML = '⚠️ Please enter your measured dimension value in cm.';
+      return;
+    }
+
+    let actualDim = 0;
+    let actualVol = 0;
+    const task = state.task;
+
+    if (task === 'sphere') {
+      actualDim = state.specimens.sphere.diam;
+      const r = actualDim / 2.0;
+      actualVol = (4.0 / 3.0) * Math.PI * Math.pow(r, 3);
+    } else if (task === 'cylinder') {
+      actualDim = state.specimens.cylinder.diam;
+      const l = state.specimens.cylinder.length;
+      const r = actualDim / 2.0;
+      actualVol = Math.PI * Math.pow(r, 2) * l;
+    } else if (task === 'beakerID' || task === 'beakerDepth') {
+      const d = state.specimens.beakerID.internalDiam;
+      const h = state.specimens.beakerDepth.depth;
+      actualDim = task === 'beakerID' ? d : h;
+      const r = d / 2.0;
+      actualVol = Math.PI * Math.pow(r, 2) * h;
+    } else {
+      actualDim = state.zeroError;
+      actualVol = -state.zeroError;
+    }
+
+    const dimErr = Math.abs((userDim - actualDim) / actualDim) * 100.0;
+
+    let volMsg = '';
+    if (!isNaN(userVol) && userVol > 0) {
+      const volErr = Math.abs((userVol - actualVol) / actualVol) * 100.0;
+      if (volErr <= 3.0) {
+        volMsg = `<br>✨ <strong>Volume calculation is spot-on!</strong> (Error: ${volErr.toFixed(1)}%).`;
+      } else {
+        volMsg = `<br>🔍 Calculated $V = ${userVol.toFixed(2)}\\,\\text{cm}^3$, Expected $V = ${actualVol.toFixed(2)}\\,\\text{cm}^3$ (Error: ${volErr.toFixed(1)}%). Check $r = D/2$ substitution!`;
+      }
+    }
+
+    if (dimErr <= 2.0) {
+      feedback.className = 'calc-feedback success show';
+      feedback.innerHTML = `🎉 <strong>Excellent Precision!</strong> Measured dimension of $${userDim.toFixed(2)}\\,\\text{cm}$ matches theoretical value within ${dimErr.toFixed(2)}% accuracy.${volMsg}`;
+    } else {
+      feedback.className = 'calc-feedback error show';
+      feedback.innerHTML = `❌ <strong>Deviation observed.</strong> Entered $${userDim.toFixed(2)}\\,\\text{cm}$ deviates by ${dimErr.toFixed(1)}% from expected $${actualDim.toFixed(2)}\\,\\text{cm}$. Check your coinciding Vernier division $n$!${volMsg}`;
+    }
+    triggerMath(feedback);
+  }
+
+  function autoSolveCalculation() {
+    let actualDim = 0;
+    let actualVol = 0;
+    const task = state.task;
+
+    if (task === 'sphere') {
+      actualDim = state.specimens.sphere.diam;
+      const r = actualDim / 2.0;
+      actualVol = (4.0 / 3.0) * Math.PI * Math.pow(r, 3);
+    } else if (task === 'cylinder') {
+      actualDim = state.specimens.cylinder.diam;
+      const l = state.specimens.cylinder.length;
+      const r = actualDim / 2.0;
+      actualVol = Math.PI * Math.pow(r, 2) * l;
+    } else if (task === 'beakerID') {
+      actualDim = state.specimens.beakerID.internalDiam;
+      const r = actualDim / 2.0;
+      actualVol = Math.PI * Math.pow(r, 2); // cross-section
+    } else if (task === 'beakerDepth') {
+      const d = state.specimens.beakerID.internalDiam;
+      const h = state.specimens.beakerDepth.depth;
+      actualDim = h;
+      actualVol = (Math.PI * Math.pow(d / 2.0, 2)) * h;
+    } else {
+      actualDim = state.zeroError;
+      actualVol = -state.zeroError;
+    }
+
+    document.getElementById('inputUserDim').value = actualDim.toFixed(2);
+    document.getElementById('inputUserVol').value = actualVol.toFixed(2);
+    checkVolumetricCalculation();
+  }
+
+  function updateFullscreenState() {
+    const isFS = !!(document.fullscreenElement || document.webkitFullscreenElement);
+    const wrapper = document.getElementById('appWrapper');
+    const btn = document.getElementById('btnFullscreen');
+
+    if (isFS) {
+      document.body.classList.add('is-fullscreen');
+      wrapper.classList.add('is-fullscreen');
+      if (btn) btn.innerHTML = '⛶ Exit Fullscreen';
+    } else {
+      document.body.classList.remove('is-fullscreen');
+      wrapper.classList.remove('is-fullscreen');
+      if (btn) btn.innerHTML = '⛶ Fullscreen';
+    }
+
+    resizeWorkbenchCanvas();
+    setTimeout(resizeWorkbenchCanvas, 60);
+  }
+
+  function toggleFullscreen() {
+    const elem = document.documentElement;
+    if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+      if (elem.requestFullscreen) {
+        elem.requestFullscreen().catch(err => console.warn(err));
+      } else if (elem.webkitRequestFullscreen) {
+        elem.webkitRequestFullscreen();
+      }
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen().catch(err => console.warn(err));
+      } else if (document.webkitExitFullscreen) {
+        document.webkitExitFullscreen();
+      }
+    }
+  }
+
+  document.addEventListener('fullscreenchange', updateFullscreenState);
+  document.addEventListener('webkitfullscreenchange', updateFullscreenState);
+
+  function openModal(type) {
+    const backdrop = document.getElementById('modalBackdrop');
+    const title = document.getElementById('modalTitle');
+    const content = document.getElementById('modalContent');
+
+    if (type === 'theory') {
+      title.textContent = "Vernier Callipers: Principle, Least Count & Formulas";
+      content.innerHTML = `
+        <div>
+          <h3>1. Principle of Vernier Callipers</h3>
+          <p>
+            A Vernier calliper utilizes two scales sliding past each other: the fixed <strong>Main Scale (MS)</strong> and the sliding <strong>Vernier Scale (VS)</strong>. In standard metric callipers, 10 Vernier scale divisions ($\text{VSD}$) are constructed to span exactly 9 main scale divisions ($\text{MSD}$).
+          </p>
+        </div>
+
+        <div>
+          <h3>2. Least Count (Vernier Constant)</h3>
+          <p>The smallest value measurable by the instrument is its <strong>Least Count (LC)</strong>:</p>
+          <div class="formula-callout">
+            $$\\text{LC} = 1\\,\\text{MSD} - 1\\,\\text{VSD}$$
+          </div>
+          <p>Given $10\\,\\text{VSD} = 9\\,\\text{MSD} \\implies 1\\,\\text{VSD} = \\frac{9}{10}\\,\\text{MSD} = 0.9\\,\\text{mm}$:</p>
+          <div class="formula-callout">
+            $$\\text{LC} = 1.0\\,\\text{mm} - 0.9\\,\\text{mm} = 0.1\\,\\text{mm} = 0.01\\,\\text{cm}$$
+          </div>
+        </div>
+
+        <div>
+          <h3>3. Zero Error &amp; Zero Correction</h3>
+          <p>When the jaws touch firmly with no specimen:</p>
+          <ul class="instruction-steps">
+            <li><strong>Nil Error:</strong> Zero of Vernier scale coincides exactly with zero of Main scale.</li>
+            <li><strong>Positive Zero Error ($+e$):</strong> Vernier zero lies to the right of Main scale zero ($e = +n \\times \\text{LC}$).</li>
+            <li><strong>Negative Zero Error ($-e$):</strong> Vernier zero lies to the left of Main scale zero ($e = -(10 - n) \\times \\text{LC}$).</li>
+          </ul>
+          <div class="formula-callout">
+            $$\\text{Corrected Reading} = \\text{Observed Reading} - (\\text{Zero Error with proper sign})$$
+          </div>
+        </div>
+
+        <div>
+          <h3>4. Specimen Volume Formulas</h3>
+          <ul class="instruction-steps">
+            <li><strong>Sphere:</strong> $$V = \\frac{4}{3}\\pi r^3 = \\frac{4}{3}\\pi \\left(\\frac{D}{2}\\right)^3 = \\frac{\\pi D^3}{6}$$</li>
+            <li><strong>Solid Cylinder:</strong> $$V = \\pi r^2 L = \\pi \\left(\\frac{D}{2}\\right)^2 L = \\frac{\\pi D^2 L}{4}$$</li>
+            <li><strong>Internal Volume of Beaker / Calorimeter:</strong> $$V = \\pi \\left(\\frac{D_{\\text{internal}}}{2}\\right)^2 h$$</li>
+          </ul>
+        </div>
+      `;
+    } else {
+      title.textContent = "Laboratory Instructions & Experimental Procedure";
+      content.innerHTML = `
+        <div>
+          <h3>Step-by-Step Procedure:</h3>
+          <ol class="instruction-steps">
+            <li><strong>Determine Least Count:</strong> Note the value of one Main Scale Division ($1\\,\\text{MSD} = 1\\,\\text{mm} = 0.1\\,\\text{cm}$) and the number of divisions on the Vernier scale ($n = 10$). Hence $\\text{LC} = 0.01\\,\\text{cm}$.</li>
+            <li><strong>Inspect Zero Error:</strong> Bring the jaws together. Note whether the zero mark of the Vernier scale aligns with the zero mark of the Main scale.</li>
+            <li><strong>Measure Spherical Bob / Cylinder:</strong> Place the body between the lower external jaws. Gently move the sliding jaw until both jaws make snug contact without overtightening. Fasten the clamp locking screw.</li>
+            <li><strong>Record Readings:</strong>
+              <ul>
+                <li>Record the Main Scale Reading ($MSR$) just before the zero mark of the Vernier scale.</li>
+                <li>Examine the 4× Magnified Loupe to find which Vernier division ($n$) aligns with a Main scale mark.</li>
+                <li>Calculate $\\text{VSR} = n \\times \\text{LC}$. Total Observed Reading $= MSR + VSR$.</li>
+              </ul>
+            </li>
+            <li><strong>Measure Beaker Internal Diameter:</strong> Insert the upper internal jaws inside the calorimeter and separate them until they touch opposing inner wall surfaces.</li>
+            <li><strong>Measure Beaker Depth:</strong> Keep the calliper beam perpendicular to the beaker rim and slide the depth probe downwards until it touches the bottom base.</li>
+            <li><strong>Calculate Volume:</strong> Use the measured mean dimensions in the volumetric formulas and verify accuracy with the validator.</li>
+          </ol>
+        </div>
+      `;
+    }
+
+    backdrop.classList.add('open');
+    triggerMath(content);
+  }
+
+  function closeModal(e) {
+    if (e.target.id === 'modalBackdrop') {
+      document.getElementById('modalBackdrop').classList.remove('open');
+    }
+  }
+
+  function closeModalDirect() {
+    document.getElementById('modalBackdrop').classList.remove('open');
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    resizeWorkbenchCanvas();
+    updateReadingMetrics();
+    renderCallipersScene();
+  });
+
+  window.addEventListener('load', () => {
+    resizeWorkbenchCanvas();
+    updateReadingMetrics();
+    renderCallipersScene();
+    initMathTypesetting();
+  });
+</script>
+<footer class="nms-lab-footer">
+  <div class="nms-lab-footer-inner">
+    <div class="nms-brand-col">
+      <div class="nms-brand-title">🏛️ National Model Schools</div>
+      <div class="nms-brand-sub">Senior Secondary Physics Virtual Laboratory</div>
+    </div>
+    <div class="nms-credit-col">
+      <span class="nms-dev-text">Developed with <span style="color:#ef4444;">❤</span> by <strong>Syed Mazhar Ali</strong></span>
+      <a href="https://github.com/mazhar-in" target="_blank" rel="noopener noreferrer" class="nms-gh-btn" title="Syed Mazhar Ali on GitHub">
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
+        <span>mazhar-in</span>
+      </a>
+    </div>
+    <div class="nms-copy-col">
+      <span>© National Model Schools. All rights reserved.</span>
+      <a href="index.html" class="nms-portal-link">← Return to All Labs</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Force Fullscreen on loading & first user gesture
+(function initAutoFullscreen() {
+  function tryFullscreen() {
+    if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+      const elem = document.documentElement;
+      if (elem.requestFullscreen) {
+        elem.requestFullscreen().catch(() => {});
+      } else if (elem.webkitRequestFullscreen) {
+        elem.webkitRequestFullscreen();
+      }
+    }
+  }
+  // Attempt immediately on loading
+  if (document.readyState === 'complete' || document.readyState === 'interactive') {
+    tryFullscreen();
+  } else {
+    window.addEventListener('DOMContentLoaded', tryFullscreen);
+    window.addEventListener('load', tryFullscreen);
+  }
+  // Auto-engage on first user gesture if browser blocked initial load request
+  const gestureEvents = ['click', 'touchstart', 'pointerdown'];
+  const onFirstGesture = () => {
+    tryFullscreen();
+    gestureEvents.forEach(evt => window.removeEventListener(evt, onFirstGesture));
+  };
+  gestureEvents.forEach(evt => window.addEventListener(evt, onFirstGesture, { passive: true }));
+})();
+</script>
+
+</body>
+</html>

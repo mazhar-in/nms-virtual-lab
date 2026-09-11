@@ -1,0 +1,1495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Simple Pendulum Virtual Laboratory | National Model Schools Physics Virtual Lab</title>
+
+  <!-- KaTeX for mathematical typesetting -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" />
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+
+  <style>
+    :root {
+      --bg: #090e17;
+      --card-bg: #141e2e;
+      --card-surface: #1a273a;
+      --card-border: #2c3e55;
+      --accent: #38bdf8;
+      --accent-hover: #0284c7;
+      --success: #22c55e;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      width: 100%;
+      min-height: 100vh;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-size: 14.5px;
+      line-height: 1.45;
+    }
+
+    /* Zero-Scroll Fullscreen Locks */
+    body.is-fullscreen,
+    :fullscreen body,
+    :-webkit-full-screen body {
+      height: 100vh !important;
+      max-height: 100vh !important;
+      overflow: hidden !important;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 0.65rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      min-height: 100vh;
+    }
+
+    body.is-fullscreen .app-container,
+    :fullscreen .app-container,
+    :-webkit-full-screen .app-container {
+      max-width: 100vw !important;
+      height: 100vh !important;
+      max-height: 100vh !important;
+      padding: 0.35rem 0.5rem !important;
+      gap: 0.35rem !important;
+      overflow: hidden !important;
+    }
+
+    header {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 0.55rem 0.9rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+      flex-shrink: 0;
+    }
+
+    .badge {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    h1 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 0.4rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      padding: 0.4rem 0.75rem;
+      font-size: 0.88rem;
+      font-weight: 600;
+      border-radius: 6px;
+      border: 1px solid var(--card-border);
+      background: var(--card-surface);
+      color: var(--text);
+      cursor: pointer;
+      min-height: 36px;
+      transition: all 0.15s ease;
+      touch-action: manipulation;
+      user-select: none;
+    }
+
+    .btn:hover {
+      background: #24354d;
+      color: #fff;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #042f2e;
+      font-weight: 700;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      color: #fff;
+    }
+
+    .btn-active {
+      background: #0284c7 !important;
+      border-color: #38bdf8 !important;
+      color: #fff !important;
+      font-weight: 700;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.65rem;
+      flex: 1;
+      min-height: 0;
+    }
+
+    @media (min-width: 1024px) {
+      .workspace {
+        grid-template-columns: 1.22fr 0.78fr;
+      }
+    }
+
+    body.is-fullscreen .workspace,
+    :fullscreen .workspace,
+    :-webkit-full-screen .workspace {
+      display: grid !important;
+      grid-template-columns: 1.22fr 0.78fr !important;
+      gap: 0.4rem !important;
+      flex: 1 !important;
+      height: calc(100vh - 62px) !important;
+      max-height: calc(100vh - 62px) !important;
+      min-height: 0 !important;
+      overflow: hidden !important;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 0.65rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+      min-height: 0;
+    }
+
+    .left-column {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      min-height: 0;
+    }
+
+    body.is-fullscreen .left-column,
+    :fullscreen .left-column,
+    :-webkit-full-screen .left-column {
+      height: 100% !important;
+      max-height: 100% !important;
+      overflow: hidden !important;
+    }
+
+    .canvas-wrap {
+      position: relative;
+      width: 100%;
+      flex: 1.35;
+      min-height: 230px;
+      background: #111722;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      overflow: hidden;
+      touch-action: none;
+    }
+
+    body.is-fullscreen .canvas-wrap,
+    :fullscreen .canvas-wrap,
+    :-webkit-full-screen .canvas-wrap {
+      min-height: 180px !important;
+    }
+
+    .graph-wrap {
+      position: relative;
+      width: 100%;
+      flex: 0.85;
+      min-height: 150px;
+      background: #0a0f18;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    body.is-fullscreen .graph-wrap,
+    :fullscreen .graph-wrap,
+    :-webkit-full-screen .graph-wrap {
+      min-height: 120px !important;
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .right-column {
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+      min-height: 0;
+      overflow-y: auto;
+    }
+
+    body.is-fullscreen .right-column,
+    :fullscreen .right-column,
+    :-webkit-full-screen .right-column {
+      height: 100% !important;
+      max-height: 100% !important;
+      overflow-y: auto !important;
+      padding-right: 0.2rem;
+    }
+
+    .right-column::-webkit-scrollbar {
+      width: 5px;
+    }
+    .right-column::-webkit-scrollbar-thumb {
+      background: var(--card-border);
+      border-radius: 3px;
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.35rem;
+      flex-shrink: 0;
+    }
+
+    .metric-badge {
+      background: var(--card-surface);
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      padding: 0.35rem 0.25rem;
+      text-align: center;
+    }
+
+    .metric-label {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .metric-val {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--accent);
+      font-family: monospace;
+    }
+
+    .control-group {
+      background: var(--card-surface);
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      padding: 0.45rem 0.6rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .control-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    input[type="range"] {
+      flex: 1;
+      accent-color: var(--accent);
+      height: 6px;
+      border-radius: 3px;
+      background: #24354d;
+      cursor: pointer;
+    }
+
+    .step-btn {
+      width: 32px;
+      height: 32px;
+      min-height: 32px;
+      padding: 0;
+      font-size: 0.82rem;
+      font-weight: bold;
+      border-radius: 4px;
+      background: #24354d;
+      border: 1px solid var(--card-border);
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .step-btn:hover {
+      background: #314666;
+    }
+
+    .table-wrap {
+      width: 100%;
+      border-radius: 6px;
+      border: 1px solid var(--card-border);
+      overflow-x: auto;
+      max-height: 120px;
+      background: var(--card-surface);
+    }
+
+    body.is-fullscreen .table-wrap,
+    :fullscreen .table-wrap,
+    :-webkit-full-screen .table-wrap {
+      max-height: 100px !important;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.78rem;
+      text-align: center;
+    }
+
+    th, td {
+      padding: 0.28rem 0.35rem;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    th {
+      background: #141e2e;
+      color: var(--text-muted);
+      font-weight: 700;
+      position: sticky;
+      top: 0;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(3px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      z-index: 9999;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      max-width: 620px;
+      width: 100%;
+      max-height: 85vh;
+      overflow-y: auto;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 0.4rem;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+  
+/* Touchscreen & Mobile / Tablet Ergonomics + National Model Schools Branding */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+button, .btn, input[type="range"], select {
+  touch-action: manipulation;
+}
+input[type="range"] {
+  min-height: 38px;
+  cursor: pointer;
+}
+.btn, button {
+  min-height: 40px;
+  touch-action: manipulation;
+}
+.btn-hub {
+  background: rgba(56, 189, 248, 0.15) !important;
+  color: #38bdf8 !important;
+  border: 1px solid rgba(56, 189, 248, 0.35) !important;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 8px;
+  padding: 0.45rem 0.85rem;
+  transition: all 0.2s ease;
+}
+.btn-hub:hover {
+  background: rgba(56, 189, 248, 0.28) !important;
+  color: #ffffff !important;
+  transform: translateY(-1px);
+}
+.nms-lab-footer {
+  margin-top: 2.5rem;
+  padding: 1.2rem 1.5rem;
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.9) 0%, rgba(10, 15, 29, 0.98) 100%);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.36);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: #94a3b8;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  font-size: 0.9rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+.nms-lab-footer-inner {
+  max-width: 1440px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.25rem;
+}
+.nms-brand-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+.nms-brand-title {
+  font-weight: 700;
+  font-size: 1rem;
+  color: #f8fafc;
+  letter-spacing: -0.01em;
+}
+.nms-brand-sub {
+  font-size: 0.8rem;
+  color: #38bdf8;
+}
+.nms-credit-col {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 0.45rem 1rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.nms-dev-text {
+  color: #cbd5e1;
+  font-size: 0.88rem;
+}
+.nms-dev-text strong {
+  color: #ffffff;
+}
+.nms-gh-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: #0f172a;
+  color: #38bdf8;
+  padding: 0.3rem 0.7rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.82rem;
+  transition: all 0.2s ease;
+}
+.nms-gh-btn:hover {
+  background: #0284c7;
+  color: #ffffff;
+  border-color: #0284c7;
+  transform: translateY(-1px);
+}
+.nms-copy-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.3rem;
+  font-size: 0.8rem;
+  color: #64748b;
+}
+.nms-portal-link {
+  color: #38bdf8;
+  text-decoration: none;
+  font-weight: 500;
+}
+.nms-portal-link:hover {
+  text-decoration: underline;
+  color: #7dd3fc;
+}
+/* In Fullscreen simulator mode, hide footer to reserve 100% viewport for simulation workbench */
+:fullscreen .nms-lab-footer,
+:-webkit-full-screen .nms-lab-footer,
+body.is-fullscreen .nms-lab-footer {
+  display: none !important;
+}
+@media (max-width: 768px) {
+  .nms-lab-footer-inner {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .nms-copy-col {
+    align-items: center;
+  }
+}
+
+</style>
+</head>
+<body>
+
+  <div class="app-container" id="appRoot">
+    <header>
+      <div>
+        <span class="badge">National Model Schools • Class XI Physics</span>
+        <h1>Simple Pendulum: $L\text{–}T^2$ Graph &amp; Second's Pendulum</h1>
+      </div>
+      <div class="header-actions">
+        <a href="index.html" class="btn btn-hub" title="Return to All Labs Hub">🏠 All Labs</a>
+        
+        <button class="btn" id="btnTheory">📖 Theory</button>
+        <button class="btn" id="btnReset">↺ Reset</button>
+        <button class="btn btn-primary" id="btnFullscreen">⛶ Fullscreen</button>
+      </div>
+    </header>
+
+    <main class="workspace">
+      <!-- Left Column: Laboratory Stand & Interactive Graph -->
+      <div class="left-column">
+        <div class="card canvas-card" style="flex: 1.35;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <strong style="font-size:0.85rem; color:var(--text-muted);">Pendulum Bench: Stand, Split-Cork Clamp &amp; Spherical Bob</strong>
+            <span style="font-size:0.78rem; color:var(--accent); font-family:monospace;" id="txtOscState">State: Resting</span>
+          </div>
+          <div class="canvas-wrap" id="pendulumWrap">
+            <canvas id="pendulumCanvas"></canvas>
+          </div>
+        </div>
+
+        <div class="card canvas-card" style="flex: 0.85;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div style="display:flex; gap:0.4rem; align-items:center;">
+              <strong style="font-size:0.85rem; color:var(--text-muted);">Plot:</strong>
+              <button class="btn btn-active" id="btnPlotLT2" style="padding:0.15rem 0.4rem; font-size:0.75rem;">$L\text{–}T^2$ Line</button>
+              <button class="btn" id="btnPlotLT" style="padding:0.15rem 0.4rem; font-size:0.75rem;">$L\text{–}T$ Curve</button>
+            </div>
+            <span style="font-size:0.78rem; color:var(--success); font-weight:700;" id="txtSlopeReadout">Slope = 0.000 s²/cm</span>
+          </div>
+          <div class="graph-wrap" id="graphWrap">
+            <canvas id="graphCanvas"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Controls, Stopwatch, Observation Table -->
+      <div class="right-column">
+        <!-- Live Instantaneous Metrics -->
+        <div class="metrics-grid">
+          <div class="metric-badge">
+            <div class="metric-label">Effective $L$</div>
+            <div class="metric-val" id="valEffL">100.0 cm</div>
+          </div>
+          <div class="metric-badge">
+            <div class="metric-label">Oscillations</div>
+            <div class="metric-val" id="valOscCount">0 / 20</div>
+          </div>
+          <div class="metric-badge">
+            <div class="metric-label">Time ($t_{20}$)</div>
+            <div class="metric-val" id="valStopwatch">0.00 s</div>
+          </div>
+          <div class="metric-badge">
+            <div class="metric-label">Period ($T$)</div>
+            <div class="metric-val" id="valPeriod">0.000 s</div>
+          </div>
+        </div>
+
+        <!-- Length of String Control -->
+        <div class="control-group">
+          <div class="control-header">
+            <span>Effective Length $L = l + h + r$</span>
+            <span id="txtLVal" style="color:var(--accent); font-family:monospace;">100.0 cm</span>
+          </div>
+          <div class="slider-row">
+            <button class="step-btn" id="btnMinus5L">−5</button>
+            <button class="step-btn" id="btnMinus1L">−1</button>
+            <input type="range" id="sliderL" min="60" max="120" step="1" value="100" />
+            <button class="step-btn" id="btnPlus1L">+1</button>
+            <button class="step-btn" id="btnPlus5L">+5</button>
+          </div>
+          <div style="font-size:0.72rem; color:var(--text-muted); display:flex; justify-content:space-between;">
+            <span>Thread $l = 98.0\text{ cm}$</span>
+            <span>Hook $h = 1.0\text{ cm}$</span>
+            <span>Radius $r = 1.0\text{ cm}$</span>
+          </div>
+        </div>
+
+        <!-- Displacement & Release Control -->
+        <div class="control-group">
+          <div class="control-header">
+            <span>Angular Displacement ($\theta_0 \le 15^\circ$ for SHM)</span>
+            <span id="txtAngleVal" style="color:var(--accent); font-family:monospace;">8.0°</span>
+          </div>
+          <div class="slider-row">
+            <input type="range" id="sliderAngle" min="2" max="15" step="0.5" value="8" />
+          </div>
+          <div style="display:flex; gap:0.35rem; margin-top:0.25rem;">
+            <button class="btn btn-primary" id="btnOscillate" style="flex:1; font-size:0.82rem;">
+              ▶ Pull &amp; Release Bob
+            </button>
+            <button class="btn" id="btnStopOsc" style="flex:1; font-size:0.82rem;">
+              ⏹ Damp &amp; Stop
+            </button>
+          </div>
+        </div>
+
+        <!-- Precision Stopwatch Desk -->
+        <div class="control-group" style="background:#0f172a; border-color:#1e293b;">
+          <div class="control-header">
+            <span>Digital Laboratory Stopwatch (20 Swings)</span>
+            <span id="txtTimerMode" style="font-size:0.72rem; color:var(--success);">AUTO-STOP AT 20</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:0.2rem;">
+            <div style="font-size:1.4rem; font-weight:800; color:var(--accent); font-family:monospace;" id="stopwatchDigital">
+              00:00.00
+            </div>
+            <div style="display:flex; gap:0.3rem;">
+              <button class="btn" id="btnTimerStartPause" style="padding:0.25rem 0.55rem; font-size:0.78rem;">▶ Start</button>
+              <button class="btn" id="btnTimerReset" style="padding:0.25rem 0.55rem; font-size:0.78rem;">↺ Reset</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Observation Record Table -->
+        <div class="card" style="padding:0.45rem; gap:0.35rem;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <strong style="font-size:0.82rem;">Observation Table</strong>
+            <div style="display:flex; gap:0.3rem;">
+              <button class="btn" id="btnRecord" style="padding:0.2rem 0.5rem; font-size:0.75rem; background:var(--accent); color:#042f2e; font-weight:700;">+ Log Trial</button>
+              <button class="btn" id="btnClearTable" style="padding:0.2rem 0.5rem; font-size:0.75rem;">Clear</button>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>$L$ (cm)</th>
+                  <th>$t_{20}$ (s)</th>
+                  <th>$T = t/20$ (s)</th>
+                  <th>$T^2$ (s²)</th>
+                  <th>$L / T^2$</th>
+                </tr>
+              </thead>
+              <tbody id="obsTableBody">
+                <tr><td colspan="6" style="color:var(--text-muted);">No records logged yet. Time 20 swings and log.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Analytical Evaluation Desk -->
+        <div class="card" style="padding:0.45rem; font-size:0.8rem; background:var(--card-surface); border-color:var(--card-border);">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <strong>Second's Pendulum ($T = 2.0\text{ s}$):</strong>
+            <span style="color:var(--accent); font-weight:bold;" id="txtSecondsL">L_s ≈ 99.4 cm</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:0.25rem;">
+            <span>Evaluated $g = 4\pi^2 (L/T^2)$: <strong id="valComputedG" style="color:var(--success); font-size:0.95rem; font-family:monospace;">-- cm/s²</strong></span>
+            <span style="color:var(--text-muted); font-size:0.75rem;" id="txtStandardG">Standard: 980 cm/s²</span>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Theory Modal -->
+  <div class="modal-backdrop" id="theoryModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Theory: Simple Pendulum &amp; Second's Pendulum</h3>
+        <button class="modal-close" id="btnCloseModal">&times;</button>
+      </div>
+      <div style="font-size:0.9rem; line-height:1.55; color:#cbd5e1; display:flex; flex-direction:column; gap:0.6rem;">
+        <p><strong>Principle:</strong> A heavy spherical bob suspended by a light, inextensible thread from a rigid support undergoes simple harmonic motion for small angular displacements ($\theta \le 15^\circ$). The restoring torque is proportional to the angular displacement:</p>
+        <div style="text-align:center; padding:0.4rem; background:#0b111c; border-radius:6px; color:var(--accent);">
+          $$\tau = - m g L \sin\theta \approx - m g L \theta$$
+        </div>
+        <p><strong>Time Period ($T$):</strong></p>
+        <div style="text-align:center; padding:0.4rem; background:#0b111c; border-radius:6px; color:var(--accent);">
+          $$T = 2\pi \sqrt{\frac{L}{g}} \implies T^2 = \frac{4\pi^2}{g} L$$
+        </div>
+        <p>where $L$ is the <strong>effective length</strong> measured from the point of suspension to the center of gravity of the bob ($L = l + h + r$).</p>
+        <p><strong>Second's Pendulum:</strong> A pendulum whose period of oscillation is exactly <strong>$2\text{ seconds}$</strong> (takes $1\text{ s}$ for each swing from one extreme to the other). Its length $L_s$ is given by:</p>
+        <div style="text-align:center; padding:0.4rem; background:#0b111c; border-radius:6px; color:var(--accent);">
+          $$2 = 2\pi \sqrt{\frac{L_s}{g}} \implies L_s = \frac{g}{\pi^2} \approx \frac{980}{9.8696} \approx 99.3\text{ cm}$$
+        </div>
+        <p><strong>$L\text{–}T^2$ Graph:</strong> A plot between effective length $L$ on the x-axis and $T^2$ on the y-axis is a straight line passing through the origin. The acceleration due to gravity is determined from the slope:</p>
+        <div style="text-align:center; padding:0.4rem; background:#0b111c; border-radius:6px; color:var(--accent);">
+          $$\text{Slope} = \frac{\Delta (T^2)}{\Delta L} = \frac{4\pi^2}{g} \implies g = \frac{4\pi^2}{\text{Slope}}$$
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // System Parameters
+    const g_true = 980.0; // cm/s^2 (Standard gravity)
+    const hook_h = 1.0;   // cm
+    const bob_r = 1.0;    // cm
+    let thread_l = 98.0;  // cm
+    let effectiveL = thread_l + hook_h + bob_r; // 100.0 cm
+
+    // Oscillation State Variables
+    let theta0 = 8.0 * (Math.PI / 180); // initial angle (radians)
+    let theta = 0;                      // current angle (radians)
+    let omega = 0;                      // angular velocity (rad/s)
+    let isOscillating = false;
+    let isDraggingBob = false;
+    let dampingFactor = 0.0004;
+
+    // Timing & Counter State
+    let oscCount = 0;
+    let prevTheta = 0;
+    let stopwatchRunning = false;
+    let stopwatchTime = 0.0; // seconds
+    let lastTimestamp = null;
+    let measuredT = 0;
+
+    let activePlotType = 'LT2'; // 'LT2' or 'LT'
+    let observations = [];
+
+    // Canvas Contexts
+    const pendulumCanvas = document.getElementById('pendulumCanvas');
+    const pCtx = pendulumCanvas.getContext('2d');
+    const graphCanvas = document.getElementById('graphCanvas');
+    const gCtx = graphCanvas.getContext('2d');
+
+    // UI Elements
+    const txtOscState = document.getElementById('txtOscState');
+    const txtLVal = document.getElementById('txtLVal');
+    const txtAngleVal = document.getElementById('txtAngleVal');
+    const sliderL = document.getElementById('sliderL');
+    const sliderAngle = document.getElementById('sliderAngle');
+    const valEffL = document.getElementById('valEffL');
+    const valOscCount = document.getElementById('valOscCount');
+    const valStopwatch = document.getElementById('valStopwatch');
+    const valPeriod = document.getElementById('valPeriod');
+    const stopwatchDigital = document.getElementById('stopwatchDigital');
+    const btnTimerStartPause = document.getElementById('btnTimerStartPause');
+    const btnTimerReset = document.getElementById('btnTimerReset');
+    const btnOscillate = document.getElementById('btnOscillate');
+    const btnStopOsc = document.getElementById('btnStopOsc');
+    const obsTableBody = document.getElementById('obsTableBody');
+    const txtSlopeReadout = document.getElementById('txtSlopeReadout');
+    const txtSecondsL = document.getElementById('txtSecondsL');
+    const valComputedG = document.getElementById('valComputedG');
+    const btnPlotLT2 = document.getElementById('btnPlotLT2');
+    const btnPlotLT = document.getElementById('btnPlotLT');
+
+    // Modals & Fullscreen
+    const theoryModal = document.getElementById('theoryModal');
+    document.getElementById('btnTheory').onclick = () => theoryModal.classList.add('open');
+    document.getElementById('btnCloseModal').onclick = () => theoryModal.classList.remove('open');
+    theoryModal.onclick = (e) => { if (e.target === theoryModal) theoryModal.classList.remove('open'); };
+
+    const btnFullscreen = document.getElementById('btnFullscreen');
+    btnFullscreen.addEventListener('click', () => {
+      if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+        const root = document.documentElement;
+        if (root.requestFullscreen) root.requestFullscreen();
+        else if (root.webkitRequestFullscreen) root.webkitRequestFullscreen();
+        document.body.classList.add('is-fullscreen');
+        btnFullscreen.innerText = '🗗 Exit Fullscreen';
+      } else {
+        if (document.exitFullscreen) document.exitFullscreen();
+        else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+        document.body.classList.remove('is-fullscreen');
+        btnFullscreen.innerText = '⛶ Fullscreen';
+      }
+      setTimeout(resizeCanvases, 100);
+    });
+
+    // Reset Lab
+    document.getElementById('btnReset').addEventListener('click', () => {
+      sliderL.value = 100;
+      effectiveL = 100;
+      thread_l = effectiveL - hook_h - bob_r;
+      txtLVal.innerText = `${effectiveL.toFixed(1)} cm`;
+      valEffL.innerText = `${effectiveL.toFixed(1)} cm`;
+
+      sliderAngle.value = 8;
+      theta0 = 8 * (Math.PI / 180);
+      txtAngleVal.innerText = '8.0°';
+
+      stopOscillation();
+      resetTimer();
+      observations = [];
+      renderTable();
+      drawGraph();
+    });
+
+    // Length Slider & Steppers
+    sliderL.addEventListener('input', (e) => {
+      effectiveL = parseFloat(e.target.value);
+      thread_l = effectiveL - hook_h - bob_r;
+      txtLVal.innerText = `${effectiveL.toFixed(1)} cm`;
+      valEffL.innerText = `${effectiveL.toFixed(1)} cm`;
+      if (!isOscillating) theta = 0;
+    });
+
+    document.getElementById('btnMinus5L').onclick = () => adjustLength(-5);
+    document.getElementById('btnMinus1L').onclick = () => adjustLength(-1);
+    document.getElementById('btnPlus1L').onclick = () => adjustLength(1);
+    document.getElementById('btnPlus5L').onclick = () => adjustLength(5);
+
+    function adjustLength(delta) {
+      sliderL.value = Math.max(60, Math.min(120, parseFloat(sliderL.value) + delta));
+      sliderL.dispatchEvent(new Event('input'));
+    }
+
+    // Angle Slider
+    sliderAngle.addEventListener('input', (e) => {
+      const deg = parseFloat(e.target.value);
+      theta0 = deg * (Math.PI / 180);
+      txtAngleVal.innerText = `${deg.toFixed(1)}°`;
+      if (!isOscillating) {
+        theta = theta0;
+      }
+    });
+
+    // Start / Stop Oscillation
+    btnOscillate.addEventListener('click', () => {
+      theta = theta0;
+      omega = 0;
+      isOscillating = true;
+      txtOscState.innerText = 'State: Oscillating';
+      txtOscState.style.color = 'var(--success)';
+
+      // Auto start stopwatch
+      resetTimer();
+      stopwatchRunning = true;
+      btnTimerStartPause.innerText = '⏸ Pause';
+    });
+
+    btnStopOsc.addEventListener('click', stopOscillation);
+
+    function stopOscillation() {
+      isOscillating = false;
+      theta = 0;
+      omega = 0;
+      txtOscState.innerText = 'State: Resting';
+      txtOscState.style.color = 'var(--text-muted)';
+    }
+
+    // Stopwatch Controls
+    btnTimerStartPause.addEventListener('click', () => {
+      stopwatchRunning = !stopwatchRunning;
+      btnTimerStartPause.innerText = stopwatchRunning ? '⏸ Pause' : '▶ Start';
+    });
+
+    btnTimerReset.addEventListener('click', resetTimer);
+
+    function resetTimer() {
+      stopwatchRunning = false;
+      stopwatchTime = 0.0;
+      oscCount = 0;
+      prevTheta = 0;
+      btnTimerStartPause.innerText = '▶ Start';
+      updateTimerDisplay();
+    }
+
+    function updateTimerDisplay() {
+      valStopwatch.innerText = `${stopwatchTime.toFixed(2)} s`;
+      valOscCount.innerText = `${oscCount} / 20`;
+
+      const mins = Math.floor(stopwatchTime / 60);
+      const secs = Math.floor(stopwatchTime % 60);
+      const centis = Math.floor((stopwatchTime * 100) % 100);
+      stopwatchDigital.innerText = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}.${String(centis).padStart(2, '0')}`;
+
+      if (oscCount > 0) {
+        measuredT = stopwatchTime / oscCount;
+        valPeriod.innerText = `${measuredT.toFixed(3)} s`;
+      } else {
+        valPeriod.innerText = '0.000 s';
+      }
+    }
+
+    // Toggle Plot Modes
+    btnPlotLT2.addEventListener('click', () => {
+      btnPlotLT2.classList.add('btn-active');
+      btnPlotLT.classList.remove('btn-active');
+      activePlotType = 'LT2';
+      drawGraph();
+    });
+
+    btnPlotLT.addEventListener('click', () => {
+      btnPlotLT.classList.add('btn-active');
+      btnPlotLT2.classList.remove('btn-active');
+      activePlotType = 'LT';
+      drawGraph();
+    });
+
+    // Observation Table Logging
+    document.getElementById('btnRecord').addEventListener('click', () => {
+      if (stopwatchTime < 1.0) {
+        // Compute theoretical period if stopwatch wasn't fully run
+        measuredT = 2 * Math.PI * Math.sqrt(effectiveL / g_true);
+        stopwatchTime = measuredT * 20;
+        oscCount = 20;
+        updateTimerDisplay();
+      }
+
+      const T = measuredT;
+      const T2 = T * T;
+      const ratio = effectiveL / T2;
+
+      observations.push({
+        L: effectiveL,
+        t20: stopwatchTime.toFixed(2),
+        T: T.toFixed(3),
+        T2: T2.toFixed(3),
+        ratio: ratio.toFixed(2)
+      });
+
+      observations.sort((a, b) => a.L - b.L);
+      renderTable();
+      drawGraph();
+    });
+
+    document.getElementById('btnClearTable').addEventListener('click', () => {
+      observations = [];
+      renderTable();
+      drawGraph();
+    });
+
+    function renderTable() {
+      if (observations.length === 0) {
+        obsTableBody.innerHTML = '<tr><td colspan="6" style="color:var(--text-muted);">No records logged yet. Time 20 swings and log.</td></tr>';
+        return;
+      }
+
+      obsTableBody.innerHTML = observations.map((r, i) => `
+        <tr>
+          <td>${i + 1}</td>
+          <td>${r.L}</td>
+          <td>${r.t20}</td>
+          <td>${r.T}</td>
+          <td><strong>${r.T2}</strong></td>
+          <td><span style="color:var(--accent); font-weight:bold;">${r.ratio}</span></td>
+        </tr>
+      `).join('');
+    }
+
+    // Interactive Dragging on Pendulum Bob
+    let clampPivot = { x: 0, y: 0 };
+    let bobRadiusPx = 14;
+
+    function getCanvasCoords(e) {
+      const rect = pendulumCanvas.getBoundingClientRect();
+      const scaleX = pendulumCanvas.width / (rect.width * (window.devicePixelRatio || 1));
+      const scaleY = pendulumCanvas.height / (rect.height * (window.devicePixelRatio || 1));
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      return {
+        x: (clientX - rect.left) * scaleX,
+        y: (clientY - rect.top) * scaleY
+      };
+    }
+
+    pendulumCanvas.addEventListener('mousedown', startDrag);
+    pendulumCanvas.addEventListener('touchstart', startDrag, { passive: false });
+    window.addEventListener('mousemove', dragBob);
+    window.addEventListener('touchmove', dragBob, { passive: false });
+    window.addEventListener('mouseup', endDrag);
+    window.addEventListener('touchend', endDrag);
+
+    function startDrag(e) {
+      const pt = getCanvasCoords(e);
+      const pxPerCm = 2.4;
+      const armLengthPx = effectiveL * pxPerCm;
+      const bobX = clampPivot.x + armLengthPx * Math.sin(theta);
+      const bobY = clampPivot.y + armLengthPx * Math.cos(theta);
+
+      const dist = Math.hypot(pt.x - bobX, pt.y - bobY);
+      if (dist < bobRadiusPx + 18) {
+        isDraggingBob = true;
+        isOscillating = false;
+        omega = 0;
+        e.preventDefault();
+      }
+    }
+
+    function dragBob(e) {
+      if (!isDraggingBob) return;
+      const pt = getCanvasCoords(e);
+      const dx = pt.x - clampPivot.x;
+      const dy = Math.max(10, pt.y - clampPivot.y);
+      let angle = Math.atan2(dx, dy);
+
+      // Clamp angle to ±15 degrees for valid SHM conditions
+      angle = Math.max(-15 * Math.PI / 180, Math.min(15 * Math.PI / 180, angle));
+      theta = angle;
+      theta0 = Math.abs(angle);
+      sliderAngle.value = (theta0 * 180 / Math.PI).toFixed(1);
+      txtAngleVal.innerText = `${sliderAngle.value}°`;
+      e.preventDefault();
+    }
+
+    function endDrag() {
+      if (isDraggingBob) {
+        isDraggingBob = false;
+        if (Math.abs(theta) > 0.02) {
+          isOscillating = true;
+          txtOscState.innerText = 'State: Oscillating';
+          txtOscState.style.color = 'var(--success)';
+          resetTimer();
+          stopwatchRunning = true;
+          btnTimerStartPause.innerText = '⏸ Pause';
+        }
+      }
+    }
+
+    // High-DPI Canvas Resizing
+    function resizeCanvases() {
+      const dpr = window.devicePixelRatio || 1;
+
+      const pWrap = document.getElementById('pendulumWrap');
+      pendulumCanvas.width = pWrap.clientWidth * dpr;
+      pendulumCanvas.height = pWrap.clientHeight * dpr;
+      pCtx.setTransform(1, 0, 0, 1, 0, 0);
+      pCtx.scale(dpr, dpr);
+
+      const gWrap = document.getElementById('graphWrap');
+      graphCanvas.width = gWrap.clientWidth * dpr;
+      graphCanvas.height = gWrap.clientHeight * dpr;
+      gCtx.setTransform(1, 0, 0, 1, 0, 0);
+      gCtx.scale(dpr, dpr);
+
+      drawGraph();
+    }
+    window.addEventListener('resize', resizeCanvases);
+
+    // Physics Engine: Numerical Integration of Pendulum Differential Equation
+    function updatePhysics(dt) {
+      if (isOscillating && !isDraggingBob) {
+        // True differential equation: d²θ/dt² + (g/L)*sin(θ) + γ*(dθ/dt) = 0
+        const alpha = -(g_true / effectiveL) * Math.sin(theta) - dampingFactor * omega;
+
+        omega += alpha * dt;
+        prevTheta = theta;
+        theta += omega * dt;
+
+        // Count oscillations by tracking zero-crossings from left to right (positive velocity)
+        if (prevTheta < 0 && theta >= 0 && omega > 0) {
+          if (stopwatchRunning) {
+            oscCount++;
+            if (oscCount >= 20) {
+              stopwatchRunning = false;
+              btnTimerStartPause.innerText = '▶ Start';
+              txtOscState.innerText = '20 Swings Completed!';
+              txtOscState.style.color = 'var(--accent)';
+            }
+            updateTimerDisplay();
+          }
+        }
+      }
+
+      if (stopwatchRunning) {
+        stopwatchTime += dt;
+        updateTimerDisplay();
+      }
+    }
+
+    // DRAW MAIN PENDULUM APPARATUS
+    function drawPendulum() {
+      const w = pendulumCanvas.width / (window.devicePixelRatio || 1);
+      const h = pendulumCanvas.height / (window.devicePixelRatio || 1);
+      pCtx.clearRect(0, 0, w, h);
+
+      // Laboratory wall / background
+      pCtx.fillStyle = '#0f172a';
+      pCtx.fillRect(0, 0, w, h);
+
+      // Reference pointer & vertical datum line
+      const cx = w * 0.5;
+      clampPivot = { x: cx, y: 35 };
+
+      // 1. Heavy Laboratory Retort Stand
+      pCtx.fillStyle = '#334155';
+      // Base
+      pCtx.fillRect(cx - 110, h - 22, 90, 14);
+      pCtx.strokeStyle = '#1e293b';
+      pCtx.lineWidth = 1.5;
+      pCtx.strokeRect(cx - 110, h - 22, 90, 14);
+
+      // Vertical steel rod
+      const standX = cx - 65;
+      pCtx.fillStyle = '#cbd5e1';
+      pCtx.fillRect(standX - 4, 25, 8, h - 47);
+      pCtx.strokeRect(standX - 4, 25, 8, h - 47);
+
+      // Horizontal clamp arm
+      pCtx.fillStyle = '#475569';
+      pCtx.fillRect(standX - 4, clampPivot.y - 12, (cx - standX) + 16, 10);
+      pCtx.strokeRect(standX - 4, clampPivot.y - 12, (cx - standX) + 16, 10);
+
+      // Split cork clamp halves
+      pCtx.fillStyle = '#b45309';
+      pCtx.fillRect(cx - 8, clampPivot.y - 14, 16, 14);
+      pCtx.strokeStyle = '#78350f';
+      pCtx.strokeRect(cx - 8, clampPivot.y - 14, 16, 14);
+
+      // Vertical Equilibrium Reference Dotted Line
+      pCtx.strokeStyle = 'rgba(148, 163, 184, 0.25)';
+      pCtx.setLineDash([4, 4]);
+      pCtx.lineWidth = 1.5;
+      pCtx.beginPath();
+      pCtx.moveTo(cx, clampPivot.y);
+      pCtx.lineTo(cx, h - 35);
+      pCtx.stroke();
+      pCtx.setLineDash([]);
+
+      // Vertical Mean Position Needle Marker on the tabletop
+      pCtx.fillStyle = '#dc2626';
+      pCtx.beginPath();
+      pCtx.moveTo(cx - 4, h - 28);
+      pCtx.lineTo(cx + 4, h - 28);
+      pCtx.lineTo(cx, h - 42);
+      pCtx.closePath();
+      pCtx.fill();
+
+      // 2. Suspended Pendulum
+      const pxPerCm = 2.4;
+      const threadLengthPx = thread_l * pxPerCm;
+      const hookLengthPx = hook_h * pxPerCm;
+      const armLengthPx = effectiveL * pxPerCm;
+
+      const hookX = clampPivot.x + threadLengthPx * Math.sin(theta);
+      const hookY = clampPivot.y + threadLengthPx * Math.cos(theta);
+
+      const bobX = clampPivot.x + armLengthPx * Math.sin(theta);
+      const bobY = clampPivot.y + armLengthPx * Math.cos(theta);
+
+      // Light inextensible suspension thread
+      pCtx.strokeStyle = '#f8fafc';
+      pCtx.lineWidth = 1.5;
+      pCtx.beginPath();
+      pCtx.moveTo(clampPivot.x, clampPivot.y);
+      pCtx.lineTo(hookX, hookY);
+      pCtx.stroke();
+
+      // Metallic hook loop
+      pCtx.strokeStyle = '#ca8a04';
+      pCtx.lineWidth = 2;
+      pCtx.beginPath();
+      pCtx.arc(hookX, hookY + hookLengthPx * 0.5, 4, -Math.PI * 0.5, Math.PI * 1.5);
+      pCtx.stroke();
+
+      // Heavy Spherical Brass Bob
+      const rPx = bob_r * pxPerCm * 5.5; // Visual enhancement for realistic touch
+      bobRadiusPx = rPx;
+
+      const bGrad = pCtx.createRadialGradient(bobX - rPx * 0.35, bobY - rPx * 0.35, rPx * 0.1, bobX, bobY, rPx);
+      bGrad.addColorStop(0, '#fef08a');
+      bGrad.addColorStop(0.4, '#eab308');
+      bGrad.addColorStop(1, '#854d0e');
+
+      pCtx.fillStyle = bGrad;
+      pCtx.beginPath();
+      pCtx.arc(bobX, bobY, rPx, 0, Math.PI * 2);
+      pCtx.fill();
+      pCtx.strokeStyle = '#713f12';
+      pCtx.lineWidth = 1.8;
+      pCtx.stroke();
+
+      // Center of gravity marker
+      pCtx.fillStyle = '#dc2626';
+      pCtx.beginPath();
+      pCtx.arc(bobX, bobY, 2.5, 0, Math.PI * 2);
+      pCtx.fill();
+
+      // Arc showing angular displacement
+      if (Math.abs(theta) > 0.01) {
+        pCtx.strokeStyle = '#38bdf8';
+        pCtx.lineWidth = 1.2;
+        pCtx.beginPath();
+        const startAng = Math.PI * 0.5 - (theta > 0 ? 0 : -theta);
+        const endAng = Math.PI * 0.5 + (theta > 0 ? theta : 0);
+        pCtx.arc(clampPivot.x, clampPivot.y, 45, startAng, endAng);
+        pCtx.stroke();
+
+        pCtx.fillStyle = '#38bdf8';
+        pCtx.font = '10px sans-serif';
+        pCtx.fillText(`${(Math.abs(theta) * 180 / Math.PI).toFixed(1)}°`, cx + (theta > 0 ? 52 : -68), clampPivot.y + 55);
+      }
+    }
+
+    // DRAW GRAPH: L-T^2 or L-T Graph Plotter
+    function drawGraph() {
+      const w = graphCanvas.width / (window.devicePixelRatio || 1);
+      const h = graphCanvas.height / (window.devicePixelRatio || 1);
+      gCtx.clearRect(0, 0, w, h);
+
+      // Graph paper background
+      gCtx.fillStyle = '#0a101b';
+      gCtx.fillRect(0, 0, w, h);
+
+      const padL = 48;
+      const padB = 32;
+      const padT = 16;
+      const padR = 20;
+
+      const graphW = w - padL - padR;
+      const graphH = h - padB - padT;
+
+      // Coordinate axes
+      gCtx.strokeStyle = '#233348';
+      gCtx.lineWidth = 1;
+
+      // X-Axis bounds (Length L: 0 to 140 cm)
+      const maxL = 140;
+
+      // Y-Axis bounds: T^2 (0 to 6 s^2) or T (0 to 2.5 s)
+      const maxY = (activePlotType === 'LT2') ? 6.0 : 2.5;
+
+      // Grid Lines & Labels
+      for (let i = 0; i <= 6; i++) {
+        const y = padT + (graphH / 6) * i;
+        gCtx.beginPath();
+        gCtx.moveTo(padL, y);
+        gCtx.lineTo(w - padR, y);
+        gCtx.stroke();
+
+        const yVal = (maxY - (i * maxY) / 6).toFixed(activePlotType === 'LT2' ? 1 : 2);
+        gCtx.fillStyle = '#64748b';
+        gCtx.font = '9px sans-serif';
+        gCtx.textAlign = 'right';
+        gCtx.fillText(yVal, padL - 6, y + 3);
+      }
+
+      for (let j = 0; j <= 7; j++) {
+        const x = padL + (graphW / 7) * j;
+        gCtx.beginPath();
+        gCtx.moveTo(x, padT);
+        gCtx.lineTo(x, h - padB);
+        gCtx.stroke();
+
+        const xVal = ((j * maxL) / 7).toFixed(0);
+        gCtx.fillStyle = '#64748b';
+        gCtx.font = '9px sans-serif';
+        gCtx.textAlign = 'center';
+        gCtx.fillText(xVal, x, h - padB + 16);
+      }
+
+      // Axis Titles
+      gCtx.fillStyle = '#38bdf8';
+      gCtx.font = 'bold 9.5px sans-serif';
+      gCtx.fillText(activePlotType === 'LT2' ? 'T² (s²) ↑' : 'T (s) ↑', padL + 30, padT + 10);
+      gCtx.fillText('Length L (cm) →', w - padR - 40, h - padB - 6);
+
+      // Plot Theoretical Curve
+      gCtx.strokeStyle = 'rgba(56, 189, 248, 0.4)';
+      gCtx.lineWidth = 1.5;
+      gCtx.beginPath();
+
+      for (let l = 0; l <= maxL; l += 2) {
+        const px = padL + (l / maxL) * graphW;
+        let yTheory = 0;
+        if (activePlotType === 'LT2') {
+          yTheory = (4 * Math.PI * Math.PI / g_true) * l;
+        } else {
+          yTheory = 2 * Math.PI * Math.sqrt(l / g_true);
+        }
+        const py = padT + graphH - (yTheory / maxY) * graphH;
+        if (l === 0) gCtx.moveTo(px, py);
+        else gCtx.lineTo(px, py);
+      }
+      gCtx.stroke();
+
+      // Highlight Second's Pendulum (T = 2.0 s, T^2 = 4.0 s^2)
+      const secL = g_true / (Math.PI * Math.PI); // ~99.3 cm
+      const secX = padL + (secL / maxL) * graphW;
+      const secY = padT + graphH - ((activePlotType === 'LT2' ? 4.0 : 2.0) / maxY) * graphH;
+
+      gCtx.strokeStyle = '#f59e0b';
+      gCtx.lineWidth = 1.5;
+      gCtx.setLineDash([4, 3]);
+
+      // Horizontal line from Y = 4.0 s^2 to curve
+      gCtx.beginPath();
+      gCtx.moveTo(padL, secY);
+      gCtx.lineTo(secX, secY);
+      gCtx.lineTo(secX, padT + graphH);
+      gCtx.stroke();
+      gCtx.setLineDash([]);
+
+      gCtx.fillStyle = '#f59e0b';
+      gCtx.beginPath();
+      gCtx.arc(secX, secY, 4, 0, Math.PI * 2);
+      gCtx.fill();
+
+      gCtx.font = 'bold 9px sans-serif';
+      gCtx.textAlign = 'left';
+      gCtx.fillText(`L_s = ${secL.toFixed(1)} cm (T = 2.0s)`, secX + 6, secY - 6);
+
+      txtSecondsL.innerText = `L_s = ${secL.toFixed(1)} cm (at T = 2.0s)`;
+
+      // Plot Observed Student Data Points
+      if (observations.length > 0) {
+        observations.forEach(pt => {
+          const px = padL + (pt.L / maxL) * graphW;
+          const yVal = activePlotType === 'LT2' ? parseFloat(pt.T2) : parseFloat(pt.T);
+          const py = padT + graphH - (yVal / maxY) * graphH;
+
+          gCtx.fillStyle = '#22c55e';
+          gCtx.beginPath();
+          gCtx.arc(px, py, 4.5, 0, Math.PI * 2);
+          gCtx.fill();
+          gCtx.strokeStyle = '#fff';
+          gCtx.lineWidth = 1;
+          gCtx.stroke();
+        });
+
+        // Linear Regression for L-T^2
+        if (activePlotType === 'LT2') {
+          let sumL2 = 0;
+          let sumLT2 = 0;
+          observations.forEach(pt => {
+            sumL2 += pt.L * pt.L;
+            sumLT2 += pt.L * parseFloat(pt.T2);
+          });
+
+          const expSlope = sumL2 > 0 ? (sumLT2 / sumL2) : (4 * Math.PI * Math.PI / g_true);
+          const expG = (4 * Math.PI * Math.PI) / expSlope;
+
+          txtSlopeReadout.innerText = `Slope = ${expSlope.toFixed(4)} s²/cm`;
+          valComputedG.innerText = `${expG.toFixed(1)} cm/s²`;
+        } else {
+          txtSlopeReadout.innerText = 'Parabolic L–T Curve';
+          valComputedG.innerText = 'Use L–T² for g';
+        }
+      } else {
+        txtSlopeReadout.innerText = activePlotType === 'LT2' ? 'Slope = 0.0403 s²/cm' : 'Parabolic L–T Curve';
+        valComputedG.innerText = 'Log trials to evaluate';
+      }
+    }
+
+    // Animation & Physics Loop
+    function frame(timestamp) {
+      if (!lastTimestamp) lastTimestamp = timestamp;
+      const dt = Math.min(0.04, (timestamp - lastTimestamp) / 1000); // clamp delta time
+      lastTimestamp = timestamp;
+
+      updatePhysics(dt);
+      drawPendulum();
+      requestAnimationFrame(frame);
+    }
+
+    // Initialization
+    window.addEventListener('DOMContentLoaded', () => {
+      if (window.renderMathInElement) {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: '$$', right: '$$', display: true },
+            { left: '$', right: '$', display: false }
+          ]
+        });
+      }
+      setTimeout(resizeCanvases, 50);
+      requestAnimationFrame(frame);
+    });
+  </script>
+<footer class="nms-lab-footer">
+  <div class="nms-lab-footer-inner">
+    <div class="nms-brand-col">
+      <div class="nms-brand-title">🏛️ National Model Schools</div>
+      <div class="nms-brand-sub">Senior Secondary Physics Virtual Laboratory</div>
+    </div>
+    <div class="nms-credit-col">
+      <span class="nms-dev-text">Developed with <span style="color:#ef4444;">❤</span> by <strong>Syed Mazhar Ali</strong></span>
+      <a href="https://github.com/mazhar-in" target="_blank" rel="noopener noreferrer" class="nms-gh-btn" title="Syed Mazhar Ali on GitHub">
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
+        <span>mazhar-in</span>
+      </a>
+    </div>
+    <div class="nms-copy-col">
+      <span>© National Model Schools. All rights reserved.</span>
+      <a href="index.html" class="nms-portal-link">← Return to All Labs</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Force Fullscreen on loading & first user gesture
+(function initAutoFullscreen() {
+  function tryFullscreen() {
+    if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+      const elem = document.documentElement;
+      if (elem.requestFullscreen) {
+        elem.requestFullscreen().catch(() => {});
+      } else if (elem.webkitRequestFullscreen) {
+        elem.webkitRequestFullscreen();
+      }
+    }
+  }
+  // Attempt immediately on loading
+  if (document.readyState === 'complete' || document.readyState === 'interactive') {
+    tryFullscreen();
+  } else {
+    window.addEventListener('DOMContentLoaded', tryFullscreen);
+    window.addEventListener('load', tryFullscreen);
+  }
+  // Auto-engage on first user gesture if browser blocked initial load request
+  const gestureEvents = ['click', 'touchstart', 'pointerdown'];
+  const onFirstGesture = () => {
+    tryFullscreen();
+    gestureEvents.forEach(evt => window.removeEventListener(evt, onFirstGesture));
+  };
+  gestureEvents.forEach(evt => window.addEventListener(evt, onFirstGesture, { passive: true }));
+})();
+</script>
+
+</body>
+</html>

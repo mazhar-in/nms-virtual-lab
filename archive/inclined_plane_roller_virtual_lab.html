@@ -1,0 +1,1403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
+  <title>Inclined Plane Virtual Lab | Downward Force &amp; Sin(θ) Graph</title>
+
+  <!-- KaTeX for crisp mathematical formulas -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" crossorigin="anonymous" />
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" crossorigin="anonymous" onload="initMathTypesetting()"></script>
+
+  <style>
+    :root {
+      --bg: #090e17;
+      --card-bg: #141e2e;
+      --card-surface: #1a273a;
+      --card-border: #2c3e55;
+      --accent: #38bdf8;
+      --accent-hover: #0284c7;
+      --success: #22c55e;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      width: 100%;
+      min-height: 100vh;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    /* ZERO-SCROLL FULLSCREEN LOCK */
+    body.is-fullscreen,
+    :fullscreen body,
+    :-webkit-full-screen body {
+      height: 100vh !important;
+      max-height: 100vh !important;
+      overflow: hidden !important;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 1480px;
+      margin: 0 auto;
+      padding: 0.6rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      min-height: 100vh;
+    }
+
+    body.is-fullscreen .app-container,
+    :fullscreen .app-container,
+    :-webkit-full-screen .app-container {
+      max-width: 100vw !important;
+      height: 100vh !important;
+      max-height: 100vh !important;
+      padding: 0.35rem 0.5rem !important;
+      gap: 0.35rem !important;
+      overflow: hidden !important;
+      justify-content: flex-start;
+    }
+
+    header {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 0.5rem 0.85rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+      flex-shrink: 0;
+    }
+
+    .badge-row {
+      display: flex;
+      gap: 0.4rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: rgba(56, 189, 248, 0.12);
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      border: 1px solid rgba(56, 189, 248, 0.25);
+    }
+
+    .badge-sub {
+      color: #facc15;
+      background: rgba(234, 179, 8, 0.12);
+      border-color: rgba(234, 179, 8, 0.3);
+    }
+
+    h1 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 0.4rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+      padding: 0.4rem 0.75rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border-radius: 6px;
+      border: 1px solid var(--card-border);
+      background: var(--card-surface);
+      color: var(--text);
+      cursor: pointer;
+      min-height: 38px;
+      transition: all 0.15s ease;
+      touch-action: manipulation;
+      user-select: none;
+    }
+
+    .btn:hover {
+      background: #24354d;
+      color: #fff;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #042f2e;
+      font-weight: 700;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      color: #fff;
+    }
+
+    .btn-active {
+      background: #0284c7 !important;
+      border-color: #38bdf8 !important;
+      color: #fff !important;
+      font-weight: 700;
+    }
+
+    /* Workspace Layout */
+    .workspace {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.55rem;
+      flex: 1;
+      min-height: 0;
+    }
+
+    @media (min-width: 1040px) {
+      .workspace {
+        grid-template-columns: 1.22fr 0.78fr;
+      }
+    }
+
+    body.is-fullscreen .workspace,
+    :fullscreen .workspace,
+    :-webkit-full-screen .workspace {
+      display: grid !important;
+      grid-template-columns: 1.22fr 0.78fr !important;
+      gap: 0.4rem !important;
+      flex: 1 !important;
+      height: calc(100vh - 66px) !important;
+      max-height: calc(100vh - 66px) !important;
+      min-height: 0 !important;
+      overflow: hidden !important;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 0.65rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+      min-height: 0;
+    }
+
+    .left-column {
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+      min-height: 0;
+    }
+
+    body.is-fullscreen .left-column,
+    :fullscreen .left-column,
+    :-webkit-full-screen .left-column {
+      height: 100% !important;
+      max-height: 100% !important;
+      overflow: hidden !important;
+    }
+
+    .canvas-wrap {
+      position: relative;
+      width: 100%;
+      flex: 1.3;
+      min-height: 220px;
+      background: #111722;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      overflow: hidden;
+      touch-action: none;
+    }
+
+    body.is-fullscreen .canvas-wrap,
+    :fullscreen .canvas-wrap,
+    :-webkit-full-screen .canvas-wrap {
+      min-height: 170px !important;
+    }
+
+    .graph-wrap {
+      position: relative;
+      width: 100%;
+      flex: 0.85;
+      min-height: 140px;
+      background: #0a0f18;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    body.is-fullscreen .graph-wrap,
+    :fullscreen .graph-wrap,
+    :-webkit-full-screen .graph-wrap {
+      min-height: 110px !important;
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .right-column {
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+      min-height: 0;
+      overflow-y: auto;
+    }
+
+    body.is-fullscreen .right-column,
+    :fullscreen .right-column,
+    :-webkit-full-screen .right-column {
+      height: 100% !important;
+      max-height: 100% !important;
+      overflow-y: auto !important;
+      padding-right: 0.2rem;
+    }
+
+    .right-column::-webkit-scrollbar {
+      width: 5px;
+    }
+    .right-column::-webkit-scrollbar-thumb {
+      background: var(--card-border);
+      border-radius: 3px;
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.35rem;
+      flex-shrink: 0;
+    }
+
+    .metric-badge {
+      background: var(--card-surface);
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      padding: 0.35rem 0.25rem;
+      text-align: center;
+    }
+
+    .metric-label {
+      font-size: 0.64rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .metric-val {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--accent);
+      font-family: monospace;
+    }
+
+    .control-group {
+      background: var(--card-surface);
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      padding: 0.45rem 0.6rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .control-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.84rem;
+      font-weight: 600;
+    }
+
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    input[type="range"] {
+      flex: 1;
+      accent-color: var(--accent);
+      height: 6px;
+      border-radius: 3px;
+      background: #24354d;
+      cursor: pointer;
+    }
+
+    .step-btn {
+      width: 32px;
+      height: 32px;
+      min-height: 32px;
+      padding: 0;
+      font-size: 0.8rem;
+      font-weight: bold;
+      border-radius: 4px;
+      background: #24354d;
+      border: 1px solid var(--card-border);
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .step-btn:hover {
+      background: #314666;
+    }
+
+    .btn-grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.3rem;
+    }
+
+    .btn-grid-6 {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 0.25rem;
+    }
+
+    .btn-chip {
+      padding: 0.25rem 0.2rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      background: #1e293b;
+      border: 1px solid var(--card-border);
+      color: #f8fafc;
+      border-radius: 4px;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .btn-chip:hover {
+      background: var(--accent);
+      color: #042f2e;
+    }
+
+    .table-wrap {
+      width: 100%;
+      border-radius: 6px;
+      border: 1px solid var(--card-border);
+      overflow-x: auto;
+      max-height: 125px;
+      background: var(--card-surface);
+    }
+
+    body.is-fullscreen .table-wrap,
+    :fullscreen .table-wrap,
+    :-webkit-full-screen .table-wrap {
+      max-height: 95px !important;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.76rem;
+      text-align: center;
+    }
+
+    th, td {
+      padding: 0.28rem 0.35rem;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    th {
+      background: #141e2e;
+      color: var(--text-muted);
+      font-weight: 700;
+      position: sticky;
+      top: 0;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      z-index: 9999;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      max-width: 660px;
+      width: 100%;
+      max-height: 86vh;
+      overflow-y: auto;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 0.4rem;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container" id="appRoot">
+    <!-- Header -->
+    <header>
+      <div>
+        <div class="badge-row">
+          <span class="badge">NCERT Physics Virtual Lab</span>
+          <span class="badge badge-sub">Class XI • Exp: Inclined Plane &amp; Downward Force</span>
+        </div>
+        <h1>Downward Force on a Roller vs. $\sin\theta$ Relationship</h1>
+      </div>
+      <div class="header-actions">
+        <button class="btn" id="btnTheory">📖 Theory</button>
+        <button class="btn" id="btnReset">↺ Reset</button>
+        <button class="btn btn-primary" id="btnFullscreen">⛶ Fullscreen</button>
+      </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="workspace">
+      <!-- Left Column: Interactive Visualizers (Inclined Plane Canvas & F vs Sin Theta Graph) -->
+      <div class="left-column">
+        <!-- Main Interactive Apparatus Canvas -->
+        <div class="card canvas-card" style="flex: 1.35;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <strong style="font-size:0.84rem; color:var(--text-muted);">Inclined Plane Apparatus: Hinged Track, Roller ($W$), Pulley &amp; Pan ($P$)</strong>
+            <span style="font-size:0.75rem; color:var(--accent); font-family:monospace;" id="txtKineticState">State: Equilibrium</span>
+          </div>
+          <div class="canvas-wrap" id="planeCanvasWrap">
+            <canvas id="planeCanvas"></canvas>
+          </div>
+        </div>
+
+        <!-- Real-Time F vs Sin(θ) Graph Canvas -->
+        <div class="card canvas-card" style="flex: 0.85;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <strong style="font-size:0.84rem; color:var(--text-muted);">$F\text{–}\sin\theta$ Graph Plot ($\text{Slope} = W_{\text{roller}}$)</strong>
+            <span style="font-size:0.75rem; color:var(--success); font-weight:700;" id="txtSlopeBadge">Slope W = -- g.wt</span>
+          </div>
+          <div class="graph-wrap" id="graphCanvasWrap">
+            <canvas id="graphCanvas"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Settings, Sliders, Weights & Observations -->
+      <div class="right-column">
+        <!-- Live Instantaneous Metrics -->
+        <div class="metrics-grid">
+          <div class="metric-badge">
+            <div class="metric-label">Angle ($\theta$)</div>
+            <div class="metric-val" id="valTheta">30.0°</div>
+          </div>
+          <div class="metric-badge">
+            <div class="metric-label">$\sin\theta$</div>
+            <div class="metric-val" id="valSinTheta">0.500</div>
+          </div>
+          <div class="metric-badge">
+            <div class="metric-label">$W\sin\theta$ (Down)</div>
+            <div class="metric-val" id="valWSin">100.0 g.wt</div>
+          </div>
+          <div class="metric-badge">
+            <div class="metric-label">Pan Force ($P$)</div>
+            <div class="metric-val" id="valPanForce">100.0 g.wt</div>
+          </div>
+        </div>
+
+        <!-- Angle of Inclination Controls -->
+        <div class="control-group">
+          <div class="control-header">
+            <span>Angle of Inclination ($\theta$)</span>
+            <span id="txtAngleDisplay" style="color:var(--accent); font-family:monospace; font-weight:700;">θ = 30.0° ($\sin\theta = 0.500$)</span>
+          </div>
+          <div class="slider-row">
+            <button class="step-btn" id="btnMinus5Deg" title="-5°">−5°</button>
+            <button class="step-btn" id="btnMinus1Deg" title="-1°">−1°</button>
+            <input type="range" id="sliderTheta" min="15" max="60" step="0.5" value="30" />
+            <button class="step-btn" id="btnPlus1Deg" title="+1°">+1°</button>
+            <button class="step-btn" id="btnPlus5Deg" title="+5°">+5°</button>
+          </div>
+        </div>
+
+        <!-- Roller Mass Selection -->
+        <div class="control-group">
+          <div class="control-header">
+            <span>Total Weight of Roller ($W = M_{\text{roller}} + w_{\text{added}}$)</span>
+            <span id="txtRollerTotal" style="color:var(--accent); font-weight:700;">W = 200 g.wt</span>
+          </div>
+          <div class="btn-grid-3">
+            <button class="btn btn-roller btn-active" data-w="200">Roller (200g)</button>
+            <button class="btn btn-roller" data-w="250">Roller + 50g (250g)</button>
+            <button class="btn btn-roller" data-w="300">Roller + 100g (300g)</button>
+          </div>
+        </div>
+
+        <!-- Suspended Scale Pan Loads (P) -->
+        <div class="control-group">
+          <div class="control-header">
+            <span>Suspended Pan Total Load ($P = m_{\text{pan}} + w$)</span>
+            <span id="txtPanLoad" style="color:var(--accent); font-family:monospace;">P = 100.0 g.wt ($m_{\text{pan}} = 20\text{g}$)</span>
+          </div>
+          <div class="slider-row">
+            <button class="step-btn" id="btnMinus10P">−10</button>
+            <button class="step-btn" id="btnMinus1P">−1</button>
+            <input type="range" id="sliderPanLoad" min="20" max="300" step="0.5" value="100" />
+            <button class="step-btn" id="btnPlus1P">+1</button>
+            <button class="step-btn" id="btnPlus10P">+10</button>
+          </div>
+          <div class="btn-grid-6">
+            <button class="btn-chip" data-add="1">+1g</button>
+            <button class="btn-chip" data-add="2">+2g</button>
+            <button class="btn-chip" data-add="5">+5g</button>
+            <button class="btn-chip" data-add="10">+10g</button>
+            <button class="btn-chip" data-add="20">+20g</button>
+            <button class="btn-chip" data-add="50">+50g</button>
+          </div>
+        </div>
+
+        <!-- Action Buttons: Jiggle/Tap, Auto-Balance, FBD Toggle -->
+        <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:0.35rem;">
+          <button class="btn btn-primary" id="btnAutoBalance" style="font-size:0.76rem; padding:0.35rem 0.2rem;">
+            ⚖ Auto-Balance
+          </button>
+          <button class="btn" id="btnTapPlane" style="font-size:0.76rem; padding:0.35rem 0.2rem;">
+            👋 Tap Plane
+          </button>
+          <button class="btn" id="btnToggleFBD" style="font-size:0.76rem; padding:0.35rem 0.2rem;">
+            📐 Show FBD
+          </button>
+        </div>
+
+        <!-- Observation Record Table -->
+        <div class="card" style="padding:0.45rem; gap:0.35rem;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <strong style="font-size:0.82rem;">Observation Table (NCERT Form)</strong>
+            <div style="display:flex; gap:0.3rem;">
+              <button class="btn" id="btnLogData" style="padding:0.2rem 0.5rem; font-size:0.75rem; background:var(--accent); color:#042f2e; font-weight:700;">+ Log Entry</button>
+              <button class="btn" id="btnClearTable" style="padding:0.2rem 0.5rem; font-size:0.75rem;">Clear</button>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>$\theta$ (°)</th>
+                  <th>$\sin\theta$</th>
+                  <th>$W_1$ (↑)</th>
+                  <th>$W_2$ (↓)</th>
+                  <th>$F = \frac{W_1+W_2}{2}$</th>
+                  <th>$W\sin\theta$</th>
+                  <th>Error %</th>
+                </tr>
+              </thead>
+              <tbody id="obsTableBody">
+                <tr><td colspan="8" style="color:var(--text-muted);">No records logged yet. Balance the roller at different angles and click '+ Log Entry'.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Analytical Evaluation Desk -->
+        <div class="card" style="padding:0.5rem; font-size:0.8rem; background:var(--card-surface); border-color:var(--card-border);">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <strong>Verification Result:</strong>
+            <span style="color:var(--accent); font-weight:700;">$F = W \sin\theta \implies \frac{F}{\sin\theta} = W$</span>
+          </div>
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:0.35rem; margin-top:0.35rem; font-size:0.78rem;">
+            <div>Theoretical Weight ($W_{\text{actual}}$): <strong id="lblActualWeight" style="color:#facc15;">200.0 g.wt</strong></div>
+            <div>Experimental Weight ($W_{\text{graph}}$): <strong id="lblGraphWeight" style="color:#facc15;">-- g.wt</strong></div>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:0.35rem; border-top:1px solid var(--card-border); padding-top:0.35rem;">
+            <span>Graph Slope Deviation: <strong id="valGraphDeviation" style="color:var(--success); font-size:0.95rem; font-family:monospace;">-- %</strong></span>
+            <span style="font-size:0.74rem; color:var(--text-muted);">Within NCERT ±3% target</span>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Theory & Derivations Modal -->
+  <div class="modal-backdrop" id="theoryModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Theory: Downward Force along an Inclined Plane</h3>
+        <button class="modal-close" id="btnCloseModal">&times;</button>
+      </div>
+      <div style="font-size:0.9rem; line-height:1.55; color:#cbd5e1; display:flex; flex-direction:column; gap:0.6rem;">
+        <p><strong>1. Principle:</strong> Consider a heavy cylindrical roller of weight $W = M g$ resting on a smooth inclined plane of inclination angle $\theta$ with the horizontal. The weight $W$ acts vertically downwards through its center of gravity.</p>
+        
+        <p><strong>2. Resolution of Forces:</strong> Resolving the weight $W$ into two mutually perpendicular components:</p>
+        <ul style="padding-left:1.2rem; font-size:0.85rem;">
+          <li>Component perpendicular to the inclined plane: $R = W \cos\theta$, balanced by the normal reaction of the plane.</li>
+          <li>Component parallel to the inclined plane pointing downwards: $F_{\text{down}} = W \sin\theta$.</li>
+        </ul>
+
+        <div style="text-align:center; padding:0.4rem; background:#0b111c; border-radius:6px; color:var(--accent);">
+          $$F_{\text{down}} = W \sin\theta$$
+        </div>
+
+        <p><strong>3. Eliminating Pulley Friction via Reversible Limits:</strong> Let $f$ be the small frictional force of the roller and pulley:</p>
+        <ul style="padding-left:1.2rem; font-size:0.85rem;">
+          <li>When weights in the pan are increased such that the roller just starts moving <strong>upward</strong>: $W_1 = W \sin\theta + f$.</li>
+          <li>When weights in the pan are decreased such that the roller just starts rolling <strong>downward</strong>: $W_2 = W \sin\theta - f$.</li>
+          <li>The mean balancing force is:
+            $$F = \frac{W_1 + W_2}{2} = W \sin\theta$$
+          </li>
+        </ul>
+
+        <p><strong>4. $F\text{–}\sin\theta$ Graph Analysis:</strong> A graph plotted between the downward force $F$ on the y-axis and $\sin\theta$ on the x-axis is a <strong>straight line passing through the origin</strong>. Its slope represents the total weight of the roller:</p>
+        <div style="text-align:center; padding:0.4rem; background:#0b111c; border-radius:6px; color:var(--accent);">
+          $$\text{Slope} = \frac{\Delta F}{\Delta(\sin\theta)} = W$$
+        </div>
+        <p>Comparing this slope with the measured weight $W$ on a beam balance verifies the relationship.</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // State management
+    const state = {
+      theta_deg: 30.0,
+      sin_theta: 0.500,
+      cos_theta: 0.866,
+      roller_weight: 200.0, // g.wt
+      pan_base_mass: 20.0,   // g.wt
+      pan_added_mass: 80.0,  // g.wt
+      pan_total_force: 100.0,// g.wt
+      f_friction: 2.5,       // g.wt (small rolling friction)
+      showFBD: true,
+      planeTapped: false,
+      // Kinematics of roller along inclined plane
+      rollerPosNormalized: 0.5, // 0.0 = bottom, 1.0 = top pulley
+      rollerVelocity: 0.0,
+      motionStateText: 'State: Equilibrium',
+      observations: []
+    };
+
+    function initMathTypesetting() {
+      if (window.renderMathInElement) {
+        try {
+          window.renderMathInElement(document.body, {
+            delimiters: [
+              { left: "$$", right: "$$", display: true },
+              { left: "$", right: "$", display: false }
+            ],
+            throwOnError: false
+          });
+        } catch (e) {
+          console.warn(e);
+        }
+      }
+    }
+
+    // Canvas references
+    const planeCanvas = document.getElementById('planeCanvas');
+    const pCtx = planeCanvas.getContext('2d');
+    const graphCanvas = document.getElementById('graphCanvas');
+    const gCtx = graphCanvas.getContext('2d');
+
+    // UI references
+    const sliderTheta = document.getElementById('sliderTheta');
+    const txtAngleDisplay = document.getElementById('txtAngleDisplay');
+    const valTheta = document.getElementById('valTheta');
+    const valSinTheta = document.getElementById('valSinTheta');
+    const valWSin = document.getElementById('valWSin');
+    const valPanForce = document.getElementById('valPanForce');
+    const txtRollerTotal = document.getElementById('txtRollerTotal');
+    const txtPanLoad = document.getElementById('txtPanLoad');
+    const sliderPanLoad = document.getElementById('sliderPanLoad');
+    const txtKineticState = document.getElementById('txtKineticState');
+    const txtSlopeBadge = document.getElementById('txtSlopeBadge');
+    const lblActualWeight = document.getElementById('lblActualWeight');
+    const lblGraphWeight = document.getElementById('lblGraphWeight');
+    const valGraphDeviation = document.getElementById('valGraphDeviation');
+    const obsTableBody = document.getElementById('obsTableBody');
+
+    const btnTheory = document.getElementById('btnTheory');
+    const theoryModal = document.getElementById('theoryModal');
+    const btnCloseModal = document.getElementById('btnCloseModal');
+    const btnFullscreen = document.getElementById('btnFullscreen');
+    const btnAutoBalance = document.getElementById('btnAutoBalance');
+    const btnTapPlane = document.getElementById('btnTapPlane');
+    const btnToggleFBD = document.getElementById('btnToggleFBD');
+    const btnLogData = document.getElementById('btnLogData');
+    const btnClearTable = document.getElementById('btnClearTable');
+    const btnReset = document.getElementById('btnReset');
+
+    // Angle of inclination controls
+    document.getElementById('btnMinus5Deg').onclick = () => stepAngle(-5);
+    document.getElementById('btnMinus1Deg').onclick = () => stepAngle(-1);
+    document.getElementById('btnPlus1Deg').onclick = () => stepAngle(1);
+    document.getElementById('btnPlus5Deg').onclick = () => stepAngle(5);
+
+    function stepAngle(delta) {
+      let ang = parseFloat(sliderTheta.value) + delta;
+      ang = Math.max(15, Math.min(60, ang));
+      sliderTheta.value = ang;
+      onAngleChange();
+    }
+
+    sliderTheta.addEventListener('input', onAngleChange);
+
+    function onAngleChange() {
+      state.theta_deg = parseFloat(sliderTheta.value);
+      const rad = state.theta_deg * (Math.PI / 180);
+      state.sin_theta = Math.sin(rad);
+      state.cos_theta = Math.cos(rad);
+
+      txtAngleDisplay.innerText = `θ = ${state.theta_deg.toFixed(1)}° (sinθ = ${state.sin_theta.toFixed(3)})`;
+      valTheta.innerText = `${state.theta_deg.toFixed(1)}°`;
+      valSinTheta.innerText = state.sin_theta.toFixed(3);
+
+      recalcForces();
+    }
+
+    // Roller mass buttons
+    document.querySelectorAll('.btn-roller').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.btn-roller').forEach(b => b.classList.remove('btn-active'));
+        btn.classList.add('btn-active');
+        state.roller_weight = parseFloat(btn.getAttribute('data-w'));
+        txtRollerTotal.innerText = `W = ${state.roller_weight} g.wt`;
+        lblActualWeight.innerText = `${state.roller_weight.toFixed(1)} g.wt`;
+        recalcForces();
+      });
+    });
+
+    // Pan load controls
+    sliderPanLoad.addEventListener('input', () => {
+      state.pan_total_force = parseFloat(sliderPanLoad.value);
+      state.pan_added_mass = state.pan_total_force - state.pan_base_mass;
+      onPanLoadUpdated();
+    });
+
+    document.getElementById('btnMinus10P').onclick = () => stepPanLoad(-10);
+    document.getElementById('btnMinus1P').onclick = () => stepPanLoad(-1);
+    document.getElementById('btnPlus1P').onclick = () => stepPanLoad(1);
+    document.getElementById('btnPlus10P').onclick = () => stepPanLoad(10);
+
+    function stepPanLoad(delta) {
+      let p = parseFloat(sliderPanLoad.value) + delta;
+      p = Math.max(20, Math.min(300, p));
+      sliderPanLoad.value = p;
+      state.pan_total_force = p;
+      state.pan_added_mass = p - state.pan_base_mass;
+      onPanLoadUpdated();
+    }
+
+    document.querySelectorAll('.btn-chip').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const add = parseFloat(btn.getAttribute('data-add'));
+        let p = state.pan_total_force + add;
+        p = Math.min(300, p);
+        sliderPanLoad.value = p;
+        state.pan_total_force = p;
+        state.pan_added_mass = p - state.pan_base_mass;
+        onPanLoadUpdated();
+      });
+    });
+
+    function onPanLoadUpdated() {
+      txtPanLoad.innerText = `P = ${state.pan_total_force.toFixed(1)} g.wt (m_pan = 20g)`;
+      valPanForce.innerText = `${state.pan_total_force.toFixed(1)} g.wt`;
+      evaluateEquilibrium();
+    }
+
+    // Auto balance helper
+    btnAutoBalance.addEventListener('click', () => {
+      const W_sin = state.roller_weight * state.sin_theta;
+      state.pan_total_force = Math.round(W_sin * 2) / 2;
+      sliderPanLoad.value = state.pan_total_force;
+      state.pan_added_mass = state.pan_total_force - state.pan_base_mass;
+      state.rollerVelocity = 0;
+      onPanLoadUpdated();
+    });
+
+    // Tap/Jiggle plane button
+    btnTapPlane.addEventListener('click', () => {
+      state.planeTapped = true;
+      setTimeout(() => { state.planeTapped = false; }, 350);
+    });
+
+    // FBD overlay toggle
+    btnToggleFBD.addEventListener('click', () => {
+      state.showFBD = !state.showFBD;
+      btnToggleFBD.classList.toggle('btn-active', state.showFBD);
+      btnToggleFBD.innerText = state.showFBD ? '📐 Hide FBD' : '📐 Show FBD';
+    });
+
+    function recalcForces() {
+      const W_sin = state.roller_weight * state.sin_theta;
+      valWSin.innerText = `${W_sin.toFixed(1)} g.wt`;
+      evaluateEquilibrium();
+    }
+
+    function evaluateEquilibrium() {
+      const W_sin = state.roller_weight * state.sin_theta;
+      const P = state.pan_total_force;
+      const f_eff = state.planeTapped ? 0.6 : state.f_friction;
+
+      // Net upward force along inclined plane
+      const netForce = P - W_sin;
+
+      if (Math.abs(netForce) <= f_eff) {
+        state.motionStateText = 'State: Static Equilibrium (T = W sinθ)';
+        txtKineticState.innerText = state.motionStateText;
+        txtKineticState.style.color = 'var(--success)';
+      } else if (netForce > f_eff) {
+        state.motionStateText = 'State: Moving UP the Plane (P > W sinθ)';
+        txtKineticState.innerText = state.motionStateText;
+        txtKineticState.style.color = 'var(--warning)';
+      } else {
+        state.motionStateText = 'State: Rolling DOWN the Plane (P < W sinθ)';
+        txtKineticState.innerText = state.motionStateText;
+        txtKineticState.style.color = 'var(--danger)';
+      }
+    }
+
+    // Observation Table Management
+    btnLogData.addEventListener('click', () => {
+      const theta = state.theta_deg;
+      const sinTheta = state.sin_theta;
+      const W_sin = state.roller_weight * sinTheta;
+
+      // Experimental upward and downward threshold limits
+      const W1 = Math.round((W_sin + state.f_friction) * 10) / 10;
+      const W2 = Math.round((W_sin - state.f_friction) * 10) / 10;
+      const F_mean = Math.round(((W1 + W2) / 2) * 10) / 10;
+
+      const err = Math.abs(F_mean - W_sin) / W_sin * 100;
+
+      state.observations.push({
+        theta: theta.toFixed(1),
+        sinTheta: sinTheta.toFixed(3),
+        w1: W1.toFixed(1),
+        w2: W2.toFixed(1),
+        fMean: F_mean.toFixed(1),
+        wSin: W_sin.toFixed(1),
+        err: err.toFixed(2),
+        fVal: F_mean,
+        sinVal: sinTheta
+      });
+
+      // Sort by angle
+      state.observations.sort((a, b) => parseFloat(a.theta) - parseFloat(b.theta));
+      renderObsTable();
+      drawGraph();
+    });
+
+    btnClearTable.addEventListener('click', () => {
+      state.observations = [];
+      renderObsTable();
+      drawGraph();
+    });
+
+    function renderObsTable() {
+      if (state.observations.length === 0) {
+        obsTableBody.innerHTML = '<tr><td colspan="8" style="color:var(--text-muted);">No records logged yet. Balance the roller at different angles and click "+ Log Entry".</td></tr>';
+        lblGraphWeight.innerText = '-- g.wt';
+        valGraphDeviation.innerText = '-- %';
+        txtSlopeBadge.innerText = 'Slope W = -- g.wt';
+        return;
+      }
+
+      obsTableBody.innerHTML = state.observations.map((row, idx) => `
+        <tr>
+          <td>${idx + 1}</td>
+          <td>${row.theta}°</td>
+          <td>${row.sinTheta}</td>
+          <td>${row.w1}</td>
+          <td>${row.w2}</td>
+          <td><strong style="color:var(--accent);">${row.fMean}</strong></td>
+          <td>${row.wSin}</td>
+          <td><strong style="color:var(--success);">${row.err}%</strong></td>
+        </tr>
+      `).join('');
+    }
+
+    // Reset Lab
+    btnReset.addEventListener('click', () => {
+      sliderTheta.value = 30;
+      onAngleChange();
+      document.querySelectorAll('.btn-roller').forEach(b => b.classList.toggle('btn-active', b.getAttribute('data-w') === '200'));
+      state.roller_weight = 200;
+      lblActualWeight.innerText = '200.0 g.wt';
+
+      state.pan_total_force = 100;
+      sliderPanLoad.value = 100;
+      state.pan_added_mass = 80;
+      onPanLoadUpdated();
+
+      state.rollerPosNormalized = 0.5;
+      state.rollerVelocity = 0;
+      state.observations = [];
+      renderObsTable();
+      drawGraph();
+    });
+
+    // Modals and Fullscreen
+    btnTheory.onclick = () => theoryModal.classList.add('open');
+    btnCloseModal.onclick = () => theoryModal.classList.remove('open');
+    theoryModal.onclick = (e) => { if (e.target === theoryModal) theoryModal.classList.remove('open'); };
+
+    btnFullscreen.addEventListener('click', () => {
+      if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+        const root = document.documentElement;
+        if (root.requestFullscreen) root.requestFullscreen();
+        else if (root.webkitRequestFullscreen) root.webkitRequestFullscreen();
+        document.body.classList.add('is-fullscreen');
+        btnFullscreen.innerText = '🗗 Exit Fullscreen';
+      } else {
+        if (document.exitFullscreen) document.exitFullscreen();
+        else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+        document.body.classList.remove('is-fullscreen');
+        btnFullscreen.innerText = '⛶ Fullscreen';
+      }
+      setTimeout(resizeAllCanvases, 100);
+    });
+
+    function resizeAllCanvases() {
+      const dpr = window.devicePixelRatio || 1;
+
+      const pWrap = document.getElementById('planeCanvasWrap');
+      planeCanvas.width = pWrap.clientWidth * dpr;
+      planeCanvas.height = pWrap.clientHeight * dpr;
+      pCtx.setTransform(1, 0, 0, 1, 0, 0);
+      pCtx.scale(dpr, dpr);
+
+      const gWrap = document.getElementById('graphCanvasWrap');
+      graphCanvas.width = gWrap.clientWidth * dpr;
+      graphCanvas.height = gWrap.clientHeight * dpr;
+      gCtx.setTransform(1, 0, 0, 1, 0, 0);
+      gCtx.scale(dpr, dpr);
+
+      drawGraph();
+    }
+    window.addEventListener('resize', resizeAllCanvases);
+
+    // Physics Update Loop for Roller Motion
+    let lastTimestamp = null;
+    function updatePhysicsLoop(timestamp) {
+      if (!lastTimestamp) lastTimestamp = timestamp;
+      const dt = Math.min(0.04, (timestamp - lastTimestamp) / 1000);
+      lastTimestamp = timestamp;
+
+      const W_sin = state.roller_weight * state.sin_theta;
+      const P = state.pan_total_force;
+      const f_eff = state.planeTapped ? 0.6 : state.f_friction;
+      const netForce = P - W_sin;
+
+      // If unbalanced beyond threshold, accelerate roller
+      if (Math.abs(netForce) > f_eff) {
+        const acc = (netForce - Math.sign(netForce) * f_eff) / (state.roller_weight + P) * 0.8;
+        state.rollerVelocity += acc * dt;
+      } else {
+        state.rollerVelocity *= 0.88; // rapid damping to rest
+      }
+
+      state.rollerPosNormalized += state.rollerVelocity * dt;
+
+      // Physical bounds along inclined track
+      if (state.rollerPosNormalized < 0.12) {
+        state.rollerPosNormalized = 0.12;
+        state.rollerVelocity = 0;
+      } else if (state.rollerPosNormalized > 0.86) {
+        state.rollerPosNormalized = 0.86;
+        state.rollerVelocity = 0;
+      }
+
+      drawInclinedApparatus();
+      requestAnimationFrame(updatePhysicsLoop);
+    }
+
+    // DRAW ENGINE: Inclined Plane Apparatus Canvas
+    function drawInclinedApparatus() {
+      const w = planeCanvas.width / (window.devicePixelRatio || 1);
+      const h = planeCanvas.height / (window.devicePixelRatio || 1);
+      pCtx.clearRect(0, 0, w, h);
+
+      // Workbench background
+      pCtx.fillStyle = '#111722';
+      pCtx.fillRect(0, 0, w, h);
+
+      const baseX = 70;
+      const baseY = h * 0.82;
+      const boardLength = Math.min(w * 0.65, 480);
+      const rad = state.theta_deg * (Math.PI / 180);
+
+      const topX = baseX + boardLength * Math.cos(rad);
+      const topY = baseY - boardLength * Math.sin(rad);
+
+      // 1. Solid Horizontal Baseboard
+      pCtx.fillStyle = '#1e140a';
+      pCtx.fillRect(baseX - 30, baseY, boardLength + 60, 20);
+      pCtx.strokeStyle = '#451a03';
+      pCtx.lineWidth = 1.5;
+      pCtx.strokeRect(baseX - 30, baseY, boardLength + 60, 20);
+
+      // 2. Heavy Brass Protractor Arc at Hinge Base
+      pCtx.fillStyle = 'rgba(234, 179, 8, 0.18)';
+      pCtx.beginPath();
+      pCtx.moveTo(baseX, baseY);
+      pCtx.arc(baseX, baseY, 65, 0, -rad, true);
+      pCtx.closePath();
+      pCtx.fill();
+      pCtx.strokeStyle = '#eab308';
+      pCtx.lineWidth = 1.8;
+      pCtx.stroke();
+
+      // Degree angle indicator
+      pCtx.fillStyle = '#facc15';
+      pCtx.font = 'bold 11px sans-serif';
+      pCtx.textAlign = 'left';
+      pCtx.fillText(`θ = ${state.theta_deg.toFixed(1)}°`, baseX + 72, baseY - 12);
+
+      // 3. Vertical Support Clamp Column
+      pCtx.fillStyle = '#334155';
+      pCtx.fillRect(topX - 6, topY + 12, 12, baseY - (topY + 12));
+      pCtx.strokeStyle = '#1e293b';
+      pCtx.strokeRect(topX - 6, topY + 12, 12, baseY - (topY + 12));
+
+      // Adjustable Clamp Collar Knob
+      pCtx.fillStyle = '#64748b';
+      pCtx.fillRect(topX - 12, topY + 18, 24, 12);
+
+      // 4. Heavy Inclined Wooden/Aluminium Track Board
+      pCtx.save();
+      pCtx.translate(baseX, baseY);
+      pCtx.rotate(-rad);
+
+      const trackThick = 14;
+      pCtx.fillStyle = '#ca8a04';
+      pCtx.fillRect(0, -trackThick, boardLength, trackThick);
+      pCtx.strokeStyle = '#713f12';
+      pCtx.lineWidth = 1.5;
+      pCtx.strokeRect(0, -trackThick, boardLength, trackThick);
+
+      // Steel track guides
+      pCtx.fillStyle = '#e2e8f0';
+      pCtx.fillRect(0, -trackThick - 2, boardLength, 2);
+
+      // Hinge pivot pin at bottom
+      pCtx.fillStyle = '#cbd5e1';
+      pCtx.beginPath();
+      pCtx.arc(0, -trackThick * 0.5, 6, 0, Math.PI * 2);
+      pCtx.fill();
+      pCtx.strokeStyle = '#1e293b';
+      pCtx.stroke();
+
+      // Roller Geometry
+      const rollerS = state.rollerPosNormalized * boardLength;
+      const rollerR = 18;
+      const rollerX = rollerS;
+      const rollerY = -trackThick - rollerR;
+
+      // Draw Heavy Cylindrical Roller
+      const rGrad = pCtx.createRadialGradient(rollerX - 4, rollerY - 4, 3, rollerX, rollerY, rollerR);
+      rGrad.addColorStop(0, '#fef08a');
+      rGrad.addColorStop(0.4, '#eab308');
+      rGrad.addColorStop(1, '#713f12');
+
+      pCtx.fillStyle = rGrad;
+      pCtx.beginPath();
+      pCtx.arc(rollerX, rollerY, rollerR, 0, Math.PI * 2);
+      pCtx.fill();
+      pCtx.strokeStyle = '#451a03';
+      pCtx.lineWidth = 1.8;
+      pCtx.stroke();
+
+      // Central axle pin
+      pCtx.fillStyle = '#1e293b';
+      pCtx.beginPath();
+      pCtx.arc(rollerX, rollerY, 3.5, 0, Math.PI * 2);
+      pCtx.fill();
+
+      // String tied to roller axle running upward to pulley
+      pCtx.strokeStyle = '#f8fafc';
+      pCtx.lineWidth = 1.8;
+      pCtx.beginPath();
+      pCtx.moveTo(rollerX, rollerY);
+      pCtx.lineTo(boardLength, -trackThick - rollerR);
+      pCtx.stroke();
+
+      // FREE BODY DIAGRAM (FBD) OVERLAY
+      if (state.showFBD) {
+        // Normal Reaction R (perpendicular upward)
+        drawFBDArrow(pCtx, rollerX, rollerY, rollerX, rollerY - 42, '#22c55e');
+        pCtx.fillStyle = '#86efac';
+        pCtx.font = 'bold 10px sans-serif';
+        pCtx.fillText('R = W cosθ', rollerX + 6, rollerY - 38);
+
+        // Downward force component along plane W sinθ
+        drawFBDArrow(pCtx, rollerX, rollerY, rollerX - 44, rollerY, '#ef4444');
+        pCtx.fillStyle = '#fca5a5';
+        pCtx.fillText('W sinθ', rollerX - 52, rollerY + 14);
+
+        // String Tension T (upward along plane)
+        drawFBDArrow(pCtx, rollerX, rollerY, rollerX + 44, rollerY, '#38bdf8');
+        pCtx.fillStyle = '#7dd3fc';
+        pCtx.fillText('T', rollerX + 48, rollerY - 6);
+      }
+
+      pCtx.restore();
+
+      // 5. Frictionless Ball-Bearing Pulley Mounted at Top Edge
+      const pulleyR = 14;
+      const pulCenterDist = boardLength;
+      const pulX = topX;
+      const pulY = topY - trackThick - rollerR;
+
+      pCtx.fillStyle = '#cbd5e1';
+      pCtx.beginPath();
+      pCtx.arc(pulX, pulY, pulleyR, 0, Math.PI * 2);
+      pCtx.fill();
+      pCtx.strokeStyle = '#334155';
+      pCtx.lineWidth = 2;
+      pCtx.stroke();
+
+      pCtx.fillStyle = '#0f172a';
+      pCtx.beginPath();
+      pCtx.arc(pulX, pulY, 3.5, 0, Math.PI * 2);
+      pCtx.fill();
+
+      // 6. Suspended Vertical String & Scale Pan
+      const stringDropX = pulX + pulleyR;
+      const panDropY = Math.min(baseY + 8, pulY + 65 + (1.0 - state.rollerPosNormalized) * 90);
+
+      pCtx.strokeStyle = '#f8fafc';
+      pCtx.lineWidth = 1.8;
+      pCtx.beginPath();
+      pCtx.moveTo(pulX, pulY - pulleyR);
+      pCtx.arc(pulX, pulY, pulleyR, -Math.PI * 0.5, 0);
+      pCtx.lineTo(stringDropX, panDropY);
+      pCtx.stroke();
+
+      // Scale Pan (Light shallow metallic pan)
+      const panW = 52;
+      pCtx.strokeStyle = '#cbd5e1';
+      pCtx.lineWidth = 1.2;
+      pCtx.beginPath();
+      pCtx.moveTo(stringDropX, panDropY);
+      pCtx.lineTo(stringDropX - panW * 0.5, panDropY + 24);
+      pCtx.moveTo(stringDropX, panDropY);
+      pCtx.lineTo(stringDropX + panW * 0.5, panDropY + 24);
+      pCtx.stroke();
+
+      pCtx.fillStyle = '#94a3b8';
+      pCtx.beginPath();
+      pCtx.ellipse(stringDropX, panDropY + 24, panW * 0.5, 4.5, 0, 0, Math.PI * 2);
+      pCtx.fill();
+      pCtx.strokeStyle = '#475569';
+      pCtx.stroke();
+
+      // Slotted weights in pan
+      pCtx.fillStyle = '#eab308';
+      pCtx.fillRect(stringDropX - 16, panDropY + 18, 32, 6);
+      pCtx.strokeStyle = '#713f12';
+      pCtx.strokeRect(stringDropX - 16, panDropY + 18, 32, 6);
+
+      pCtx.fillStyle = '#38bdf8';
+      pCtx.font = 'bold 10px monospace';
+      pCtx.textAlign = 'center';
+      pCtx.fillText(`P = ${state.pan_total_force.toFixed(1)}g`, stringDropX, panDropY + 40);
+    }
+
+    function drawFBDArrow(ctx, fx, fy, tx, ty, color) {
+      const head = 6;
+      const ang = Math.atan2(ty - fy, tx - fx);
+
+      ctx.strokeStyle = color;
+      ctx.fillStyle = color;
+      ctx.lineWidth = 2.2;
+
+      ctx.beginPath();
+      ctx.moveTo(fx, fy);
+      ctx.lineTo(tx, ty);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(tx, ty);
+      ctx.lineTo(tx - head * Math.cos(ang - Math.PI / 6), ty - head * Math.sin(ang - Math.PI / 6));
+      ctx.lineTo(tx - head * Math.cos(ang + Math.PI / 6), ty - head * Math.sin(ang + Math.PI / 6));
+      ctx.closePath();
+      ctx.fill();
+    }
+
+    // DRAW ENGINE: Real-Time F vs Sin(θ) Graph Canvas
+    function drawGraph() {
+      const w = graphCanvas.width / (window.devicePixelRatio || 1);
+      const h = graphCanvas.height / (window.devicePixelRatio || 1);
+      gCtx.clearRect(0, 0, w, h);
+
+      gCtx.fillStyle = '#0a101b';
+      gCtx.fillRect(0, 0, w, h);
+
+      const padL = 48;
+      const padB = 32;
+      const padT = 16;
+      const padR = 20;
+
+      const graphW = w - padL - padR;
+      const graphH = h - padB - padT;
+
+      // Coordinate axes
+      gCtx.strokeStyle = '#233348';
+      gCtx.lineWidth = 1;
+
+      // X-Axis bounds (sinθ: 0 to 1.0)
+      const maxSin = 1.0;
+      // Y-Axis bounds (Downward Force F: 0 to 300 g.wt)
+      const maxF = 300;
+
+      // Horizontal Grid Lines (F)
+      for (let i = 0; i <= 6; i++) {
+        const y = padT + (graphH / 6) * i;
+        gCtx.beginPath();
+        gCtx.moveTo(padL, y);
+        gCtx.lineTo(w - padR, y);
+        gCtx.stroke();
+
+        const fVal = (maxF - (i * maxF) / 6).toFixed(0);
+        gCtx.fillStyle = '#64748b';
+        gCtx.font = '9px sans-serif';
+        gCtx.textAlign = 'right';
+        gCtx.fillText(fVal, padL - 6, y + 3);
+      }
+
+      // Vertical Grid Lines (sinθ)
+      for (let j = 0; j <= 5; j++) {
+        const x = padL + (graphW / 5) * j;
+        gCtx.beginPath();
+        gCtx.moveTo(x, padTop = padT);
+        gCtx.lineTo(x, h - padB);
+        gCtx.stroke();
+
+        const sVal = ((j * maxSin) / 5).toFixed(2);
+        gCtx.fillStyle = '#64748b';
+        gCtx.font = '9px sans-serif';
+        gCtx.textAlign = 'center';
+        gCtx.fillText(sVal, x, h - padB + 16);
+      }
+
+      // Axis Titles
+      gCtx.fillStyle = '#38bdf8';
+      gCtx.font = 'bold 9.5px sans-serif';
+      gCtx.fillText('Force F (g.wt) ↑', padL + 34, padT + 10);
+      gCtx.fillText('sinθ →', w - padR - 25, h - padB - 6);
+
+      // Theoretical Reference Line (F = W * sinθ)
+      const W = state.roller_weight;
+      const theoEndX = padL + graphW;
+      const theoEndY = padT + graphH - ((W * 1.0) / maxF) * graphH;
+
+      gCtx.strokeStyle = 'rgba(56, 189, 248, 0.35)';
+      gCtx.lineWidth = 1.5;
+      gCtx.setLineDash([4, 3]);
+      gCtx.beginPath();
+      gCtx.moveTo(padL, padT + graphH);
+      gCtx.lineTo(theoEndX, theoEndY);
+      gCtx.stroke();
+      gCtx.setLineDash([]);
+
+      // Plot Logged Observations
+      if (state.observations.length > 0) {
+        let sumS2 = 0;
+        let sumSF = 0;
+
+        state.observations.forEach(pt => {
+          const px = padL + (pt.sinVal / maxSin) * graphW;
+          const py = padT + graphH - (pt.fVal / maxF) * graphH;
+
+          gCtx.fillStyle = '#22c55e';
+          gCtx.beginPath();
+          gCtx.arc(px, py, 4.5, 0, Math.PI * 2);
+          gCtx.fill();
+          gCtx.strokeStyle = '#fff';
+          gCtx.lineWidth = 1;
+          gCtx.stroke();
+
+          sumS2 += pt.sinVal * pt.sinVal;
+          sumSF += pt.sinVal * pt.fVal;
+        });
+
+        // Linear regression slope through origin: Slope = sum(sinθ * F) / sum(sinθ^2)
+        const expSlope = sumS2 > 0 ? (sumSF / sumS2) : W;
+        const expEndY = padT + graphH - (expSlope / maxF) * graphH;
+
+        // Experimental Regression Line
+        gCtx.strokeStyle = '#22c55e';
+        gCtx.lineWidth = 2;
+        gCtx.beginPath();
+        gCtx.moveTo(padL, padT + graphH);
+        gCtx.lineTo(padL + graphW, expEndY);
+        gCtx.stroke();
+
+        txtSlopeBadge.innerText = `Slope W = ${expSlope.toFixed(1)} g.wt`;
+        lblGraphWeight.innerText = `${expSlope.toFixed(1)} g.wt`;
+
+        const deviation = Math.abs(expSlope - W) / W * 100;
+        valGraphDeviation.innerText = `${deviation.toFixed(2)} %`;
+      } else {
+        txtSlopeBadge.innerText = `Slope W = ${W.toFixed(1)} g.wt (Theory)`;
+        lblGraphWeight.innerText = '-- g.wt';
+        valGraphDeviation.innerText = '-- %';
+      }
+    }
+
+    // Lifecycle Startup
+    window.addEventListener('DOMContentLoaded', () => {
+      initMathTypesetting();
+      onAngleChange();
+      setTimeout(resizeAllCanvases, 50);
+      requestAnimationFrame(updatePhysicsLoop);
+    });
+  </script>
+</body>
+</html>

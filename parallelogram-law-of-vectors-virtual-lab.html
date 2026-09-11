@@ -1,0 +1,1508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Parallelogram Law of Vectors Virtual Lab | National Model Schools Physics Virtual Lab</title>
+
+  <!-- KaTeX for mathematical typography -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" />
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+
+  <style>
+    :root {
+      --bg: #090e17;
+      --card-bg: #141e2e;
+      --card-surface: #1a273a;
+      --card-border: #2c3e55;
+      --accent: #38bdf8;
+      --accent-hover: #0284c7;
+      --success: #22c55e;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      width: 100%;
+      min-height: 100vh;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-size: 14.5px;
+      line-height: 1.45;
+    }
+
+    /* Zero-Scroll Fullscreen Locks */
+    body.is-fullscreen,
+    :fullscreen body,
+    :-webkit-full-screen body {
+      height: 100vh !important;
+      max-height: 100vh !important;
+      overflow: hidden !important;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 0.65rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      min-height: 100vh;
+    }
+
+    body.is-fullscreen .app-container,
+    :fullscreen .app-container,
+    :-webkit-full-screen .app-container {
+      max-width: 100vw !important;
+      height: 100vh !important;
+      max-height: 100vh !important;
+      padding: 0.35rem 0.5rem !important;
+      gap: 0.35rem !important;
+      overflow: hidden !important;
+    }
+
+    header {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 0.55rem 0.9rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+      flex-shrink: 0;
+    }
+
+    .badge {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    h1 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 0.4rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      padding: 0.4rem 0.75rem;
+      font-size: 0.88rem;
+      font-weight: 600;
+      border-radius: 6px;
+      border: 1px solid var(--card-border);
+      background: var(--card-surface);
+      color: var(--text);
+      cursor: pointer;
+      min-height: 36px;
+      transition: all 0.15s ease;
+      touch-action: manipulation;
+      user-select: none;
+    }
+
+    .btn:hover {
+      background: #24354d;
+      color: #fff;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #042f2e;
+      font-weight: 700;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      color: #fff;
+    }
+
+    .btn-active {
+      background: #0284c7 !important;
+      border-color: #38bdf8 !important;
+      color: #fff !important;
+      font-weight: 700;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.65rem;
+      flex: 1;
+      min-height: 0;
+    }
+
+    @media (min-width: 1024px) {
+      .workspace {
+        grid-template-columns: 1.22fr 0.78fr;
+      }
+    }
+
+    body.is-fullscreen .workspace,
+    :fullscreen .workspace,
+    :-webkit-full-screen .workspace {
+      display: grid !important;
+      grid-template-columns: 1.22fr 0.78fr !important;
+      gap: 0.4rem !important;
+      flex: 1 !important;
+      height: calc(100vh - 62px) !important;
+      max-height: calc(100vh - 62px) !important;
+      min-height: 0 !important;
+      overflow: hidden !important;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 0.65rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+      min-height: 0;
+    }
+
+    .left-column {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      min-height: 0;
+    }
+
+    body.is-fullscreen .left-column,
+    :fullscreen .left-column,
+    :-webkit-full-screen .left-column {
+      height: 100% !important;
+      max-height: 100% !important;
+      overflow: hidden !important;
+    }
+
+    .canvas-wrap {
+      position: relative;
+      width: 100%;
+      flex: 1.35;
+      min-height: 230px;
+      background: #111722;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      overflow: hidden;
+      touch-action: none;
+    }
+
+    body.is-fullscreen .canvas-wrap,
+    :fullscreen .canvas-wrap,
+    :-webkit-full-screen .canvas-wrap {
+      min-height: 180px !important;
+    }
+
+    .vector-wrap {
+      position: relative;
+      width: 100%;
+      flex: 0.8;
+      min-height: 140px;
+      background: #0a0f18;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    body.is-fullscreen .vector-wrap,
+    :fullscreen .vector-wrap,
+    :-webkit-full-screen .vector-wrap {
+      min-height: 110px !important;
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .right-column {
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+      min-height: 0;
+      overflow-y: auto;
+    }
+
+    body.is-fullscreen .right-column,
+    :fullscreen .right-column,
+    :-webkit-full-screen .right-column {
+      height: 100% !important;
+      max-height: 100% !important;
+      overflow-y: auto !important;
+      padding-right: 0.2rem;
+    }
+
+    .right-column::-webkit-scrollbar {
+      width: 5px;
+    }
+    .right-column::-webkit-scrollbar-thumb {
+      background: var(--card-border);
+      border-radius: 3px;
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.35rem;
+      flex-shrink: 0;
+    }
+
+    .metric-badge {
+      background: var(--card-surface);
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      padding: 0.35rem 0.25rem;
+      text-align: center;
+    }
+
+    .metric-label {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .metric-val {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--accent);
+      font-family: monospace;
+    }
+
+    .control-group {
+      background: var(--card-surface);
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      padding: 0.45rem 0.6rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .control-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    input[type="range"] {
+      flex: 1;
+      accent-color: var(--accent);
+      height: 6px;
+      border-radius: 3px;
+      background: #24354d;
+      cursor: pointer;
+    }
+
+    .step-btn {
+      width: 32px;
+      height: 32px;
+      min-height: 32px;
+      padding: 0;
+      font-size: 0.82rem;
+      font-weight: bold;
+      border-radius: 4px;
+      background: #24354d;
+      border: 1px solid var(--card-border);
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .step-btn:hover {
+      background: #314666;
+    }
+
+    .btn-grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.35rem;
+    }
+
+    .table-wrap {
+      width: 100%;
+      border-radius: 6px;
+      border: 1px solid var(--card-border);
+      overflow-x: auto;
+      max-height: 120px;
+      background: var(--card-surface);
+    }
+
+    body.is-fullscreen .table-wrap,
+    :fullscreen .table-wrap,
+    :-webkit-full-screen .table-wrap {
+      max-height: 100px !important;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.78rem;
+      text-align: center;
+    }
+
+    th, td {
+      padding: 0.28rem 0.35rem;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    th {
+      background: #141e2e;
+      color: var(--text-muted);
+      font-weight: 700;
+      position: sticky;
+      top: 0;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(3px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      z-index: 9999;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      max-width: 620px;
+      width: 100%;
+      max-height: 85vh;
+      overflow-y: auto;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 0.4rem;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+  
+/* Touchscreen & Mobile / Tablet Ergonomics + National Model Schools Branding */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+button, .btn, input[type="range"], select {
+  touch-action: manipulation;
+}
+input[type="range"] {
+  min-height: 38px;
+  cursor: pointer;
+}
+.btn, button {
+  min-height: 40px;
+  touch-action: manipulation;
+}
+.btn-hub {
+  background: rgba(56, 189, 248, 0.15) !important;
+  color: #38bdf8 !important;
+  border: 1px solid rgba(56, 189, 248, 0.35) !important;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 8px;
+  padding: 0.45rem 0.85rem;
+  transition: all 0.2s ease;
+}
+.btn-hub:hover {
+  background: rgba(56, 189, 248, 0.28) !important;
+  color: #ffffff !important;
+  transform: translateY(-1px);
+}
+.nms-lab-footer {
+  margin-top: 2.5rem;
+  padding: 1.2rem 1.5rem;
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.9) 0%, rgba(10, 15, 29, 0.98) 100%);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.36);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: #94a3b8;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  font-size: 0.9rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+.nms-lab-footer-inner {
+  max-width: 1440px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.25rem;
+}
+.nms-brand-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+.nms-brand-title {
+  font-weight: 700;
+  font-size: 1rem;
+  color: #f8fafc;
+  letter-spacing: -0.01em;
+}
+.nms-brand-sub {
+  font-size: 0.8rem;
+  color: #38bdf8;
+}
+.nms-credit-col {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 0.45rem 1rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.nms-dev-text {
+  color: #cbd5e1;
+  font-size: 0.88rem;
+}
+.nms-dev-text strong {
+  color: #ffffff;
+}
+.nms-gh-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: #0f172a;
+  color: #38bdf8;
+  padding: 0.3rem 0.7rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.82rem;
+  transition: all 0.2s ease;
+}
+.nms-gh-btn:hover {
+  background: #0284c7;
+  color: #ffffff;
+  border-color: #0284c7;
+  transform: translateY(-1px);
+}
+.nms-copy-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.3rem;
+  font-size: 0.8rem;
+  color: #64748b;
+}
+.nms-portal-link {
+  color: #38bdf8;
+  text-decoration: none;
+  font-weight: 500;
+}
+.nms-portal-link:hover {
+  text-decoration: underline;
+  color: #7dd3fc;
+}
+/* In Fullscreen simulator mode, hide footer to reserve 100% viewport for simulation workbench */
+:fullscreen .nms-lab-footer,
+:-webkit-full-screen .nms-lab-footer,
+body.is-fullscreen .nms-lab-footer {
+  display: none !important;
+}
+@media (max-width: 768px) {
+  .nms-lab-footer-inner {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .nms-copy-col {
+    align-items: center;
+  }
+}
+
+</style>
+</head>
+<body>
+
+  <div class="app-container" id="appRoot">
+    <header>
+      <div>
+        <span class="badge">National Model Schools • Class XI Physics</span>
+        <h1>Weight of a Body: Parallelogram Law of Vectors</h1>
+      </div>
+      <div class="header-actions">
+        <a href="index.html" class="btn btn-hub" title="Return to All Labs Hub">🏠 All Labs</a>
+        
+        <button class="btn" id="btnTheory">📖 Theory</button>
+        <button class="btn" id="btnReset">↺ Reset</button>
+        <button class="btn btn-primary" id="btnFullscreen">⛶ Fullscreen</button>
+      </div>
+    </header>
+
+    <main class="workspace">
+      <!-- Left Column: Gravesand's Board & Vector Construction Canvas -->
+      <div class="left-column">
+        <div class="card canvas-card" style="flex: 1.35;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <strong style="font-size:0.85rem; color:var(--text-muted);">Gravesand's Board: Pulleys, Knot &amp; Optical Alignment Pins</strong>
+            <span style="font-size:0.78rem; color:var(--success); font-weight:700; font-family:monospace;" id="txtEquilNotice">Equilibrium Achieved</span>
+          </div>
+          <div class="canvas-wrap" id="boardWrap">
+            <canvas id="boardCanvas"></canvas>
+          </div>
+        </div>
+
+        <div class="card canvas-card" style="flex: 0.85;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <strong style="font-size:0.85rem; color:var(--text-muted);">Parallelogram Construction: Collinear Vectors $\vec{P}, \vec{Q}$ and Resultant $\vec{R}$</strong>
+            <span style="font-size:0.78rem; color:var(--accent); font-weight:700;" id="txtThetaReadout">Included Angle θ = 0.0°</span>
+          </div>
+          <div class="vector-wrap" id="vectorWrap">
+            <canvas id="vectorCanvas"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Settings, Sliders, Observations -->
+      <div class="right-column">
+        <div class="metrics-grid">
+          <div class="metric-badge">
+            <div class="metric-label">Tension $P$</div>
+            <div class="metric-val" id="valP">60 g.wt</div>
+          </div>
+          <div class="metric-badge">
+            <div class="metric-label">Tension $Q$</div>
+            <div class="metric-val" id="valQ">60 g.wt</div>
+          </div>
+          <div class="metric-badge">
+            <div class="metric-label">Resultant $R$</div>
+            <div class="metric-val" id="valR">0.0 g.wt</div>
+          </div>
+          <div class="metric-badge">
+            <div class="metric-label">Actual $W$</div>
+            <div class="metric-val" id="valW">75.0 g.wt</div>
+          </div>
+        </div>
+
+        <!-- Specimen Body Selection -->
+        <div class="control-group">
+          <div class="control-header">
+            <span>Unknown Suspended Body ($W$)</span>
+          </div>
+          <div class="btn-grid-3">
+            <button class="btn btn-specimen btn-active" data-obj="bob">Metallic Bob (75g)</button>
+            <button class="btn btn-specimen" data-obj="cyl">Cylinder (120g)</button>
+            <button class="btn btn-specimen" data-obj="wood">Block (95g)</button>
+          </div>
+        </div>
+
+        <!-- Tension P Control -->
+        <div class="control-group">
+          <div class="control-header">
+            <span>Left Arm Slotted Weights ($P$)</span>
+            <span id="txtPVal" style="color:var(--accent); font-family:monospace;">60 g.wt</span>
+          </div>
+          <div class="slider-row">
+            <button class="step-btn" id="btnMinus10P">−10</button>
+            <button class="step-btn" id="btnMinus5P">−5</button>
+            <input type="range" id="sliderP" min="20" max="150" step="1" value="60" />
+            <button class="step-btn" id="btnPlus5P">+5</button>
+            <button class="step-btn" id="btnPlus10P">+10</button>
+          </div>
+        </div>
+
+        <!-- Tension Q Control -->
+        <div class="control-group">
+          <div class="control-header">
+            <span>Right Arm Slotted Weights ($Q$)</span>
+            <span id="txtQVal" style="color:var(--accent); font-family:monospace;">60 g.wt</span>
+          </div>
+          <div class="slider-row">
+            <button class="step-btn" id="btnMinus10Q">−10</button>
+            <button class="step-btn" id="btnMinus5Q">−5</button>
+            <input type="range" id="sliderQ" min="20" max="150" step="1" value="60" />
+            <button class="step-btn" id="btnPlus5Q">+5</button>
+            <button class="step-btn" id="btnPlus10Q">+10</button>
+          </div>
+        </div>
+
+        <!-- Quick Balance Helper -->
+        <div style="display:flex; gap:0.35rem;">
+          <button class="btn btn-primary" id="btnAutoBalance" style="flex:1; font-size:0.82rem;">
+            ⚖ Optimal Equilibrium ($P, Q$)
+          </button>
+          <button class="btn" id="btnDisturb" style="flex:1; font-size:0.82rem;">
+            💨 Displace Knot &amp; Settle
+          </button>
+        </div>
+
+        <!-- Observation Record Table -->
+        <div class="card" style="padding:0.45rem; gap:0.35rem;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <strong style="font-size:0.82rem;">Observation Table</strong>
+            <div style="display:flex; gap:0.3rem;">
+              <button class="btn" id="btnRecord" style="padding:0.2rem 0.5rem; font-size:0.75rem; background:var(--accent); color:#042f2e; font-weight:700;">+ Log Data</button>
+              <button class="btn" id="btnClearTable" style="padding:0.2rem 0.5rem; font-size:0.75rem;">Clear</button>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Body</th>
+                  <th>$P$ (g.wt)</th>
+                  <th>$Q$ (g.wt)</th>
+                  <th>$\theta$ (°)</th>
+                  <th>Resultant $R$</th>
+                  <th>Error %</th>
+                </tr>
+              </thead>
+              <tbody id="obsTableBody">
+                <tr><td colspan="7" style="color:var(--text-muted);">No records logged yet. Establish equilibrium and log.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Analytical Evaluation Desk -->
+        <div class="card" style="padding:0.45rem; font-size:0.8rem; background:var(--card-surface); border-color:var(--card-border);">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <strong>Parallelogram Law Equation:</strong>
+            <span style="color:var(--accent);">R = √(P² + Q² + 2PQ cos θ)</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:0.25rem;">
+            <span>Evaluated Weight $W$: <strong id="valEvaluatedW" style="color:var(--success); font-size:0.95rem; font-family:monospace;">-- g.wt</strong></span>
+            <span style="color:var(--text-muted); font-size:0.75rem;" id="txtErrorBadge">Error: 0.0%</span>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Theory Modal -->
+  <div class="modal-backdrop" id="theoryModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Theory: Parallelogram Law of Vectors</h3>
+        <button class="modal-close" id="btnCloseModal">&times;</button>
+      </div>
+      <div style="font-size:0.9rem; line-height:1.55; color:#cbd5e1; display:flex; flex-direction:column; gap:0.6rem;">
+        <p><strong>Statement:</strong> If two vectors acting simultaneously on a particle are represented in magnitude and direction by two adjacent sides of a parallelogram drawn from a point, their resultant vector is represented in magnitude and direction by the diagonal of the parallelogram passing through that point.</p>
+        <div style="text-align:center; padding:0.4rem; background:#0b111c; border-radius:6px; color:var(--accent);">
+          $$R = \sqrt{P^2 + Q^2 + 2PQ \cos \theta}$$
+        </div>
+        <p><strong>Equilibrium Condition:</strong> The central knot $O$ is acted upon by three concurrent coplanar forces:</p>
+        <ul style="padding-left:1.2rem; font-size:0.85rem;">
+          <li>Tension $\vec{P}$ directed along the string to Pulley 1</li>
+          <li>Tension $\vec{Q}$ directed along the string to Pulley 2</li>
+          <li>Unknown weight $\vec{W}$ acting vertically downward</li>
+        </ul>
+        <p>In equilibrium:</p>
+        <div style="text-align:center; padding:0.4rem; background:#0b111c; border-radius:6px; color:var(--accent);">
+          $$\vec{P} + \vec{Q} + \vec{W} = 0 \implies \vec{R} = - \vec{W}$$
+        </div>
+        <p>The vector vectors $\vec{P}$ and $\vec{Q}$ on the drawing paper are strictly collinear with the suspension strings passing over the pulleys.</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // System Parameters & State
+    let massP = 60; // g.wt
+    let massQ = 60; // g.wt
+    let currentObject = 'bob';
+
+    const specimens = {
+      bob: { name: 'Metallic Bob', trueW: 75.0, color: '#ca8a04', r: 12 },
+      cyl: { name: 'Brass Cylinder', trueW: 120.0, color: '#eab308', w: 18, h: 28 },
+      wood: { name: 'Wooden Block', trueW: 95.0, color: '#78350f', w: 24, h: 24 }
+    };
+
+    let observations = [];
+
+    // Calculated state
+    let theta1 = 0; // angle of left string with vertical (rad)
+    let theta2 = 0; // angle of right string with vertical (rad)
+    let totalThetaDeg = 0;
+    let computedResultant = 0;
+    let isPhysicallyPossible = true;
+
+    // Computed Knot Position (px)
+    let knotScreenPos = { x: 0, y: 0 };
+    let pulleyLeftPos = { x: 0, y: 0, r: 18 };
+    let pulleyRightPos = { x: 0, y: 0, r: 18 };
+
+    // Canvas Contexts
+    const boardCanvas = document.getElementById('boardCanvas');
+    const bCtx = boardCanvas.getContext('2d');
+    const vectorCanvas = document.getElementById('vectorCanvas');
+    const vCtx = vectorCanvas.getContext('2d');
+
+    // UI Elements
+    const txtPVal = document.getElementById('txtPVal');
+    const txtQVal = document.getElementById('txtQVal');
+    const sliderP = document.getElementById('sliderP');
+    const sliderQ = document.getElementById('sliderQ');
+    const valP = document.getElementById('valP');
+    const valQ = document.getElementById('valQ');
+    const valR = document.getElementById('valR');
+    const valW = document.getElementById('valW');
+    const txtEquilNotice = document.getElementById('txtEquilNotice');
+    const txtThetaReadout = document.getElementById('txtThetaReadout');
+    const valEvaluatedW = document.getElementById('valEvaluatedW');
+    const txtErrorBadge = document.getElementById('txtErrorBadge');
+    const obsTableBody = document.getElementById('obsTableBody');
+
+    // Theory Modal
+    const theoryModal = document.getElementById('theoryModal');
+    document.getElementById('btnTheory').onclick = () => theoryModal.classList.add('open');
+    document.getElementById('btnCloseModal').onclick = () => theoryModal.classList.remove('open');
+    theoryModal.onclick = (e) => { if (e.target === theoryModal) theoryModal.classList.remove('open'); };
+
+    // Fullscreen
+    const btnFullscreen = document.getElementById('btnFullscreen');
+    btnFullscreen.addEventListener('click', () => {
+      if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+        const root = document.documentElement;
+        if (root.requestFullscreen) root.requestFullscreen();
+        else if (root.webkitRequestFullscreen) root.webkitRequestFullscreen();
+        document.body.classList.add('is-fullscreen');
+        btnFullscreen.innerText = '🗗 Exit Fullscreen';
+      } else {
+        if (document.exitFullscreen) document.exitFullscreen();
+        else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+        document.body.classList.remove('is-fullscreen');
+        btnFullscreen.innerText = '⛶ Fullscreen';
+      }
+      setTimeout(resizeCanvases, 100);
+    });
+
+    // Reset Lab
+    document.getElementById('btnReset').addEventListener('click', () => {
+      massP = 60;
+      massQ = 60;
+      sliderP.value = 60;
+      sliderQ.value = 60;
+      observations = [];
+      renderTable();
+      updatePhysics();
+    });
+
+    // Specimen Selection
+    document.querySelectorAll('.btn-specimen').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.btn-specimen').forEach(b => b.classList.remove('btn-active'));
+        btn.classList.add('btn-active');
+        currentObject = btn.getAttribute('data-obj');
+        updatePhysics();
+      });
+    });
+
+    // Sliders & Steppers
+    sliderP.addEventListener('input', (e) => {
+      massP = parseFloat(e.target.value);
+      updatePhysics();
+    });
+
+    sliderQ.addEventListener('input', (e) => {
+      massQ = parseFloat(e.target.value);
+      updatePhysics();
+    });
+
+    document.getElementById('btnMinus10P').onclick = () => adjustP(-10);
+    document.getElementById('btnMinus5P').onclick = () => adjustP(-5);
+    document.getElementById('btnPlus5P').onclick = () => adjustP(5);
+    document.getElementById('btnPlus10P').onclick = () => adjustP(10);
+
+    document.getElementById('btnMinus10Q').onclick = () => adjustQ(-10);
+    document.getElementById('btnMinus5Q').onclick = () => adjustQ(-5);
+    document.getElementById('btnPlus5Q').onclick = () => adjustQ(5);
+    document.getElementById('btnPlus10Q').onclick = () => adjustQ(10);
+
+    function adjustP(delta) {
+      sliderP.value = Math.max(20, Math.min(150, parseFloat(sliderP.value) + delta));
+      massP = parseFloat(sliderP.value);
+      updatePhysics();
+    }
+
+    function adjustQ(delta) {
+      sliderQ.value = Math.max(20, Math.min(150, parseFloat(sliderQ.value) + delta));
+      massQ = parseFloat(sliderQ.value);
+      updatePhysics();
+    }
+
+    // Auto-balance button
+    document.getElementById('btnAutoBalance').addEventListener('click', () => {
+      const W = specimens[currentObject].trueW;
+      const idealMass = Math.round(W / (2 * Math.cos(55 * Math.PI / 180)));
+      massP = idealMass;
+      massQ = idealMass;
+      sliderP.value = idealMass;
+      sliderQ.value = idealMass;
+      updatePhysics();
+    });
+
+    // Perturbation
+    let perturbTime = 0;
+    document.getElementById('btnDisturb').addEventListener('click', () => {
+      perturbTime = 40;
+    });
+
+    // 2D Vector Equilibrium Physics Engine
+    function updatePhysics() {
+      const W = specimens[currentObject].trueW;
+      const P = massP;
+      const Q = massQ;
+
+      txtPVal.innerText = `${P} g.wt`;
+      txtQVal.innerText = `${Q} g.wt`;
+      valP.innerText = `${P} g.wt`;
+      valQ.innerText = `${Q} g.wt`;
+      valW.innerText = `${W.toFixed(1)} g.wt`;
+
+      // Triangle inequality condition for coplanar forces:
+      if (P + Q > W && P + W > Q && Q + W > P) {
+        isPhysicallyPossible = true;
+
+        // Law of Cosines for equilibrium of concurrent coplanar vectors:
+        // W balances the resultant R of P and Q: R^2 = P^2 + Q^2 + 2PQ cos(theta) = W^2
+        const cosTheta = (W * W - P * P - Q * Q) / (2 * P * Q);
+        const clampedCosTheta = Math.max(-1, Math.min(1, cosTheta));
+        const thetaRad = Math.acos(clampedCosTheta);
+        totalThetaDeg = thetaRad * (180 / Math.PI);
+
+        // Individual angles with the vertical downwards equilibrant:
+        // Law of sines on force triangle:
+        // P / sin(theta2) = Q / sin(theta1) = W / sin(180 - theta)
+        const cosTheta1 = (P * P + W * W - Q * Q) / (2 * P * W);
+        theta1 = Math.acos(Math.max(-1, Math.min(1, cosTheta1)));
+        theta2 = thetaRad - theta1;
+
+        computedResultant = Math.sqrt(P * P + Q * Q + 2 * P * Q * Math.cos(thetaRad));
+
+        txtEquilNotice.innerText = "Equilibrium Achieved (3 Forces Balance)";
+        txtEquilNotice.style.color = "var(--success)";
+      } else {
+        isPhysicallyPossible = false;
+        totalThetaDeg = 0;
+        computedResultant = 0;
+        txtEquilNotice.innerText = "Unbalanced: Tension forces cannot close triangle!";
+        txtEquilNotice.style.color = "var(--danger)";
+      }
+
+      valR.innerText = isPhysicallyPossible ? `${computedResultant.toFixed(1)} g.wt` : "--";
+      txtThetaReadout.innerText = isPhysicallyPossible ? `Included Angle θ = ${totalThetaDeg.toFixed(1)}°` : "Angle θ: Undefined";
+      
+      if (isPhysicallyPossible) {
+        valEvaluatedW.innerText = `${computedResultant.toFixed(1)} g.wt`;
+        const err = Math.abs(computedResultant - W) / W * 100;
+        txtErrorBadge.innerText = `Error: ${err.toFixed(1)}%`;
+      } else {
+        valEvaluatedW.innerText = "--";
+        txtErrorBadge.innerText = "Error: --";
+      }
+
+      drawBoard();
+      drawVectorSheet();
+    }
+
+    // Table Logging
+    document.getElementById('btnRecord').addEventListener('click', () => {
+      if (!isPhysicallyPossible) {
+        alert("Cannot log data: The current tensions cannot maintain equilibrium!");
+        return;
+      }
+
+      const W = specimens[currentObject].trueW;
+      const err = Math.abs(computedResultant - W) / W * 100;
+
+      observations.push({
+        name: specimens[currentObject].name,
+        p: massP,
+        q: massQ,
+        theta: totalThetaDeg.toFixed(1),
+        r: computedResultant.toFixed(1),
+        err: err.toFixed(1)
+      });
+      renderTable();
+    });
+
+    document.getElementById('btnClearTable').addEventListener('click', () => {
+      observations = [];
+      renderTable();
+    });
+
+    function renderTable() {
+      if (observations.length === 0) {
+        obsTableBody.innerHTML = '<tr><td colspan="7" style="color:var(--text-muted);">No records logged yet. Establish equilibrium and log.</td></tr>';
+        return;
+      }
+      obsTableBody.innerHTML = observations.map((r, i) => `
+        <tr>
+          <td>${i + 1}</td>
+          <td>${r.name}</td>
+          <td>${r.p}</td>
+          <td>${r.q}</td>
+          <td>${r.theta}°</td>
+          <td><strong>${r.r}</strong></td>
+          <td><span style="color:var(--accent); font-weight:bold;">${r.err}%</span></td>
+        </tr>
+      `).join('');
+    }
+
+    // Canvas Resizing
+    function resizeCanvases() {
+      const dpr = window.devicePixelRatio || 1;
+
+      const bWrap = document.getElementById('boardWrap');
+      boardCanvas.width = bWrap.clientWidth * dpr;
+      boardCanvas.height = bWrap.clientHeight * dpr;
+      bCtx.setTransform(1, 0, 0, 1, 0, 0);
+      bCtx.scale(dpr, dpr);
+
+      const vWrap = document.getElementById('vectorWrap');
+      vectorCanvas.width = vWrap.clientWidth * dpr;
+      vectorCanvas.height = vWrap.clientHeight * dpr;
+      vCtx.setTransform(1, 0, 0, 1, 0, 0);
+      vCtx.scale(dpr, dpr);
+
+      drawBoard();
+      drawVectorSheet();
+    }
+    window.addEventListener('resize', resizeCanvases);
+
+    // DRAW MAIN GRAVESAND'S APPARATUS BOARD
+    function drawBoard() {
+      const w = boardCanvas.width / (window.devicePixelRatio || 1);
+      const h = boardCanvas.height / (window.devicePixelRatio || 1);
+      bCtx.clearRect(0, 0, w, h);
+
+      // Wooden drawing board base
+      bCtx.fillStyle = '#1e1610';
+      bCtx.fillRect(0, 0, w, h);
+
+      // Drawing sheet pinned to board
+      const sheetMarginX = 35;
+      const sheetMarginY = 22;
+      const sheetW = w - sheetMarginX * 2;
+      const sheetH = h - sheetMarginY * 2;
+
+      bCtx.fillStyle = '#f8fafc';
+      bCtx.fillRect(sheetMarginX, sheetMarginY, sheetW, sheetH);
+      bCtx.strokeStyle = '#cbd5e1';
+      bCtx.lineWidth = 1;
+      bCtx.strokeRect(sheetMarginX, sheetMarginY, sheetW, sheetH);
+
+      // Four corner pins
+      drawPin(sheetMarginX + 12, sheetMarginY + 12);
+      drawPin(sheetMarginX + sheetW - 12, sheetMarginY + 12);
+      drawPin(sheetMarginX + 12, sheetMarginY + sheetH - 12);
+      drawPin(sheetMarginX + sheetW - 12, sheetMarginY + sheetH - 12);
+
+      // Pulleys fixed at top corners
+      pulleyLeftPos = { x: sheetMarginX + 28, y: sheetMarginY + 28, r: 18 };
+      pulleyRightPos = { x: sheetMarginX + sheetW - 28, y: sheetMarginY + 28, r: 18 };
+
+      drawPulley(pulleyLeftPos.x, pulleyLeftPos.y, pulleyLeftPos.r);
+      drawPulley(pulleyRightPos.x, pulleyRightPos.y, pulleyRightPos.r);
+
+      // Equilibrium Knot Location:
+      // Geometrically, the knot sits below both pulleys such that:
+      // Angle of Left String from vertical is theta1
+      // Angle of Right String from vertical is theta2
+      const pulleySpan = pulleyRightPos.x - pulleyLeftPos.x;
+      const pulleyMidX = (pulleyLeftPos.x + pulleyRightPos.x) * 0.5;
+
+      // Distance from knot to left pulley along horizontal is d1 = L1 * sin(theta1)
+      // Distance to right pulley along horizontal is d2 = L2 * sin(theta2)
+      // Since d1 + d2 = pulleySpan and depth is identical:
+      // depth * tan(theta1) + depth * tan(theta2) = pulleySpan
+      const tanSum = Math.tan(theta1) + Math.tan(theta2);
+      let equilDepth = (tanSum > 0.05) ? (pulleySpan / tanSum) : 120;
+      
+      // Keep depth within practical canvas bounds
+      equilDepth = Math.max(70, Math.min(sheetH - 90, equilDepth));
+
+      let knotX = pulleyLeftPos.x + equilDepth * Math.tan(theta1);
+      let knotY = pulleyLeftPos.y + equilDepth;
+
+      if (!isPhysicallyPossible) {
+        if (massP > massQ + specimens[currentObject].trueW) {
+          knotX = pulleyLeftPos.x + 12;
+          knotY = pulleyLeftPos.y + 12;
+        } else if (massQ > massP + specimens[currentObject].trueW) {
+          knotX = pulleyRightPos.x - 12;
+          knotY = pulleyRightPos.y + 12;
+        } else {
+          knotX = pulleyMidX;
+          knotY = sheetMarginY + sheetH - 25;
+        }
+      }
+
+      // Add perturbation damping
+      if (perturbTime > 0) {
+        const decay = perturbTime / 40;
+        knotX += Math.sin(perturbTime * 0.8) * 16 * decay;
+        knotY += Math.cos(perturbTime * 0.8) * 10 * decay;
+        perturbTime--;
+      }
+
+      knotScreenPos = { x: knotX, y: knotY };
+
+      // 1. Strings from Knot O to Pulleys
+      bCtx.strokeStyle = '#0f172a';
+      bCtx.lineWidth = 1.8;
+
+      // Left String to Pulley 1
+      bCtx.beginPath();
+      bCtx.moveTo(knotX, knotY);
+      bCtx.lineTo(pulleyLeftPos.x, pulleyLeftPos.y);
+      bCtx.stroke();
+
+      // Hanging left string with Hanger P
+      const dropP_Y = sheetMarginY + sheetH + 8;
+      bCtx.beginPath();
+      bCtx.moveTo(pulleyLeftPos.x - pulleyLeftPos.r, pulleyLeftPos.y);
+      bCtx.lineTo(pulleyLeftPos.x - pulleyLeftPos.r, dropP_Y);
+      bCtx.stroke();
+      drawWeightHanger(pulleyLeftPos.x - pulleyLeftPos.r, dropP_Y, massP, 'P');
+
+      // Right String to Pulley 2
+      bCtx.beginPath();
+      bCtx.moveTo(knotX, knotY);
+      bCtx.lineTo(pulleyRightPos.x, pulleyRightPos.y);
+      bCtx.stroke();
+
+      // Hanging right string with Hanger Q
+      const dropQ_Y = sheetMarginY + sheetH + 8;
+      bCtx.beginPath();
+      bCtx.moveTo(pulleyRightPos.x + pulleyRightPos.r, pulleyRightPos.y);
+      bCtx.lineTo(pulleyRightPos.x + pulleyRightPos.r, dropQ_Y);
+      bCtx.stroke();
+      drawWeightHanger(pulleyRightPos.x + pulleyRightPos.r, dropQ_Y, massQ, 'Q');
+
+      // Vertical string downward to Unknown Body W
+      const dropW_Y = knotY + 90;
+      bCtx.beginPath();
+      bCtx.moveTo(knotX, knotY);
+      bCtx.lineTo(knotX, dropW_Y);
+      bCtx.stroke();
+      drawUnknownBody(knotX, dropW_Y);
+
+      // Knot Ring O
+      bCtx.fillStyle = '#dc2626';
+      bCtx.beginPath();
+      bCtx.arc(knotX, knotY, 4.5, 0, Math.PI * 2);
+      bCtx.fill();
+      bCtx.strokeStyle = '#450a0a';
+      bCtx.lineWidth = 1.5;
+      bCtx.stroke();
+
+      bCtx.fillStyle = '#0f172a';
+      bCtx.font = 'bold 12px sans-serif';
+      bCtx.textAlign = 'right';
+      bCtx.fillText('O', knotX - 8, knotY - 6);
+
+      // Optical alignment mirror pins (P1, P2 along string 1; P3, P4 along string 2; P5, P6 vertical)
+      if (isPhysicallyPossible) {
+        drawMirrorPin(knotX + (pulleyLeftPos.x - knotX) * 0.40, knotY + (pulleyLeftPos.y - knotY) * 0.40, 'P₁');
+        drawMirrorPin(knotX + (pulleyLeftPos.x - knotX) * 0.75, knotY + (pulleyLeftPos.y - knotY) * 0.75, 'P₂');
+
+        drawMirrorPin(knotX + (pulleyRightPos.x - knotX) * 0.40, knotY + (pulleyRightPos.y - knotY) * 0.40, 'P₃');
+        drawMirrorPin(knotX + (pulleyRightPos.x - knotX) * 0.75, knotY + (pulleyRightPos.y - knotY) * 0.75, 'P₄');
+
+        drawMirrorPin(knotX, knotY + 32, 'P₅');
+        drawMirrorPin(knotX, knotY + 62, 'P₆');
+      }
+    }
+
+    function drawPin(x, y) {
+      bCtx.fillStyle = '#dc2626';
+      bCtx.beginPath();
+      bCtx.arc(x, y, 4, 0, Math.PI * 2);
+      bCtx.fill();
+      bCtx.strokeStyle = '#7f1d1d';
+      bCtx.lineWidth = 1;
+      bCtx.stroke();
+    }
+
+    function drawMirrorPin(x, y, label) {
+      bCtx.fillStyle = '#2563eb';
+      bCtx.beginPath();
+      bCtx.arc(x, y, 3, 0, Math.PI * 2);
+      bCtx.fill();
+      bCtx.fillStyle = '#1e3a8a';
+      bCtx.font = '9px sans-serif';
+      bCtx.textAlign = 'center';
+      bCtx.fillText(label, x + 8, y + 3);
+    }
+
+    function drawPulley(cx, cy, r) {
+      bCtx.fillStyle = '#334155';
+      bCtx.fillRect(cx - 5, cy - r - 6, 10, r + 6);
+      
+      bCtx.fillStyle = '#cbd5e1';
+      bCtx.beginPath();
+      bCtx.arc(cx, cy, r, 0, Math.PI * 2);
+      bCtx.fill();
+      bCtx.strokeStyle = '#475569';
+      bCtx.lineWidth = 2;
+      bCtx.stroke();
+
+      bCtx.strokeStyle = '#94a3b8';
+      bCtx.lineWidth = 1.5;
+      bCtx.beginPath();
+      bCtx.arc(cx, cy, r - 3, 0, Math.PI * 2);
+      bCtx.stroke();
+
+      bCtx.fillStyle = '#0f172a';
+      bCtx.beginPath();
+      bCtx.arc(cx, cy, 3, 0, Math.PI * 2);
+      bCtx.fill();
+    }
+
+    function drawWeightHanger(hx, hy, mass, label) {
+      const numDiscs = Math.min(8, Math.max(1, Math.round(mass / 15)));
+      const discW = 28;
+      const discH = 5;
+
+      bCtx.strokeStyle = '#e2e8f0';
+      bCtx.lineWidth = 2;
+      bCtx.beginPath();
+      bCtx.moveTo(hx, hy - 4);
+      bCtx.lineTo(hx, hy + numDiscs * discH + 10);
+      bCtx.stroke();
+
+      for (let i = 0; i < numDiscs; i++) {
+        bCtx.fillStyle = '#eab308';
+        bCtx.fillRect(hx - discW * 0.5, hy + i * discH, discW, discH - 1);
+        bCtx.strokeStyle = '#713f12';
+        bCtx.lineWidth = 1;
+        bCtx.strokeRect(hx - discW * 0.5, hy + i * discH, discW, discH - 1);
+      }
+
+      bCtx.fillStyle = '#ca8a04';
+      bCtx.fillRect(hx - discW * 0.5 - 2, hy + numDiscs * discH, discW + 4, 4);
+
+      bCtx.fillStyle = '#fff';
+      bCtx.font = 'bold 9px sans-serif';
+      bCtx.textAlign = 'center';
+      bCtx.fillText(`${label}=${mass}g`, hx, hy + numDiscs * discH + 16);
+    }
+
+    function drawUnknownBody(x, y) {
+      const spec = specimens[currentObject];
+      bCtx.fillStyle = spec.color;
+
+      if (currentObject === 'bob') {
+        bCtx.beginPath();
+        bCtx.arc(x, y + spec.r, spec.r, 0, Math.PI * 2);
+        bCtx.fill();
+        bCtx.strokeStyle = '#713f12';
+        bCtx.lineWidth = 1.5;
+        bCtx.stroke();
+      } else {
+        bCtx.fillRect(x - spec.w * 0.5, y, spec.w, spec.h);
+        bCtx.strokeStyle = '#1e293b';
+        bCtx.lineWidth = 1.5;
+        bCtx.strokeRect(x - spec.w * 0.5, y, spec.w, spec.h);
+      }
+
+      bCtx.fillStyle = '#fff';
+      bCtx.font = 'bold 9px sans-serif';
+      bCtx.textAlign = 'center';
+      bCtx.fillText(`W`, x, y + 36);
+    }
+
+    // DRAW VECTOR PARALLELOGRAM CONSTRUCTION (STRICTLY COLLINEAR TO STRINGS)
+    function drawVectorSheet() {
+      const w = vectorCanvas.width / (window.devicePixelRatio || 1);
+      const h = vectorCanvas.height / (window.devicePixelRatio || 1);
+      vCtx.clearRect(0, 0, w, h);
+
+      // Graph paper background
+      vCtx.fillStyle = '#faf8f5';
+      vCtx.fillRect(0, 0, w, h);
+
+      // Millimeter grid
+      vCtx.strokeStyle = '#f1e6d4';
+      vCtx.lineWidth = 1;
+      for (let gx = 20; gx < w; gx += 20) {
+        vCtx.beginPath();
+        vCtx.moveTo(gx, 0);
+        vCtx.lineTo(gx, h);
+        vCtx.stroke();
+      }
+      for (let gy = 20; gy < h; gy += 20) {
+        vCtx.beginPath();
+        vCtx.moveTo(0, gy);
+        vCtx.lineTo(w, gy);
+        vCtx.stroke();
+      }
+
+      if (!isPhysicallyPossible) {
+        vCtx.fillStyle = '#ef4444';
+        vCtx.font = 'bold 12px sans-serif';
+        vCtx.textAlign = 'center';
+        vCtx.fillText('Forces cannot maintain equilibrium.', w * 0.5, h * 0.5);
+        return;
+      }
+
+      const ox = w * 0.5;
+      const oy = h * 0.72; // Origin O
+
+      // EXACT DIRECTION VECTORS COMPUTED DIRECTLY FROM PHYSICAL STRING GEOMETRY:
+      // Left String vector from knot to pulleyLeft
+      const dxP = pulleyLeftPos.x - knotScreenPos.x;
+      const dyP = pulleyLeftPos.y - knotScreenPos.y;
+      const lenP = Math.hypot(dxP, dyP) || 1;
+      const uPx = dxP / lenP;
+      const uPy = dyP / lenP;
+
+      // Right String vector from knot to pulleyRight
+      const dxQ = pulleyRightPos.x - knotScreenPos.x;
+      const dyQ = pulleyRightPos.y - knotScreenPos.y;
+      const lenQ = Math.hypot(dxQ, dyQ) || 1;
+      const uQx = dxQ / lenQ;
+      const uQy = dyQ / lenQ;
+
+      // Scale factor (pixels per g.wt)
+      const scale = Math.min(w * 0.45 / Math.max(massP, massQ, 1), 0.95);
+
+      // Vector OA along Left String
+      const ax = ox + uPx * (massP * scale);
+      const ay = oy + uPy * (massP * scale);
+
+      // Vector OB along Right String
+      const bx = ox + uQx * (massQ * scale);
+      const by = oy + uQy * (massQ * scale);
+
+      // Diagonal Vector OC = OA + OB
+      const cx = ax + (bx - ox);
+      const cy = ay + (by - oy);
+
+      // 1. Draw Dotted Parallelogram Completion Lines (AC and BC)
+      vCtx.setLineDash([4, 3]);
+      vCtx.strokeStyle = '#94a3b8';
+      vCtx.lineWidth = 1.5;
+      vCtx.beginPath();
+      vCtx.moveTo(ax, ay);
+      vCtx.lineTo(cx, cy);
+      vCtx.lineTo(bx, by);
+      vCtx.stroke();
+      vCtx.setLineDash([]);
+
+      // 2. Draw Vector OA (Force P) - Collinear with Left String
+      drawArrow(ox, oy, ax, ay, '#2563eb', 2.5);
+      vCtx.fillStyle = '#1e3a8a';
+      vCtx.font = 'bold 11px sans-serif';
+      vCtx.textAlign = 'right';
+      vCtx.fillText(`P (${massP} g)`, ax - 6, ay);
+
+      // 3. Draw Vector OB (Force Q) - Collinear with Right String
+      drawArrow(ox, oy, bx, by, '#059669', 2.5);
+      vCtx.fillStyle = '#065f46';
+      vCtx.textAlign = 'left';
+      vCtx.fillText(`Q (${massQ} g)`, bx + 6, by);
+
+      // 4. Draw Diagonal Vector OC (Resultant R)
+      drawArrow(ox, oy, cx, cy, '#dc2626', 2.5);
+      vCtx.fillStyle = '#991b1b';
+      vCtx.font = 'bold 11px sans-serif';
+      vCtx.textAlign = 'center';
+      vCtx.fillText(`R = ${computedResultant.toFixed(1)} g.wt`, cx, cy - 8);
+
+      // 5. Draw Equilibrant Vector OD (True Downward Weight W)
+      const wLen = specimens[currentObject].trueW * scale;
+      vCtx.strokeStyle = '#475569';
+      vCtx.lineWidth = 2;
+      vCtx.setLineDash([3, 3]);
+      vCtx.beginPath();
+      vCtx.moveTo(ox, oy);
+      vCtx.lineTo(ox, oy + wLen);
+      vCtx.stroke();
+      vCtx.setLineDash([]);
+
+      vCtx.fillStyle = '#334155';
+      vCtx.fillText(`W' (Vertical)`, ox, oy + wLen + 14);
+
+      // Angle Arc at O
+      vCtx.strokeStyle = '#f59e0b';
+      vCtx.lineWidth = 1.5;
+      vCtx.beginPath();
+      const aAngle = Math.atan2(ay - oy, ax - ox);
+      const bAngle = Math.atan2(by - oy, bx - ox);
+      vCtx.arc(ox, oy, 22, aAngle, bAngle, false);
+      vCtx.stroke();
+
+      vCtx.fillStyle = '#b45309';
+      vCtx.font = '10px sans-serif';
+      vCtx.fillText(`θ=${totalThetaDeg.toFixed(0)}°`, ox, oy - 26);
+
+      // Center Origin O
+      vCtx.fillStyle = '#0f172a';
+      vCtx.beginPath();
+      vCtx.arc(ox, oy, 3.5, 0, Math.PI * 2);
+      vCtx.fill();
+      vCtx.fillText('O', ox - 8, oy + 12);
+    }
+
+    function drawArrow(fromX, fromY, toX, toY, color, width) {
+      const headLen = 9;
+      const angle = Math.atan2(toY - fromY, toX - fromX);
+
+      vCtx.strokeStyle = color;
+      vCtx.fillStyle = color;
+      vCtx.lineWidth = width;
+
+      vCtx.beginPath();
+      vCtx.moveTo(fromX, fromY);
+      vCtx.lineTo(toX, toY);
+      vCtx.stroke();
+
+      vCtx.beginPath();
+      vCtx.moveTo(toX, toY);
+      vCtx.lineTo(toX - headLen * Math.cos(angle - Math.PI / 6), toY - headLen * Math.sin(angle - Math.PI / 6));
+      vCtx.lineTo(toX - headLen * Math.cos(angle + Math.PI / 6), toY - headLen * Math.sin(angle + Math.PI / 6));
+      vCtx.closePath();
+      vCtx.fill();
+    }
+
+    // Animation loop
+    function renderLoop() {
+      if (perturbTime > 0) {
+        drawBoard();
+        drawVectorSheet();
+      }
+      requestAnimationFrame(renderLoop);
+    }
+
+    // Startup
+    window.addEventListener('DOMContentLoaded', () => {
+      if (window.renderMathInElement) {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: '$$', right: '$$', display: true },
+            { left: '$', right: '$', display: false }
+          ]
+        });
+      }
+      updatePhysics();
+      setTimeout(resizeCanvases, 50);
+      renderLoop();
+    });
+  </script>
+<footer class="nms-lab-footer">
+  <div class="nms-lab-footer-inner">
+    <div class="nms-brand-col">
+      <div class="nms-brand-title">🏛️ National Model Schools</div>
+      <div class="nms-brand-sub">Senior Secondary Physics Virtual Laboratory</div>
+    </div>
+    <div class="nms-credit-col">
+      <span class="nms-dev-text">Developed with <span style="color:#ef4444;">❤</span> by <strong>Syed Mazhar Ali</strong></span>
+      <a href="https://github.com/mazhar-in" target="_blank" rel="noopener noreferrer" class="nms-gh-btn" title="Syed Mazhar Ali on GitHub">
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
+        <span>mazhar-in</span>
+      </a>
+    </div>
+    <div class="nms-copy-col">
+      <span>© National Model Schools. All rights reserved.</span>
+      <a href="index.html" class="nms-portal-link">← Return to All Labs</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Force Fullscreen on loading & first user gesture
+(function initAutoFullscreen() {
+  function tryFullscreen() {
+    if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+      const elem = document.documentElement;
+      if (elem.requestFullscreen) {
+        elem.requestFullscreen().catch(() => {});
+      } else if (elem.webkitRequestFullscreen) {
+        elem.webkitRequestFullscreen();
+      }
+    }
+  }
+  // Attempt immediately on loading
+  if (document.readyState === 'complete' || document.readyState === 'interactive') {
+    tryFullscreen();
+  } else {
+    window.addEventListener('DOMContentLoaded', tryFullscreen);
+    window.addEventListener('load', tryFullscreen);
+  }
+  // Auto-engage on first user gesture if browser blocked initial load request
+  const gestureEvents = ['click', 'touchstart', 'pointerdown'];
+  const onFirstGesture = () => {
+    tryFullscreen();
+    gestureEvents.forEach(evt => window.removeEventListener(evt, onFirstGesture));
+  };
+  gestureEvents.forEach(evt => window.addEventListener(evt, onFirstGesture, { passive: true }));
+})();
+</script>
+
+</body>
+</html>

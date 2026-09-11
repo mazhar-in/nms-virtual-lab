@@ -1,0 +1,1415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
+  <title>National Model Schools | Senior Secondary Physics Virtual Laboratory Suite</title>
+  <meta name="description" content="Explore NCERT & CBSE Class XI and XII Physics practicals through interactive virtual laboratory simulations. Branded for National Model Schools, developed by Syed Mazhar Ali." />
+  
+    <!-- KaTeX for crisp mathematical typography -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
+
+  <!-- Modern Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-primary: #070c18;
+      --bg-secondary: #0d1527;
+      --card-bg: rgba(18, 28, 51, 0.7);
+      --card-hover: rgba(28, 43, 76, 0.85);
+      --card-border: rgba(56, 189, 248, 0.16);
+      --card-border-hover: rgba(56, 189, 248, 0.45);
+      --accent: #38bdf8;
+      --accent-glow: rgba(56, 189, 248, 0.25);
+      --accent-purple: #818cf8;
+      --accent-emerald: #34d399;
+      --accent-amber: #fbbf24;
+      --accent-rose: #fb7185;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      font-family: var(--font-main);
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      line-height: 1.5;
+      min-height: 100vh;
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+    }
+
+    /* Ambient Background Gradients */
+    body::before {
+      content: '';
+      position: fixed;
+      top: -15vw;
+      left: -10vw;
+      width: 50vw;
+      height: 50vw;
+      background: radial-gradient(circle, rgba(56, 189, 248, 0.12) 0%, rgba(7, 12, 24, 0) 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      bottom: -15vw;
+      right: -10vw;
+      width: 55vw;
+      height: 55vw;
+      background: radial-gradient(circle, rgba(129, 140, 248, 0.1) 0%, rgba(7, 12, 24, 0) 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Touchscreen & Ergonomic Enhancements */
+    button, .btn, .filter-chip, .lab-card, a {
+      touch-action: manipulation;
+    }
+
+    /* Navigation Header */
+    header.main-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(7, 12, 24, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 0.85rem 1.5rem;
+      transition: all 0.3s ease;
+    }
+
+    .header-inner {
+      max-width: 1440px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .brand-container {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .brand-logo-emblem {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #0284c7 0%, #38bdf8 50%, #818cf8 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      box-shadow: 0 4px 14px rgba(56, 189, 248, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      flex-shrink: 0;
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .school-name {
+      font-weight: 800;
+      font-size: 1.15rem;
+      letter-spacing: -0.02em;
+      background: linear-gradient(90deg, #ffffff, #e0f2fe);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .lab-title-badge {
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .btn-fs-toggle {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #e2e8f0;
+      font-family: inherit;
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 0.5rem 0.95rem;
+      border-radius: 10px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      transition: all 0.2s ease;
+    }
+
+    .btn-fs-toggle:hover {
+      background: rgba(56, 189, 248, 0.15);
+      color: #ffffff;
+      border-color: rgba(56, 189, 248, 0.4);
+    }
+
+    /* Main Container */
+    main.hub-container {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 2.5rem 1.5rem 4rem 1.5rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Hero Section */
+    .hero-section {
+      text-align: center;
+      margin-bottom: 3rem;
+      padding: 2.5rem 1.5rem;
+      background: linear-gradient(180deg, rgba(13, 21, 39, 0.8) 0%, rgba(7, 12, 24, 0.4) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 24px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.4rem 1rem;
+      border-radius: 9999px;
+      background: rgba(56, 189, 248, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      color: #38bdf8;
+      font-size: 0.82rem;
+      font-weight: 600;
+      margin-bottom: 1.25rem;
+      letter-spacing: 0.02em;
+    }
+
+    .hero-title {
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, #ffffff 30%, #bae6fd 70%, #93c5fd 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-subtitle {
+      font-size: clamp(0.95rem, 1.5vw, 1.15rem);
+      color: var(--text-muted);
+      max-width: 780px;
+      margin: 0 auto 2rem auto;
+      line-height: 1.6;
+    }
+
+    /* Quick Metrics Ribbon */
+    .stats-ribbon {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 1rem;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    .stat-box {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 1rem;
+      transition: all 0.25s ease;
+    }
+
+    .stat-box:hover {
+      background: rgba(30, 41, 59, 0.7);
+      border-color: rgba(56, 189, 248, 0.3);
+      transform: translateY(-2px);
+    }
+
+    .stat-number {
+      font-size: 1.6rem;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      color: var(--accent);
+      margin-bottom: 0.2rem;
+    }
+
+    .stat-label {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Filter & Search Bar */
+    .controls-section {
+      margin-bottom: 2.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .search-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .search-box-wrap {
+      flex: 1;
+      min-width: 280px;
+      position: relative;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 1.1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-dim);
+      font-size: 1.1rem;
+      pointer-events: none;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 0.9rem 1rem 0.9rem 2.8rem;
+      background: rgba(18, 28, 51, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 14px;
+      color: #ffffff;
+      font-family: inherit;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.2s ease;
+      min-height: 48px;
+    }
+
+    .search-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
+      background: rgba(18, 28, 51, 0.95);
+    }
+
+    .search-input::placeholder {
+      color: var(--text-dim);
+    }
+
+    .filter-chips-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      align-items: center;
+    }
+
+    .filter-chip {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text-muted);
+      padding: 0.55rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.2s ease;
+      min-height: 40px;
+    }
+
+    .filter-chip:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #ffffff;
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+
+    .filter-chip.active {
+      background: rgba(56, 189, 248, 0.18);
+      border-color: var(--accent);
+      color: #ffffff;
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.25);
+    }
+
+    .filter-count {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 0.1rem 0.45rem;
+      border-radius: 9999px;
+      font-size: 0.72rem;
+      font-family: var(--font-mono);
+    }
+
+    /* Section Headers */
+    .category-title-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 2.5rem 0 1.25rem 0;
+      padding-bottom: 0.6rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .category-heading {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #f1f5f9;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .category-badge {
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 0.2rem 0.65rem;
+      border-radius: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .cat-mech { background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); }
+    .cat-dyn { background: rgba(129, 140, 248, 0.15); color: #a5b4fc; border: 1px solid rgba(129, 140, 248, 0.3); }
+    .cat-elec { background: rgba(251, 191, 36, 0.15); color: #fcd34d; border: 1px solid rgba(251, 191, 36, 0.3); }
+
+    /* Lab Cards Grid */
+    .labs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .lab-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 1.6rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 1.25rem;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .lab-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-purple));
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .lab-card:hover {
+      background: var(--card-hover);
+      border-color: var(--card-border-hover);
+      transform: translateY(-4px);
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5), 0 0 20px rgba(56, 189, 248, 0.15);
+    }
+
+    .lab-card:hover::before {
+      opacity: 1;
+    }
+
+    .card-top {
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+
+    .card-meta-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .class-badge {
+      font-size: 0.72rem;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      padding: 0.2rem 0.6rem;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      color: #cbd5e1;
+    }
+
+    .status-pill {
+      font-size: 0.7rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      color: #4ade80;
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: #4ade80;
+      box-shadow: 0 0 8px #4ade80;
+    }
+
+    .card-title-group {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.85rem;
+    }
+
+    .exp-icon {
+      font-size: 1.8rem;
+      line-height: 1;
+      padding: 0.6rem;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      flex-shrink: 0;
+    }
+
+    .exp-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #ffffff;
+      line-height: 1.35;
+      letter-spacing: -0.01em;
+    }
+
+    .exp-desc {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.55;
+    }
+
+    .formula-tag {
+      background: rgba(10, 15, 29, 0.85);
+      border: 1px dashed rgba(56, 189, 248, 0.3);
+      padding: 0.45rem 0.85rem;
+      border-radius: 8px;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: #7dd3fc;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .formula-tag span.lbl {
+      color: var(--text-dim);
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .card-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-top: 0.5rem;
+    }
+
+    .btn-launch {
+      flex: 1;
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      color: #ffffff;
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      padding: 0.75rem 1rem;
+      border-radius: 12px;
+      font-family: inherit;
+      font-size: 0.92rem;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3);
+      transition: all 0.25s ease;
+      min-height: 46px;
+    }
+
+    .btn-launch:hover {
+      background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+      box-shadow: 0 6px 20px rgba(14, 165, 233, 0.45);
+      transform: translateY(-2px);
+    }
+
+    .btn-card-pop {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: var(--text-muted);
+      width: 46px;
+      height: 46px;
+      border-radius: 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      font-size: 1.1rem;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .btn-card-pop:hover {
+      background: rgba(255, 255, 255, 0.12);
+      color: #ffffff;
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+
+    /* Empty state */
+    .empty-search-state {
+      display: none;
+      text-align: center;
+      padding: 4rem 1.5rem;
+      background: rgba(18, 28, 51, 0.4);
+      border-radius: 20px;
+      border: 1px dashed rgba(255, 255, 255, 0.1);
+      margin-top: 2rem;
+    }
+
+    .empty-search-state.show {
+      display: block;
+    }
+
+    /* Universal Footer */
+    footer.main-hub-footer {
+      background: linear-gradient(180deg, rgba(13, 21, 39, 0.95) 0%, rgba(5, 9, 18, 0.98) 100%);
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 3rem 1.5rem 2rem 1.5rem;
+      margin-top: 5rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    .footer-inner {
+      max-width: 1440px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .footer-top-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1.5rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .footer-brand-meta {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .footer-school-info h3 {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 0.2rem;
+    }
+
+    .footer-school-info p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .author-highlight-box {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: rgba(18, 28, 51, 0.8);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      padding: 0.6rem 1.25rem;
+      border-radius: 9999px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    }
+
+    .author-highlight-box span {
+      font-size: 0.9rem;
+      color: #e2e8f0;
+    }
+
+    .author-highlight-box strong {
+      color: #ffffff;
+    }
+
+    .gh-author-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      background: #0f172a;
+      color: var(--accent);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      padding: 0.35rem 0.85rem;
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .gh-author-link:hover {
+      background: #0284c7;
+      color: #ffffff;
+      border-color: #0284c7;
+      transform: translateY(-1px);
+    }
+
+    .footer-bottom-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      font-size: 0.85rem;
+      color: var(--text-dim);
+    }
+
+    .footer-tagline {
+      color: var(--text-muted);
+    }
+
+    /* Responsive Breakpoints */
+    @media (max-width: 768px) {
+      .header-inner {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .header-actions {
+        width: 100%;
+        justify-content: space-between;
+      }
+      .labs-grid {
+        grid-template-columns: 1fr;
+      }
+      .footer-top-row {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .footer-bottom-row {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header class="main-header">
+    <div class="header-inner">
+      <a href="index.html" class="brand-container">
+        <div class="brand-logo-emblem">🔬</div>
+        <div class="brand-text">
+          <span class="school-name">National Model Schools</span>
+          <span class="lab-title-badge">Physics Virtual Laboratory Suite</span>
+        </div>
+      </a>
+
+      <div class="header-actions">
+        <button class="btn-fs-toggle" id="btnFullscreenToggle" title="Toggle Fullscreen Mode">
+          <span>⛶</span> Fullscreen
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Portal Hub -->
+  <main class="hub-container">
+    
+    <!-- Hero Showcase Section -->
+    <section class="hero-section">
+      <div class="hero-pill">
+        <span>✨</span> Senior Secondary NCERT & CBSE Practical Curriculum
+      </div>
+      <h1 class="hero-title">Interactive Physics Virtual Labs</h1>
+      <p class="hero-subtitle">
+        Perform precision scientific experiments, analyze apparatus with optical loupes, record live observation tables, and compute physical constants through interactive HTML5 laboratory simulators.
+      </p>
+
+      <!-- Quick Metrics Ribbon -->
+      <div class="stats-ribbon">
+        <div class="stat-box">
+          <div class="stat-number">12</div>
+          <div class="stat-label">Virtual Labs</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-number">XI & XII</div>
+          <div class="stat-label">Classes Covered</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-number">100%</div>
+          <div class="stat-label">Touch Optimized</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-number">KaTeX</div>
+          <div class="stat-label">Math Equations</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Controls Section: Search & Category Filters -->
+    <section class="controls-section">
+      <div class="search-row">
+        <div class="search-box-wrap">
+          <span class="search-icon">🔍</span>
+          <input 
+            type="text" 
+            id="searchInput" 
+            class="search-input" 
+            placeholder="Search experiments by name, apparatus, topic, or formula... (Press '/' to focus)" 
+            autocomplete="off"
+          />
+        </div>
+      </div>
+
+      <div class="filter-chips-row" id="filterChipsRow">
+        <button class="filter-chip active" data-filter="all">
+          All Experiments <span class="filter-count">12</span>
+        </button>
+        <button class="filter-chip" data-filter="class11">
+          Class XI <span class="filter-count">9</span>
+        </button>
+        <button class="filter-chip" data-filter="class12">
+          Class XII <span class="filter-count">3</span>
+        </button>
+        <button class="filter-chip" data-filter="mechanics">
+          Mechanics & Measurements <span class="filter-count">5</span>
+        </button>
+        <button class="filter-chip" data-filter="dynamics">
+          Dynamics & Oscillations <span class="filter-count">4</span>
+        </button>
+        <button class="filter-chip" data-filter="electricity">
+          Electricity & Circuits <span class="filter-count">3</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Experiments Sections -->
+
+    <!-- Section 1: Mechanics & Measurements -->
+    <div class="category-block" data-category="mechanics">
+      <div class="category-title-bar">
+        <h2 class="category-heading">
+          <span>📏</span> Mechanics & Precision Measurements
+        </h2>
+        <span class="category-badge cat-mech">5 Experiments</span>
+      </div>
+
+      <div class="labs-grid">
+        <!-- 1. Vernier Callipers -->
+        <div class="lab-card" data-tags="vernier callipers class11 mechanics volume dimensions depth cylinder sphere beaker least count zero error" data-class="class11" data-cat="mechanics">
+          <div class="card-top">
+            <div class="card-meta-row">
+              <span class="class-badge">CLASS XI</span>
+              <span class="status-pill"><span class="status-dot"></span> Interactive Simulator</span>
+            </div>
+            <div class="card-title-group">
+              <div class="exp-icon">📐</div>
+              <div>
+                <h3 class="exp-title">Vernier Callipers: Dimensions & Volume</h3>
+              </div>
+            </div>
+            <p class="exp-desc">
+              Measure internal/external diameters and depth of cylindrical/spherical bodies. Interactive sliding vernier assembly with zero error compensation and 4 test specimens.
+            </p>
+            <div class="formula-tag"><span class="lbl">Formula:</span> $LC = 1\text{ MSD} - 1\text{ VSD} = 0.01\text{ cm}$</div>
+          </div>
+          <div class="card-actions">
+            <a href="vernier-callipers-virtual-lab.html" class="btn-launch">
+              <span>🚀 Launch Lab</span>
+            </a>
+            <a href="vernier-callipers-virtual-lab.html" target="_blank" class="btn-card-pop" title="Open in New Tab">↗</a>
+          </div>
+        </div>
+
+        <!-- 2. Screw Gauge -->
+        <div class="lab-card" data-tags="screw gauge micrometer class11 mechanics wire diameter sheet thickness pitch ratchet circular scale" data-class="class11" data-cat="mechanics">
+          <div class="card-top">
+            <div class="card-meta-row">
+              <span class="class-badge">CLASS XI</span>
+              <span class="status-pill"><span class="status-dot"></span> Interactive Simulator</span>
+            </div>
+            <div class="card-title-group">
+              <div class="exp-icon">🔩</div>
+              <div>
+                <h3 class="exp-title">Screw Gauge (Micrometer): Diameter & Thickness</h3>
+              </div>
+            </div>
+            <p class="exp-desc">
+              Determine wire gauge diameters and thin sheet thicknesses with 0.001 cm precision. Features high-magnification optical loupe and realistic ratchet stop action.
+            </p>
+            <div class="formula-tag"><span class="lbl">Formula:</span> $LC = \frac{\text{Pitch}}{\text{Total Head Divisions}} = 0.001\text{ cm}$</div>
+          </div>
+          <div class="card-actions">
+            <a href="screw-gauge-micrometer-virtual-lab.html" class="btn-launch">
+              <span>🚀 Launch Lab</span>
+            </a>
+            <a href="screw-gauge-micrometer-virtual-lab.html" target="_blank" class="btn-card-pop" title="Open in New Tab">↗</a>
+          </div>
+        </div>
+
+        <!-- 3. Spherometer -->
+        <div class="lab-card" data-tags="spherometer class11 mechanics radius of curvature spherical surface lens mirror convex concave sagitta" data-class="class11" data-cat="mechanics">
+          <div class="card-top">
+            <div class="card-meta-row">
+              <span class="class-badge">CLASS XI</span>
+              <span class="status-pill"><span class="status-dot"></span> Interactive Simulator</span>
+            </div>
+            <div class="card-title-group">
+              <div class="exp-icon">🔍</div>
+              <div>
+                <h3 class="exp-title">Spherometer: Radius of Curvature</h3>
+              </div>
+            </div>
+            <p class="exp-desc">
+              Measure the radius of curvature of spherical surfaces (concave/convex watch glasses) and flat glass plates using central screw sagitta height measurements.
+            </p>
+            <div class="formula-tag"><span class="lbl">Formula:</span> $R = \frac{l^2}{6h} + \frac{h}{2}$</div>
+          </div>
+          <div class="card-actions">
+            <a href="spherometer-virtual-lab.html" class="btn-launch">
+              <span>🚀 Launch Lab</span>
+            </a>
+            <a href="spherometer-virtual-lab.html" target="_blank" class="btn-card-pop" title="Open in New Tab">↗</a>
+          </div>
+        </div>
+
+        <!-- 4. Volume of Irregular Lamina -->
+        <div class="lab-card" data-tags="volume irregular lamina screw gauge graph paper class11 mechanics area thickness" data-class="class11" data-cat="mechanics">
+          <div class="card-top">
+            <div class="card-meta-row">
+              <span class="class-badge">CLASS XI</span>
+              <span class="status-pill"><span class="status-dot"></span> Interactive Simulator</span>
+            </div>
+            <div class="card-title-group">
+              <div class="exp-icon">🗺️</div>
+              <div>
+                <h3 class="exp-title">Volume of Irregular Lamina: Screw Gauge & Graph Paper</h3>
+              </div>
+            </div>
+            <p class="exp-desc">
+              Determine the surface area of an irregular 2D lamina via millimeter graph paper square counting, combined with micrometer thickness measurement.
+            </p>
+            <div class="formula-tag"><span class="lbl">Formula:</span> $V = A \times t = \sum (\text{squares}) \times t$</div>
+          </div>
+          <div class="card-actions">
+            <a href="volume-of-irregular-lamina-virtual-lab.html" class="btn-launch">
+              <span>🚀 Launch Lab</span>
+            </a>
+            <a href="volume-of-irregular-lamina-virtual-lab.html" target="_blank" class="btn-card-pop" title="Open in New Tab">↗</a>
+          </div>
+        </div>
+
+        <!-- 5. Beam Balance -->
+        <div class="lab-card" data-tags="beam balance physical balance mass determination class11 mechanics weights rider pans oscillations" data-class="class11" data-cat="mechanics">
+          <div class="card-top">
+            <div class="card-meta-row">
+              <span class="class-badge">CLASS XI</span>
+              <span class="status-pill"><span class="status-dot"></span> Interactive Simulator</span>
+            </div>
+            <div class="card-title-group">
+              <div class="exp-icon">⚖️</div>
+              <div>
+                <h3 class="exp-title">Physical Beam Balance: Mass Determination</h3>
+              </div>
+            </div>
+            <p class="exp-desc">
+              Accurately weigh unknown bodies using an analytical beam balance. Includes gram & milligram fractional weight box, knife-edge arresting knob, and pointer oscillations.
+            </p>
+            <div class="formula-tag"><span class="lbl">Formula:</span> $M = \sum W_{\text{weights}} \pm \Delta M_{\text{resting}}$</div>
+          </div>
+          <div class="card-actions">
+            <a href="beam-balance-virtual-lab.html" class="btn-launch">
+              <span>🚀 Launch Lab</span>
+            </a>
+            <a href="beam-balance-virtual-lab.html" target="_blank" class="btn-card-pop" title="Open in New Tab">↗</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 2: Dynamics & Oscillations -->
+    <div class="category-block" data-category="dynamics">
+      <div class="category-title-bar">
+        <h2 class="category-heading">
+          <span>🔄</span> Dynamics, Forces & Oscillations
+        </h2>
+        <span class="category-badge cat-dyn">4 Experiments</span>
+      </div>
+
+      <div class="labs-grid">
+        <!-- 6. Parallelogram Law -->
+        <div class="lab-card" data-tags="parallelogram law vectors gravesand apparatus concurrent forces weights class11 dynamics resultant" data-class="class11" data-cat="dynamics">
+          <div class="card-top">
+            <div class="card-meta-row">
+              <span class="class-badge">CLASS XI</span>
+              <span class="status-pill"><span class="status-dot"></span> Interactive Simulator</span>
+            </div>
+            <div class="card-title-group">
+              <div class="exp-icon">🏹</div>
+              <div>
+                <h3 class="exp-title">Parallelogram Law of Vectors: Gravesand's Board</h3>
+              </div>
+            </div>
+            <p class="exp-desc">
+              Find the unknown weight of a body using concurrent vector equilibrium on Gravesand's apparatus. Compare theoretical resultant with balancing diagonal force.
+            </p>
+            <div class="formula-tag"><span class="lbl">Formula:</span> $R = \sqrt{P^2 + Q^2 + 2PQ \cos\theta}$</div>
+          </div>
+          <div class="card-actions">
+            <a href="parallelogram-law-of-vectors-virtual-lab.html" class="btn-launch">
+              <span>🚀 Launch Lab</span>
+            </a>
+            <a href="parallelogram-law-of-vectors-virtual-lab.html" target="_blank" class="btn-card-pop" title="Open in New Tab">↗</a>
+          </div>
+        </div>
+
+        <!-- 7. Simple Pendulum -->
+        <div class="lab-card" data-tags="simple pendulum time period acceleration due to gravity g L-T2 graph class11 oscillations seconds pendulum" data-class="class11" data-cat="dynamics">
+          <div class="card-top">
+            <div class="card-meta-row">
+              <span class="class-badge">CLASS XI</span>
+              <span class="status-pill"><span class="status-dot"></span> Interactive Simulator</span>
+            </div>
+            <div class="card-title-group">
+              <div class="exp-icon">⏱️</div>
+              <div>
+                <h3 class="exp-title">Simple Pendulum: L–T² Graph & Acceleration 'g'</h3>
+              </div>
+            </div>
+            <p class="exp-desc">
+              Investigate the relation between pendulum string length L and period T. Plot real-time L–T² straight line graphs, calculate 'g', and determine the second's pendulum length.
+            </p>
+            <div class="formula-tag"><span class="lbl">Formula:</span> $T = 2\pi\sqrt{\frac{L}{g}} \implies g = 4\pi^2 \frac{L}{T^2}$</div>
+          </div>
+          <div class="card-actions">
+            <a href="simple-pendulum-virtual-lab.html" class="btn-launch">
+              <span>🚀 Launch Lab</span>
+            </a>
+            <a href="simple-pendulum-virtual-lab.html" target="_blank" class="btn-card-pop" title="Open in New Tab">↗</a>
+          </div>
+        </div>
+
+        <!-- 8. Limiting Friction -->
+        <div class="lab-card" data-tags="limiting friction normal reaction coefficient of static friction F-R graph class11 dynamics wooden bench" data-class="class11" data-cat="dynamics">
+          <div class="card-top">
+            <div class="card-meta-row">
+              <span class="class-badge">CLASS XI</span>
+              <span class="status-pill"><span class="status-dot"></span> Interactive Simulator</span>
+            </div>
+            <div class="card-title-group">
+              <div class="exp-icon">🪨</div>
+              <div>
+                <h3 class="exp-title">Limiting Friction vs Normal Reaction (F–R Graph)</h3>
+              </div>
+            </div>
+            <p class="exp-desc">
+              Study the relation between limiting friction F and normal reaction R for a block pulled horizontally. Compute static friction coefficient μ via slope of F–R line.
+            </p>
+            <div class="formula-tag"><span class="lbl">Formula:</span> $f_s \le \mu_s R \implies \mu_s = \frac{F_{\text{limiting}}}{R}$</div>
+          </div>
+          <div class="card-actions">
+            <a href="limiting-friction-virtual-lab.html" class="btn-launch">
+              <span>🚀 Launch Lab</span>
+            </a>
+            <a href="limiting-friction-virtual-lab.html" target="_blank" class="btn-card-pop" title="Open in New Tab">↗</a>
+          </div>
+        </div>
+
+        <!-- 9. Inclined Plane -->
+        <div class="lab-card" data-tags="inclined plane downward force sin theta roller angle protractor class11 dynamics gravitation" data-class="class11" data-cat="dynamics">
+          <div class="card-top">
+            <div class="card-meta-row">
+              <span class="class-badge">CLASS XI</span>
+              <span class="status-pill"><span class="status-dot"></span> Interactive Simulator</span>
+            </div>
+            <div class="card-title-group">
+              <div class="exp-icon">📐</div>
+              <div>
+                <h3 class="exp-title">Inclined Plane: Downward Force vs sin θ</h3>
+              </div>
+            </div>
+            <p class="exp-desc">
+              Measure downward pull on a heavy roller at varying slope inclinations θ. Verify that downward force is directly proportional to sin θ using dynamic vector diagrams.
+            </p>
+            <div class="formula-tag"><span class="lbl">Formula:</span> $F_{\text{down}} = mg \sin\theta$</div>
+          </div>
+          <div class="card-actions">
+            <a href="inclined-plane-roller-virtual-lab.html" class="btn-launch">
+              <span>🚀 Launch Lab</span>
+            </a>
+            <a href="inclined-plane-roller-virtual-lab.html" target="_blank" class="btn-card-pop" title="Open in New Tab">↗</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 3: Current Electricity & Circuits -->
+    <div class="category-block" data-category="electricity">
+      <div class="category-title-bar">
+        <h2 class="category-heading">
+          <span>⚡</span> Current Electricity & Circuit Laboratories
+        </h2>
+        <span class="category-badge cat-elec">3 Experiments</span>
+      </div>
+
+      <div class="labs-grid">
+        <!-- 10. Ohm's Law -->
+        <div class="lab-card" data-tags="ohms law V-I graph resistance resistivity rheostat voltmeter ammeter class10 class12 electricity current circuit" data-class="class12" data-cat="electricity">
+          <div class="card-top">
+            <div class="card-meta-row">
+              <span class="class-badge">CLASS X / XII</span>
+              <span class="status-pill"><span class="status-dot"></span> Interactive Simulator</span>
+            </div>
+            <div class="card-title-group">
+              <div class="exp-icon">💡</div>
+              <div>
+                <h3 class="exp-title">Ohm's Law: V–I Characteristic & Resistance</h3>
+              </div>
+            </div>
+            <p class="exp-desc">
+              Comprehensive circuit workbench featuring variable DC power supply, wire-wound rheostat, animated electron drift, live V-I regression graphing, and unknown wire resistivity analysis.
+            </p>
+            <div class="formula-tag"><span class="lbl">Formula:</span> $V = I \cdot R \implies R = \rho \frac{L}{A}$</div>
+          </div>
+          <div class="card-actions">
+            <a href="ohms-law-virtual-lab.html" class="btn-launch">
+              <span>🚀 Launch Lab</span>
+            </a>
+            <a href="ohms-law-virtual-lab.html" target="_blank" class="btn-card-pop" title="Open in New Tab">↗</a>
+          </div>
+        </div>
+
+        <!-- 11. Meter Bridge -->
+        <div class="lab-card" data-tags="meter bridge slide wire wheatstone unknown resistance resistivity null deflection galvanometer jockey class12 electricity" data-class="class12" data-cat="electricity">
+          <div class="card-top">
+            <div class="card-meta-row">
+              <span class="class-badge">CLASS XII</span>
+              <span class="status-pill"><span class="status-dot"></span> Interactive Simulator</span>
+            </div>
+            <div class="card-title-group">
+              <div class="exp-icon">🎛️</div>
+              <div>
+                <h3 class="exp-title">Meter Bridge (Slide Wire): Resistance & Resistivity</h3>
+              </div>
+            </div>
+            <p class="exp-desc">
+              Slide knife-edge jockey across a 100cm uniform wire to detect zero galvanometer balance point. Determine unknown resistance and compute specific material resistivity.
+            </p>
+            <div class="formula-tag"><span class="lbl">Formula:</span> $X = R \left(\frac{100 - l}{l}\right)$</div>
+          </div>
+          <div class="card-actions">
+            <a href="meter-bridge-virtual-lab.html" class="btn-launch">
+              <span>🚀 Launch Lab</span>
+            </a>
+            <a href="meter-bridge-virtual-lab.html" target="_blank" class="btn-card-pop" title="Open in New Tab">↗</a>
+          </div>
+        </div>
+
+        <!-- 12. Wheatstone Bridge -->
+        <div class="lab-card" data-tags="wheatstone bridge circuit null deflection galvanometer four arms ratio P Q R S class12 electricity resistance" data-class="class12" data-cat="electricity">
+          <div class="card-top">
+            <div class="card-meta-row">
+              <span class="class-badge">CLASS XII</span>
+              <span class="status-pill"><span class="status-dot"></span> Interactive Simulator</span>
+            </div>
+            <div class="card-title-group">
+              <div class="exp-icon">🌉</div>
+              <div>
+                <h3 class="exp-title">Wheatstone's Bridge: 4-Arm Null Balance Network</h3>
+              </div>
+            </div>
+            <p class="exp-desc">
+              Interactive 4-arm resistance bridge simulation. Adjust ratio arms P/Q and standard resistance R to achieve galvanometer null deflection and calculate unknown S.
+            </p>
+            <div class="formula-tag"><span class="lbl">Formula:</span> $\frac{P}{Q} = \frac{R}{S} \implies S = \frac{Q}{P} R$</div>
+          </div>
+          <div class="card-actions">
+            <a href="wheatstone-bridge-virtual-lab.html" class="btn-launch">
+              <span>🚀 Launch Lab</span>
+            </a>
+            <a href="wheatstone-bridge-virtual-lab.html" target="_blank" class="btn-card-pop" title="Open in New Tab">↗</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty Search State -->
+    <div class="empty-search-state" id="emptyState">
+      <div style="font-size: 3rem; margin-bottom: 0.8rem;">🔬</div>
+      <h3 style="font-size: 1.3rem; margin-bottom: 0.5rem;">No matching virtual labs found</h3>
+      <p style="color: var(--text-muted); margin-bottom: 1.2rem;">Try adjusting your search terms or selecting a different category filter.</p>
+      <button class="filter-chip" id="btnResetSearch" style="margin: 0 auto;">Reset Filters & Search</button>
+    </div>
+
+  </main>
+
+  <!-- Master Universal Footer -->
+  <footer class="main-hub-footer">
+    <div class="footer-inner">
+      <div class="footer-top-row">
+        <div class="footer-brand-meta">
+          <div class="brand-logo-emblem">🔬</div>
+          <div class="footer-school-info">
+            <h3>National Model Schools</h3>
+            <p>Department of Physics • Senior Secondary Virtual Laboratories</p>
+          </div>
+        </div>
+
+        <div class="author-highlight-box">
+          <span>Developed with <span style="color:#ef4444;">❤</span> by <strong>Syed Mazhar Ali</strong></span>
+          <a href="https://github.com/mazhar-in" target="_blank" rel="noopener noreferrer" class="gh-author-link" title="Visit Syed Mazhar Ali on GitHub">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
+            <span>mazhar-in</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="footer-bottom-row">
+        <div class="footer-copy">
+          © National Model Schools. All rights reserved. Designed for NCERT, CBSE & Competitive Exam Practicals.
+        </div>
+        <div class="footer-tagline">
+          Empowering future scientists through experiential digital simulations.
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Interactive Logic: Real-time Search, Category Filtering, Fullscreen -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+      // KaTeX Auto-render math in index.html
+      function triggerMath() {
+        if (window.renderMathInElement) {
+          try {
+            window.renderMathInElement(document.body, {
+              delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\[", right: "\\]", display: true },
+                { left: "\\(", right: "\\)", display: false }
+              ],
+              throwOnError: false
+            });
+          } catch(e) {}
+        } else {
+          setTimeout(triggerMath, 120);
+        }
+      }
+      triggerMath();
+      window.addEventListener('load', triggerMath);
+
+      const searchInput = document.getElementById('searchInput');
+      const filterChips = document.querySelectorAll('.filter-chip');
+      const labCards = document.querySelectorAll('.lab-card');
+      const categoryBlocks = document.querySelectorAll('.category-block');
+      const emptyState = document.getElementById('emptyState');
+      const btnResetSearch = document.getElementById('btnResetSearch');
+      const btnFullscreenToggle = document.getElementById('btnFullscreenToggle');
+
+      let currentFilter = 'all';
+      let currentQuery = '';
+
+      // Fullscreen Portal Handler
+      btnFullscreenToggle.addEventListener('click', () => {
+        if (!document.fullscreenElement) {
+          document.documentElement.requestFullscreen().catch(() => {});
+          btnFullscreenToggle.innerHTML = '<span>⤓</span> Exit Fullscreen';
+        } else {
+          document.exitFullscreen().catch(() => {});
+          btnFullscreenToggle.innerHTML = '<span>⛶</span> Fullscreen';
+        }
+      });
+
+      document.addEventListener('fullscreenchange', () => {
+        if (!document.fullscreenElement) {
+          btnFullscreenToggle.innerHTML = '<span>⛶</span> Fullscreen';
+        } else {
+          btnFullscreenToggle.innerHTML = '<span>⤓</span> Exit Fullscreen';
+        }
+      });
+
+      // Keyboard Shortcut '/' to focus search
+      window.addEventListener('keydown', (e) => {
+        if (e.key === '/' && document.activeElement !== searchInput) {
+          e.preventDefault();
+          searchInput.focus();
+          searchInput.select();
+        } else if (e.key === 'Escape' && document.activeElement === searchInput) {
+          searchInput.value = '';
+          applyFilters();
+          searchInput.blur();
+        }
+      });
+
+      // Filter Chips Click
+      filterChips.forEach(chip => {
+        chip.addEventListener('click', () => {
+          filterChips.forEach(c => c.classList.remove('active'));
+          chip.classList.add('active');
+          currentFilter = chip.getAttribute('data-filter');
+          applyFilters();
+        });
+      });
+
+      // Search Input
+      searchInput.addEventListener('input', (e) => {
+        currentQuery = e.target.value.toLowerCase().trim();
+        applyFilters();
+      });
+
+      // Reset Search
+      if (btnResetSearch) {
+        btnResetSearch.addEventListener('click', () => {
+          searchInput.value = '';
+          currentQuery = '';
+          currentFilter = 'all';
+          filterChips.forEach(c => c.classList.remove('active'));
+          document.querySelector('.filter-chip[data-filter="all"]').classList.add('active');
+          applyFilters();
+        });
+      }
+
+      function applyFilters() {
+        let visibleTotal = 0;
+
+        categoryBlocks.forEach(block => {
+          const categoryType = block.getAttribute('data-category');
+          let categoryVisibleCount = 0;
+          const cardsInBlock = block.querySelectorAll('.lab-card');
+
+          cardsInBlock.forEach(card => {
+            const tags = card.getAttribute('data-tags') || '';
+            const cardClass = card.getAttribute('data-class') || '';
+            const cardCat = card.getAttribute('data-cat') || '';
+
+            // Check Category / Class filter
+            let passesFilter = false;
+            if (currentFilter === 'all') {
+              passesFilter = true;
+            } else if (currentFilter === 'class11' && cardClass === 'class11') {
+              passesFilter = true;
+            } else if (currentFilter === 'class12' && cardClass === 'class12') {
+              passesFilter = true;
+            } else if (currentFilter === 'mechanics' && cardCat === 'mechanics') {
+              passesFilter = true;
+            } else if (currentFilter === 'dynamics' && cardCat === 'dynamics') {
+              passesFilter = true;
+            } else if (currentFilter === 'electricity' && cardCat === 'electricity') {
+              passesFilter = true;
+            }
+
+            // Check Search Query
+            let passesSearch = true;
+            if (currentQuery) {
+              passesSearch = tags.toLowerCase().includes(currentQuery);
+            }
+
+            if (passesFilter && passesSearch) {
+              card.style.display = 'flex';
+              categoryVisibleCount++;
+              visibleTotal++;
+            } else {
+              card.style.display = 'none';
+            }
+          });
+
+          // Show or hide whole category block
+          if (categoryVisibleCount > 0) {
+            block.style.display = 'block';
+          } else {
+            block.style.display = 'none';
+          }
+        });
+
+        // Toggle Empty State
+        if (visibleTotal === 0) {
+          emptyState.classList.add('show');
+        } else {
+          emptyState.classList.remove('show');
+        }
+      }
+    });
+  </script>
+
+<script>
+// Force Fullscreen on loading & first user gesture
+(function initAutoFullscreen() {
+  function tryFullscreen() {
+    if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+      const elem = document.documentElement;
+      if (elem.requestFullscreen) {
+        elem.requestFullscreen().catch(() => {});
+      } else if (elem.webkitRequestFullscreen) {
+        elem.webkitRequestFullscreen();
+      }
+    }
+  }
+  // Attempt immediately on loading
+  if (document.readyState === 'complete' || document.readyState === 'interactive') {
+    tryFullscreen();
+  } else {
+    window.addEventListener('DOMContentLoaded', tryFullscreen);
+    window.addEventListener('load', tryFullscreen);
+  }
+  // Auto-engage on first user gesture if browser blocked initial load request
+  const gestureEvents = ['click', 'touchstart', 'pointerdown'];
+  const onFirstGesture = () => {
+    tryFullscreen();
+    gestureEvents.forEach(evt => window.removeEventListener(evt, onFirstGesture));
+  };
+  gestureEvents.forEach(evt => window.addEventListener(evt, onFirstGesture, { passive: true }));
+})();
+</script>
+
+</body>
+</html>

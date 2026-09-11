@@ -1,0 +1,1768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
+  <title>Volume of Irregular Lamina Lab | Screw Gauge &amp; Graph Paper</title>
+
+  <!-- KaTeX for high-fidelity mathematical formulas -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous" />
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous" onload="initMathTypesetting()"></script>
+
+  <style>
+    :root {
+      --bg: #090e17;
+      --card-bg: #141e2e;
+      --card-surface: #1a273a;
+      --card-border: #2c3e55;
+      --accent: #38bdf8;
+      --accent-hover: #0284c7;
+      --success: #22c55e;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --lamina-color: rgba(234, 179, 8, 0.7);
+      --lamina-border: #ca8a04;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      width: 100%;
+      min-height: 100vh;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    /* ZERO-SCROLL FULLSCREEN LOCK */
+    body.is-fullscreen,
+    :fullscreen body,
+    :-webkit-full-screen body {
+      height: 100vh !important;
+      max-height: 100vh !important;
+      overflow: hidden !important;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 1480px;
+      margin: 0 auto;
+      padding: 0.6rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      min-height: 100vh;
+    }
+
+    body.is-fullscreen .app-container,
+    :fullscreen .app-container,
+    :-webkit-full-screen .app-container {
+      max-width: 100vw !important;
+      height: 100vh !important;
+      max-height: 100vh !important;
+      padding: 0.35rem 0.5rem !important;
+      gap: 0.35rem !important;
+      overflow: hidden !important;
+      justify-content: flex-start;
+    }
+
+    header {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 0.5rem 0.85rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+      flex-shrink: 0;
+    }
+
+    .badge-row {
+      display: flex;
+      gap: 0.4rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: rgba(56, 189, 248, 0.12);
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      border: 1px solid rgba(56, 189, 248, 0.25);
+    }
+
+    .badge-sub {
+      color: #facc15;
+      background: rgba(234, 179, 8, 0.12);
+      border-color: rgba(234, 179, 8, 0.3);
+    }
+
+    h1 {
+      font-size: 1.22rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 0.4rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+      padding: 0.4rem 0.75rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border-radius: 6px;
+      border: 1px solid var(--card-border);
+      background: var(--card-surface);
+      color: var(--text);
+      cursor: pointer;
+      min-height: 38px;
+      transition: all 0.15s ease;
+      touch-action: manipulation;
+      user-select: none;
+    }
+
+    .btn:hover {
+      background: #24354d;
+      color: #fff;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #042f2e;
+      font-weight: 700;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      color: #fff;
+    }
+
+    .btn-active {
+      background: #0284c7 !important;
+      border-color: #38bdf8 !important;
+      color: #fff !important;
+      font-weight: 700;
+    }
+
+    /* Dual-Stage Task Bar */
+    .stage-nav-bar {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.4rem;
+      flex-shrink: 0;
+    }
+
+    .stage-tab {
+      min-height: 38px;
+      padding: 0.4rem 0.6rem;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      font-size: 0.86rem;
+      font-weight: 700;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      transition: all 0.15s ease;
+    }
+
+    .stage-tab.active {
+      background: var(--accent);
+      color: #042f2e;
+      border-color: var(--accent);
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
+    }
+
+    /* Workspace Layout */
+    .workspace {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.55rem;
+      flex: 1;
+      min-height: 0;
+    }
+
+    @media (min-width: 1040px) {
+      .workspace {
+        grid-template-columns: 1.22fr 0.78fr;
+      }
+    }
+
+    body.is-fullscreen .workspace,
+    :fullscreen .workspace,
+    :-webkit-full-screen .workspace {
+      display: grid !important;
+      grid-template-columns: 1.22fr 0.78fr !important;
+      gap: 0.4rem !important;
+      flex: 1 !important;
+      height: calc(100vh - 106px) !important;
+      max-height: calc(100vh - 106px) !important;
+      min-height: 0 !important;
+      overflow: hidden !important;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 0.65rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+      min-height: 0;
+    }
+
+    .left-column {
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+      min-height: 0;
+    }
+
+    body.is-fullscreen .left-column,
+    :fullscreen .left-column,
+    :-webkit-full-screen .left-column {
+      height: 100% !important;
+      max-height: 100% !important;
+      overflow: hidden !important;
+    }
+
+    .canvas-wrap {
+      position: relative;
+      width: 100%;
+      flex: 1.25;
+      min-height: 220px;
+      background: #111722;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      overflow: hidden;
+      touch-action: none;
+    }
+
+    body.is-fullscreen .canvas-wrap,
+    :fullscreen .canvas-wrap,
+    :-webkit-full-screen .canvas-wrap {
+      min-height: 170px !important;
+    }
+
+    .loupe-wrap {
+      position: relative;
+      width: 100%;
+      flex: 0.85;
+      min-height: 140px;
+      background: #0a0f18;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    body.is-fullscreen .loupe-wrap,
+    :fullscreen .loupe-wrap,
+    :-webkit-full-screen .loupe-wrap {
+      min-height: 110px !important;
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .right-column {
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+      min-height: 0;
+      overflow-y: auto;
+    }
+
+    body.is-fullscreen .right-column,
+    :fullscreen .right-column,
+    :-webkit-full-screen .right-column {
+      height: 100% !important;
+      max-height: 100% !important;
+      overflow-y: auto !important;
+      padding-right: 0.2rem;
+    }
+
+    .right-column::-webkit-scrollbar {
+      width: 5px;
+    }
+    .right-column::-webkit-scrollbar-thumb {
+      background: var(--card-border);
+      border-radius: 3px;
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.35rem;
+      flex-shrink: 0;
+    }
+
+    .metric-badge {
+      background: var(--card-surface);
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      padding: 0.35rem 0.25rem;
+      text-align: center;
+    }
+
+    .metric-label {
+      font-size: 0.64rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .metric-val {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--accent);
+      font-family: monospace;
+    }
+
+    .control-group {
+      background: var(--card-surface);
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      padding: 0.45rem 0.6rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .control-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.84rem;
+      font-weight: 600;
+    }
+
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    input[type="range"] {
+      flex: 1;
+      accent-color: var(--accent);
+      height: 6px;
+      border-radius: 3px;
+      background: #24354d;
+      cursor: pointer;
+    }
+
+    .step-btn {
+      width: 32px;
+      height: 32px;
+      min-height: 32px;
+      padding: 0;
+      font-size: 0.8rem;
+      font-weight: bold;
+      border-radius: 4px;
+      background: #24354d;
+      border: 1px solid var(--card-border);
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .step-btn:hover {
+      background: #314666;
+    }
+
+    .btn-grid-5 {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0.3rem;
+    }
+
+    .table-wrap {
+      width: 100%;
+      border-radius: 6px;
+      border: 1px solid var(--card-border);
+      overflow-x: auto;
+      max-height: 125px;
+      background: var(--card-surface);
+    }
+
+    body.is-fullscreen .table-wrap,
+    :fullscreen .table-wrap,
+    :-webkit-full-screen .table-wrap {
+      max-height: 95px !important;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.77rem;
+      text-align: center;
+    }
+
+    th, td {
+      padding: 0.28rem 0.35rem;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    th {
+      background: #141e2e;
+      color: var(--text-muted);
+      font-weight: 700;
+      position: sticky;
+      top: 0;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      z-index: 9999;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      max-width: 660px;
+      width: 100%;
+      max-height: 86vh;
+      overflow-y: auto;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 0.4rem;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container" id="appRoot">
+    <!-- Header -->
+    <header>
+      <div>
+        <div class="badge-row">
+          <span class="badge">NCERT Physics Virtual Lab</span>
+          <span class="badge badge-sub">Class XI • Exp: Volume of Irregular Lamina</span>
+        </div>
+        <h1>Volume of Irregular Lamina: Screw Gauge &amp; Graph Paper</h1>
+      </div>
+      <div class="header-actions">
+        <button class="btn" id="btnZeroCheck">🎯 Zero Check</button>
+        <button class="btn" id="btnTheory">📖 Theory</button>
+        <button class="btn" id="btnReset">↺ Reset</button>
+        <button class="btn btn-primary" id="btnFullscreen">⛶ Fullscreen</button>
+      </div>
+    </header>
+
+    <!-- Stage Navigation Bar -->
+    <nav class="stage-nav-bar" aria-label="Experiment Stage Navigation">
+      <button class="stage-tab active" id="tabStageThickness" onclick="switchStage('thickness')">
+        <span>🔬 Part A: Thickness ($t$) with Screw Gauge</span>
+      </button>
+      <button class="stage-tab" id="tabStageArea" onclick="switchStage('area')">
+        <span>📐 Part B: Area ($A$) on Graph Paper</span>
+      </button>
+    </nav>
+
+    <!-- Main Workspace -->
+    <main class="workspace">
+      <!-- Left Column: Dynamic Visualizers (Screw Gauge Workbench OR Graph Paper Canvas) -->
+      <div class="left-column">
+        <!-- Main Interactive Visualizer Canvas -->
+        <div class="card canvas-card" style="flex: 1.35;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <strong style="font-size:0.84rem; color:var(--text-muted);" id="lblMainCanvasTitle">Part A: Screw Gauge with Lamina Clamped at Point P1</strong>
+            <span style="font-size:0.75rem; color:var(--accent); font-family:monospace;" id="txtInstrumentStatus">Spindle Free</span>
+          </div>
+          <div class="canvas-wrap" id="mainCanvasWrap">
+            <canvas id="mainCanvas"></canvas>
+          </div>
+        </div>
+
+        <!-- Magnified Inset Canvas (Loupe / Area Grid Inspector) -->
+        <div class="card canvas-card" style="flex: 0.85;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <strong style="font-size:0.84rem; color:var(--text-muted);" id="lblLoupeCanvasTitle">Thimble &amp; Pitch Scale Loupe (Magnified Coincidence)</strong>
+            <span style="font-size:0.75rem; color:var(--warning); font-weight:700;" id="txtCoincideBadge">Coinciding CSD: n = 0</span>
+          </div>
+          <div class="loupe-wrap" id="loupeCanvasWrap">
+            <canvas id="loupeCanvas"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Configurations, Controls & Evaluation Desks -->
+      <div class="right-column">
+        <!-- Live Instantaneous Metrics -->
+        <div class="metrics-grid">
+          <div class="metric-badge">
+            <div class="metric-label" id="metricLbl1">Pitch (PSR)</div>
+            <div class="metric-val" id="valPSR">0.0 mm</div>
+          </div>
+          <div class="metric-badge">
+            <div class="metric-label" id="metricLbl2">CSR (n × LC)</div>
+            <div class="metric-val" id="valCSR">0.000 mm</div>
+          </div>
+          <div class="metric-badge">
+            <div class="metric-label" id="metricLbl3">Observed Total</div>
+            <div class="metric-val" id="valTotal">0.000 mm</div>
+          </div>
+          <div class="metric-badge">
+            <div class="metric-label" id="metricLbl4">Corrected ($t$)</div>
+            <div class="metric-val" id="valCorrected">0.000 mm</div>
+          </div>
+        </div>
+
+        <!-- Panel for Part A: Screw Gauge Controls -->
+        <div id="panelPartA" style="display: flex; flex-direction: column; gap: 0.45rem;">
+          <!-- Scale Configuration: Pitch & CSD -->
+          <div class="control-group">
+            <div class="control-header">
+              <span>Least Count Configuration: $\text{LC} = \frac{\text{Pitch}}{N}$</span>
+              <span id="txtLC" style="color:var(--accent); font-family:monospace; font-weight:700;">LC = 0.010 mm (0.001 cm)</span>
+            </div>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:0.4rem;">
+              <div>
+                <span style="font-size:0.7rem; color:var(--text-muted);">Screw Pitch:</span>
+                <select id="selPitch" class="btn" style="width:100%; min-height:30px; padding:0.2rem; font-size:0.8rem;">
+                  <option value="1.0" selected>1.0 mm (1.0 mm / rev)</option>
+                  <option value="0.5">0.5 mm (0.5 mm / rev)</option>
+                </select>
+              </div>
+              <div>
+                <span style="font-size:0.7rem; color:var(--text-muted);">Circular Scale Divs ($N$):</span>
+                <select id="selCSD" class="btn" style="width:100%; min-height:30px; padding:0.2rem; font-size:0.8rem;">
+                  <option value="100" selected>100 Divisions</option>
+                  <option value="50">50 Divisions</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Measurement Points along Irregular Lamina -->
+          <div class="control-group">
+            <div class="control-header">
+              <span>Lamina Probe Point (Thickness Variations)</span>
+              <span id="txtPointLabel" style="color:var(--accent); font-weight:700;">Point P1</span>
+            </div>
+            <div class="btn-grid-5">
+              <button class="btn btn-probe btn-active" data-probe="p1">P1</button>
+              <button class="btn btn-probe" data-probe="p2">P2</button>
+              <button class="btn btn-probe" data-probe="p3">P3</button>
+              <button class="btn btn-probe" data-probe="p4">P4</button>
+              <button class="btn btn-probe" data-probe="p5">P5</button>
+            </div>
+          </div>
+
+          <!-- Zero Error Configuration -->
+          <div class="control-group">
+            <div class="control-header">
+              <span>Zero Error Calibration ($\pm e$)</span>
+              <span id="txtZeroErrorVal" style="color:var(--warning); font-family:monospace;">e = 0.000 mm (Nil)</span>
+            </div>
+            <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:0.35rem;">
+              <button class="btn btn-ze btn-active" data-ze="0">Nil (0.000)</button>
+              <button class="btn btn-ze" data-ze="0.03">Pos (+0.03 mm)</button>
+              <button class="btn btn-ze" data-ze="-0.04">Neg (-0.04 mm)</button>
+            </div>
+          </div>
+
+          <!-- Spindle Displacement Slider & Steppers -->
+          <div class="control-group">
+            <div class="control-header">
+              <span>Spindle Gap Opening ($d$)</span>
+              <span id="txtSliderGap" style="color:var(--accent); font-family:monospace;">0.000 mm</span>
+            </div>
+            <div class="slider-row">
+              <button class="step-btn" id="btnMinus10" title="-1 mm">−1.0</button>
+              <button class="step-btn" id="btnMinus5" title="-5 CSD">−5d</button>
+              <button class="step-btn" id="btnMinus1" title="-1 CSD">−1d</button>
+              <input type="range" id="sliderGap" min="0" max="6.0" step="0.005" value="0" />
+              <button class="step-btn" id="btnPlus1" title="+1 CSD">+1d</button>
+              <button class="step-btn" id="btnPlus5" title="+5 CSD">+5d</button>
+              <button class="step-btn" id="btnPlus10" title="+1 mm">+1.0</button>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-top:0.25rem;">
+              <button class="btn" id="btnSnapClamp" style="flex:1; margin-right:0.35rem; font-size:0.78rem;">🗜 Ratchet Grip at Point</button>
+              <button class="btn" id="btnLockSpindle" style="flex:1; font-size:0.78rem;">🔓 Clamp Lever: Free</button>
+            </div>
+          </div>
+
+          <!-- Observation Table for Thickness -->
+          <div class="card" style="padding:0.45rem; gap:0.35rem;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <strong style="font-size:0.82rem;">Part A: Thickness Observation Table</strong>
+              <div style="display:flex; gap:0.3rem;">
+                <button class="btn" id="btnRecordThickness" style="padding:0.2rem 0.5rem; font-size:0.75rem; background:var(--accent); color:#042f2e; font-weight:700;">+ Log Reading</button>
+                <button class="btn" id="btnClearThicknessTable" style="padding:0.2rem 0.5rem; font-size:0.75rem;">Clear</button>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Point</th>
+                    <th>PSR (mm)</th>
+                    <th>CSD ($n$)</th>
+                    <th>CSR (mm)</th>
+                    <th>Observed</th>
+                    <th>Corrected ($t$)</th>
+                  </tr>
+                </thead>
+                <tbody id="thicknessTableBody">
+                  <tr><td colspan="6" style="color:var(--text-muted);">No observations logged. Measure points P1-P5 and click '+ Log Reading'.</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div style="display:flex; justify-content:space-between; font-size:0.78rem; padding:0.15rem 0.35rem;">
+              <span>Points Measured: <strong id="lblPointsCount">0 / 5</strong></span>
+              <span>Mean Thickness ($t_{\text{mean}}$): <strong id="lblMeanThickness" style="color:var(--accent);">-- mm</strong></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel for Part B: Area (A) Controls & Square Counting -->
+        <div id="panelPartB" style="display: none; flex-direction: column; gap: 0.45rem;">
+          <div class="control-group">
+            <div class="control-header">
+              <span>Graph Paper Square Counter Rules (1 cm² / 1 mm²)</span>
+              <button class="btn" id="btnAutoCountArea" style="min-height:28px; padding:0.2rem 0.5rem; font-size:0.75rem; background:var(--accent); color:#042f2e; font-weight:700;">Auto-Count Outline</button>
+            </div>
+            <p style="font-size:0.78rem; color:var(--text-muted);">
+              • Squares completely inside boundary ($n_1$): <strong style="color:var(--success);">Counted as 1 cm²</strong><br>
+              • Squares more than half inside ($n_2$): <strong style="color:var(--accent);">Counted as 1 cm²</strong><br>
+              • Squares less than half inside: <strong style="color:var(--danger);">Ignored (0)</strong>
+            </p>
+          </div>
+
+          <div class="control-group">
+            <div class="control-header">
+              <span>Interactive Square Counters</span>
+              <span id="txtAreaTotalDisplay" style="color:var(--accent); font-weight:700;">Area = -- cm²</span>
+            </div>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:0.4rem;">
+              <div style="background:var(--card-bg); padding:0.4rem; border-radius:4px; border:1px solid var(--card-border);">
+                <span style="font-size:0.72rem; color:var(--text-muted);">Full Squares ($n_1$):</span>
+                <div style="display:flex; align-items:center; gap:0.4rem; margin-top:0.2rem;">
+                  <input type="number" id="inputN1" min="0" max="200" value="0" class="btn" style="width:100%; min-height:30px; padding:0.2rem; font-size:0.85rem; font-family:monospace;" />
+                </div>
+              </div>
+              <div style="background:var(--card-bg); padding:0.4rem; border-radius:4px; border:1px solid var(--card-border);">
+                <span style="font-size:0.72rem; color:var(--text-muted);">&gt;Half Squares ($n_2$):</span>
+                <div style="display:flex; align-items:center; gap:0.4rem; margin-top:0.2rem;">
+                  <input type="number" id="inputN2" min="0" max="200" value="0" class="btn" style="width:100%; min-height:30px; padding:0.2rem; font-size:0.85rem; font-family:monospace;" />
+                </div>
+              </div>
+            </div>
+            <div style="display:flex; gap:0.35rem; margin-top:0.2rem;">
+              <button class="btn" id="btnVerifyArea" style="flex:1; font-size:0.8rem; background:var(--accent); color:#042f2e; font-weight:700;">Verify Counted Area</button>
+              <button class="btn" id="btnResetAreaCount" style="font-size:0.8rem;">Reset</button>
+            </div>
+            <div id="areaFeedback" style="display:none; font-size:0.78rem; font-weight:600; padding:0.3rem 0.5rem; border-radius:4px;"></div>
+          </div>
+
+          <!-- Area Table -->
+          <div class="card" style="padding:0.45rem; gap:0.35rem;">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <strong style="font-size:0.82rem;">Part B: Surface Area Table</strong>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Observation</th>
+                    <th>Full Sq ($n_1$)</th>
+                    <th>&gt;Half Sq ($n_2$)</th>
+                    <th>Formula</th>
+                    <th>Total Area ($A$)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Irregular Lamina Outline</td>
+                    <td id="tblN1">0</td>
+                    <td id="tblN2">0</td>
+                    <td>$(n_1 + n_2) \times 1\text{ cm}^2$</td>
+                    <td><strong id="tblArea" style="color:var(--accent);">-- cm²</strong></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Volume Calculation & Final Synthesis Desk -->
+        <div class="card" style="padding:0.5rem; font-size:0.8rem; background:var(--card-surface); border-color:var(--card-border);">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <strong>Final Synthesis: Volume of Lamina</strong>
+            <span style="color:var(--accent); font-weight:700;">$V = A \times t_{\text{mean}}$</span>
+          </div>
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:0.35rem; margin-top:0.35rem; font-size:0.78rem;">
+            <div>Mean Thickness ($t_{\text{mean}}$): <strong id="lblSynthThickness" style="color:#facc15;">-- mm</strong></div>
+            <div>Surface Area ($A$): <strong id="lblSynthArea" style="color:#facc15;">-- cm²</strong></div>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:0.35rem; border-top:1px solid var(--card-border); padding-top:0.35rem;">
+            <span>Evaluated Volume: <strong id="valComputedVolume" style="color:var(--success); font-size:1.02rem; font-family:monospace;">-- cm³</strong></span>
+            <button class="btn btn-primary" id="btnCalculateVolume" style="padding:0.25rem 0.75rem; font-size:0.8rem;">Evaluate $V$</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Theory & Derivation Modal -->
+  <div class="modal-backdrop" id="theoryModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Theory: Volume of an Irregular Lamina</h3>
+        <button class="modal-close" id="btnCloseModal">&times;</button>
+      </div>
+      <div style="font-size:0.9rem; line-height:1.55; color:#cbd5e1; display:flex; flex-direction:column; gap:0.6rem;">
+        <p><strong>1. Principle:</strong> An irregular lamina is a thin sheet whose surface boundaries are not described by standard geometric shapes. Its volume is given by:</p>
+        <div style="text-align:center; padding:0.4rem; background:#0b111c; border-radius:6px; color:var(--accent);">
+          $$V = \text{Surface Area } (A) \times \text{Mean Thickness } (t_{\text{mean}})$$
+        </div>
+
+        <p><strong>2. Thickness ($t$) Measurement using Screw Gauge:</strong></p>
+        <p>The screw gauge operates on the principle of a precision micrometer screw. The <strong>Least Count ($\text{LC}$)</strong> is given by:</p>
+        <div style="text-align:center; padding:0.4rem; background:#0b111c; border-radius:6px; color:var(--accent);">
+          $$\text{LC} = \frac{\text{Pitch}}{\text{Total Circular Scale Divisions } (N)}$$
+        </div>
+        <p>For zero error $e$:</p>
+        <div style="text-align:center; padding:0.4rem; background:#0b111c; border-radius:6px; color:var(--accent);">
+          $$\text{True Thickness } t = (\text{PSR} + n \times \text{LC}) - (\pm e)$$
+        </div>
+        <p>Measurements are taken at 5 distinct points ($P_1$ to $P_5$) across the sheet to account for non-uniform rolling:</p>
+        <div style="text-align:center; padding:0.4rem; background:#0b111c; border-radius:6px; color:var(--accent);">
+          $$t_{\text{mean}} = \frac{t_1 + t_2 + t_3 + t_4 + t_5}{5}$$
+        </div>
+
+        <p><strong>3. Determination of Area ($A$) using Millimeter Graph Paper:</strong></p>
+        <p>Place the irregular lamina on a graph sheet and trace its boundary. Count the squares inside:</p>
+        <ul style="padding-left:1.2rem; font-size:0.85rem;">
+          <li>$n_1$ = Number of complete full squares (area $1\text{ cm}^2$ each).</li>
+          <li>$n_2$ = Number of squares with more than half of their area within boundary (counted as $1\text{ cm}^2$).</li>
+          <li>Squares with less than half of their area within boundary are neglected.</li>
+        </ul>
+        <div style="text-align:center; padding:0.4rem; background:#0b111c; border-radius:6px; color:var(--accent);">
+          $$\text{Surface Area } A = (n_1 + n_2) \times 1\text{ cm}^2$$
+        </div>
+
+        <p><strong>4. Resultant Volume:</strong></p>
+        <div style="text-align:center; padding:0.4rem; background:#0b111c; border-radius:6px; color:var(--accent);">
+          $$V = A \times \frac{t_{\text{mean}}\text{ (in mm)}}{10} \quad (\text{in cm}^3)$$
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    // State management
+    const state = {
+      stage: 'thickness', // 'thickness' | 'area'
+      pitch_mm: 1.0,
+      csd_count: 100,
+      lc_mm: 0.010,
+      zeroError_mm: 0.0,
+      currentGap_mm: 0.0,
+      isClampedLocked: false,
+      activeProbe: 'p1', // 'p1'..'p5'
+      // Actual lamina thickness values at 5 points with realistic micrometer variations
+      probeThicknesses: {
+        p1: 1.462,
+        p2: 1.458,
+        p3: 1.465,
+        p4: 1.454,
+        p5: 1.461
+      },
+      thicknessTrials: {},
+      // Graph Paper Area Data (in cm units, each grid cell is 1 cm x 1 cm)
+      fullSquares: 24,
+      halfSquares: 12,
+      userN1: 0,
+      userN2: 0,
+      areaEvaluated: 0,
+      meanThickness_mm: 0
+    };
+
+    function initMathTypesetting() {
+      if (window.renderMathInElement) {
+        try {
+          window.renderMathInElement(document.body, {
+            delimiters: [
+              { left: "$$", right: "$$", display: true },
+              { left: "$", right: "$", display: false }
+            ],
+            throwOnError: false
+          });
+        } catch (e) {
+          console.warn(e);
+        }
+      }
+    }
+
+    // Canvas & Context references
+    const mainCanvas = document.getElementById('mainCanvas');
+    const mCtx = mainCanvas.getContext('2d');
+    const loupeCanvas = document.getElementById('loupeCanvas');
+    const lCtx = loupeCanvas.getContext('2d');
+
+    // UI Element references
+    const sliderGap = document.getElementById('sliderGap');
+    const txtSliderGap = document.getElementById('txtSliderGap');
+    const txtLC = document.getElementById('txtLC');
+    const selPitch = document.getElementById('selPitch');
+    const selCSD = document.getElementById('selCSD');
+    const txtZeroErrorVal = document.getElementById('txtZeroErrorVal');
+    const txtPointLabel = document.getElementById('txtPointLabel');
+    const txtInstrumentStatus = document.getElementById('txtInstrumentStatus');
+    const txtCoincideBadge = document.getElementById('txtCoincideBadge');
+
+    const valPSR = document.getElementById('valPSR');
+    const valCSR = document.getElementById('valCSR');
+    const valTotal = document.getElementById('valTotal');
+    const valCorrected = document.getElementById('valCorrected');
+
+    const metricLbl1 = document.getElementById('metricLbl1');
+    const metricLbl2 = document.getElementById('metricLbl2');
+    const metricLbl3 = document.getElementById('metricLbl3');
+    const metricLbl4 = document.getElementById('metricLbl4');
+
+    const btnSnapClamp = document.getElementById('btnSnapClamp');
+    const btnLockSpindle = document.getElementById('btnLockSpindle');
+    const btnZeroCheck = document.getElementById('btnZeroCheck');
+    const btnRecordThickness = document.getElementById('btnRecordThickness');
+    const btnClearThicknessTable = document.getElementById('btnClearThicknessTable');
+    const thicknessTableBody = document.getElementById('thicknessTableBody');
+    const lblPointsCount = document.getElementById('lblPointsCount');
+    const lblMeanThickness = document.getElementById('lblMeanThickness');
+
+    const panelPartA = document.getElementById('panelPartA');
+    const panelPartB = document.getElementById('panelPartB');
+    const lblMainCanvasTitle = document.getElementById('lblMainCanvasTitle');
+    const lblLoupeCanvasTitle = document.getElementById('lblLoupeCanvasTitle');
+
+    const inputN1 = document.getElementById('inputN1');
+    const inputN2 = document.getElementById('inputN2');
+    const btnVerifyArea = document.getElementById('btnVerifyArea');
+    const btnResetAreaCount = document.getElementById('btnResetAreaCount');
+    const btnAutoCountArea = document.getElementById('btnAutoCountArea');
+    const areaFeedback = document.getElementById('areaFeedback');
+    const txtAreaTotalDisplay = document.getElementById('txtAreaTotalDisplay');
+    const tblN1 = document.getElementById('tblN1');
+    const tblN2 = document.getElementById('tblN2');
+    const tblArea = document.getElementById('tblArea');
+
+    const lblSynthThickness = document.getElementById('lblSynthThickness');
+    const lblSynthArea = document.getElementById('lblSynthArea');
+    const valComputedVolume = document.getElementById('valComputedVolume');
+    const btnCalculateVolume = document.getElementById('btnCalculateVolume');
+
+    const btnTheory = document.getElementById('btnTheory');
+    const theoryModal = document.getElementById('theoryModal');
+    const btnCloseModal = document.getElementById('btnCloseModal');
+    const btnFullscreen = document.getElementById('btnFullscreen');
+
+    // Stage Switching Logic
+    function switchStage(newStage) {
+      state.stage = newStage;
+      document.getElementById('tabStageThickness').classList.toggle('active', newStage === 'thickness');
+      document.getElementById('tabStageArea').classList.toggle('active', newStage === 'area');
+
+      if (newStage === 'thickness') {
+        panelPartA.style.display = 'flex';
+        panelPartB.style.display = 'none';
+        lblMainCanvasTitle.innerText = `Part A: Screw Gauge with Lamina Clamped at ${state.activeProbe.toUpperCase()}`;
+        lblLoupeCanvasTitle.innerText = "Thimble & Pitch Scale Loupe (Magnified Coincidence)";
+
+        metricLbl1.innerText = "Pitch (PSR)";
+        metricLbl2.innerText = "CSR (n × LC)";
+        metricLbl3.innerText = "Observed Total";
+        metricLbl4.innerText = "Corrected (t)";
+        updateThicknessMeasurements();
+      } else {
+        panelPartA.style.display = 'none';
+        panelPartB.style.display = 'flex';
+        lblMainCanvasTitle.innerText = "Part B: Irregular Lamina Boundary on Millimeter Graph Paper";
+        lblLoupeCanvasTitle.innerText = "Graph Paper Square Counting Inset (Full & >Half Squares)";
+
+        metricLbl1.innerText = "Full Sq (n₁)";
+        metricLbl2.innerText = ">Half Sq (n₂)";
+        metricLbl3.innerText = "Counted Area";
+        metricLbl4.innerText = "Total Area (A)";
+        updateAreaMetrics();
+      }
+
+      resizeAllCanvases();
+    }
+
+    // Step buttons for micrometer gap
+    document.getElementById('btnMinus10').onclick = () => stepGap(-state.pitch_mm);
+    document.getElementById('btnMinus5').onclick = () => stepGap(-5 * state.lc_mm);
+    document.getElementById('btnMinus1').onclick = () => stepGap(-state.lc_mm);
+    document.getElementById('btnPlus1').onclick = () => stepGap(state.lc_mm);
+    document.getElementById('btnPlus5').onclick = () => stepGap(5 * state.lc_mm);
+    document.getElementById('btnPlus10').onclick = () => stepGap(state.pitch_mm);
+
+    function stepGap(delta) {
+      if (state.isClampedLocked || state.stage !== 'thickness') return;
+      let v = parseFloat(sliderGap.value) + delta;
+      v = Math.max(0, Math.min(6.0, v));
+      sliderGap.value = v;
+      updateFromSlider();
+    }
+
+    // Least Count configuration handlers
+    selPitch.addEventListener('change', () => {
+      state.pitch_mm = parseFloat(selPitch.value);
+      recalcLC();
+    });
+
+    selCSD.addEventListener('change', () => {
+      state.csd_count = parseInt(selCSD.value, 10);
+      recalcLC();
+    });
+
+    function recalcLC() {
+      state.lc_mm = state.pitch_mm / state.csd_count;
+      const lc_cm = state.lc_mm / 10.0;
+      txtLC.innerText = `LC = ${state.lc_mm.toFixed(3)} mm (${lc_cm.toFixed(4)} cm)`;
+      sliderGap.step = (state.lc_mm / 2).toFixed(4);
+      updateThicknessMeasurements();
+      renderWorkbench();
+    }
+
+    // Probe point selection
+    document.querySelectorAll('.btn-probe').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.btn-probe').forEach(b => b.classList.remove('btn-active'));
+        btn.classList.add('btn-active');
+        state.activeProbe = btn.getAttribute('data-probe');
+        txtPointLabel.innerText = `Point ${state.activeProbe.toUpperCase()}`;
+        lblMainCanvasTitle.innerText = `Part A: Screw Gauge with Lamina Clamped at ${state.activeProbe.toUpperCase()}`;
+        renderWorkbench();
+      });
+    });
+
+    // Zero error selector buttons
+    document.querySelectorAll('.btn-ze').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.btn-ze').forEach(b => b.classList.remove('btn-active'));
+        btn.classList.add('btn-active');
+        state.zeroError_mm = parseFloat(btn.getAttribute('data-ze'));
+        txtZeroErrorVal.innerText = `e = ${state.zeroError_mm >= 0 ? '+' : ''}${state.zeroError_mm.toFixed(3)} mm`;
+        updateThicknessMeasurements();
+        renderWorkbench();
+      });
+    });
+
+    // Zero check action: studs touching
+    btnZeroCheck.addEventListener('click', () => {
+      if (state.isClampedLocked) return;
+      if (state.stage !== 'thickness') switchStage('thickness');
+      sliderGap.value = 0;
+      state.currentGap_mm = 0;
+      updateThicknessMeasurements();
+      renderWorkbench();
+      txtInstrumentStatus.innerText = "Studs Touching: Read Zero Error";
+    });
+
+    // Snap Fit to Current Probe Point Thickness
+    btnSnapClamp.addEventListener('click', () => {
+      if (state.isClampedLocked || state.stage !== 'thickness') return;
+      const targetThickness = state.probeThicknesses[state.activeProbe];
+      sliderGap.value = targetThickness;
+      state.currentGap_mm = targetThickness;
+      updateThicknessMeasurements();
+      renderWorkbench();
+      txtInstrumentStatus.innerText = `Ratchet Clicked 3×: Clamped firmly at ${state.activeProbe.toUpperCase()}`;
+    });
+
+    // Spindle Lock Toggle
+    btnLockSpindle.addEventListener('click', () => {
+      state.isClampedLocked = !state.isClampedLocked;
+      sliderGap.disabled = state.isClampedLocked;
+      btnLockSpindle.innerText = state.isClampedLocked ? '🔒 Clamp Lever: LOCKED' : '🔓 Clamp Lever: Free';
+      btnLockSpindle.classList.toggle('btn-active', state.isClampedLocked);
+      txtInstrumentStatus.innerText = state.isClampedLocked ? 'Spindle Clamped Firmly' : 'Spindle Free';
+    });
+
+    // Slider input handler
+    sliderGap.addEventListener('input', updateFromSlider);
+
+    function updateFromSlider() {
+      state.currentGap_mm = parseFloat(sliderGap.value);
+      txtSliderGap.innerText = state.currentGap_mm.toFixed(3) + ' mm';
+      updateThicknessMeasurements();
+      renderWorkbench();
+    }
+
+    // Mathematical evaluation of Micrometer reading
+    let calculatedPSR = 0;
+    let calculatedCSR = 0;
+    let calculatedTotal = 0;
+    let calculatedCorrected = 0;
+    let coincidingCSD = 0;
+
+    function updateThicknessMeasurements() {
+      const scalePosition_mm = Math.max(0, state.currentGap_mm + state.zeroError_mm);
+
+      // PSR is largest complete multiple of pitch
+      const numPitches = Math.floor((scalePosition_mm + 1e-7) / state.pitch_mm);
+      calculatedPSR = numPitches * state.pitch_mm;
+
+      // Circular remainder
+      const remainder_mm = scalePosition_mm - calculatedPSR;
+      coincidingCSD = Math.round(remainder_mm / state.lc_mm) % state.csd_count;
+      if (coincidingCSD < 0) coincidingCSD += state.csd_count;
+
+      calculatedCSR = coincidingCSD * state.lc_mm;
+      calculatedTotal = calculatedPSR + calculatedCSR;
+      calculatedCorrected = calculatedTotal - state.zeroError_mm;
+
+      valPSR.innerText = `${calculatedPSR.toFixed(1)} mm`;
+      valCSR.innerText = `${calculatedCSR.toFixed(3)} mm`;
+      valTotal.innerText = `${calculatedTotal.toFixed(3)} mm`;
+      valCorrected.innerText = `${calculatedCorrected.toFixed(3)} mm`;
+
+      txtCoincideBadge.innerText = `Coinciding CSD: n = ${coincidingCSD}`;
+    }
+
+    // Logging & Averaging for Part A
+    btnRecordThickness.addEventListener('click', () => {
+      const point = state.activeProbe.toUpperCase();
+      state.thicknessTrials[point] = calculatedCorrected;
+
+      renderThicknessTable();
+    });
+
+    btnClearThicknessTable.addEventListener('click', () => {
+      state.thicknessTrials = {};
+      renderThicknessTable();
+    });
+
+    function renderThicknessTable() {
+      const points = ['P1', 'P2', 'P3', 'P4', 'P5'];
+      const rows = [];
+      let sumT = 0;
+      let count = 0;
+
+      points.forEach((p, idx) => {
+        if (state.thicknessTrials[p] !== undefined) {
+          const t = state.thicknessTrials[p];
+          sumT += t;
+          count++;
+          rows.push(`
+            <tr>
+              <td><strong>${p}</strong></td>
+              <td>${calculatedPSR.toFixed(1)}</td>
+              <td>${coincidingCSD}</td>
+              <td>${calculatedCSR.toFixed(3)}</td>
+              <td>${(t + state.zeroError_mm).toFixed(3)}</td>
+              <td><strong style="color:var(--accent);">${t.toFixed(3)}</strong></td>
+            </tr>
+          `);
+        }
+      });
+
+      if (rows.length === 0) {
+        thicknessTableBody.innerHTML = '<tr><td colspan="6" style="color:var(--text-muted);">No observations logged. Measure points P1-P5 and click "+ Log Reading".</td></tr>';
+        lblPointsCount.innerText = '0 / 5';
+        lblMeanThickness.innerText = '-- mm';
+        state.meanThickness_mm = 0;
+        lblSynthThickness.innerText = '-- mm';
+      } else {
+        thicknessTableBody.innerHTML = rows.join('');
+        lblPointsCount.innerText = `${count} / 5`;
+        const mean = sumT / count;
+        state.meanThickness_mm = mean;
+        lblMeanThickness.innerText = `${mean.toFixed(3)} mm`;
+        lblSynthThickness.innerText = `${mean.toFixed(3)} mm`;
+      }
+    }
+
+    // Part B Area Verification Logic
+    btnAutoCountArea.addEventListener('click', () => {
+      inputN1.value = state.fullSquares;
+      inputN2.value = state.halfSquares;
+      checkAreaCount();
+    });
+
+    btnVerifyArea.addEventListener('click', checkAreaCount);
+
+    btnResetAreaCount.addEventListener('click', () => {
+      inputN1.value = 0;
+      inputN2.value = 0;
+      areaFeedback.style.display = 'none';
+      updateAreaMetrics();
+    });
+
+    function checkAreaCount() {
+      const n1 = parseInt(inputN1.value, 10) || 0;
+      const n2 = parseInt(inputN2.value, 10) || 0;
+
+      state.userN1 = n1;
+      state.userN2 = n2;
+
+      const expectedN1 = state.fullSquares;
+      const expectedN2 = state.halfSquares;
+      const expectedArea = expectedN1 + expectedN2; // 36 cm^2
+      const calculatedArea = n1 + n2;
+
+      areaFeedback.style.display = 'block';
+
+      if (n1 === expectedN1 && n2 === expectedN2) {
+        areaFeedback.style.background = 'rgba(34, 197, 94, 0.2)';
+        areaFeedback.style.color = '#86efac';
+        areaFeedback.style.border = '1px solid rgba(34, 197, 94, 0.4)';
+        areaFeedback.innerHTML = `✓ Exact count verified! $n_1 = ${n1}$, $n_2 = ${n2}$. Total Surface Area $A = ${calculatedArea}\\text{ cm}^2$.`;
+      } else {
+        areaFeedback.style.background = 'rgba(239, 68, 68, 0.2)';
+        areaFeedback.style.color = '#fca5a5';
+        areaFeedback.style.border = '1px solid rgba(239, 68, 68, 0.4)';
+        areaFeedback.innerHTML = `⚠️ Discrepancy observed. Count full squares completely inside boundary ($n_1 = ${expectedN1}$) and &gt;half squares ($n_2 = ${expectedN2}$).`;
+      }
+
+      state.areaEvaluated = calculatedArea;
+      updateAreaMetrics();
+      initMathTypesetting();
+      renderWorkbench();
+    }
+
+    function updateAreaMetrics() {
+      valPSR.innerText = state.userN1.toString();
+      valCSR.innerText = state.userN2.toString();
+      valTotal.innerText = (state.userN1 + state.userN2).toString();
+      valCorrected.innerText = `${(state.userN1 + state.userN2).toFixed(1)} cm²`;
+
+      txtAreaTotalDisplay.innerText = `Area = ${(state.userN1 + state.userN2).toFixed(1)} cm²`;
+      tblN1.innerText = state.userN1.toString();
+      tblN2.innerText = state.userN2.toString();
+      tblArea.innerText = `${(state.userN1 + state.userN2).toFixed(1)} cm²`;
+      lblSynthArea.innerText = `${(state.userN1 + state.userN2).toFixed(1)} cm²`;
+    }
+
+    // Final Volume Synthesis
+    btnCalculateVolume.addEventListener('click', () => {
+      const t_mm = state.meanThickness_mm;
+      const area_cm2 = state.areaEvaluated || (state.fullSquares + state.halfSquares);
+
+      if (!t_mm || t_mm <= 0) {
+        alert("Please measure thickness at points P1-P5 in Part A first!");
+        return;
+      }
+
+      const t_cm = t_mm / 10.0;
+      const vol_cm3 = area_cm2 * t_cm;
+      const vol_mm3 = vol_cm3 * 1000.0;
+
+      valComputedVolume.innerText = `${vol_cm3.toFixed(3)} cm³ (${vol_mm3.toFixed(1)} mm³)`;
+    });
+
+    // Modals & Fullscreen Handlers
+    btnTheory.onclick = () => theoryModal.classList.add('open');
+    btnCloseModal.onclick = () => theoryModal.classList.remove('open');
+    theoryModal.onclick = (e) => { if (e.target === theoryModal) theoryModal.classList.remove('open'); };
+
+    btnFullscreen.addEventListener('click', () => {
+      if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+        const root = document.documentElement;
+        if (root.requestFullscreen) root.requestFullscreen();
+        else if (root.webkitRequestFullscreen) root.webkitRequestFullscreen();
+        document.body.classList.add('is-fullscreen');
+        btnFullscreen.innerText = '🗗 Exit Fullscreen';
+      } else {
+        if (document.exitFullscreen) document.exitFullscreen();
+        else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+        document.body.classList.remove('is-fullscreen');
+        btnFullscreen.innerText = '⛶ Fullscreen';
+      }
+      setTimeout(resizeAllCanvases, 100);
+    });
+
+    function resizeAllCanvases() {
+      const dpr = window.devicePixelRatio || 1;
+
+      const mWrap = document.getElementById('mainCanvasWrap');
+      mainCanvas.width = mWrap.clientWidth * dpr;
+      mainCanvas.height = mWrap.clientHeight * dpr;
+      mCtx.setTransform(1, 0, 0, 1, 0, 0);
+      mCtx.scale(dpr, dpr);
+
+      const lWrap = document.getElementById('loupeCanvasWrap');
+      loupeCanvas.width = lWrap.clientWidth * dpr;
+      loupeCanvas.height = lWrap.clientHeight * dpr;
+      lCtx.setTransform(1, 0, 0, 1, 0, 0);
+      lCtx.scale(dpr, dpr);
+
+      renderWorkbench();
+    }
+    window.addEventListener('resize', resizeAllCanvases);
+
+    // Master Render Dispatcher
+    function renderWorkbench() {
+      if (state.stage === 'thickness') {
+        drawScrewGauge();
+        drawThimbleLoupe();
+      } else {
+        drawGraphPaperArea();
+        drawAreaLoupe();
+      }
+    }
+
+    // DRAW ENGINE: Stage A Screw Gauge Canvas
+    function drawScrewGauge() {
+      const w = mainCanvas.width / (window.devicePixelRatio || 1);
+      const h = mainCanvas.height / (window.devicePixelRatio || 1);
+
+      mCtx.clearRect(0, 0, w, h);
+
+      // Bench surface
+      mCtx.fillStyle = '#111722';
+      mCtx.fillRect(0, 0, w, h);
+
+      const cy = h * 0.5;
+      const anvilX = Math.max(w * 0.28, 140);
+      const pxPerMm = 18.0;
+
+      const scalePos_mm = Math.max(0, state.currentGap_mm + state.zeroError_mm);
+      const gapPx = scalePos_mm * pxPerMm;
+
+      // 1. Cast Steel U-Frame
+      const frameR_outer = Math.min(h * 0.42, 120);
+      const frameR_inner = frameR_outer - 34;
+
+      mCtx.beginPath();
+      mCtx.arc(anvilX - 30, cy, frameR_outer, Math.PI * 0.5, Math.PI * 1.5, false);
+      mCtx.lineTo(anvilX + 30, cy - frameR_outer);
+      mCtx.lineTo(anvilX + 30, cy - frameR_inner);
+      mCtx.arc(anvilX - 30, cy, frameR_inner, Math.PI * 1.5, Math.PI * 0.5, true);
+      mCtx.lineTo(anvilX + 30, cy + frameR_outer);
+      mCtx.closePath();
+
+      const uGrad = mCtx.createLinearGradient(0, cy - frameR_outer, 0, cy + frameR_outer);
+      uGrad.addColorStop(0, '#1e293b');
+      uGrad.addColorStop(0.5, '#475569');
+      uGrad.addColorStop(1, '#0f172a');
+
+      mCtx.fillStyle = uGrad;
+      mCtx.fill();
+      mCtx.strokeStyle = '#64748b';
+      mCtx.lineWidth = 2;
+      mCtx.stroke();
+
+      // Frame stamp
+      mCtx.fillStyle = '#e2e8f0';
+      mCtx.font = 'bold 9px sans-serif';
+      mCtx.textAlign = 'center';
+      mCtx.fillText('MICROMETER 0 - 25 mm', anvilX - 45, cy + frameR_inner + 18);
+      mCtx.fillText(`1 PITCH = ${state.pitch_mm} mm`, anvilX - 45, cy + frameR_inner + 28);
+
+      // 2. Fixed Anvil A
+      const studW = 20;
+      const studH = 24;
+      mCtx.fillStyle = '#cbd5e1';
+      mCtx.fillRect(anvilX - studW, cy - studH * 0.5, studW, studH);
+      mCtx.strokeStyle = '#475569';
+      mCtx.strokeRect(anvilX - studW, cy - studH * 0.5, studW, studH);
+
+      // 3. Draw Clamped Irregular Lamina
+      drawClampedLamina(anvilX, cy, gapPx);
+
+      // 4. Movable Spindle B
+      const spindleFaceX = anvilX + gapPx;
+      const sleeveX = anvilX + 220;
+      const spindleW = sleeveX - spindleFaceX;
+
+      if (spindleW > 0) {
+        const sGrad = mCtx.createLinearGradient(0, cy - 12, 0, cy + 12);
+        sGrad.addColorStop(0, '#f8fafc');
+        sGrad.addColorStop(0.5, '#cbd5e1');
+        sGrad.addColorStop(1, '#64748b');
+
+        mCtx.fillStyle = sGrad;
+        mCtx.fillRect(spindleFaceX, cy - 12, spindleW, 24);
+        mCtx.strokeStyle = '#334155';
+        mCtx.strokeRect(spindleFaceX, cy - 12, spindleW, 24);
+      }
+
+      // 5. Fixed Sleeve (Pitch Scale barrel)
+      const sleeveL = 130;
+      const sleeveH = 34;
+
+      const slGrad = mCtx.createLinearGradient(0, cy - sleeveH*0.5, 0, cy + sleeveH*0.5);
+      slGrad.addColorStop(0, '#e2e8f0');
+      slGrad.addColorStop(0.3, '#cbd5e1');
+      slGrad.addColorStop(0.8, '#94a3b8');
+      slGrad.addColorStop(1, '#64748b');
+
+      mCtx.fillStyle = slGrad;
+      mCtx.fillRect(sleeveX, cy - sleeveH * 0.5, sleeveL, sleeveH);
+      mCtx.strokeStyle = '#334155';
+      mCtx.lineWidth = 1.5;
+      mCtx.strokeRect(sleeveX, cy - sleeveH * 0.5, sleeveL, sleeveH);
+
+      // Sleeve Reference Datum Baseline
+      mCtx.strokeStyle = '#0f172a';
+      mCtx.lineWidth = 1.5;
+      mCtx.beginPath();
+      mCtx.moveTo(sleeveX, cy);
+      mCtx.lineTo(sleeveX + sleeveL, cy);
+      mCtx.stroke();
+
+      // Pitch scale ticks on sleeve
+      mCtx.fillStyle = '#0f172a';
+      mCtx.font = '8px sans-serif';
+      mCtx.textAlign = 'center';
+      const maxMm = 12;
+
+      for (let m = 0; m <= maxMm; m++) {
+        const gx = sleeveX + m * pxPerMm;
+
+        mCtx.beginPath();
+        mCtx.moveTo(gx, cy);
+        mCtx.lineTo(gx, cy - 9);
+        mCtx.stroke();
+
+        if (m % 5 === 0) {
+          mCtx.fillText(m, gx, cy - 11);
+        }
+
+        if (state.pitch_mm === 0.5 && m < maxMm) {
+          const halfX = gx + 0.5 * pxPerMm;
+          mCtx.beginPath();
+          mCtx.moveTo(halfX, cy);
+          mCtx.lineTo(halfX, cy + 7);
+          mCtx.stroke();
+        }
+      }
+
+      // 6. Sliding Bevelled Thimble
+      const thimbleShiftPx = scalePos_mm * pxPerMm;
+      const thimbleX = sleeveX + thimbleShiftPx;
+      const thimbleL = 100;
+      const thimbleH = 46;
+
+      const thGrad = mCtx.createLinearGradient(0, cy - thimbleH*0.5, 0, cy + thimbleH*0.5);
+      thGrad.addColorStop(0, '#f1f5f9');
+      thGrad.addColorStop(0.4, '#cbd5e1');
+      thGrad.addColorStop(0.9, '#94a3b8');
+      thGrad.addColorStop(1, '#475569');
+
+      mCtx.fillStyle = thGrad;
+      mCtx.beginPath();
+      mCtx.moveTo(thimbleX, cy - thimbleH * 0.42);
+      mCtx.lineTo(thimbleX + 16, cy - thimbleH * 0.5);
+      mCtx.lineTo(thimbleX + thimbleL, cy - thimbleH * 0.5);
+      mCtx.lineTo(thimbleX + thimbleL, cy + thimbleH * 0.5);
+      mCtx.lineTo(thimbleX + 16, cy + thimbleH * 0.5);
+      mCtx.lineTo(thimbleX, cy + thimbleH * 0.42);
+      mCtx.closePath();
+      mCtx.fill();
+      mCtx.strokeStyle = '#1e293b';
+      mCtx.stroke();
+
+      // Knurl grip pattern
+      mCtx.fillStyle = 'rgba(0,0,0,0.12)';
+      for (let kx = thimbleX + 35; kx < thimbleX + thimbleL - 8; kx += 5) {
+        mCtx.fillRect(kx, cy - thimbleH * 0.5, 2, thimbleH);
+      }
+
+      // 7. Ratchet Stop Knob
+      const ratchetX = thimbleX + thimbleL;
+      const ratchetL = 36;
+      const ratchetH = 26;
+
+      mCtx.fillStyle = '#334155';
+      mCtx.fillRect(ratchetX, cy - ratchetH * 0.5, ratchetL, ratchetH);
+      mCtx.strokeStyle = '#1e293b';
+      mCtx.strokeRect(ratchetX, cy - ratchetH * 0.5, ratchetL, ratchetH);
+
+      for (let rx = ratchetX + 4; rx < ratchetX + ratchetL - 4; rx += 4) {
+        mCtx.fillStyle = '#64748b';
+        mCtx.fillRect(rx, cy - ratchetH * 0.5, 1.5, ratchetH);
+      }
+    }
+
+    // Draw Clamped Irregular Lamina between Anvil & Spindle
+    function drawClampedLamina(anvilX, cy, gapPx) {
+      const thicknessPx = state.probeThicknesses[state.activeProbe] * 18.0;
+      const h_lamina = 90;
+      const topY = cy - h_lamina * 0.5;
+
+      // Realistic irregular brass lamina body clamped between studs
+      mCtx.save();
+      mCtx.fillStyle = 'rgba(234, 179, 8, 0.75)';
+      mCtx.strokeStyle = '#ca8a04';
+      mCtx.lineWidth = 1.5;
+
+      mCtx.beginPath();
+      // Irregular wavy outline passing through measurement points
+      mCtx.moveTo(anvilX, cy - 25);
+      mCtx.bezierCurveTo(anvilX - 35, cy - 65, anvilX + thicknessPx + 40, cy - 55, anvilX + thicknessPx, cy - 25);
+      mCtx.lineTo(anvilX + thicknessPx, cy + 25);
+      mCtx.bezierCurveTo(anvilX + thicknessPx + 45, cy + 65, anvilX - 30, cy + 60, anvilX, cy + 25);
+      mCtx.closePath();
+      mCtx.fill();
+      mCtx.stroke();
+
+      // Mark the active probe point with target crosshairs
+      mCtx.fillStyle = '#ef4444';
+      mCtx.beginPath();
+      mCtx.arc(anvilX + thicknessPx * 0.5, cy, 3.5, 0, Math.PI * 2);
+      mCtx.fill();
+      mCtx.strokeStyle = '#fff';
+      mCtx.lineWidth = 1;
+      mCtx.stroke();
+
+      mCtx.fillStyle = '#f8fafc';
+      mCtx.font = 'bold 9px monospace';
+      mCtx.textAlign = 'left';
+      mCtx.fillText(state.activeProbe.toUpperCase(), anvilX + thicknessPx + 6, cy - 4);
+      mCtx.restore();
+    }
+
+    // DRAW ENGINE: Thimble Coincidence Loupe
+    function drawThimbleLoupe() {
+      const w = loupeCanvas.width / (window.devicePixelRatio || 1);
+      const h = loupeCanvas.height / (window.devicePixelRatio || 1);
+
+      lCtx.clearRect(0, 0, w, h);
+
+      lCtx.fillStyle = '#0a0f18';
+      lCtx.fillRect(0, 0, w, h);
+
+      const cy = h * 0.5;
+      const refY = cy;
+      const scalePos_mm = Math.max(0, state.currentGap_mm + state.zeroError_mm);
+
+      // Sleeve Barrel (Left half)
+      const sleeveW = w * 0.45;
+
+      lCtx.fillStyle = '#cbd5e1';
+      lCtx.fillRect(0, 10, sleeveW, h - 20);
+      lCtx.strokeStyle = '#1e293b';
+      lCtx.lineWidth = 1.5;
+      lCtx.strokeRect(0, 10, sleeveW, h - 20);
+
+      // Reference Baseline
+      lCtx.strokeStyle = '#dc2626';
+      lCtx.lineWidth = 2.5;
+      lCtx.beginPath();
+      lCtx.moveTo(0, refY);
+      lCtx.lineTo(sleeveW, refY);
+      lCtx.stroke();
+
+      // Main scale pitch ticks
+      const sleeveZeroX = sleeveW - scalePos_mm * 18;
+
+      lCtx.fillStyle = '#0f172a';
+      lCtx.font = 'bold 11px monospace';
+      lCtx.textAlign = 'center';
+
+      for (let m = 0; m <= 10; m++) {
+        const gx = sleeveZeroX + m * 18;
+        if (gx < 5 || gx > sleeveW - 2) continue;
+
+        lCtx.strokeStyle = '#0f172a';
+        lCtx.lineWidth = 1.5;
+        lCtx.beginPath();
+        lCtx.moveTo(gx, refY);
+        lCtx.lineTo(gx, refY - 18);
+        lCtx.stroke();
+
+        lCtx.fillText(m, gx, refY - 22);
+
+        if (state.pitch_mm === 0.5) {
+          const hx = gx + 9;
+          if (hx < sleeveW - 2) {
+            lCtx.beginPath();
+            lCtx.moveTo(hx, refY);
+            lCtx.lineTo(hx, refY + 12);
+            lCtx.stroke();
+          }
+        }
+      }
+
+      // Thimble Bevel Edge (Right half)
+      const thimbleLeft = sleeveW;
+      const thimbleW = w - thimbleLeft;
+
+      lCtx.fillStyle = '#e2e8f0';
+      lCtx.fillRect(thimbleLeft, 6, thimbleW, h - 12);
+      lCtx.strokeStyle = '#1e293b';
+      lCtx.lineWidth = 2;
+      lCtx.strokeRect(thimbleLeft, 6, thimbleW, h - 12);
+
+      const pxPerDiv = 14.0;
+      const numVisibleDivs = Math.floor(h / pxPerDiv);
+
+      for (let offset = -numVisibleDivs; offset <= numVisibleDivs; offset++) {
+        let divIndex = (coincidingCSD - offset) % state.csd_count;
+        if (divIndex < 0) divIndex += state.csd_count;
+
+        const dy = refY + offset * pxPerDiv;
+        if (dy < 12 || dy > h - 12) continue;
+
+        const isCoincide = (offset === 0);
+        const isMajor = (divIndex % 5 === 0);
+        const tickLen = isMajor ? 32 : 18;
+
+        lCtx.strokeStyle = isCoincide ? '#dc2626' : '#0284c7';
+        lCtx.lineWidth = isCoincide ? 2.5 : 1.5;
+
+        lCtx.beginPath();
+        lCtx.moveTo(thimbleLeft, dy);
+        lCtx.lineTo(thimbleLeft + tickLen, dy);
+        lCtx.stroke();
+
+        lCtx.fillStyle = isCoincide ? '#dc2626' : '#0f172a';
+        lCtx.font = isCoincide ? 'bold 12px sans-serif' : '10px sans-serif';
+        lCtx.textAlign = 'left';
+        lCtx.fillText(divIndex, thimbleLeft + tickLen + 8, dy + 4);
+
+        if (isCoincide) {
+          lCtx.fillStyle = '#dc2626';
+          lCtx.beginPath();
+          lCtx.moveTo(thimbleLeft + tickLen + 32, dy);
+          lCtx.lineTo(thimbleLeft + tickLen + 42, dy - 5);
+          lCtx.lineTo(thimbleLeft + tickLen + 42, dy + 5);
+          lCtx.closePath();
+          lCtx.fill();
+        }
+      }
+    }
+
+    // DRAW ENGINE: Stage B Graph Paper Area Canvas
+    function drawGraphPaperArea() {
+      const w = mainCanvas.width / (window.devicePixelRatio || 1);
+      const h = mainCanvas.height / (window.devicePixelRatio || 1);
+
+      mCtx.clearRect(0, 0, w, h);
+
+      // Graph paper coordinate dimensions (10 mm = 1 cm grid)
+      mCtx.fillStyle = '#fffdf7';
+      mCtx.fillRect(0, 0, w, h);
+
+      const cellSize = 30; // 1 cm = 30 pixels
+      const subCell = cellSize / 10; // 1 mm grid
+
+      // 1. Draw 1 mm Minor Lines
+      mCtx.strokeStyle = '#e2f3e8';
+      mCtx.lineWidth = 0.5;
+      for (let x = 0; x < w; x += subCell) {
+        mCtx.beginPath();
+        mCtx.moveTo(x, 0);
+        mCtx.lineTo(x, h);
+        mCtx.stroke();
+      }
+      for (let y = 0; y < h; y += subCell) {
+        mCtx.beginPath();
+        mCtx.moveTo(0, y);
+        mCtx.lineTo(w, y);
+        mCtx.stroke();
+      }
+
+      // 2. Draw 1 cm Major Grid Lines
+      mCtx.strokeStyle = '#86efac';
+      mCtx.lineWidth = 1.2;
+      for (let x = 0; x < w; x += cellSize) {
+        mCtx.beginPath();
+        mCtx.moveTo(x, 0);
+        mCtx.lineTo(x, h);
+        mCtx.stroke();
+      }
+      for (let y = 0; y < h; y += cellSize) {
+        mCtx.beginPath();
+        mCtx.moveTo(0, y);
+        mCtx.lineTo(w, y);
+        mCtx.stroke();
+      }
+
+      // 3. Highlight Full and >Half Squares inside Lamina
+      const startCol = 4;
+      const startRow = 2;
+
+      // Sample grid pattern representing the irregular lamina layout
+      const laminaGrid = [
+        [0, 1, 1, 1, 0],
+        [1, 2, 2, 2, 1],
+        [1, 2, 2, 2, 2, 1],
+        [1, 2, 2, 2, 2, 1],
+        [1, 2, 2, 2, 1],
+        [0, 1, 2, 1, 0]
+      ];
+
+      for (let r = 0; r < laminaGrid.length; r++) {
+        for (let c = 0; c < laminaGrid[r].length; c++) {
+          const type = laminaGrid[r][c];
+          const px = (startCol + c) * cellSize;
+          const py = (startRow + r) * cellSize;
+
+          if (type === 2) {
+            // Full square inside (n1)
+            mCtx.fillStyle = 'rgba(34, 197, 94, 0.45)';
+            mCtx.fillRect(px + 1, py + 1, cellSize - 2, cellSize - 2);
+            mCtx.fillStyle = '#14532d';
+            mCtx.font = 'bold 10px monospace';
+            mCtx.textAlign = 'center';
+            mCtx.fillText('1', px + cellSize*0.5, py + cellSize*0.6);
+          } else if (type === 1) {
+            // >Half square (n2)
+            mCtx.fillStyle = 'rgba(56, 189, 248, 0.45)';
+            mCtx.fillRect(px + 1, py + 1, cellSize - 2, cellSize - 2);
+            mCtx.fillStyle = '#0369a1';
+            mCtx.font = 'bold 9px monospace';
+            mCtx.textAlign = 'center';
+            mCtx.fillText('½', px + cellSize*0.5, py + cellSize*0.6);
+          }
+        }
+      }
+
+      // 4. Smooth Lamina Boundary Outline Trace
+      mCtx.strokeStyle = '#ca8a04';
+      mCtx.lineWidth = 3;
+      mCtx.beginPath();
+      const ox = (startCol + 0.5) * cellSize;
+      const oy = (startRow + 0.5) * cellSize;
+
+      mCtx.moveTo(ox + cellSize, oy);
+      mCtx.bezierCurveTo(ox + cellSize*3.5, oy - 15, ox + cellSize*4.5, oy + cellSize, ox + cellSize*4.8, oy + cellSize*2.5);
+      mCtx.bezierCurveTo(ox + cellSize*5.2, oy + cellSize*4, ox + cellSize*3.8, oy + cellSize*5.5, ox + cellSize*2.2, oy + cellSize*5.8);
+      mCtx.bezierCurveTo(ox + cellSize*0.8, oy + cellSize*6, ox - 15, oy + cellSize*4.2, ox - 10, oy + cellSize*2.8);
+      mCtx.bezierCurveTo(ox - 8, oy + cellSize, ox + 15, oy - 8, ox + cellSize, oy);
+      mCtx.closePath();
+      mCtx.stroke();
+
+      // Legend in corner
+      mCtx.fillStyle = 'rgba(15, 23, 42, 0.85)';
+      mCtx.fillRect(10, 10, 210, 48);
+      mCtx.fillStyle = '#22c55e';
+      mCtx.fillRect(16, 18, 12, 12);
+      mCtx.fillStyle = '#38bdf8';
+      mCtx.fillRect(16, 36, 12, 12);
+      mCtx.fillStyle = '#f8fafc';
+      mCtx.font = '9px sans-serif';
+      mCtx.textAlign = 'left';
+      mCtx.fillText('Full Squares (n₁) = 1.0 cm²', 34, 27);
+      mCtx.fillText('> Half Squares (n₂) = 1.0 cm²', 34, 45);
+    }
+
+    // DRAW ENGINE: Stage B Area Magnified Grid Loupe
+    function drawAreaLoupe() {
+      const w = loupeCanvas.width / (window.devicePixelRatio || 1);
+      const h = loupeCanvas.height / (window.devicePixelRatio || 1);
+
+      lCtx.clearRect(0, 0, w, h);
+
+      lCtx.fillStyle = '#fffdf7';
+      lCtx.fillRect(0, 0, w, h);
+
+      // Magnified 1 mm detail along boundary curve
+      const bigCell = 55;
+      lCtx.strokeStyle = '#86efac';
+      lCtx.lineWidth = 1.8;
+
+      for (let x = 0; x < w; x += bigCell) {
+        lCtx.beginPath();
+        lCtx.moveTo(x, 0);
+        lCtx.lineTo(x, h);
+        lCtx.stroke();
+      }
+      for (let y = 0; y < h; y += bigCell) {
+        lCtx.beginPath();
+        lCtx.moveTo(0, y);
+        lCtx.lineTo(w, y);
+        lCtx.stroke();
+      }
+
+      // Sample Boundary passing diagonally through grid
+      lCtx.strokeStyle = '#ca8a04';
+      lCtx.lineWidth = 4;
+      lCtx.beginPath();
+      lCtx.moveTo(10, h - 20);
+      lCtx.bezierCurveTo(w * 0.35, h * 0.65, w * 0.6, h * 0.25, w - 20, 15);
+      lCtx.stroke();
+
+      lCtx.fillStyle = 'rgba(56, 189, 248, 0.35)';
+      lCtx.beginPath();
+      lCtx.moveTo(bigCell, bigCell);
+      lCtx.lineTo(bigCell * 2, bigCell);
+      lCtx.lineTo(bigCell * 2, bigCell * 2);
+      lCtx.lineTo(bigCell, bigCell * 2);
+      lCtx.closePath();
+      lCtx.fill();
+
+      lCtx.fillStyle = '#0f172a';
+      lCtx.font = 'bold 11px sans-serif';
+      lCtx.textAlign = 'center';
+      lCtx.fillText('Boundary Intersection Detail', w * 0.5, 20);
+    }
+
+    // Startup Lifecycle
+    window.addEventListener('DOMContentLoaded', () => {
+      initMathTypesetting();
+      recalcLC();
+      setTimeout(resizeAllCanvases, 50);
+    });
+  </script>
+</body>
+</html>

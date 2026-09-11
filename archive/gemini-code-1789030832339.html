@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ohm's Law Virtual Laboratory | Verification & V-I Graph</title>
+
+  <!-- KaTeX for crisp mathematical typography -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" />
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --card-border: #334155;
+      --accent: #38bdf8;
+      --accent-hover: #0ea5e9;
+      --success: #22c55e;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --board-wood: #2c1a0e;
+      --board-rim: #503118;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      width: 100%;
+      min-height: 100vh;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-size: 15px;
+      line-height: 1.45;
+      overflow-x: hidden;
+    }
+
+    /* ZERO-SCROLL FULLSCREEN LOCK */
+    body.is-fullscreen,
+    :fullscreen body,
+    :-webkit-full-screen body {
+      height: 100vh !important;
+      max-height: 100vh !important;
+      overflow: hidden !important;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      min-height: 100vh;
+    }
+
+    /* Fullscreen Viewport Strict Fit */
+    body.is-fullscreen .app-container,
+    :fullscreen .app-container,
+    :-webkit-full-screen .app-container {
+      max-width: 100vw !important;
+      height: 100vh !important;
+      max-height: 100vh !important;
+      padding: 0.4rem 0.6rem !important;
+      gap: 0.4rem !important;
+      overflow: hidden !important;
+      justify-content: flex-start;
+    }
+
+    /* Header */
+    header {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 0.6rem 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+      flex-shrink: 0;
+    }
+
+    .header-left {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .badge {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    h1 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      padding: 0.45rem 0.85rem;
+      font-size: 0.88rem;
+      font-weight: 600;
+      border-radius: 6px;
+      border: 1px solid var(--card-border);
+      background: #334155;
+      color: var(--text);
+      cursor: pointer;
+      min-height: 38px;
+      transition: all 0.15s ease;
+      touch-action: manipulation;
+      user-select: none;
+    }
+
+    .btn:hover {
+      background: #475569;
+      color: #fff;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #042f2e;
+      font-weight: 700;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      color: #042f2e;
+    }
+
+    .btn-icon {
+      padding: 0.45rem 0.65rem;
+    }
+
+    /* Main Workspace Layout */
+    .workspace {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+      flex: 1;
+      min-height: 0;
+    }
+
+    @media (min-width: 992px) {
+      .workspace {
+        grid-template-columns: 1.15fr 0.85fr;
+      }
+    }
+
+    /* Fullscreen Responsive 2-column Grid with Strict Overflow Guard */
+    body.is-fullscreen .workspace,
+    :fullscreen .workspace,
+    :-webkit-full-screen .workspace {
+      display: grid !important;
+      grid-template-columns: 1.15fr 0.85fr !important;
+      gap: 0.5rem !important;
+      flex: 1 !important;
+      height: calc(100vh - 65px) !important;
+      max-height: calc(100vh - 65px) !important;
+      min-height: 0 !important;
+      overflow: hidden !important;
+    }
+
+    /* Card Panels */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 0.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      min-height: 0;
+    }
+
+    /* Fullscreen adjustments for left column */
+    .left-column {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      min-height: 0;
+    }
+
+    body.is-fullscreen .left-column,
+    :fullscreen .left-column,
+    :-webkit-full-screen .left-column {
+      display: flex !important;
+      flex-direction: column !important;
+      height: 100% !important;
+      max-height: 100% !important;
+      overflow: hidden !important;
+      gap: 0.4rem !important;
+    }
+
+    /* Canvas Containers with responsive aspect bounds */
+    .canvas-card {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-height: 0;
+    }
+
+    .canvas-wrap {
+      position: relative;
+      width: 100%;
+      flex: 1;
+      min-height: 200px;
+      background: #181411;
+      border: 2px solid var(--board-rim);
+      border-radius: 8px;
+      overflow: hidden;
+      touch-action: none;
+    }
+
+    body.is-fullscreen .canvas-wrap,
+    :fullscreen .canvas-wrap,
+    :-webkit-full-screen .canvas-wrap {
+      flex: 1 !important;
+      min-height: 160px !important;
+      max-height: 100% !important;
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .tab-bar {
+      display: flex;
+      gap: 0.35rem;
+      background: #0f172a;
+      padding: 0.25rem;
+      border-radius: 6px;
+      border: 1px solid var(--card-border);
+      flex-shrink: 0;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 0.4rem 0.5rem;
+      font-size: 0.82rem;
+      font-weight: 600;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      border-radius: 4px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s ease;
+    }
+
+    .tab-btn.active {
+      background: #334155;
+      color: #fff;
+    }
+
+    /* Right Column - Controls, Metrics, and Data */
+    .right-column {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      min-height: 0;
+      overflow-y: auto;
+    }
+
+    body.is-fullscreen .right-column,
+    :fullscreen .right-column,
+    :-webkit-full-screen .right-column {
+      height: 100% !important;
+      max-height: 100% !important;
+      overflow-y: auto !important;
+      padding-right: 0.25rem;
+    }
+
+    /* Custom thin scrollbar for fullscreen comfort */
+    .right-column::-webkit-scrollbar {
+      width: 5px;
+    }
+    .right-column::-webkit-scrollbar-thumb {
+      background: #334155;
+      border-radius: 3px;
+    }
+
+    /* Live Readouts Metric Cards */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.4rem;
+      flex-shrink: 0;
+    }
+
+    .metric-badge {
+      background: #0f172a;
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      padding: 0.4rem;
+      text-align: center;
+    }
+
+    .metric-label {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .metric-val {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--accent);
+      font-family: monospace;
+    }
+
+    /* Interactive Sliders & Steppers */
+    .control-group {
+      background: #0f172a;
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      padding: 0.5rem 0.65rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .control-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    input[type="range"] {
+      flex: 1;
+      accent-color: var(--accent);
+      height: 6px;
+      border-radius: 3px;
+      background: #334155;
+      cursor: pointer;
+    }
+
+    .step-btn {
+      width: 32px;
+      height: 32px;
+      min-height: 32px;
+      padding: 0;
+      font-size: 0.95rem;
+      font-weight: bold;
+      border-radius: 4px;
+      background: #334155;
+      border: 1px solid var(--card-border);
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .step-btn:hover {
+      background: #475569;
+    }
+
+    /* Observations Table */
+    .table-wrap {
+      width: 100%;
+      border-radius: 6px;
+      border: 1px solid var(--card-border);
+      overflow-x: auto;
+      max-height: 140px;
+      background: #0f172a;
+    }
+
+    body.is-fullscreen .table-wrap,
+    :fullscreen .table-wrap,
+    :-webkit-full-screen .table-wrap {
+      max-height: 110px !important;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.78rem;
+      text-align: center;
+    }
+
+    th, td {
+      padding: 0.3rem 0.4rem;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    th {
+      background: #1e293b;
+      color: var(--text-muted);
+      font-weight: 700;
+      position: sticky;
+      top: 0;
+    }
+
+    /* Theory/Info Modal */
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(3px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      z-index: 9999;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      max-width: 600px;
+      width: 100%;
+      max-height: 85vh;
+      overflow-y: auto;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 0.5rem;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container" id="appRoot">
+    <!-- Header with Lab Title and Controls -->
+    <header>
+      <div class="header-left">
+        <span class="badge">Physics Virtual Laboratory • NCERT Class X &amp; XII</span>
+        <h1>Ohm's Law: Verification &amp; $V\text{–}I$ Characteristics</h1>
+      </div>
+      <div class="header-actions">
+        <button class="btn" id="btnKeyToggle">
+          <span id="keyLed" style="width:10px; height:10px; border-radius:50%; background:var(--danger); display:inline-block;"></span>
+          <span id="keyStatusText">Key: OPEN (OFF)</span>
+        </button>
+        <button class="btn btn-icon" id="btnTheory" title="Theory & Derivations">📖 Theory</button>
+        <button class="btn btn-icon" id="btnReset" title="Reset Circuit">↺ Reset</button>
+        <button class="btn btn-primary btn-icon" id="btnFullscreen" title="Toggle Fullscreen">⛶ Fullscreen</button>
+      </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="workspace">
+      <!-- Left Column: Visual Canvas Apparatus & V-I Graph -->
+      <div class="left-column">
+        <!-- Visual Circuit Canvas -->
+        <div class="card canvas-card" style="flex: 1.2;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <strong style="font-size:0.85rem; color:var(--text-muted);">Circuit Setup (Battery, Rheostat, Meters &amp; Resistor)</strong>
+            <span style="font-size:0.75rem; color:var(--accent);" id="flowIndicator">Current: 0.00 mA</span>
+          </div>
+          <div class="canvas-wrap" id="circuitWrap">
+            <canvas id="circuitCanvas"></canvas>
+          </div>
+        </div>
+
+        <!-- Realtime V-I Plotter Canvas -->
+        <div class="card canvas-card" style="flex: 0.85;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <strong style="font-size:0.85rem; color:var(--text-muted);">$V\text{–}I$ Characteristic Graph ($Slope = \Delta V / \Delta I = R$)</strong>
+            <span style="font-size:0.75rem; color:var(--success);" id="graphStats">Slope R = -- Ω</span>
+          </div>
+          <div class="canvas-wrap" id="graphWrap">
+            <canvas id="graphCanvas"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Interactive Controls & Observation Desk -->
+      <div class="right-column">
+        <!-- Live Instantaneous Metrics -->
+        <div class="metrics-grid">
+          <div class="metric-badge">
+            <div class="metric-label">Voltmeter ($V$)</div>
+            <div class="metric-val" id="valV">0.00 V</div>
+          </div>
+          <div class="metric-badge">
+            <div class="metric-label">Ammeter ($I$)</div>
+            <div class="metric-val" id="valI">0.00 mA</div>
+          </div>
+          <div class="metric-badge">
+            <div class="metric-label">Ratio ($V / I$)</div>
+            <div class="metric-val" id="valRatio">-- Ω</div>
+          </div>
+        </div>
+
+        <!-- Controls: Rheostat Slider -->
+        <div class="control-group">
+          <div class="control-header">
+            <span>Rheostat Resistance ($R_h$)</span>
+            <span id="txtRh" style="color:var(--accent); font-family:monospace;">25.0 Ω</span>
+          </div>
+          <div class="slider-row">
+            <button class="step-btn" id="btnRhMinus">−</button>
+            <input type="range" id="sliderRh" min="1" max="100" step="0.5" value="25" />
+            <button class="step-btn" id="btnRhPlus">+</button>
+          </div>
+        </div>
+
+        <!-- Specimen Resistor Selection -->
+        <div class="control-group">
+          <div class="control-header">
+            <span>Test Resistor ($R$)</span>
+            <span id="txtResistor" style="color:var(--accent); font-family:monospace;">10.0 Ω</span>
+          </div>
+          <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:0.4rem;">
+            <button class="btn btn-specimen active" data-res="5">5 Ω Coil</button>
+            <button class="btn btn-specimen" data-res="10">10 Ω Coil</button>
+            <button class="btn btn-specimen" data-res="15">15 Ω Coil</button>
+          </div>
+        </div>
+
+        <!-- Observation Record Table -->
+        <div class="card" style="padding:0.5rem; gap:0.4rem;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <strong style="font-size:0.85rem;">Observations Table</strong>
+            <div style="display:flex; gap:0.3rem;">
+              <button class="btn" id="btnRecord" style="padding:0.25rem 0.5rem; font-size:0.75rem; background:var(--accent); color:#000;">+ Log Point</button>
+              <button class="btn" id="btnClearTable" style="padding:0.25rem 0.5rem; font-size:0.75rem;">Clear</button>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>$V$ (Volts)</th>
+                  <th>$I$ (mA)</th>
+                  <th>$R = V/I$ (Ω)</th>
+                </tr>
+              </thead>
+              <tbody id="obsTableBody">
+                <tr><td colspan="4" style="color:var(--text-muted);">No records logged yet. Slide rheostat &amp; click '+ Log Point'.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Theory Summary Quick Note -->
+        <div class="card" style="padding:0.5rem; font-size:0.8rem; background:#0f172a; border-color:#334155;">
+          <strong>Ohm's Law:</strong> At constant temperature, the electric current $I$ passing through a conductor is directly proportional to the potential difference $V$ across its ends:
+          <div style="text-align:center; padding:0.2rem; color:var(--accent); font-weight:bold;">
+            $V = I \cdot R \implies \frac{V}{I} = \text{Constant}$
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Theory & Derivation Modal -->
+  <div class="modal-backdrop" id="theoryModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Theory: Verification of Ohm's Law</h3>
+        <button class="modal-close" id="btnCloseModal">&times;</button>
+      </div>
+      <div style="font-size:0.88rem; line-height:1.5; color:#cbd5e1; display:flex; flex-direction:column; gap:0.6rem;">
+        <p><strong>Statement:</strong> The current ($I$) flowing through a metallic conductor is directly proportional to the potential difference ($V$) applied across its ends, provided temperature and mechanical conditions remain unaltered.</p>
+        <p><strong>Mathematical Formulation:</strong></p>
+        <div style="text-align:center; padding:0.4rem; background:#0f172a; border-radius:6px; color:var(--accent);">
+          $$V \propto I \iff V = I R$$
+        </div>
+        <p>where $R$ is the electrical resistance of the conductor.</p>
+        <p><strong>Microscopic Relation:</strong> The drift velocity of electrons $v_d = \frac{e E \tau}{m}$. The electric current is given by:</p>
+        <div style="text-align:center; padding:0.4rem; background:#0f172a; border-radius:6px; color:var(--accent);">
+          $$I = n e A v_d = \left(\frac{n e^2 A \tau}{m L}\right) V \implies R = \frac{m L}{n e^2 A \tau}$$
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // State Variables
+    let isKeyClosed = false;
+    let batteryVoltage = 6.0; // Volts
+    let rheostatResistance = 25.0; // Ohms
+    let unknownResistance = 10.0; // Ohms
+    let internalResistance = 1.0; // Battery internal res
+
+    // Dynamic electrical values
+    let currentAmps = 0;
+    let voltageVolts = 0;
+    let observations = [];
+
+    // Animation variables
+    let electronOffset = 0;
+
+    // Meter Damped Pointer Physics
+    let targetVoltAngle = -Math.PI * 0.75;
+    let currentVoltAngle = -Math.PI * 0.75;
+    let voltVel = 0;
+
+    let targetAmpAngle = -Math.PI * 0.75;
+    let currentAmpAngle = -Math.PI * 0.75;
+    let ampVel = 0;
+
+    // Canvas Elements
+    const circuitCanvas = document.getElementById('circuitCanvas');
+    const cCtx = circuitCanvas.getContext('2d');
+    const graphCanvas = document.getElementById('graphCanvas');
+    const gCtx = graphCanvas.getContext('2d');
+
+    // UI Elements
+    const btnKeyToggle = document.getElementById('btnKeyToggle');
+    const keyLed = document.getElementById('keyLed');
+    const keyStatusText = document.getElementById('keyStatusText');
+    const flowIndicator = document.getElementById('flowIndicator');
+    const sliderRh = document.getElementById('sliderRh');
+    const txtRh = document.getElementById('txtRh');
+    const btnRhMinus = document.getElementById('btnRhMinus');
+    const btnRhPlus = document.getElementById('btnRhPlus');
+    const valV = document.getElementById('valV');
+    const valI = document.getElementById('valI');
+    const valRatio = document.getElementById('valRatio');
+    const obsTableBody = document.getElementById('obsTableBody');
+    const btnRecord = document.getElementById('btnRecord');
+    const btnClearTable = document.getElementById('btnClearTable');
+    const graphStats = document.getElementById('graphStats');
+    const btnFullscreen = document.getElementById('btnFullscreen');
+    const btnTheory = document.getElementById('btnTheory');
+    const theoryModal = document.getElementById('theoryModal');
+    const btnCloseModal = document.getElementById('btnCloseModal');
+
+    // Specimen Buttons
+    document.querySelectorAll('.btn-specimen').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        document.querySelectorAll('.btn-specimen').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        unknownResistance = parseFloat(btn.getAttribute('data-res'));
+        document.getElementById('txtResistor').innerText = unknownResistance.toFixed(1) + ' Ω';
+        calculateCircuit();
+      });
+    });
+
+    // Toggle Key Switch
+    btnKeyToggle.addEventListener('click', () => {
+      isKeyClosed = !isKeyClosed;
+      if (isKeyClosed) {
+        keyLed.style.background = 'var(--success)';
+        keyStatusText.innerText = 'Key: CLOSED (ON)';
+      } else {
+        keyLed.style.background = 'var(--danger)';
+        keyStatusText.innerText = 'Key: OPEN (OFF)';
+      }
+      calculateCircuit();
+    });
+
+    // Rheostat input handlers
+    sliderRh.addEventListener('input', (e) => {
+      rheostatResistance = parseFloat(e.target.value);
+      txtRh.innerText = rheostatResistance.toFixed(1) + ' Ω';
+      calculateCircuit();
+    });
+
+    btnRhMinus.addEventListener('click', () => {
+      sliderRh.value = Math.max(1, parseFloat(sliderRh.value) - 2);
+      sliderRh.dispatchEvent(new Event('input'));
+    });
+
+    btnRhPlus.addEventListener('click', () => {
+      sliderRh.value = Math.min(100, parseFloat(sliderRh.value) + 2);
+      sliderRh.dispatchEvent(new Event('input'));
+    });
+
+    // Reset Lab
+    document.getElementById('btnReset').addEventListener('click', () => {
+      isKeyClosed = false;
+      keyLed.style.background = 'var(--danger)';
+      keyStatusText.innerText = 'Key: OPEN (OFF)';
+      sliderRh.value = 25;
+      rheostatResistance = 25;
+      txtRh.innerText = '25.0 Ω';
+      observations = [];
+      renderTable();
+      calculateCircuit();
+    });
+
+    // Record Data Point
+    btnRecord.addEventListener('click', () => {
+      if (!isKeyClosed) {
+        alert("Please close the plug key (turn ON) to record current readings.");
+        return;
+      }
+      const v = voltageVolts;
+      const i = currentAmps * 1000; // mA
+      const r = v / (currentAmps || 1e-9);
+
+      observations.push({ v, i, r });
+      renderTable();
+      drawGraph();
+    });
+
+    btnClearTable.addEventListener('click', () => {
+      observations = [];
+      renderTable();
+      drawGraph();
+    });
+
+    function renderTable() {
+      if (observations.length === 0) {
+        obsTableBody.innerHTML = '<tr><td colspan="4" style="color:var(--text-muted);">No records logged yet.</td></tr>';
+        return;
+      }
+      obsTableBody.innerHTML = observations.map((obs, idx) => `
+        <tr>
+          <td>${idx + 1}</td>
+          <td>${obs.v.toFixed(2)}</td>
+          <td>${obs.i.toFixed(1)}</td>
+          <td>${obs.r.toFixed(2)}</td>
+        </tr>
+      `).join('');
+    }
+
+    // Modal Events
+    btnTheory.addEventListener('click', () => theoryModal.classList.add('open'));
+    btnCloseModal.addEventListener('click', () => theoryModal.classList.remove('open'));
+    theoryModal.addEventListener('click', (e) => {
+      if (e.target === theoryModal) theoryModal.classList.remove('open');
+    });
+
+    // Fullscreen Toggle
+    btnFullscreen.addEventListener('click', toggleFullscreen);
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+        const root = document.documentElement;
+        if (root.requestFullscreen) root.requestFullscreen();
+        else if (root.webkitRequestFullscreen) root.webkitRequestFullscreen();
+        document.body.classList.add('is-fullscreen');
+        btnFullscreen.innerText = '🗗 Exit Fullscreen';
+      } else {
+        if (document.exitFullscreen) document.exitFullscreen();
+        else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+        document.body.classList.remove('is-fullscreen');
+        btnFullscreen.innerText = '⛶ Fullscreen';
+      }
+      setTimeout(resizeCanvases, 100);
+    }
+
+    document.addEventListener('fullscreenchange', handleFsChange);
+    document.addEventListener('webkitfullscreenchange', handleFsChange);
+
+    function handleFsChange() {
+      const isFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
+      if (isFs) {
+        document.body.classList.add('is-fullscreen');
+        btnFullscreen.innerText = '🗗 Exit Fullscreen';
+      } else {
+        document.body.classList.remove('is-fullscreen');
+        btnFullscreen.innerText = '⛶ Fullscreen';
+      }
+      setTimeout(resizeCanvases, 100);
+    }
+
+    // Electrical Circuit Solver
+    function calculateCircuit() {
+      if (!isKeyClosed) {
+        currentAmps = 0;
+        voltageVolts = 0;
+        flowIndicator.innerText = "Current: 0.00 mA";
+        valV.innerText = "0.00 V";
+        valI.innerText = "0.00 mA";
+        valRatio.innerText = "-- Ω";
+        targetVoltAngle = -Math.PI * 0.75;
+        targetAmpAngle = -Math.PI * 0.75;
+        return;
+      }
+
+      // Total series resistance = R_wire + R_rheostat + R_internal
+      const totalR = unknownResistance + rheostatResistance + internalResistance;
+      currentAmps = batteryVoltage / totalR;
+      voltageVolts = currentAmps * unknownResistance;
+
+      const currentmA = currentAmps * 1000;
+      flowIndicator.innerText = `Current: ${currentmA.toFixed(1)} mA`;
+      valV.innerText = `${voltageVolts.toFixed(2)} V`;
+      valI.innerText = `${currentmA.toFixed(1)} mA`;
+      valRatio.innerText = `${(voltageVolts / currentAmps).toFixed(2)} Ω`;
+
+      // Angle mapping for analog dials: -135deg to +135deg (-0.75pi to +0.75pi)
+      // Voltmeter max: 6V, Ammeter max: 600mA
+      const vNorm = Math.min(1, Math.max(0, voltageVolts / 6.0));
+      const iNorm = Math.min(1, Math.max(0, currentmA / 600.0));
+
+      targetVoltAngle = -Math.PI * 0.75 + vNorm * (Math.PI * 1.5);
+      targetAmpAngle = -Math.PI * 0.75 + iNorm * (Math.PI * 1.5);
+    }
+
+    // Canvas Resizing with high-DPI scaling
+    function resizeCanvases() {
+      const dpr = window.devicePixelRatio || 1;
+
+      // Circuit Canvas
+      const cWrap = document.getElementById('circuitWrap');
+      circuitCanvas.width = cWrap.clientWidth * dpr;
+      circuitCanvas.height = cWrap.clientHeight * dpr;
+      cCtx.setTransform(1, 0, 0, 1, 0, 0);
+      cCtx.scale(dpr, dpr);
+
+      // Graph Canvas
+      const gWrap = document.getElementById('graphWrap');
+      graphCanvas.width = gWrap.clientWidth * dpr;
+      graphCanvas.height = gWrap.clientHeight * dpr;
+      gCtx.setTransform(1, 0, 0, 1, 0, 0);
+      gCtx.scale(dpr, dpr);
+
+      drawGraph();
+    }
+
+    window.addEventListener('resize', resizeCanvases);
+
+    // Damped Spring Simulation for Meter Needles
+    function updateMeters() {
+      const k = 0.15; // spring constant
+      const damping = 0.82; // air damping
+
+      // Voltmeter needle
+      const vForce = (targetVoltAngle - currentVoltAngle) * k;
+      voltVel = (voltVel + vForce) * damping;
+      currentVoltAngle += voltVel;
+
+      // Ammeter needle
+      const aForce = (targetAmpAngle - currentAmpAngle) * k;
+      ampVel = (ampVel + aForce) * damping;
+      currentAmpAngle += ampVel;
+    }
+
+    // Animation Loop
+    function render() {
+      updateMeters();
+      drawCircuit();
+      requestAnimationFrame(render);
+    }
+
+    // Draw Visual Circuit Apparatus
+    function drawCircuit() {
+      const w = circuitCanvas.width / (window.devicePixelRatio || 1);
+      const h = circuitCanvas.height / (window.devicePixelRatio || 1);
+
+      cCtx.clearRect(0, 0, w, h);
+
+      // Background table
+      cCtx.fillStyle = '#1c1917';
+      cCtx.fillRect(0, 0, w, h);
+
+      // Circuit Loop Coordinates (Battery -> Key -> Rheostat -> Resistor -> Ammeter)
+      const padX = w * 0.1;
+      const padY = h * 0.18;
+      const loopW = w * 0.8;
+      const loopH = h * 0.65;
+
+      const topY = padY;
+      const botY = padY + loopH;
+      const leftX = padX;
+      const rightX = padX + loopW;
+
+      // Draw Main Circuit Connecting Wires
+      cCtx.strokeStyle = '#38bdf8';
+      cCtx.lineWidth = 3.5;
+      cCtx.beginPath();
+      cCtx.moveTo(leftX, topY);
+      cCtx.lineTo(rightX, topY);
+      cCtx.lineTo(rightX, botY);
+      cCtx.lineTo(leftX, botY);
+      cCtx.closePath();
+      cCtx.stroke();
+
+      // Electron Drift Animation
+      if (isKeyClosed && currentAmps > 0) {
+        electronOffset = (electronOffset + currentAmps * 35) % 24;
+        cCtx.fillStyle = '#fef08a';
+        const perimeter = 2 * (loopW + loopH);
+
+        for (let dist = electronOffset; dist < perimeter; dist += 28) {
+          let px, py;
+          if (dist < loopW) { // top edge (L to R)
+            px = leftX + dist;
+            py = topY;
+          } else if (dist < loopW + loopH) { // right edge (T to B)
+            px = rightX;
+            py = topY + (dist - loopW);
+          } else if (dist < 2 * loopW + loopH) { // bottom edge (R to L)
+            px = rightX - (dist - (loopW + loopH));
+            py = botY;
+          } else { // left edge (B to T)
+            px = leftX;
+            py = botY - (dist - (2 * loopW + loopH));
+          }
+
+          cCtx.beginPath();
+          cCtx.arc(px, py, 2.5, 0, Math.PI * 2);
+          cCtx.fill();
+        }
+      }
+
+      // 1. Draw Battery (Bottom Left)
+      drawBattery(leftX + loopW * 0.25, botY);
+
+      // 2. Draw Plug Key (Bottom Center)
+      drawKey(leftX + loopW * 0.52, botY);
+
+      // 3. Draw Rheostat (Bottom Right)
+      drawRheostat(leftX + loopW * 0.8, botY);
+
+      // 4. Draw Ammeter in series (Right branch)
+      drawAnalogMeter(rightX, topY + loopH * 0.5, 'mA', currentAmpAngle, '0 - 600 mA');
+
+      // 5. Draw Resistor Coil (Top center)
+      const resX = leftX + loopW * 0.5;
+      drawResistor(resX, topY);
+
+      // 6. Draw Voltmeter in parallel across resistor
+      drawVoltmeterBranch(resX, topY);
+    }
+
+    function drawBattery(cx, cy) {
+      cCtx.fillStyle = '#334155';
+      cCtx.fillRect(cx - 30, cy - 18, 60, 36);
+      cCtx.strokeStyle = '#64748b';
+      cCtx.lineWidth = 2;
+      cCtx.strokeRect(cx - 30, cy - 18, 60, 36);
+
+      // Battery Terminals
+      cCtx.fillStyle = '#ef4444';
+      cCtx.fillRect(cx - 24, cy - 24, 10, 6); // +
+      cCtx.fillStyle = '#0f172a';
+      cCtx.fillRect(cx + 14, cy - 24, 10, 6); // -
+
+      cCtx.fillStyle = '#fff';
+      cCtx.font = 'bold 10px monospace';
+      cCtx.textAlign = 'center';
+      cCtx.fillText('6V DC', cx, cy + 4);
+    }
+
+    function drawKey(cx, cy) {
+      cCtx.fillStyle = '#78350f';
+      cCtx.fillRect(cx - 20, cy - 12, 40, 24);
+      cCtx.fillStyle = isKeyClosed ? '#22c55e' : '#ef4444';
+      cCtx.beginPath();
+      cCtx.arc(cx, cy, 6, 0, Math.PI * 2);
+      cCtx.fill();
+      cCtx.fillStyle = '#fff';
+      cCtx.font = '9px sans-serif';
+      cCtx.textAlign = 'center';
+      cCtx.fillText(isKeyClosed ? 'KEY ON' : 'KEY OFF', cx, cy + 20);
+    }
+
+    function drawRheostat(cx, cy) {
+      cCtx.fillStyle = '#1e293b';
+      cCtx.fillRect(cx - 25, cy - 14, 50, 28);
+      cCtx.strokeStyle = '#e2e8f0';
+      cCtx.lineWidth = 1;
+
+      // Coil lines
+      for (let i = -20; i <= 20; i += 5) {
+        cCtx.beginPath();
+        cCtx.moveTo(cx + i, cy - 10);
+        cCtx.lineTo(cx + i, cy + 10);
+        cCtx.stroke();
+      }
+
+      // Slider contact
+      const frac = (rheostatResistance - 1) / 99;
+      const wiperX = cx - 20 + frac * 40;
+      cCtx.fillStyle = '#f59e0b';
+      cCtx.fillRect(wiperX - 3, cy - 18, 6, 8);
+    }
+
+    function drawResistor(cx, cy) {
+      cCtx.fillStyle = '#0284c7';
+      cCtx.fillRect(cx - 32, cy - 14, 64, 28);
+      cCtx.strokeStyle = '#38bdf8';
+      cCtx.strokeRect(cx - 32, cy - 14, 64, 28);
+
+      cCtx.fillStyle = '#fff';
+      cCtx.font = 'bold 11px monospace';
+      cCtx.textAlign = 'center';
+      cCtx.fillText(`R = ${unknownResistance}Ω`, cx, cy + 4);
+    }
+
+    function drawVoltmeterBranch(rx, ry) {
+      // Parallel wire loop upwards
+      const vy = ry - 45;
+      cCtx.strokeStyle = '#94a3b8';
+      cCtx.lineWidth = 2;
+      cCtx.setLineDash([4, 3]);
+
+      cCtx.beginPath();
+      cCtx.moveTo(rx - 32, ry);
+      cCtx.lineTo(rx - 32, vy);
+      cCtx.lineTo(rx - 25, vy);
+
+      cCtx.moveTo(rx + 32, ry);
+      cCtx.lineTo(rx + 32, vy);
+      cCtx.lineTo(rx + 25, vy);
+      cCtx.stroke();
+      cCtx.setLineDash([]);
+
+      drawAnalogMeter(rx, vy, 'V', currentVoltAngle, '0 - 6.0 V');
+    }
+
+    function drawAnalogMeter(cx, cy, type, angle, rangeStr) {
+      const radius = 28;
+
+      // Meter round casing
+      cCtx.fillStyle = '#0f172a';
+      cCtx.beginPath();
+      cCtx.arc(cx, cy, radius, 0, Math.PI * 2);
+      cCtx.fill();
+      cCtx.strokeStyle = '#475569';
+      cCtx.lineWidth = 2;
+      cCtx.stroke();
+
+      // Dial face
+      cCtx.fillStyle = '#f8fafc';
+      cCtx.beginPath();
+      cCtx.arc(cx, cy, radius - 4, 0, Math.PI * 2);
+      cCtx.fill();
+
+      // Label symbol (V or mA)
+      cCtx.fillStyle = '#0f172a';
+      cCtx.font = 'bold 11px sans-serif';
+      cCtx.textAlign = 'center';
+      cCtx.fillText(type, cx, cy - 6);
+
+      // Dial Tick Marks
+      cCtx.strokeStyle = '#64748b';
+      cCtx.lineWidth = 1;
+      for (let a = -Math.PI * 0.75; a <= Math.PI * 0.75; a += Math.PI * 0.3) {
+        const x1 = cx + Math.cos(a) * (radius - 5);
+        const y1 = cy + Math.sin(a) * (radius - 5);
+        const x2 = cx + Math.cos(a) * (radius - 9);
+        const y2 = cy + Math.sin(a) * (radius - 9);
+        cCtx.beginPath();
+        cCtx.moveTo(x1, y1);
+        cCtx.lineTo(x2, y2);
+        cCtx.stroke();
+      }
+
+      // Pointer Needle
+      cCtx.strokeStyle = '#dc2626';
+      cCtx.lineWidth = 1.5;
+      cCtx.beginPath();
+      cCtx.moveTo(cx, cy);
+      cCtx.lineTo(cx + Math.cos(angle) * (radius - 7), cy + Math.sin(angle) * (radius - 7));
+      cCtx.stroke();
+
+      // Pivot
+      cCtx.fillStyle = '#1e293b';
+      cCtx.beginPath();
+      cCtx.arc(cx, cy, 3, 0, Math.PI * 2);
+      cCtx.fill();
+    }
+
+    // Draw Interactive V-I Scatter & Slope Graph
+    function drawGraph() {
+      const w = graphCanvas.width / (window.devicePixelRatio || 1);
+      const h = graphCanvas.height / (window.devicePixelRatio || 1);
+
+      gCtx.clearRect(0, 0, w, h);
+
+      // Grid background
+      gCtx.fillStyle = '#090d16';
+      gCtx.fillRect(0, 0, w, h);
+
+      const padLeft = 42;
+      const padBottom = 28;
+      const padTop = 14;
+      const padRight = 18;
+
+      const graphW = w - padLeft - padRight;
+      const graphH = h - padTop - padBottom;
+
+      // Coordinate axes
+      gCtx.strokeStyle = '#334155';
+      gCtx.lineWidth = 1;
+
+      // Grid Lines
+      const maxI = 600; // mA
+      const maxV = 6.0; // V
+
+      for (let i = 0; i <= 6; i++) {
+        const y = padTop + (graphH / 6) * i;
+        gCtx.beginPath();
+        gCtx.moveTo(padLeft, y);
+        gCtx.lineTo(w - padRight, y);
+        gCtx.stroke();
+
+        // Voltage Y-labels
+        const val = (maxV - (i * maxV) / 6).toFixed(1);
+        gCtx.fillStyle = '#64748b';
+        gCtx.font = '9px sans-serif';
+        gCtx.textAlign = 'right';
+        gCtx.fillText(val + 'V', padLeft - 6, y + 3);
+      }
+
+      for (let j = 0; j <= 6; j++) {
+        const x = padLeft + (graphW / 6) * j;
+        gCtx.beginPath();
+        gCtx.moveTo(x, padTop);
+        gCtx.lineTo(x, h - padBottom);
+        gCtx.stroke();
+
+        // Current X-labels
+        const val = ((j * maxI) / 6).toFixed(0);
+        gCtx.fillStyle = '#64748b';
+        gCtx.font = '9px sans-serif';
+        gCtx.textAlign = 'center';
+        gCtx.fillText(val + 'mA', x, h - padBottom + 14);
+      }
+
+      // Axes labels
+      gCtx.fillStyle = '#38bdf8';
+      gCtx.font = 'bold 9px sans-serif';
+      gCtx.fillText('V (Volts) ↑', padLeft + 25, padTop + 10);
+      gCtx.fillText('I (Current) →', w - padRight - 35, h - padBottom - 6);
+
+      if (observations.length === 0) {
+        graphStats.innerText = "Slope R = -- Ω";
+        return;
+      }
+
+      // Plot Observation Points
+      observations.forEach(pt => {
+        const px = padLeft + (pt.i / maxI) * graphW;
+        const py = padTop + graphH - (pt.v / maxV) * graphH;
+
+        gCtx.fillStyle = '#f59e0b';
+        gCtx.beginPath();
+        gCtx.arc(px, py, 4, 0, Math.PI * 2);
+        gCtx.fill();
+        gCtx.strokeStyle = '#fff';
+        gCtx.lineWidth = 1;
+        gCtx.stroke();
+      });
+
+      // Linear Regression Fit (y = mx) passing through origin (0, 0)
+      // m = sum(I * V) / sum(I^2)
+      let sumIV = 0;
+      let sumI2 = 0;
+      observations.forEach(pt => {
+        const amp = pt.i / 1000;
+        sumIV += amp * pt.v;
+        sumI2 += amp * amp;
+      });
+
+      const calculatedSlopeR = sumI2 > 0 ? sumIV / sumI2 : 0;
+      graphStats.innerText = `Slope R = ${calculatedSlopeR.toFixed(2)} Ω`;
+
+      // Draw Regression Line
+      const endV = (maxI / 1000) * calculatedSlopeR;
+      const endX = padLeft + graphW;
+      const endY = padTop + graphH - (endV / maxV) * graphH;
+
+      gCtx.strokeStyle = '#22c55e';
+      gCtx.lineWidth = 2;
+      gCtx.beginPath();
+      gCtx.moveTo(padLeft, padTop + graphH);
+      gCtx.lineTo(endX, endY);
+      gCtx.stroke();
+    }
+
+    // Initial Startup
+    window.addEventListener('DOMContentLoaded', () => {
+      if (window.renderMathInElement) {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: '$$', right: '$$', display: true },
+            { left: '$', right: '$', display: false }
+          ]
+        });
+      }
+      setTimeout(resizeCanvases, 50);
+      calculateCircuit();
+      render();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,1321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vernier Callipers Virtual Laboratory | NCERT Physics Class XI</title>
+
+  <!-- KaTeX for mathematical typography -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" />
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+
+  <style>
+    :root {
+      --bg: #090e17;
+      --card-bg: #141e2e;
+      --card-surface: #1a273a;
+      --card-border: #2c3e55;
+      --accent: #38bdf8;
+      --accent-hover: #0284c7;
+      --success: #22c55e;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      width: 100%;
+      min-height: 100vh;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-size: 14.5px;
+      line-height: 1.45;
+    }
+
+    /* Zero-Scroll Fullscreen Locks */
+    body.is-fullscreen,
+    :fullscreen body,
+    :-webkit-full-screen body {
+      height: 100vh !important;
+      max-height: 100vh !important;
+      overflow: hidden !important;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 0.65rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      min-height: 100vh;
+    }
+
+    body.is-fullscreen .app-container,
+    :fullscreen .app-container,
+    :-webkit-full-screen .app-container {
+      max-width: 100vw !important;
+      height: 100vh !important;
+      max-height: 100vh !important;
+      padding: 0.35rem 0.5rem !important;
+      gap: 0.35rem !important;
+      overflow: hidden !important;
+    }
+
+    header {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 0.55rem 0.9rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+      flex-shrink: 0;
+    }
+
+    .badge {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    h1 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 0.4rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      padding: 0.4rem 0.75rem;
+      font-size: 0.88rem;
+      font-weight: 600;
+      border-radius: 6px;
+      border: 1px solid var(--card-border);
+      background: var(--card-surface);
+      color: var(--text);
+      cursor: pointer;
+      min-height: 36px;
+      transition: all 0.15s ease;
+      touch-action: manipulation;
+      user-select: none;
+    }
+
+    .btn:hover {
+      background: #24354d;
+      color: #fff;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #042f2e;
+      font-weight: 700;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      color: #fff;
+    }
+
+    .btn-active {
+      background: #0284c7 !important;
+      border-color: #38bdf8 !important;
+      color: #fff !important;
+      font-weight: 700;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.65rem;
+      flex: 1;
+      min-height: 0;
+    }
+
+    @media (min-width: 1024px) {
+      .workspace {
+        grid-template-columns: 1.25fr 0.75fr;
+      }
+    }
+
+    body.is-fullscreen .workspace,
+    :fullscreen .workspace,
+    :-webkit-full-screen .workspace {
+      display: grid !important;
+      grid-template-columns: 1.25fr 0.75fr !important;
+      gap: 0.4rem !important;
+      flex: 1 !important;
+      height: calc(100vh - 62px) !important;
+      max-height: calc(100vh - 62px) !important;
+      min-height: 0 !important;
+      overflow: hidden !important;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 0.65rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+      min-height: 0;
+    }
+
+    .left-column {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      min-height: 0;
+    }
+
+    body.is-fullscreen .left-column,
+    :fullscreen .left-column,
+    :-webkit-full-screen .left-column {
+      height: 100% !important;
+      max-height: 100% !important;
+      overflow: hidden !important;
+    }
+
+    .canvas-wrap {
+      position: relative;
+      width: 100%;
+      flex: 1.25;
+      min-height: 220px;
+      background: #111722;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      overflow: hidden;
+      touch-action: none;
+    }
+
+    body.is-fullscreen .canvas-wrap,
+    :fullscreen .canvas-wrap,
+    :-webkit-full-screen .canvas-wrap {
+      min-height: 170px !important;
+    }
+
+    .loupe-wrap {
+      position: relative;
+      width: 100%;
+      flex: 0.85;
+      min-height: 150px;
+      background: #0a0f18;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    body.is-fullscreen .loupe-wrap,
+    :fullscreen .loupe-wrap,
+    :-webkit-full-screen .loupe-wrap {
+      min-height: 120px !important;
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .right-column {
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+      min-height: 0;
+      overflow-y: auto;
+    }
+
+    body.is-fullscreen .right-column,
+    :fullscreen .right-column,
+    :-webkit-full-screen .right-column {
+      height: 100% !important;
+      max-height: 100% !important;
+      overflow-y: auto !important;
+      padding-right: 0.2rem;
+    }
+
+    .right-column::-webkit-scrollbar {
+      width: 5px;
+    }
+    .right-column::-webkit-scrollbar-thumb {
+      background: var(--card-border);
+      border-radius: 3px;
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.35rem;
+      flex-shrink: 0;
+    }
+
+    .metric-badge {
+      background: var(--card-surface);
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      padding: 0.35rem 0.25rem;
+      text-align: center;
+    }
+
+    .metric-label {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .metric-val {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--accent);
+      font-family: monospace;
+    }
+
+    .control-group {
+      background: var(--card-surface);
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      padding: 0.45rem 0.6rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .control-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    input[type="range"] {
+      flex: 1;
+      accent-color: var(--accent);
+      height: 6px;
+      border-radius: 3px;
+      background: #24354d;
+      cursor: pointer;
+    }
+
+    .step-btn {
+      width: 32px;
+      height: 32px;
+      min-height: 32px;
+      padding: 0;
+      font-size: 0.82rem;
+      font-weight: bold;
+      border-radius: 4px;
+      background: #24354d;
+      border: 1px solid var(--card-border);
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .step-btn:hover {
+      background: #314666;
+    }
+
+    .btn-grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.35rem;
+    }
+
+    .table-wrap {
+      width: 100%;
+      border-radius: 6px;
+      border: 1px solid var(--card-border);
+      overflow-x: auto;
+      max-height: 125px;
+      background: var(--card-surface);
+    }
+
+    body.is-fullscreen .table-wrap,
+    :fullscreen .table-wrap,
+    :-webkit-full-screen .table-wrap {
+      max-height: 95px !important;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.78rem;
+      text-align: center;
+    }
+
+    th, td {
+      padding: 0.28rem 0.35rem;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    th {
+      background: #141e2e;
+      color: var(--text-muted);
+      font-weight: 700;
+      position: sticky;
+      top: 0;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(3px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      z-index: 9999;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      max-width: 620px;
+      width: 100%;
+      max-height: 85vh;
+      overflow-y: auto;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 0.4rem;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container" id="appRoot">
+    <header>
+      <div>
+        <span class="badge">Virtual Laboratory • NCERT Physics Class XI</span>
+        <h1>Vernier Callipers: Internal/External Dimensions, Depth &amp; Volume</h1>
+      </div>
+      <div class="header-actions">
+        <button class="btn" id="btnZeroCheck">🎯 Zero Check</button>
+        <button class="btn" id="btnTheory">📖 Theory</button>
+        <button class="btn" id="btnReset">↺ Reset</button>
+        <button class="btn btn-primary" id="btnFullscreen">⛶ Fullscreen</button>
+      </div>
+    </header>
+
+    <main class="workspace">
+      <!-- Left Column: Primary Apparatus & Loupe Zoom -->
+      <div class="left-column">
+        <div class="card canvas-card" style="flex: 1.3;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <strong style="font-size:0.85rem; color:var(--text-muted);">Main Apparatus: Fixed Beam, Sliding Jaws &amp; Depth Probe</strong>
+            <span style="font-size:0.78rem; color:var(--accent); font-family:monospace;" id="txtJawStatus">Jaws Free</span>
+          </div>
+          <div class="canvas-wrap" id="calliperWrap">
+            <canvas id="calliperCanvas"></canvas>
+          </div>
+        </div>
+
+        <div class="card canvas-card" style="flex: 0.85;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <strong style="font-size:0.85rem; color:var(--text-muted);">Vernier Coincidence Loupe (High Magnification)</strong>
+            <span style="font-size:0.78rem; color:var(--warning); font-weight:700;" id="txtCoincideBadge">Coinciding Div: n = 0</span>
+          </div>
+          <div class="loupe-wrap" id="loupeWrap">
+            <canvas id="loupeCanvas"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Configurations, Controls, Tables -->
+      <div class="right-column">
+        <!-- Live Instantaneous Metrics -->
+        <div class="metrics-grid">
+          <div class="metric-badge">
+            <div class="metric-label">MSR</div>
+            <div class="metric-val" id="valMSR">0.0 cm</div>
+          </div>
+          <div class="metric-badge">
+            <div class="metric-label">VSR (n × LC)</div>
+            <div class="metric-val" id="valVSR">0.000 cm</div>
+          </div>
+          <div class="metric-badge">
+            <div class="metric-label">Observed Total</div>
+            <div class="metric-val" id="valTotal">0.00 cm</div>
+          </div>
+          <div class="metric-badge">
+            <div class="metric-label">Corrected True</div>
+            <div class="metric-val" id="valCorrected">0.00 cm</div>
+          </div>
+        </div>
+
+        <!-- Scale Configuration: 1 MSD & VSD (Least Count Selector) -->
+        <div class="control-group">
+          <div class="control-header">
+            <span>Least Count Configuration: $\text{LC} = \frac{\text{MSD}}{N}$</span>
+            <span id="txtLC" style="color:var(--accent); font-family:monospace; font-weight:700;">LC = 0.010 cm (0.1 mm)</span>
+          </div>
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:0.4rem;">
+            <div>
+              <span style="font-size:0.7rem; color:var(--text-muted);">1 Main Scale Div (MSD):</span>
+              <select id="selMSD" class="btn" style="width:100%; min-height:30px; padding:0.2rem; font-size:0.8rem;">
+                <option value="1.0" selected>1.0 mm (0.1 cm)</option>
+                <option value="0.5">0.5 mm (0.05 cm)</option>
+              </select>
+            </div>
+            <div>
+              <span style="font-size:0.7rem; color:var(--text-muted);">Vernier Divisions ($N$):</span>
+              <select id="selVSD" class="btn" style="width:100%; min-height:30px; padding:0.2rem; font-size:0.8rem;">
+                <option value="10" selected>10 Divisions (9 MSD)</option>
+                <option value="20">20 Divisions (19 MSD)</option>
+                <option value="50">50 Divisions (49 MSD)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Target Specimen Selection -->
+        <div class="control-group">
+          <div class="control-header">
+            <span>Specimen / Measurement Mode</span>
+            <span id="txtSpecimenName" style="color:var(--accent); font-weight:700;">Spherical Bob</span>
+          </div>
+          <div class="btn-grid-4">
+            <button class="btn btn-specimen btn-active" data-task="sphere">Sphere</button>
+            <button class="btn btn-specimen" data-task="cylinder">Cylinder</button>
+            <button class="btn btn-specimen" data-task="beaker_id">Beaker (ID)</button>
+            <button class="btn btn-specimen" data-task="beaker_depth">Beaker (Depth)</button>
+          </div>
+        </div>
+
+        <!-- Zero Error Settings -->
+        <div class="control-group">
+          <div class="control-header">
+            <span>Zero Error Calibration ($\pm e$)</span>
+            <span id="txtZeroErrorVal" style="color:var(--warning); font-family:monospace;">e = 0.00 cm (Nil)</span>
+          </div>
+          <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:0.35rem;">
+            <button class="btn btn-ze btn-active" data-ze="0">Nil (0.00)</button>
+            <button class="btn btn-ze" data-ze="0.02">Pos (+0.02 cm)</button>
+            <button class="btn btn-ze" data-ze="-0.03">Neg (-0.03 cm)</button>
+          </div>
+        </div>
+
+        <!-- Slider and Fine Steppers -->
+        <div class="control-group">
+          <div class="control-header">
+            <span>Movable Jaw Displacement</span>
+            <span id="txtSliderPos" style="color:var(--accent); font-family:monospace;">0.00 cm</span>
+          </div>
+          <div class="slider-row">
+            <button class="step-btn" id="btnMinus10" title="-10 mm">−10</button>
+            <button class="step-btn" id="btnMinus1" title="-1 mm">−1</button>
+            <button class="step-btn" id="btnMinus01" title="-0.1 mm">−0.1</button>
+            <input type="range" id="sliderPos" min="0" max="12.0" step="0.005" value="0" />
+            <button class="step-btn" id="btnPlus01" title="+0.1 mm">+0.1</button>
+            <button class="step-btn" id="btnPlus1" title="+1 mm">+1</button>
+            <button class="step-btn" id="btnPlus10" title="+10 mm">+10</button>
+          </div>
+          <div style="display:flex; justify-content:space-between; margin-top:0.25rem;">
+            <button class="btn" id="btnSnapFit" style="flex:1; margin-right:0.35rem; font-size:0.78rem;">🗜 Snap-Fit to Specimen</button>
+            <button class="btn" id="btnLockJaw" style="flex:1; font-size:0.78rem;">🔓 Clamp Screw: Free</button>
+          </div>
+        </div>
+
+        <!-- Observation Record Table -->
+        <div class="card" style="padding:0.45rem; gap:0.35rem;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <strong style="font-size:0.82rem;">Observation Table</strong>
+            <div style="display:flex; gap:0.3rem;">
+              <button class="btn" id="btnRecord" style="padding:0.2rem 0.5rem; font-size:0.75rem; background:var(--accent); color:#042f2e; font-weight:700;">+ Log Reading</button>
+              <button class="btn" id="btnClearTable" style="padding:0.2rem 0.5rem; font-size:0.75rem;">Clear</button>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Specimen</th>
+                  <th>MSR (cm)</th>
+                  <th>Div ($n$)</th>
+                  <th>VSR (cm)</th>
+                  <th>Observed</th>
+                  <th>Corrected</th>
+                </tr>
+              </thead>
+              <tbody id="obsTableBody">
+                <tr><td colspan="7" style="color:var(--text-muted);">No records logged yet. Fit jaws and click '+ Log Reading'.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Volume Evaluation Desk -->
+        <div class="card" style="padding:0.45rem; font-size:0.8rem; background:var(--card-surface); border-color:var(--card-border);">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <strong>Volume Calculator:</strong>
+            <span id="calcFormula" style="color:var(--accent);">V = 4/3 π r³</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:0.25rem;">
+            <span>Evaluated Volume: <strong id="valComputedVolume" style="color:var(--success); font-size:0.95rem; font-family:monospace;">-- cm³</strong></span>
+            <button class="btn" id="btnComputeVol" style="padding:0.2rem 0.6rem; font-size:0.75rem;">Evaluate Result</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Theory Modal -->
+  <div class="modal-backdrop" id="theoryModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Theory: Vernier Callipers &amp; Least Count</h3>
+        <button class="modal-close" id="btnCloseModal">&times;</button>
+      </div>
+      <div style="font-size:0.9rem; line-height:1.55; color:#cbd5e1; display:flex; flex-direction:column; gap:0.6rem;">
+        <p><strong>Principle of Vernier:</strong> If $N$ divisions of the Vernier scale coincide with $(N - 1)$ divisions of the main scale, the <strong>Least Count ($\text{LC}$)</strong> is the smallest measurable length:</p>
+        <div style="text-align:center; padding:0.4rem; background:#0b111c; border-radius:6px; color:var(--accent);">
+          $$\text{LC} = 1\text{ MSD} - 1\text{ VSD} = \frac{1\text{ MSD}}{N}$$
+        </div>
+        <p><strong>Zero Error and Correction:</strong> When jaws are fully brought in contact:</p>
+        <ul style="padding-left:1.2rem; font-size:0.85rem;">
+          <li><strong>Nil Error:</strong> Vernier 0 aligns exactly with Main Scale 0.</li>
+          <li><strong>Positive Error ($+e$):</strong> Vernier 0 lies to the <em>right</em> of Main Scale 0 ($e = +n \times \text{LC}$).</li>
+          <li><strong>Negative Error ($-e$):</strong> Vernier 0 lies to the <em>left</em> of Main Scale 0 ($e = -(N - n) \times \text{LC}$).</li>
+          <li><strong>Corrected Reading:</strong> $\text{True Reading} = \text{Observed Total} - (\pm e)$.</li>
+        </ul>
+        <p><strong>Volumetric Formulas:</strong></p>
+        <div style="text-align:center; padding:0.4rem; background:#0b111c; border-radius:6px; color:var(--accent);">
+          $$\text{Sphere: } V = \frac{4}{3}\pi \left(\frac{D}{2}\right)^3 \quad\quad \text{Cylinder/Beaker: } V = \pi \left(\frac{D}{2}\right)^2 h$$
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // State variables
+    let msd_mm = 1.0;
+    let msd_cm = 0.1;
+    let vsd_count = 10;
+    let lc_cm = msd_cm / vsd_count;
+
+    let zeroError_cm = 0.0;
+    let currentJawPos_cm = 0.0;
+    let isClampedLocked = false;
+    let currentTask = 'sphere';
+    let observations = [];
+
+    const specimens = {
+      sphere: { name: 'Spherical Bob', trueDim: 2.54, type: 'external' },
+      cylinder: { name: 'Solid Cylinder (D & L)', trueDim: 1.82, length: 4.50, type: 'external' },
+      beaker_id: { name: 'Beaker Internal Diameter', trueDim: 5.26, type: 'internal' },
+      beaker_depth: { name: 'Beaker Internal Depth', trueDim: 6.84, type: 'depth' }
+    };
+
+    // Canvas contexts
+    const calliperCanvas = document.getElementById('calliperCanvas');
+    const cCtx = calliperCanvas.getContext('2d');
+    const loupeCanvas = document.getElementById('loupeCanvas');
+    const lCtx = loupeCanvas.getContext('2d');
+
+    // UI elements
+    const sliderPos = document.getElementById('sliderPos');
+    const txtSliderPos = document.getElementById('txtSliderPos');
+    const txtLC = document.getElementById('txtLC');
+    const selMSD = document.getElementById('selMSD');
+    const selVSD = document.getElementById('selVSD');
+    const txtZeroErrorVal = document.getElementById('txtZeroErrorVal');
+    const txtSpecimenName = document.getElementById('txtSpecimenName');
+    const txtJawStatus = document.getElementById('txtJawStatus');
+    const txtCoincideBadge = document.getElementById('txtCoincideBadge');
+
+    const valMSR = document.getElementById('valMSR');
+    const valVSR = document.getElementById('valVSR');
+    const valTotal = document.getElementById('valTotal');
+    const valCorrected = document.getElementById('valCorrected');
+
+    const btnSnapFit = document.getElementById('btnSnapFit');
+    const btnLockJaw = document.getElementById('btnLockJaw');
+    const btnZeroCheck = document.getElementById('btnZeroCheck');
+    const btnRecord = document.getElementById('btnRecord');
+    const btnClearTable = document.getElementById('btnClearTable');
+    const obsTableBody = document.getElementById('obsTableBody');
+
+    const btnTheory = document.getElementById('btnTheory');
+    const theoryModal = document.getElementById('theoryModal');
+    const btnCloseModal = document.getElementById('btnCloseModal');
+    const btnFullscreen = document.getElementById('btnFullscreen');
+    const btnComputeVol = document.getElementById('btnComputeVol');
+    const valComputedVolume = document.getElementById('valComputedVolume');
+    const calcFormula = document.getElementById('calcFormula');
+
+    // Fine Steppers
+    document.getElementById('btnMinus10').onclick = () => stepDisplacement(-1.0);
+    document.getElementById('btnMinus1').onclick = () => stepDisplacement(-0.1);
+    document.getElementById('btnMinus01').onclick = () => stepDisplacement(-0.01);
+    document.getElementById('btnPlus01').onclick = () => stepDisplacement(0.01);
+    document.getElementById('btnPlus1').onclick = () => stepDisplacement(0.1);
+    document.getElementById('btnPlus10').onclick = () => stepDisplacement(1.0);
+
+    function stepDisplacement(delta) {
+      if (isClampedLocked) return;
+      let v = parseFloat(sliderPos.value) + delta;
+      v = Math.max(0, Math.min(12.0, v));
+      sliderPos.value = v;
+      updateFromSlider();
+    }
+
+    // Scale configuration
+    selMSD.addEventListener('change', () => {
+      msd_mm = parseFloat(selMSD.value);
+      msd_cm = msd_mm / 10.0;
+      recalcLC();
+    });
+
+    selVSD.addEventListener('change', () => {
+      vsd_count = parseInt(selVSD.value, 10);
+      recalcLC();
+    });
+
+    function recalcLC() {
+      lc_cm = msd_cm / vsd_count;
+      const lc_mm = lc_cm * 10;
+      txtLC.innerText = `LC = ${lc_cm.toFixed(3)} cm (${lc_mm.toFixed(2)} mm)`;
+      updateMeasurements();
+      drawCalliper();
+      drawLoupe();
+    }
+
+    // Specimen Selection
+    document.querySelectorAll('.btn-specimen').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.btn-specimen').forEach(b => b.classList.remove('btn-active'));
+        btn.classList.add('btn-active');
+        currentTask = btn.getAttribute('data-task');
+        txtSpecimenName.innerText = specimens[currentTask].name;
+
+        if (currentTask === 'sphere') calcFormula.innerText = 'V = 4/3 π r³';
+        else if (currentTask === 'cylinder') calcFormula.innerText = 'V = π r² L';
+        else calcFormula.innerText = 'V = π (D/2)² h';
+
+        valComputedVolume.innerText = '-- cm³';
+        drawCalliper();
+        drawLoupe();
+      });
+    });
+
+    // Zero Error Selection
+    document.querySelectorAll('.btn-ze').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.btn-ze').forEach(b => b.classList.remove('btn-active'));
+        btn.classList.add('btn-active');
+        zeroError_cm = parseFloat(btn.getAttribute('data-ze'));
+        txtZeroErrorVal.innerText = `e = ${zeroError_cm >= 0 ? '+' : ''}${zeroError_cm.toFixed(2)} cm`;
+        updateMeasurements();
+        drawCalliper();
+        drawLoupe();
+      });
+    });
+
+    // Zero Check (Jaws Closed)
+    btnZeroCheck.addEventListener('click', () => {
+      if (isClampedLocked) return;
+      sliderPos.value = 0;
+      currentJawPos_cm = 0;
+      updateMeasurements();
+      drawCalliper();
+      drawLoupe();
+      txtJawStatus.innerText = "Jaws Closed: Calibrating zero error";
+    });
+
+    // Snap Fit
+    btnSnapFit.addEventListener('click', () => {
+      if (isClampedLocked) return;
+      const d = specimens[currentTask].trueDim;
+      sliderPos.value = d;
+      currentJawPos_cm = d;
+      updateMeasurements();
+      drawCalliper();
+      drawLoupe();
+      txtJawStatus.innerText = `Fitted squarely to ${specimens[currentTask].name}`;
+    });
+
+    // Clamp Lock Toggle
+    btnLockJaw.addEventListener('click', () => {
+      isClampedLocked = !isClampedLocked;
+      sliderPos.disabled = isClampedLocked;
+      btnLockJaw.innerText = isClampedLocked ? '🔒 Clamp Screw: LOCKED' : '🔓 Clamp Screw: Free';
+      btnLockJaw.classList.toggle('btn-active', isClampedLocked);
+      txtJawStatus.innerText = isClampedLocked ? 'Calliper Jaws Firmly Locked' : 'Calliper Jaws Free';
+    });
+
+    // Slider Event
+    sliderPos.addEventListener('input', updateFromSlider);
+
+    function updateFromSlider() {
+      currentJawPos_cm = parseFloat(sliderPos.value);
+      txtSliderPos.innerText = currentJawPos_cm.toFixed(2) + ' cm';
+      updateMeasurements();
+      drawCalliper();
+      drawLoupe();
+    }
+
+    // Mathematical evaluation
+    let calculatedMSR = 0;
+    let calculatedVSR = 0;
+    let calculatedTotal = 0;
+    let calculatedCorrected = 0;
+    let coincidingDiv = 0;
+
+    function updateMeasurements() {
+      const scalePos_cm = Math.max(0, currentJawPos_cm + zeroError_cm);
+      const numMSD = Math.floor((scalePos_cm + 1e-7) / msd_cm);
+      calculatedMSR = numMSD * msd_cm;
+
+      const remainder_cm = scalePos_cm - calculatedMSR;
+      coincidingDiv = Math.round(remainder_cm / lc_cm) % vsd_count;
+      if (coincidingDiv < 0) coincidingDiv += vsd_count;
+
+      calculatedVSR = coincidingDiv * lc_cm;
+      calculatedTotal = calculatedMSR + calculatedVSR;
+      calculatedCorrected = calculatedTotal - zeroError_cm;
+
+      valMSR.innerText = `${calculatedMSR.toFixed(2)} cm`;
+      valVSR.innerText = `${calculatedVSR.toFixed(3)} cm`;
+      valTotal.innerText = `${calculatedTotal.toFixed(3)} cm`;
+      valCorrected.innerText = `${calculatedCorrected.toFixed(3)} cm`;
+
+      txtCoincideBadge.innerText = `Coinciding Div: n = ${coincidingDiv}`;
+    }
+
+    // Logging & Calculations
+    btnRecord.addEventListener('click', () => {
+      observations.push({
+        specimen: specimens[currentTask].name,
+        msr: calculatedMSR.toFixed(2),
+        div: coincidingDiv,
+        vsr: calculatedVSR.toFixed(3),
+        total: calculatedTotal.toFixed(3),
+        corr: calculatedCorrected.toFixed(3)
+      });
+      renderTable();
+    });
+
+    btnClearTable.addEventListener('click', () => {
+      observations = [];
+      renderTable();
+    });
+
+    function renderTable() {
+      if (observations.length === 0) {
+        obsTableBody.innerHTML = '<tr><td colspan="7" style="color:var(--text-muted);">No records logged yet.</td></tr>';
+        return;
+      }
+      obsTableBody.innerHTML = observations.map((r, i) => `
+        <tr>
+          <td>${i + 1}</td>
+          <td>${r.specimen}</td>
+          <td>${r.msr}</td>
+          <td>${r.div}</td>
+          <td>${r.vsr}</td>
+          <td>${r.total}</td>
+          <td><strong style="color:var(--accent);">${r.corr}</strong></td>
+        </tr>
+      `).join('');
+    }
+
+    btnComputeVol.addEventListener('click', () => {
+      const d = calculatedCorrected;
+      const r = d / 2.0;
+      let vol = 0;
+
+      if (currentTask === 'sphere') {
+        vol = (4.0 / 3.0) * Math.PI * Math.pow(r, 3);
+        valComputedVolume.innerText = `${vol.toFixed(3)} cm³`;
+      } else if (currentTask === 'cylinder') {
+        const l = specimens.cylinder.length;
+        vol = Math.PI * Math.pow(r, 2) * l;
+        valComputedVolume.innerText = `${vol.toFixed(3)} cm³ (L=4.5cm)`;
+      } else {
+        const depth = specimens.beaker_depth.trueDim;
+        vol = Math.PI * Math.pow(r, 2) * depth;
+        valComputedVolume.innerText = `${vol.toFixed(2)} cm³ (h=6.84cm)`;
+      }
+    });
+
+    // Modals & Fullscreen
+    btnTheory.onclick = () => theoryModal.classList.add('open');
+    btnCloseModal.onclick = () => theoryModal.classList.remove('open');
+    theoryModal.onclick = (e) => { if (e.target === theoryModal) theoryModal.classList.remove('open'); };
+
+    btnFullscreen.addEventListener('click', () => {
+      if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+        const root = document.documentElement;
+        if (root.requestFullscreen) root.requestFullscreen();
+        else if (root.webkitRequestFullscreen) root.webkitRequestFullscreen();
+        document.body.classList.add('is-fullscreen');
+        btnFullscreen.innerText = '🗗 Exit Fullscreen';
+      } else {
+        if (document.exitFullscreen) document.exitFullscreen();
+        else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+        document.body.classList.remove('is-fullscreen');
+        btnFullscreen.innerText = '⛶ Fullscreen';
+      }
+      setTimeout(resizeCanvases, 100);
+    });
+
+    // High-DPI Canvas Resizing
+    function resizeCanvases() {
+      const dpr = window.devicePixelRatio || 1;
+
+      const cWrap = document.getElementById('calliperWrap');
+      calliperCanvas.width = cWrap.clientWidth * dpr;
+      calliperCanvas.height = cWrap.clientHeight * dpr;
+      cCtx.setTransform(1, 0, 0, 1, 0, 0);
+      cCtx.scale(dpr, dpr);
+
+      const lWrap = document.getElementById('loupeWrap');
+      loupeCanvas.width = lWrap.clientWidth * dpr;
+      loupeCanvas.height = lWrap.clientHeight * dpr;
+      lCtx.setTransform(1, 0, 0, 1, 0, 0);
+      lCtx.scale(dpr, dpr);
+
+      drawCalliper();
+      drawLoupe();
+    }
+    window.addEventListener('resize', resizeCanvases);
+
+    // DRAW APPARATUS: Main Calliper Canvas
+    function drawCalliper() {
+      const w = calliperCanvas.width / (window.devicePixelRatio || 1);
+      const h = calliperCanvas.height / (window.devicePixelRatio || 1);
+
+      cCtx.clearRect(0, 0, w, h);
+
+      // Bench surface
+      cCtx.fillStyle = '#111722';
+      cCtx.fillRect(0, 0, w, h);
+
+      const beamX = 85;
+      const beamY = h * 0.36;
+      const beamH = 46;
+      const beamL = Math.max(w - 200, 520);
+      const pxPerCm = beamL / 13.0;
+
+      const scalePos_cm = Math.max(0, currentJawPos_cm + zeroError_cm);
+      const jawShiftPx = scalePos_cm * pxPerCm;
+
+      // 1. Depth Gauge Strip (Connected directly to vernier slider, sliding through rear groove)
+      const stripThickness = 4.5;
+      const stripY = beamY + beamH * 0.45;
+      const beamRightEnd = beamX + beamL;
+
+      cCtx.fillStyle = '#cbd5e1';
+      cCtx.fillRect(beamRightEnd - 10, stripY, jawShiftPx + 10, stripThickness);
+      cCtx.strokeStyle = '#475569';
+      cCtx.lineWidth = 1;
+      cCtx.strokeRect(beamRightEnd - 10, stripY, jawShiftPx + 10, stripThickness);
+
+      // 2. Main Fixed Stainless Steel Beam
+      const beamGrad = cCtx.createLinearGradient(0, beamY, 0, beamY + beamH);
+      beamGrad.addColorStop(0, '#f8fafc');
+      beamGrad.addColorStop(0.35, '#cbd5e1');
+      beamGrad.addColorStop(0.85, '#94a3b8');
+      beamGrad.addColorStop(1, '#64748b');
+
+      cCtx.fillStyle = beamGrad;
+      cCtx.fillRect(beamX, beamY, beamL, beamH);
+      cCtx.strokeStyle = '#334155';
+      cCtx.lineWidth = 1.5;
+      cCtx.strokeRect(beamX, beamY, beamL, beamH);
+
+      // 3. Main Scale Graduations
+      cCtx.fillStyle = '#0f172a';
+      cCtx.strokeStyle = '#1e293b';
+      cCtx.lineWidth = 1;
+      cCtx.font = '9px sans-serif';
+      cCtx.textAlign = 'center';
+
+      const totalCm = 13;
+      const divsPerCm = Math.round(1.0 / msd_cm);
+
+      for (let c = 0; c <= totalCm; c++) {
+        for (let d = 0; d < divsPerCm; d++) {
+          const gx = beamX + (c + d * msd_cm) * pxPerCm;
+          if (gx > beamRightEnd - 5) break;
+
+          let tickH = 6;
+          if (d === 0) tickH = 16;
+          else if (d === divsPerCm / 2) tickH = 10;
+
+          cCtx.beginPath();
+          cCtx.moveTo(gx, beamY + beamH);
+          cCtx.lineTo(gx, beamY + beamH - tickH);
+          cCtx.stroke();
+
+          if (d === 0) {
+            cCtx.fillText(c, gx, beamY + beamH - 19);
+          }
+        }
+      }
+
+      // 4. Fixed Left Jaw Assembly
+      cCtx.fillStyle = beamGrad;
+      // Fixed Lower External Jaw
+      cCtx.beginPath();
+      cCtx.moveTo(beamX, beamY + beamH);
+      cCtx.lineTo(beamX + 22, beamY + beamH);
+      cCtx.lineTo(beamX + 18, beamY + beamH + 85);
+      cCtx.lineTo(beamX, beamY + beamH + 110);
+      cCtx.lineTo(beamX, beamY + beamH);
+      cCtx.fill();
+      cCtx.stroke();
+
+      // Fixed Upper Internal Jaw
+      cCtx.beginPath();
+      cCtx.moveTo(beamX, beamY);
+      cCtx.lineTo(beamX + 18, beamY);
+      cCtx.lineTo(beamX + 14, beamY - 48);
+      cCtx.lineTo(beamX, beamY - 58);
+      cCtx.lineTo(beamX, beamY);
+      cCtx.fill();
+      cCtx.stroke();
+
+      // 5. Render Specimen
+      drawSpecimen(beamX, beamY, beamH, pxPerCm, jawShiftPx, beamRightEnd, stripY);
+
+      // 6. Sliding Vernier Vernier Block
+      const vX = beamX + jawShiftPx;
+      const vW = Math.max(pxPerCm * 2.8, 85);
+      const vY = beamY - 12;
+      const vH = beamH + 24;
+
+      const vGrad = cCtx.createLinearGradient(0, vY, 0, vY + vH);
+      vGrad.addColorStop(0, '#f1f5f9');
+      vGrad.addColorStop(0.5, '#cbd5e1');
+      vGrad.addColorStop(1, '#94a3b8');
+
+      cCtx.fillStyle = vGrad;
+      cCtx.fillRect(vX, vY, vW, vH);
+      cCtx.strokeStyle = '#1e293b';
+      cCtx.lineWidth = 1.5;
+      cCtx.strokeRect(vX, vY, vW, vH);
+
+      // Movable Lower External Jaw
+      cCtx.fillStyle = vGrad;
+      cCtx.beginPath();
+      cCtx.moveTo(vX, vY + vH);
+      cCtx.lineTo(vX + 20, vY + vH);
+      cCtx.lineTo(vX + 6, beamY + beamH + 85);
+      cCtx.lineTo(vX, beamY + beamH + 110);
+      cCtx.lineTo(vX, vY + vH);
+      cCtx.fill();
+      cCtx.stroke();
+
+      // Movable Upper Internal Jaw
+      cCtx.beginPath();
+      cCtx.moveTo(vX, vY);
+      cCtx.lineTo(vX + 18, vY);
+      cCtx.lineTo(vX + 6, beamY - 48);
+      cCtx.lineTo(vX, beamY - 58);
+      cCtx.lineTo(vX, vY);
+      cCtx.fill();
+      cCtx.stroke();
+
+      // Vernier Scale Window
+      const winX = vX + 4;
+      const winY = beamY + beamH - 18;
+      const winW = vW - 8;
+      const winH = 22;
+
+      cCtx.fillStyle = '#f8fafc';
+      cCtx.fillRect(winX, winY, winW, winH);
+      cCtx.strokeStyle = '#475569';
+      cCtx.lineWidth = 1;
+      cCtx.strokeRect(winX, winY, winW, winH);
+
+      // Vernier Scale Divisions
+      const totalVsdLength_cm = (vsd_count - 1) * msd_cm;
+      const vsdSpacingPx = (totalVsdLength_cm * pxPerCm) / vsd_count;
+
+      cCtx.strokeStyle = '#0284c7';
+      cCtx.fillStyle = '#0f172a';
+      cCtx.font = '8px sans-serif';
+      cCtx.textAlign = 'center';
+
+      for (let i = 0; i <= vsd_count; i++) {
+        const vxLine = vX + i * vsdSpacingPx;
+        if (vxLine > vX + vW - 2) break;
+
+        const isMajor = (i === 0 || i === vsd_count || (vsd_count === 10 && i === 5) || (vsd_count === 20 && i % 5 === 0) || (vsd_count === 50 && i % 10 === 0));
+        const tLen = isMajor ? 11 : 6;
+
+        cCtx.beginPath();
+        cCtx.moveTo(vxLine, winY);
+        cCtx.lineTo(vxLine, winY + tLen);
+        cCtx.stroke();
+
+        if (isMajor) {
+          cCtx.fillText(i, vxLine, winY + tLen + 7);
+        }
+      }
+
+      // Clamp Screw Knob
+      cCtx.fillStyle = isClampedLocked ? '#ef4444' : '#64748b';
+      cCtx.fillRect(vX + vW * 0.5 - 6, vY - 8, 12, 8);
+      cCtx.strokeStyle = '#334155';
+      cCtx.strokeRect(vX + vW * 0.5 - 6, vY - 8, 12, 8);
+    }
+
+    // DRAW SPECIMEN
+    function drawSpecimen(beamX, beamY, beamH, pxPerCm, jawShiftPx, beamRightEnd, stripY) {
+      const dim = specimens[currentTask].trueDim * pxPerCm;
+
+      if (currentTask === 'sphere') {
+        const r = dim / 2;
+        const cx = beamX + r;
+        const cy = beamY + beamH + 55;
+
+        const ballGrad = cCtx.createRadialGradient(cx - r*0.3, cy - r*0.3, r*0.1, cx, cy, r);
+        ballGrad.addColorStop(0, '#fef08a');
+        ballGrad.addColorStop(0.5, '#eab308');
+        ballGrad.addColorStop(1, '#854d0e');
+
+        cCtx.fillStyle = ballGrad;
+        cCtx.beginPath();
+        cCtx.arc(cx, cy, r, 0, Math.PI * 2);
+        cCtx.fill();
+        cCtx.strokeStyle = '#713f12';
+        cCtx.lineWidth = 1.5;
+        cCtx.stroke();
+      } else if (currentTask === 'cylinder') {
+        const dia = dim;
+        const cyH = Math.min(specimens.cylinder.length * pxPerCm, 90);
+        const cx = beamX;
+        const cy = beamY + beamH + 15;
+
+        const cylGrad = cCtx.createLinearGradient(cx, 0, cx + dia, 0);
+        cylGrad.addColorStop(0, '#94a3b8');
+        cylGrad.addColorStop(0.4, '#f1f5f9');
+        cylGrad.addColorStop(1, '#64748b');
+
+        cCtx.fillStyle = cylGrad;
+        cCtx.fillRect(cx, cy, dia, cyH);
+        cCtx.strokeStyle = '#334155';
+        cCtx.lineWidth = 1.5;
+        cCtx.strokeRect(cx, cy, dia, cyH);
+      } else if (currentTask === 'beaker_id') {
+        const internalW = dim;
+        const wallT = 8;
+        const bHeight = 75;
+        const leftLip = beamX - wallT;
+        const bTopY = beamY - 48;
+
+        cCtx.fillStyle = 'rgba(56, 189, 248, 0.2)';
+        cCtx.strokeStyle = '#38bdf8';
+        cCtx.lineWidth = 2;
+        cCtx.fillRect(leftLip, bTopY, internalW + 2 * wallT, bHeight);
+        cCtx.strokeRect(leftLip, bTopY, internalW + 2 * wallT, bHeight);
+      } else if (currentTask === 'beaker_depth') {
+        const bDepthPx = specimens.beaker_depth.trueDim * pxPerCm;
+        const bWidthPx = 70;
+        const rimY = stripY + 2;
+        const bLeft = beamRightEnd + 12;
+
+        cCtx.fillStyle = 'rgba(56, 189, 248, 0.2)';
+        cCtx.fillRect(bLeft, rimY, bWidthPx, bDepthPx);
+        cCtx.strokeStyle = '#38bdf8';
+        cCtx.lineWidth = 2;
+
+        cCtx.beginPath();
+        cCtx.moveTo(bLeft, rimY);
+        cCtx.lineTo(bLeft, rimY + bDepthPx);
+        cCtx.lineTo(bLeft + bWidthPx, rimY + bDepthPx);
+        cCtx.lineTo(bLeft + bWidthPx, rimY);
+        cCtx.stroke();
+
+        // Rim reference marker
+        cCtx.setLineDash([3, 3]);
+        cCtx.strokeStyle = '#f59e0b';
+        cCtx.beginPath();
+        cCtx.moveTo(bLeft - 15, rimY);
+        cCtx.lineTo(bLeft + bWidthPx + 15, rimY);
+        cCtx.stroke();
+        cCtx.setLineDash([]);
+      }
+    }
+
+    // DRAW LOUPE: Magnified View
+    function drawLoupe() {
+      const w = loupeCanvas.width / (window.devicePixelRatio || 1);
+      const h = loupeCanvas.height / (window.devicePixelRatio || 1);
+
+      lCtx.clearRect(0, 0, w, h);
+
+      lCtx.fillStyle = '#0a0f18';
+      lCtx.fillRect(0, 0, w, h);
+
+      const scalePos_cm = Math.max(0, currentJawPos_cm + zeroError_cm);
+      const zoom = 500;
+      const centerX = w * 0.25;
+      const msZeroX = centerX - scalePos_cm * zoom;
+
+      // Main Scale (Top)
+      const msY = 0;
+      const msH = h * 0.48;
+
+      lCtx.fillStyle = '#cbd5e1';
+      lCtx.fillRect(0, msY, w, msH);
+      lCtx.strokeStyle = '#1e293b';
+      lCtx.lineWidth = 1.8;
+      lCtx.strokeRect(0, msY, w, msH);
+
+      lCtx.fillStyle = '#0f172a';
+      lCtx.font = 'bold 12px monospace';
+      lCtx.textAlign = 'center';
+
+      const totalCm = 15;
+      const divsPerCm = Math.round(1.0 / msd_cm);
+
+      for (let c = 0; c <= totalCm; c++) {
+        for (let d = 0; d < divsPerCm; d++) {
+          const gx = msZeroX + (c + d * msd_cm) * zoom;
+          if (gx < -20 || gx > w + 20) continue;
+
+          let tickH = 14;
+          if (d === 0) tickH = 30;
+          else if (d === divsPerCm / 2) tickH = 22;
+
+          lCtx.beginPath();
+          lCtx.moveTo(gx, msH);
+          lCtx.lineTo(gx, msH - tickH);
+          lCtx.stroke();
+
+          if (d === 0) {
+            lCtx.fillText(`${c} cm`, gx, msH - tickH - 4);
+          }
+        }
+      }
+
+      // Vernier Scale (Bottom)
+      const vsY = msH;
+      const vsH = h - msH;
+
+      lCtx.fillStyle = '#e2e8f0';
+      lCtx.fillRect(0, vsY, w, vsH);
+      lCtx.strokeStyle = '#1e293b';
+      lCtx.lineWidth = 1.8;
+      lCtx.strokeRect(0, vsY, w, vsH);
+
+      const totalVsdLength_cm = (vsd_count - 1) * msd_cm;
+      const vsdSpacingZoom = (totalVsdLength_cm * zoom) / vsd_count;
+
+      for (let i = 0; i <= vsd_count; i++) {
+        const vx = centerX + i * vsdSpacingZoom;
+        if (vx < -20 || vx > w + 20) continue;
+
+        const isCoincide = (i === coincidingDiv);
+        const tLen = (i === 0 || i === vsd_count || isCoincide) ? 32 : 20;
+
+        lCtx.strokeStyle = isCoincide ? '#dc2626' : '#0284c7';
+        lCtx.lineWidth = isCoincide ? 2.5 : 1.5;
+
+        lCtx.beginPath();
+        lCtx.moveTo(vx, vsY);
+        lCtx.lineTo(vx, vsY + tLen);
+        lCtx.stroke();
+
+        lCtx.fillStyle = isCoincide ? '#dc2626' : '#0f172a';
+        lCtx.font = isCoincide ? 'bold 12px sans-serif' : '10px sans-serif';
+        lCtx.fillText(i, vx, vsY + tLen + 12);
+
+        if (isCoincide) {
+          lCtx.fillStyle = '#dc2626';
+          lCtx.beginPath();
+          lCtx.moveTo(vx - 5, vsY + tLen + 16);
+          lCtx.lineTo(vx + 5, vsY + tLen + 16);
+          lCtx.lineTo(vx, vsY + tLen + 23);
+          lCtx.closePath();
+          lCtx.fill();
+        }
+      }
+
+      // Center Divider Line
+      lCtx.strokeStyle = '#0f172a';
+      lCtx.lineWidth = 2;
+      lCtx.beginPath();
+      lCtx.moveTo(0, msH);
+      lCtx.lineTo(w, msH);
+      lCtx.stroke();
+    }
+
+    // Startup
+    window.addEventListener('DOMContentLoaded', () => {
+      if (window.renderMathInElement) {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: '$$', right: '$$', display: true },
+            { left: '$', right: '$', display: false }
+          ]
+        });
+      }
+      recalcLC();
+      setTimeout(resizeCanvases, 50);
+    });
+  </script>
+</body>
+</html>

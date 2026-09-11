@@ -1,0 +1,1296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Limiting Friction Virtual Laboratory | NCERT Physics Class XI</title>
+
+  <!-- KaTeX for mathematical typesetting -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" />
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+
+  <style>
+    :root {
+      --bg: #090e17;
+      --card-bg: #141e2e;
+      --card-surface: #1a273a;
+      --card-border: #2c3e55;
+      --accent: #38bdf8;
+      --accent-hover: #0284c7;
+      --success: #22c55e;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      width: 100%;
+      min-height: 100vh;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-size: 14.5px;
+      line-height: 1.45;
+    }
+
+    /* Zero-Scroll Fullscreen Locks */
+    body.is-fullscreen,
+    :fullscreen body,
+    :-webkit-full-screen body {
+      height: 100vh !important;
+      max-height: 100vh !important;
+      overflow: hidden !important;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 0.65rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      min-height: 100vh;
+    }
+
+    body.is-fullscreen .app-container,
+    :fullscreen .app-container,
+    :-webkit-full-screen .app-container {
+      max-width: 100vw !important;
+      height: 100vh !important;
+      max-height: 100vh !important;
+      padding: 0.35rem 0.5rem !important;
+      gap: 0.35rem !important;
+      overflow: hidden !important;
+    }
+
+    header {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 0.55rem 0.9rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+      flex-shrink: 0;
+    }
+
+    .badge {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    h1 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 0.4rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      padding: 0.4rem 0.75rem;
+      font-size: 0.88rem;
+      font-weight: 600;
+      border-radius: 6px;
+      border: 1px solid var(--card-border);
+      background: var(--card-surface);
+      color: var(--text);
+      cursor: pointer;
+      min-height: 36px;
+      transition: all 0.15s ease;
+      touch-action: manipulation;
+      user-select: none;
+    }
+
+    .btn:hover {
+      background: #24354d;
+      color: #fff;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #042f2e;
+      font-weight: 700;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      color: #fff;
+    }
+
+    .btn-active {
+      background: #0284c7 !important;
+      border-color: #38bdf8 !important;
+      color: #fff !important;
+      font-weight: 700;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.65rem;
+      flex: 1;
+      min-height: 0;
+    }
+
+    @media (min-width: 1024px) {
+      .workspace {
+        grid-template-columns: 1.22fr 0.78fr;
+      }
+    }
+
+    body.is-fullscreen .workspace,
+    :fullscreen .workspace,
+    :-webkit-full-screen .workspace {
+      display: grid !important;
+      grid-template-columns: 1.22fr 0.78fr !important;
+      gap: 0.4rem !important;
+      flex: 1 !important;
+      height: calc(100vh - 62px) !important;
+      max-height: calc(100vh - 62px) !important;
+      min-height: 0 !important;
+      overflow: hidden !important;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 0.65rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+      min-height: 0;
+    }
+
+    .left-column {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      min-height: 0;
+    }
+
+    body.is-fullscreen .left-column,
+    :fullscreen .left-column,
+    :-webkit-full-screen .left-column {
+      height: 100% !important;
+      max-height: 100% !important;
+      overflow: hidden !important;
+    }
+
+    .canvas-wrap {
+      position: relative;
+      width: 100%;
+      flex: 1.35;
+      min-height: 230px;
+      background: #111722;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      overflow: hidden;
+      touch-action: none;
+    }
+
+    body.is-fullscreen .canvas-wrap,
+    :fullscreen .canvas-wrap,
+    :-webkit-full-screen .canvas-wrap {
+      min-height: 180px !important;
+    }
+
+    .graph-wrap {
+      position: relative;
+      width: 100%;
+      flex: 0.85;
+      min-height: 150px;
+      background: #0a0f18;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    body.is-fullscreen .graph-wrap,
+    :fullscreen .graph-wrap,
+    :-webkit-full-screen .graph-wrap {
+      min-height: 120px !important;
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .right-column {
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+      min-height: 0;
+      overflow-y: auto;
+    }
+
+    body.is-fullscreen .right-column,
+    :fullscreen .right-column,
+    :-webkit-full-screen .right-column {
+      height: 100% !important;
+      max-height: 100% !important;
+      overflow-y: auto !important;
+      padding-right: 0.2rem;
+    }
+
+    .right-column::-webkit-scrollbar {
+      width: 5px;
+    }
+    .right-column::-webkit-scrollbar-thumb {
+      background: var(--card-border);
+      border-radius: 3px;
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.35rem;
+      flex-shrink: 0;
+    }
+
+    .metric-badge {
+      background: var(--card-surface);
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      padding: 0.35rem 0.25rem;
+      text-align: center;
+    }
+
+    .metric-label {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .metric-val {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--accent);
+      font-family: monospace;
+    }
+
+    .control-group {
+      background: var(--card-surface);
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      padding: 0.45rem 0.6rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .control-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    input[type="range"] {
+      flex: 1;
+      accent-color: var(--accent);
+      height: 6px;
+      border-radius: 3px;
+      background: #24354d;
+      cursor: pointer;
+    }
+
+    .step-btn {
+      width: 32px;
+      height: 32px;
+      min-height: 32px;
+      padding: 0;
+      font-size: 0.82rem;
+      font-weight: bold;
+      border-radius: 4px;
+      background: #24354d;
+      border: 1px solid var(--card-border);
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .step-btn:hover {
+      background: #314666;
+    }
+
+    .btn-grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.35rem;
+    }
+
+    .weight-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 0.25rem;
+      margin-top: 0.2rem;
+    }
+
+    .btn-weight {
+      padding: 0.3rem 0;
+      font-size: 0.78rem;
+      font-weight: bold;
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: #e2e8f0;
+      border-radius: 4px;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .btn-weight:hover {
+      background: #38bdf8;
+      color: #0f172a;
+      border-color: #38bdf8;
+    }
+
+    .table-wrap {
+      width: 100%;
+      border-radius: 6px;
+      border: 1px solid var(--card-border);
+      overflow-x: auto;
+      max-height: 120px;
+      background: var(--card-surface);
+    }
+
+    body.is-fullscreen .table-wrap,
+    :fullscreen .table-wrap,
+    :-webkit-full-screen .table-wrap {
+      max-height: 100px !important;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.78rem;
+      text-align: center;
+    }
+
+    th, td {
+      padding: 0.28rem 0.35rem;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    th {
+      background: #141e2e;
+      color: var(--text-muted);
+      font-weight: 700;
+      position: sticky;
+      top: 0;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(3px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      z-index: 9999;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      max-width: 620px;
+      width: 100%;
+      max-height: 85vh;
+      overflow-y: auto;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 0.4rem;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container" id="appRoot">
+    <header>
+      <div>
+        <span class="badge">Virtual Laboratory • NCERT Physics Class XI</span>
+        <h1>Limiting Friction vs Normal Reaction ($F\text{–}R$ Graph)</h1>
+      </div>
+      <div class="header-actions">
+        <button class="btn" id="btnTheory">📖 Theory</button>
+        <button class="btn" id="btnReset">↺ Reset</button>
+        <button class="btn btn-primary" id="btnFullscreen">⛶ Fullscreen</button>
+      </div>
+    </header>
+
+    <main class="workspace">
+      <!-- Left Column: Friction Bench Apparatus & F-R Graph Plotter -->
+      <div class="left-column">
+        <div class="card canvas-card" style="flex: 1.35;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <strong style="font-size:0.85rem; color:var(--text-muted);">Bench Setup: Horizontal Track, Wooden Block, Pulley &amp; Pan</strong>
+            <span style="font-size:0.78rem; color:var(--accent); font-family:monospace;" id="txtMotionStatus">State: Static Equilibrium</span>
+          </div>
+          <div class="canvas-wrap" id="benchWrap">
+            <canvas id="benchCanvas"></canvas>
+          </div>
+        </div>
+
+        <div class="card canvas-card" style="flex: 0.85;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <strong style="font-size:0.85rem; color:var(--text-muted);">$F\text{–}R$ Graph Plot ($\text{Slope} = \Delta F / \Delta R = \mu$)</strong>
+            <span style="font-size:0.78rem; color:var(--success); font-weight:700;" id="txtSlopeReadout">Slope μ = --</span>
+          </div>
+          <div class="graph-wrap" id="graphWrap">
+            <canvas id="graphCanvas"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Settings, Sliders, Weight Trays, Observation Table -->
+      <div class="right-column">
+        <!-- Live Instantaneous Metrics -->
+        <div class="metrics-grid">
+          <div class="metric-badge">
+            <div class="metric-label">Normal $R$</div>
+            <div class="metric-val" id="valR">150.0 g.wt</div>
+          </div>
+          <div class="metric-badge">
+            <div class="metric-label">Pan Load ($P$)</div>
+            <div class="metric-val" id="valP">30.0 g.wt</div>
+          </div>
+          <div class="metric-badge">
+            <div class="metric-label">Limiting $F_{\text{lim}}$</div>
+            <div class="metric-val" id="valFlim">45.0 g.wt</div>
+          </div>
+          <div class="metric-badge">
+            <div class="metric-label">Coeff. ($\mu$)</div>
+            <div class="metric-val" id="valMu">0.30</div>
+          </div>
+        </div>
+
+        <!-- Material Surface Selection -->
+        <div class="control-group">
+          <div class="control-header">
+            <span>Horizontal Surface Material</span>
+            <span id="txtSurfaceName" style="color:var(--accent); font-weight:700;">Polished Wood (μ ≈ 0.30)</span>
+          </div>
+          <div class="btn-grid-3">
+            <button class="btn btn-surface btn-active" data-surf="wood">Polished Wood</button>
+            <button class="btn btn-surface" data-surf="glass">Glass Sheet</button>
+            <button class="btn btn-surface" data-surf="sandpaper">Rough Sandpaper</button>
+          </div>
+        </div>
+
+        <!-- Normal Reaction Weights on Block Control -->
+        <div class="control-group">
+          <div class="control-header">
+            <span>Mass on Wooden Block ($m_{\text{block}} = 150\text{ g}$)</span>
+            <span id="txtBlockWeight" style="color:var(--accent); font-family:monospace;">R = 150.0 g.wt</span>
+          </div>
+          <div class="slider-row">
+            <button class="step-btn" id="btnMinus50R">−50</button>
+            <button class="step-btn" id="btnMinus10R">−10</button>
+            <input type="range" id="sliderR" min="0" max="250" step="10" value="0" />
+            <button class="step-btn" id="btnPlus10R">+10</button>
+            <button class="step-btn" id="btnPlus50R">+50</button>
+          </div>
+        </div>
+
+        <!-- Pan Weights Adjuster -->
+        <div class="control-group">
+          <div class="control-header">
+            <span>Weights in Suspended Pan ($m_{\text{pan}} = 30\text{ g}$)</span>
+            <span id="txtPanWeight" style="color:var(--accent); font-family:monospace;">P = 30.0 g.wt</span>
+          </div>
+          <div class="slider-row">
+            <button class="step-btn" id="btnMinus10P">−10</button>
+            <button class="step-btn" id="btnMinus1P">−1</button>
+            <input type="range" id="sliderP" min="0" max="150" step="0.5" value="0" />
+            <button class="step-btn" id="btnPlus1P">+1</button>
+            <button class="step-btn" id="btnPlus10P">+10</button>
+          </div>
+          <div class="weight-grid">
+            <button class="btn-weight" data-p="1">+1g</button>
+            <button class="btn-weight" data-p="2">+2g</button>
+            <button class="btn-weight" data-p="5">+5g</button>
+            <button class="btn-weight" data-p="10">+10g</button>
+            <button class="btn-weight" data-p="20">+20g</button>
+            <button class="btn-weight" id="btnClearP" style="background:#ef4444; color:#fff;">Clear</button>
+          </div>
+        </div>
+
+        <!-- Interaction Buttons -->
+        <div style="display:flex; gap:0.35rem;">
+          <button class="btn btn-primary" id="btnTapTable" style="flex:1; font-size:0.82rem;">
+            👋 Tap Table (Check Motion)
+          </button>
+          <button class="btn" id="btnResetBlock" style="flex:1; font-size:0.82rem;">
+            ↺ Reposition Block
+          </button>
+        </div>
+
+        <!-- Observation Record Table -->
+        <div class="card" style="padding:0.45rem; gap:0.35rem;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <strong style="font-size:0.82rem;">Observation Table</strong>
+            <div style="display:flex; gap:0.3rem;">
+              <button class="btn" id="btnRecord" style="padding:0.2rem 0.5rem; font-size:0.75rem; background:var(--accent); color:#042f2e; font-weight:700;">+ Log Limiting $F$</button>
+              <button class="btn" id="btnClearTable" style="padding:0.2rem 0.5rem; font-size:0.75rem;">Clear</button>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Surface</th>
+                  <th>Block $W$ (g.wt)</th>
+                  <th>Normal $R$ (g.wt)</th>
+                  <th>Limiting $F$ (g.wt)</th>
+                  <th>$\mu = F / R$</th>
+                </tr>
+              </thead>
+              <tbody id="obsTableBody">
+                <tr><td colspan="6" style="color:var(--text-muted);">No records logged yet. Find limiting friction and log.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Analytical Evaluation Desk -->
+        <div class="card" style="padding:0.45rem; font-size:0.8rem; background:var(--card-surface); border-color:var(--card-border);">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <strong>Law of Limiting Friction:</strong>
+            <span style="color:var(--accent);">F ∝ R ⟹ F = μ R</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:0.25rem;">
+            <span>Mean Coefficient of Friction $\mu$: <strong id="valMeanMu" style="color:var(--success); font-size:0.95rem; font-family:monospace;">--</strong></span>
+            <span style="color:var(--text-muted); font-size:0.75rem;" id="txtSurfacePurity">Purity: Clean dry track</span>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Theory Modal -->
+  <div class="modal-backdrop" id="theoryModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Theory: Limiting Friction &amp; Normal Reaction</h3>
+        <button class="modal-close" id="btnCloseModal">&times;</button>
+      </div>
+      <div style="font-size:0.9rem; line-height:1.55; color:#cbd5e1; display:flex; flex-direction:column; gap:0.6rem;">
+        <p><strong>Limiting Friction ($F$):</strong> When a body is at the verge of sliding over a horizontal surface, the maximum opposing force that comes into play is called the <em>force of limiting friction</em>.</p>
+        <div style="text-align:center; padding:0.4rem; background:#0b111c; border-radius:6px; color:var(--accent);">
+          $$F \propto R \implies F = \mu_s R \iff \mu_s = \frac{F}{R}$$
+        </div>
+        <p>where:</p>
+        <ul style="padding-left:1.2rem; font-size:0.85rem;">
+          <li>$F$ = force of limiting friction (total weight in pan at which block just begins to slide)</li>
+          <li>$R$ = normal reaction of the surface on the block ($R = (M + m) g$)</li>
+          <li>$\mu_s$ = coefficient of limiting static friction between the surfaces</li>
+        </ul>
+        <p><strong>Laws of Limiting Friction:</strong></p>
+        <ul style="padding-left:1.2rem; font-size:0.85rem;">
+          <li>The magnitude of limiting friction is directly proportional to the normal reaction ($F \propto R$).</li>
+          <li>The direction of limiting friction is always tangential to the contacting surfaces and opposite to the direction of impending motion.</li>
+          <li>Limiting friction is independent of the apparent area of contact, provided normal reaction remains constant.</li>
+          <li>Limiting friction depends on the nature and roughness of the contacting materials.</li>
+        </ul>
+        <p><strong>$F\text{–}R$ Graph:</strong> A plot of limiting friction $F$ on the y-axis against normal reaction $R$ on the x-axis yields a straight line passing through the origin. The slope of this straight line gives the coefficient of friction $\mu_s$:</p>
+        <div style="text-align:center; padding:0.4rem; background:#0b111c; border-radius:6px; color:var(--accent);">
+          $$\text{Slope} = \frac{\Delta F}{\Delta R} = \mu_s$$
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // System Constants & Physics Parameters
+    const blockBaseMass = 150.0; // g.wt (wooden block)
+    const panBaseMass = 30.0;    // g.wt (hanging scale pan)
+
+    const surfaces = {
+      wood: { name: 'Polished Wood', mu_s: 0.30, mu_k: 0.25, color: '#ca8a04', trackPattern: '#3b2512' },
+      glass: { name: 'Glass Sheet', mu_s: 0.20, mu_k: 0.16, color: '#38bdf8', trackPattern: '#1e3a5f' },
+      sandpaper: { name: 'Rough Sandpaper', mu_s: 0.52, mu_k: 0.44, color: '#d97706', trackPattern: '#573312' }
+    };
+
+    let currentSurface = 'wood';
+    let blockAddedMass = 0; // weights placed on block (g.wt)
+    let panAddedMass = 0;   // weights placed in pan (g.wt)
+
+    // Dynamic Kinematics
+    let blockPos = 80;      // x-position of block on table (px)
+    let blockVel = 0;       // px/s
+    let isMoving = false;
+    let tableTapped = false;
+    let lastTime = null;
+
+    let observations = [];
+
+    // Canvas Contexts
+    const benchCanvas = document.getElementById('benchCanvas');
+    const bCtx = benchCanvas.getContext('2d');
+    const graphCanvas = document.getElementById('graphCanvas');
+    const gCtx = graphCanvas.getContext('2d');
+
+    // UI Elements
+    const valR = document.getElementById('valR');
+    const valP = document.getElementById('valP');
+    const valFlim = document.getElementById('valFlim');
+    const valMu = document.getElementById('valMu');
+    const txtMotionStatus = document.getElementById('txtMotionStatus');
+    const txtSurfaceName = document.getElementById('txtSurfaceName');
+    const txtBlockWeight = document.getElementById('txtBlockWeight');
+    const txtPanWeight = document.getElementById('txtPanWeight');
+    const sliderR = document.getElementById('sliderR');
+    const sliderP = document.getElementById('sliderP');
+    const btnTapTable = document.getElementById('btnTapTable');
+    const btnResetBlock = document.getElementById('btnResetBlock');
+    const obsTableBody = document.getElementById('obsTableBody');
+    const txtSlopeReadout = document.getElementById('txtSlopeReadout');
+    const valMeanMu = document.getElementById('valMeanMu');
+
+    // Modals & Fullscreen
+    const theoryModal = document.getElementById('theoryModal');
+    document.getElementById('btnTheory').onclick = () => theoryModal.classList.add('open');
+    document.getElementById('btnCloseModal').onclick = () => theoryModal.classList.remove('open');
+    theoryModal.onclick = (e) => { if (e.target === theoryModal) theoryModal.classList.remove('open'); };
+
+    const btnFullscreen = document.getElementById('btnFullscreen');
+    btnFullscreen.addEventListener('click', () => {
+      if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+        const root = document.documentElement;
+        if (root.requestFullscreen) root.requestFullscreen();
+        else if (root.webkitRequestFullscreen) root.webkitRequestFullscreen();
+        document.body.classList.add('is-fullscreen');
+        btnFullscreen.innerText = '🗗 Exit Fullscreen';
+      } else {
+        if (document.exitFullscreen) document.exitFullscreen();
+        else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+        document.body.classList.remove('is-fullscreen');
+        btnFullscreen.innerText = '⛶ Fullscreen';
+      }
+      setTimeout(resizeCanvases, 100);
+    });
+
+    // Reset Lab
+    document.getElementById('btnReset').addEventListener('click', () => {
+      blockAddedMass = 0;
+      panAddedMass = 0;
+      sliderR.value = 0;
+      sliderP.value = 0;
+      observations = [];
+      repositionBlock();
+      renderTable();
+      updateMetrics();
+      drawGraph();
+    });
+
+    // Surface Selection
+    document.querySelectorAll('.btn-surface').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.btn-surface').forEach(b => b.classList.remove('btn-active'));
+        btn.classList.add('btn-active');
+        currentSurface = btn.getAttribute('data-surf');
+        txtSurfaceName.innerText = `${surfaces[currentSurface].name} (μ ≈ ${surfaces[currentSurface].mu_s.toFixed(2)})`;
+        repositionBlock();
+        updateMetrics();
+        drawGraph();
+      });
+    });
+
+    // Sliders & Steppers for Normal Reaction (Weights on Block)
+    sliderR.addEventListener('input', (e) => {
+      blockAddedMass = parseFloat(e.target.value);
+      repositionBlock();
+      updateMetrics();
+    });
+
+    document.getElementById('btnMinus50R').onclick = () => adjustR(-50);
+    document.getElementById('btnMinus10R').onclick = () => adjustR(-10);
+    document.getElementById('btnPlus10R').onclick = () => adjustR(10);
+    document.getElementById('btnPlus50R').onclick = () => adjustR(50);
+
+    function adjustR(delta) {
+      sliderR.value = Math.max(0, Math.min(250, parseFloat(sliderR.value) + delta));
+      blockAddedMass = parseFloat(sliderR.value);
+      repositionBlock();
+      updateMetrics();
+    }
+
+    // Sliders & Quick Buttons for Pulling Force (Weights in Pan)
+    sliderP.addEventListener('input', (e) => {
+      panAddedMass = parseFloat(e.target.value);
+      updateMetrics();
+    });
+
+    document.getElementById('btnMinus10P').onclick = () => adjustP(-10);
+    document.getElementById('btnMinus1P').onclick = () => adjustP(-1);
+    document.getElementById('btnPlus1P').onclick = () => adjustP(1);
+    document.getElementById('btnPlus10P').onclick = () => adjustP(10);
+
+    function adjustP(delta) {
+      sliderP.value = Math.max(0, Math.min(150, parseFloat(sliderP.value) + delta));
+      panAddedMass = parseFloat(sliderP.value);
+      updateMetrics();
+    }
+
+    document.querySelectorAll('.btn-weight').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (btn.id === 'btnClearP') {
+          panAddedMass = 0;
+          sliderP.value = 0;
+        } else {
+          const val = parseFloat(btn.getAttribute('data-p'));
+          panAddedMass = Math.min(150, panAddedMass + val);
+          sliderP.value = panAddedMass;
+        }
+        updateMetrics();
+      });
+    });
+
+    // Tap Table to Overcome Static Rest
+    btnTapTable.addEventListener('click', () => {
+      tableTapped = true;
+      setTimeout(() => { tableTapped = false; }, 300);
+    });
+
+    // Reposition Block to Starting Line
+    btnResetBlock.addEventListener('click', repositionBlock);
+
+    function repositionBlock() {
+      blockPos = 80;
+      blockVel = 0;
+      isMoving = false;
+      txtMotionStatus.innerText = 'State: Static Equilibrium';
+      txtMotionStatus.style.color = 'var(--accent)';
+    }
+
+    // Mathematical Evaluation of Physical Limits
+    function updateMetrics() {
+      const R = blockBaseMass + blockAddedMass;
+      const P = panBaseMass + panAddedMass;
+      const mu = surfaces[currentSurface].mu_s;
+      const F_lim = mu * R;
+
+      txtBlockWeight.innerText = `R = ${R.toFixed(1)} g.wt`;
+      txtPanWeight.innerText = `P = ${P.toFixed(1)} g.wt`;
+
+      valR.innerText = `${R.toFixed(1)} g.wt`;
+      valP.innerText = `${P.toFixed(1)} g.wt`;
+      valFlim.innerText = `${F_lim.toFixed(1)} g.wt`;
+      valMu.innerText = mu.toFixed(2);
+    }
+
+    // Observation Table Logging
+    document.getElementById('btnRecord').addEventListener('click', () => {
+      const R = blockBaseMass + blockAddedMass;
+      const P = panBaseMass + panAddedMass;
+      const mu_exp = P / R;
+
+      observations.push({
+        surface: surfaces[currentSurface].name,
+        W: blockAddedMass,
+        R: R,
+        F: P,
+        mu: mu_exp.toFixed(3)
+      });
+
+      observations.sort((a, b) => a.R - b.R);
+      renderTable();
+      drawGraph();
+    });
+
+    document.getElementById('btnClearTable').addEventListener('click', () => {
+      observations = [];
+      renderTable();
+      drawGraph();
+    });
+
+    function renderTable() {
+      if (observations.length === 0) {
+        obsTableBody.innerHTML = '<tr><td colspan="6" style="color:var(--text-muted);">No records logged yet. Find limiting friction and log.</td></tr>';
+        return;
+      }
+
+      obsTableBody.innerHTML = observations.map((r, i) => `
+        <tr>
+          <td>${i + 1}</td>
+          <td>${r.surface}</td>
+          <td>${r.W}</td>
+          <td>${r.R}</td>
+          <td><strong>${r.F}</strong></td>
+          <td><span style="color:var(--accent); font-weight:bold;">${r.mu}</span></td>
+        </tr>
+      `).join('');
+    }
+
+    // High-DPI Canvas Resizing
+    function resizeCanvases() {
+      const dpr = window.devicePixelRatio || 1;
+
+      const bWrap = document.getElementById('benchWrap');
+      benchCanvas.width = bWrap.clientWidth * dpr;
+      benchCanvas.height = bWrap.clientHeight * dpr;
+      bCtx.setTransform(1, 0, 0, 1, 0, 0);
+      bCtx.scale(dpr, dpr);
+
+      const gWrap = document.getElementById('graphWrap');
+      graphCanvas.width = gWrap.clientWidth * dpr;
+      graphCanvas.height = gWrap.clientHeight * dpr;
+      gCtx.setTransform(1, 0, 0, 1, 0, 0);
+      gCtx.scale(dpr, dpr);
+
+      drawGraph();
+    }
+    window.addEventListener('resize', resizeCanvases);
+
+    // Dynamic Kinematics & Physics Loop
+    function updatePhysics(dt) {
+      const R = blockBaseMass + blockAddedMass;
+      const P = panBaseMass + panAddedMass;
+      const surf = surfaces[currentSurface];
+      const F_lim = surf.mu_s * R;
+      const F_kinetic = surf.mu_k * R;
+
+      const tableMaxX = (benchCanvas.width / (window.devicePixelRatio || 1)) - 140;
+
+      // Condition to initiate motion:
+      // Tapping helps overcome threshold when P is very close to F_lim (within 2 g.wt)
+      const threshold = tableTapped ? (F_lim - 2.5) : F_lim;
+
+      if (!isMoving) {
+        if (P >= threshold && blockPos < tableMaxX) {
+          isMoving = true;
+          txtMotionStatus.innerText = 'State: Block Sliding (Limiting Reached!)';
+          txtMotionStatus.style.color = 'var(--success)';
+        } else {
+          txtMotionStatus.innerText = 'State: Static Equilibrium (P ≤ F_lim)';
+          txtMotionStatus.style.color = 'var(--accent)';
+        }
+      }
+
+      if (isMoving) {
+        // Net accelerating force (g.wt converted to acceleration)
+        const netForce = Math.max(0, P - F_kinetic);
+        const totalMass = R + P;
+        const acceleration = (netForce / totalMass) * 480; // px/s^2
+
+        blockVel += acceleration * dt;
+        blockPos += blockVel * dt;
+
+        if (blockPos >= tableMaxX) {
+          blockPos = tableMaxX;
+          blockVel = 0;
+          isMoving = false;
+          txtMotionStatus.innerText = 'State: Reached End of Table (Pulley Contact)';
+          txtMotionStatus.style.color = 'var(--warning)';
+        }
+      }
+    }
+
+    // DRAW FRICTION WORKBENCH APPARATUS
+    function drawBench() {
+      const w = benchCanvas.width / (window.devicePixelRatio || 1);
+      const h = benchCanvas.height / (window.devicePixelRatio || 1);
+      bCtx.clearRect(0, 0, w, h);
+
+      // Lab wall background
+      bCtx.fillStyle = '#0f172a';
+      bCtx.fillRect(0, 0, w, h);
+
+      const tableTopY = h * 0.56;
+      const tableLeftX = 40;
+      const tableRightX = w - 80;
+      const tableThick = 24;
+
+      // 1. Horizontal Tabletop & Track
+      bCtx.fillStyle = '#1e140a';
+      bCtx.fillRect(tableLeftX, tableTopY, tableRightX - tableLeftX, tableThick);
+      bCtx.strokeStyle = '#451a03';
+      bCtx.lineWidth = 2;
+      bCtx.strokeRect(tableLeftX, tableTopY, tableRightX - tableLeftX, tableThick);
+
+      // Table Legs
+      bCtx.fillStyle = '#334155';
+      bCtx.fillRect(tableLeftX + 20, tableTopY + tableThick, 16, h - tableTopY - tableThick - 10);
+      bCtx.fillRect(tableRightX - 40, tableTopY + tableThick, 16, h - tableTopY - tableThick - 10);
+
+      // Material Strip Surface Mounted on Table
+      bCtx.fillStyle = surfaces[currentSurface].trackPattern;
+      bCtx.fillRect(tableLeftX + 10, tableTopY - 6, tableRightX - tableLeftX - 15, 6);
+      bCtx.strokeStyle = surfaces[currentSurface].color;
+      bCtx.lineWidth = 1;
+      bCtx.strokeRect(tableLeftX + 10, tableTopY - 6, tableRightX - tableLeftX - 15, 6);
+
+      // Frictionless Pulley at Table Edge
+      const pulleyR = 15;
+      const pulleyX = tableRightX;
+      const pulleyY = tableTopY - 6;
+
+      // Pulley bracket
+      bCtx.fillStyle = '#475569';
+      bCtx.fillRect(pulleyX - 4, pulleyY - 2, 8, 14);
+
+      // Pulley Wheel
+      bCtx.fillStyle = '#cbd5e1';
+      bCtx.beginPath();
+      bCtx.arc(pulleyX, pulleyY, pulleyR, 0, Math.PI * 2);
+      bCtx.fill();
+      bCtx.strokeStyle = '#334155';
+      bCtx.lineWidth = 1.5;
+      bCtx.stroke();
+
+      bCtx.fillStyle = '#0f172a';
+      bCtx.beginPath();
+      bCtx.arc(pulleyX, pulleyY, 3, 0, Math.PI * 2);
+      bCtx.fill();
+
+      // 2. Rectangular Wooden Friction Block
+      const blockW = 85;
+      const blockH = 34;
+      const blockX = blockPos;
+      const blockY = tableTopY - 6 - blockH;
+
+      // Wooden Block Gradient
+      const blkGrad = bCtx.createLinearGradient(blockX, 0, blockX + blockW, 0);
+      blkGrad.addColorStop(0, '#ca8a04');
+      blkGrad.addColorStop(0.5, '#eab308');
+      blkGrad.addColorStop(1, '#a16207');
+
+      bCtx.fillStyle = blkGrad;
+      bCtx.fillRect(blockX, blockY, blockW, blockH);
+      bCtx.strokeStyle = '#713f12';
+      bCtx.lineWidth = 1.8;
+      bCtx.strokeRect(blockX, blockY, blockW, blockH);
+
+      bCtx.fillStyle = '#451a03';
+      bCtx.font = 'bold 9.5px sans-serif';
+      bCtx.textAlign = 'center';
+      bCtx.fillText('BLOCK (150g)', blockX + blockW * 0.5, blockY + 22);
+
+      // Metallic Hook on Block
+      bCtx.strokeStyle = '#cbd5e1';
+      bCtx.lineWidth = 2;
+      bCtx.beginPath();
+      bCtx.arc(blockX + blockW + 4, blockY + blockH * 0.5, 4, -Math.PI * 0.5, Math.PI * 0.5);
+      bCtx.stroke();
+
+      // Slotted weights on top of block (R)
+      if (blockAddedMass > 0) {
+        const numWeights = Math.min(5, Math.max(1, Math.round(blockAddedMass / 50)));
+        const wtW = 54;
+        const wtH = 6;
+        for (let i = 0; i < numWeights; i++) {
+          const wy = blockY - (i + 1) * wtH;
+          bCtx.fillStyle = '#94a3b8';
+          bCtx.fillRect(blockX + (blockW - wtW) * 0.5, wy, wtW, wtH - 1);
+          bCtx.strokeStyle = '#334155';
+          bCtx.lineWidth = 1;
+          bCtx.strokeRect(blockX + (blockW - wtW) * 0.5, wy, wtW, wtH - 1);
+        }
+        bCtx.fillStyle = '#f8fafc';
+        bCtx.font = 'bold 8.5px sans-serif';
+        bCtx.fillText(`+${blockAddedMass}g`, blockX + blockW * 0.5, blockY - numWeights * wtH - 3);
+      }
+
+      // 3. Lightweight Inextensible Thread
+      const hookTipX = blockX + blockW + 8;
+      const hookTipY = blockY + blockH * 0.5;
+
+      bCtx.strokeStyle = '#f8fafc';
+      bCtx.lineWidth = 1.5;
+      bCtx.beginPath();
+      bCtx.moveTo(hookTipX, hookTipY);
+      bCtx.lineTo(pulleyX, hookTipY);
+      bCtx.stroke();
+
+      // Hanging cord down from pulley
+      const panDropY = Math.min(h - 35, tableTopY + 30 + (blockPos - 80) * 0.9);
+      bCtx.beginPath();
+      bCtx.moveTo(pulleyX + pulleyR, pulleyY);
+      bCtx.lineTo(pulleyX + pulleyR, panDropY);
+      bCtx.stroke();
+
+      // 4. Suspended Scale Pan with Fractional Weights (P)
+      const panX = pulleyX + pulleyR;
+      const panW = 48;
+
+      // Pan stirrup wires
+      bCtx.strokeStyle = '#cbd5e1';
+      bCtx.lineWidth = 1;
+      bCtx.beginPath();
+      bCtx.moveTo(panX, panDropY);
+      bCtx.lineTo(panX - panW * 0.5, panDropY + 26);
+      bCtx.moveTo(panX, panDropY);
+      bCtx.lineTo(panX + panW * 0.5, panDropY + 26);
+      bCtx.stroke();
+
+      // Pan Dish
+      bCtx.fillStyle = '#94a3b8';
+      bCtx.beginPath();
+      bCtx.ellipse(panX, panDropY + 26, panW * 0.5, 4, 0, 0, Math.PI * 2);
+      bCtx.fill();
+      bCtx.strokeStyle = '#475569';
+      bCtx.stroke();
+
+      // Weights inside pan
+      if (panAddedMass > 0) {
+        bCtx.fillStyle = '#eab308';
+        bCtx.fillRect(panX - 14, panDropY + 21, 28, 5);
+        bCtx.strokeStyle = '#713f12';
+        bCtx.strokeRect(panX - 14, panDropY + 21, 28, 5);
+      }
+
+      bCtx.fillStyle = '#38bdf8';
+      bCtx.font = 'bold 8.5px sans-serif';
+      bCtx.textAlign = 'center';
+      bCtx.fillText(`P=${(panBaseMass + panAddedMass).toFixed(1)}g`, panX, panDropY + 40);
+
+      // Directional Force Arrows around Block
+      bCtx.fillStyle = '#ef4444';
+      bCtx.font = 'bold 9px sans-serif';
+
+      // Pulling Tension T Arrow (Right)
+      drawSimpleArrow(blockX + blockW * 0.5, blockY - 14, blockX + blockW * 0.5 + 30, blockY - 14, '#38bdf8');
+      bCtx.fillText('T', blockX + blockW * 0.5 + 38, blockY - 11);
+
+      // Opposing Friction f Arrow (Left)
+      drawSimpleArrow(blockX + blockW * 0.5, blockY + blockH + 10, blockX + blockW * 0.5 - 30, blockY + blockH + 10, '#ef4444');
+      bCtx.fillText('f', blockX + blockW * 0.5 - 38, blockY + blockH + 13);
+    }
+
+    function drawSimpleArrow(fromX, fromY, toX, toY, color) {
+      const head = 5;
+      const angle = Math.atan2(toY - fromY, toX - fromX);
+
+      bCtx.strokeStyle = color;
+      bCtx.fillStyle = color;
+      bCtx.lineWidth = 1.6;
+
+      bCtx.beginPath();
+      bCtx.moveTo(fromX, fromY);
+      bCtx.lineTo(toX, toY);
+      bCtx.stroke();
+
+      bCtx.beginPath();
+      bCtx.moveTo(toX, toY);
+      bCtx.lineTo(toX - head * Math.cos(angle - Math.PI / 6), toY - head * Math.sin(angle - Math.PI / 6));
+      bCtx.lineTo(toX - head * Math.cos(angle + Math.PI / 6), toY - head * Math.sin(angle + Math.PI / 6));
+      bCtx.closePath();
+      bCtx.fill();
+    }
+
+    // DRAW GRAPH: F vs R Scatter Plot & Linear Regression
+    function drawGraph() {
+      const w = graphCanvas.width / (window.devicePixelRatio || 1);
+      const h = graphCanvas.height / (window.devicePixelRatio || 1);
+      gCtx.clearRect(0, 0, w, h);
+
+      // Dark graph background
+      gCtx.fillStyle = '#0a101b';
+      gCtx.fillRect(0, 0, w, h);
+
+      const padL = 48;
+      const padB = 32;
+      const padT = 16;
+      const padR = 20;
+
+      const graphW = w - padL - padR;
+      const graphH = h - padB - padT;
+
+      // Coordinate axes
+      gCtx.strokeStyle = '#233348';
+      gCtx.lineWidth = 1;
+
+      // X-Axis bounds (Normal Reaction R: 0 to 500 g.wt)
+      const maxR = 500;
+      // Y-Axis bounds (Limiting Friction F: 0 to 250 g.wt)
+      const maxF = 250;
+
+      // Grid Lines & Labels
+      for (let i = 0; i <= 5; i++) {
+        const y = padT + (graphH / 5) * i;
+        gCtx.beginPath();
+        gCtx.moveTo(padL, y);
+        gCtx.lineTo(w - padR, y);
+        gCtx.stroke();
+
+        const fVal = (maxF - (i * maxF) / 5).toFixed(0);
+        gCtx.fillStyle = '#64748b';
+        gCtx.font = '9px sans-serif';
+        gCtx.textAlign = 'right';
+        gCtx.fillText(fVal, padL - 6, y + 3);
+      }
+
+      for (let j = 0; j <= 5; j++) {
+        const x = padL + (graphW / 5) * j;
+        gCtx.beginPath();
+        gCtx.moveTo(x, padT);
+        gCtx.lineTo(x, h - padB);
+        gCtx.stroke();
+
+        const rVal = ((j * maxR) / 5).toFixed(0);
+        gCtx.fillStyle = '#64748b';
+        gCtx.font = '9px sans-serif';
+        gCtx.textAlign = 'center';
+        gCtx.fillText(rVal, x, h - padB + 16);
+      }
+
+      // Axis Titles
+      gCtx.fillStyle = '#38bdf8';
+      gCtx.font = 'bold 9.5px sans-serif';
+      gCtx.fillText('F (g.wt) ↑', padL + 28, padT + 10);
+      gCtx.fillText('R (g.wt) →', w - padR - 35, h - padB - 6);
+
+      // Theoretical reference slope line
+      const surfMu = surfaces[currentSurface].mu_s;
+      const endR = maxR;
+      const endF = endR * surfMu;
+
+      const pxEnd = padL + graphW;
+      const pyEnd = padT + graphH - (endF / maxF) * graphH;
+
+      gCtx.strokeStyle = 'rgba(56, 189, 248, 0.35)';
+      gCtx.lineWidth = 1.5;
+      gCtx.setLineDash([4, 3]);
+      gCtx.beginPath();
+      gCtx.moveTo(padL, padT + graphH);
+      gCtx.lineTo(pxEnd, pyEnd);
+      gCtx.stroke();
+      gCtx.setLineDash([]);
+
+      // Plot Observed Student Data Points
+      if (observations.length > 0) {
+        let sumR2 = 0;
+        let sumRF = 0;
+        let sumMu = 0;
+
+        observations.forEach(pt => {
+          const px = padL + (pt.R / maxR) * graphW;
+          const py = padT + graphH - (pt.F / maxF) * graphH;
+
+          gCtx.fillStyle = '#22c55e';
+          gCtx.beginPath();
+          gCtx.arc(px, py, 4.5, 0, Math.PI * 2);
+          gCtx.fill();
+          gCtx.strokeStyle = '#fff';
+          gCtx.lineWidth = 1;
+          gCtx.stroke();
+
+          sumR2 += pt.R * pt.R;
+          sumRF += pt.R * pt.F;
+          sumMu += parseFloat(pt.mu);
+        });
+
+        // Linear Regression fit passing through origin (y = mx)
+        const expSlope = sumR2 > 0 ? (sumRF / sumR2) : surfMu;
+        const meanMu = sumMu / observations.length;
+
+        // Draw experimental best-fit line
+        const expLineEndF = maxR * expSlope;
+        const expPyEnd = padT + graphH - (expLineEndF / maxF) * graphH;
+
+        gCtx.strokeStyle = '#22c55e';
+        gCtx.lineWidth = 2;
+        gCtx.beginPath();
+        gCtx.moveTo(padL, padT + graphH);
+        gCtx.lineTo(padL + graphW, expPyEnd);
+        gCtx.stroke();
+
+        txtSlopeReadout.innerText = `Slope μ = ${expSlope.toFixed(3)}`;
+        valMeanMu.innerText = `${meanMu.toFixed(3)} (True: ~${surfMu.toFixed(2)})`;
+      } else {
+        txtSlopeReadout.innerText = `Expected μ = ${surfMu.toFixed(2)}`;
+        valMeanMu.innerText = '--';
+      }
+    }
+
+    // Animation & Physics Loop
+    function frame(timestamp) {
+      if (!lastTime) lastTime = timestamp;
+      const dt = Math.min(0.04, (timestamp - lastTime) / 1000);
+      lastTime = timestamp;
+
+      updatePhysics(dt);
+      drawBench();
+      requestAnimationFrame(frame);
+    }
+
+    // Initialization
+    window.addEventListener('DOMContentLoaded', () => {
+      if (window.renderMathInElement) {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: '$$', right: '$$', display: true },
+            { left: '$', right: '$', display: false }
+          ]
+        });
+      }
+      setTimeout(resizeCanvases, 50);
+      updateMetrics();
+      requestAnimationFrame(frame);
+    });
+  </script>
+</body>
+</html>
