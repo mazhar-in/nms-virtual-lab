@@ -1,0 +1,2241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="National Model Schools - Comprehensive Senior Secondary Physics Practical Lab Manuals with Theory, Formulae, Procedures, Observation Tables, and Viva Questions.">
+  <meta name="author" content="Syed Mazhar Ali">
+  <title>Physics Practical Manuals | National Model Schools</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- KaTeX CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  
+  <!-- Stylesheet -->
+  <style>
+    :root {
+      --bg-base: #0a0f1d;
+      --bg-surface: #111827;
+      --bg-card: rgba(17, 24, 39, 0.85);
+      --bg-card-border: rgba(255, 255, 255, 0.08);
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --text-dim: #6b7280;
+      --accent-blue: #38bdf8;
+      --accent-cyan: #06b6d4;
+      --accent-indigo: #6366f1;
+      --accent-green: #10b981;
+      --accent-amber: #f59e0b;
+      --accent-purple: #a855f7;
+      --gradient-accent: linear-gradient(135deg, #38bdf8 0%, #6366f1 100%);
+      --sidebar-width: 320px;
+      --header-height: 72px;
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --font-main: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      color-scheme: dark;
+    }
+
+    body {
+      font-family: var(--font-main);
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      line-height: 1.65;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    /* Ambient glow */
+    .ambient-glow {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 0;
+      background: radial-gradient(circle at 10% 20%, rgba(56, 189, 248, 0.04) 0%, transparent 40%),
+                  radial-gradient(circle at 90% 80%, rgba(99, 102, 241, 0.04) 0%, transparent 40%);
+    }
+
+    /* Header */
+    header.manual-header {
+      position: sticky;
+      top: 0;
+      height: var(--header-height);
+      background: rgba(10, 15, 29, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--bg-card-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      z-index: 100;
+    }
+
+    .brand-wrap {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .brand-logo-badge {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: var(--gradient-accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      box-shadow: 0 4px 16px rgba(56, 189, 248, 0.3);
+    }
+
+    .brand-info h1 {
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      background: linear-gradient(120deg, #fff, #94a3b8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      line-height: 1.2;
+    }
+
+    .brand-info p {
+      font-size: 0.78rem;
+      color: var(--accent-blue);
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    .btn-hdr {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.55rem 1.1rem;
+      font-size: 0.88rem;
+      font-weight: 600;
+      border-radius: var(--radius-sm);
+      text-decoration: none;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-hdr-home {
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text-main);
+      border: 1px solid var(--bg-card-border);
+    }
+
+    .btn-hdr-home:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-hdr-print {
+      background: var(--gradient-accent);
+      color: #000;
+      font-weight: 700;
+      box-shadow: 0 4px 14px rgba(56, 189, 248, 0.25);
+    }
+
+    .btn-hdr-print:hover {
+      box-shadow: 0 6px 20px rgba(56, 189, 248, 0.45);
+      transform: translateY(-1px);
+    }
+
+    /* Layout Shell */
+    .manual-layout {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      max-width: 1600px;
+      margin: 0 auto;
+      min-height: calc(100vh - var(--header-height));
+    }
+
+    /* Sidebar */
+    aside.manual-sidebar {
+      width: var(--sidebar-width);
+      flex-shrink: 0;
+      position: sticky;
+      top: var(--header-height);
+      height: calc(100vh - var(--header-height));
+      overflow-y: auto;
+      border-right: 1px solid var(--bg-card-border);
+      padding: 1.5rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      background: rgba(10, 15, 29, 0.6);
+    }
+
+    aside.manual-sidebar::-webkit-scrollbar {
+      width: 5px;
+    }
+    aside.manual-sidebar::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 4px;
+    }
+
+    .sidebar-search-box {
+      position: relative;
+    }
+
+    .sidebar-search-box input {
+      width: 100%;
+      padding: 0.65rem 1rem 0.65rem 2.2rem;
+      background: rgba(17, 24, 39, 0.8);
+      border: 1px solid var(--bg-card-border);
+      border-radius: var(--radius-sm);
+      color: var(--text-main);
+      font-size: 0.85rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .sidebar-search-box input:focus {
+      border-color: var(--accent-blue);
+    }
+
+    .sidebar-search-box span.search-icon {
+      position: absolute;
+      left: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.85rem;
+      color: var(--text-dim);
+    }
+
+    .sidebar-nav-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-dim);
+      padding-left: 0.4rem;
+    }
+
+    .sidebar-nav-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .sidebar-nav-link {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      padding: 0.6rem 0.85rem;
+      border-radius: var(--radius-sm);
+      text-decoration: none;
+      color: var(--text-muted);
+      font-size: 0.84rem;
+      font-weight: 500;
+      transition: all 0.15s ease;
+      border: 1px solid transparent;
+    }
+
+    .sidebar-nav-link:hover {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-main);
+    }
+
+    .sidebar-nav-link.active {
+      background: rgba(56, 189, 248, 0.1);
+      border-color: rgba(56, 189, 248, 0.3);
+      color: var(--accent-blue);
+      font-weight: 600;
+    }
+
+    .sidebar-nav-badge {
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-dim);
+      font-family: var(--font-mono);
+      flex-shrink: 0;
+    }
+
+    .sidebar-nav-link.active .sidebar-nav-badge {
+      background: var(--accent-blue);
+      color: #000;
+    }
+
+    /* Main Content Area */
+    main.manual-content {
+      flex: 1;
+      padding: 2.5rem 3rem;
+      max-width: 1200px;
+      overflow-y: visible;
+    }
+
+    /* Intro Hero Banner */
+    .manual-hero {
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.08) 0%, rgba(99, 102, 241, 0.08) 100%);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      border-radius: var(--radius-lg);
+      padding: 2.25rem 2.5rem;
+      margin-bottom: 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .manual-hero::after {
+      content: '';
+      position: absolute;
+      right: -30px;
+      bottom: -30px;
+      width: 180px;
+      height: 180px;
+      background: radial-gradient(circle, rgba(56, 189, 248, 0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-badge-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.35rem 0.85rem;
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      border-radius: 9999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--accent-blue);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 1rem;
+    }
+
+    .manual-hero h2 {
+      font-size: 1.85rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.65rem;
+      line-height: 1.25;
+    }
+
+    .manual-hero p {
+      color: var(--text-muted);
+      font-size: 0.98rem;
+      max-width: 850px;
+      line-height: 1.6;
+    }
+
+    .hero-features {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .hf-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .hf-item span {
+      font-size: 1.1rem;
+    }
+
+    /* Experiment Manual Card */
+    article.exp-manual-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--bg-card-border);
+      border-radius: var(--radius-lg);
+      padding: 2.5rem;
+      margin-bottom: 3.5rem;
+      position: relative;
+      transition: border-color 0.25s;
+    }
+
+    article.exp-manual-card:hover {
+      border-color: rgba(56, 189, 248, 0.25);
+    }
+
+    .card-header-bar {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1.25rem;
+      padding-bottom: 1.75rem;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid var(--bg-card-border);
+    }
+
+    .exp-id-pill {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--accent-blue);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.4rem;
+    }
+
+    .exp-manual-title {
+      font-size: 1.6rem;
+      font-weight: 800;
+      letter-spacing: -0.015em;
+      line-height: 1.3;
+      color: #fff;
+    }
+
+    .card-top-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-sim-launch {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.65rem 1.2rem;
+      background: var(--gradient-accent);
+      color: #000;
+      font-weight: 700;
+      font-size: 0.88rem;
+      border-radius: var(--radius-sm);
+      text-decoration: none;
+      transition: all 0.2s;
+      box-shadow: 0 4px 12px rgba(56, 189, 248, 0.25);
+    }
+
+    .btn-sim-launch:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(56, 189, 248, 0.45);
+    }
+
+    .btn-print-exp {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.65rem 1rem;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--bg-card-border);
+      border-radius: var(--radius-sm);
+      color: var(--text-main);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-print-exp:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Manual Section */
+    .manual-sec {
+      margin-bottom: 2rem;
+    }
+
+    .manual-sec:last-child {
+      margin-bottom: 0;
+    }
+
+    .sec-heading {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #f8fafc;
+      margin-bottom: 0.9rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .sec-heading span {
+      font-size: 1.25rem;
+    }
+
+    .sec-body {
+      font-size: 0.94rem;
+      color: #cbd5e1;
+      line-height: 1.7;
+    }
+
+    .sec-body p {
+      margin-bottom: 0.75rem;
+    }
+
+    .sec-body p:last-child {
+      margin-bottom: 0;
+    }
+
+    .sec-body ul, .sec-body ol {
+      padding-left: 1.4rem;
+      margin-bottom: 0.85rem;
+    }
+
+    .sec-body li {
+      margin-bottom: 0.45rem;
+    }
+
+    /* Formula & Callout Boxes */
+    .formula-callout {
+      background: rgba(56, 189, 248, 0.06);
+      border-left: 4px solid var(--accent-blue);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      padding: 1.25rem 1.5rem;
+      margin: 1.2rem 0;
+      overflow-x: auto;
+    }
+
+    /* Tables */
+    .table-container {
+      overflow-x: auto;
+      margin: 1.25rem 0;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--bg-card-border);
+    }
+
+    table.obs-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      text-align: left;
+    }
+
+    table.obs-table th {
+      background: rgba(30, 41, 59, 0.9);
+      color: #f8fafc;
+      font-weight: 700;
+      padding: 0.85rem 1rem;
+      border-bottom: 1px solid var(--bg-card-border);
+      border-right: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    table.obs-table th:last-child {
+      border-right: none;
+    }
+
+    table.obs-table td {
+      padding: 0.8rem 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      border-right: 1px solid rgba(255, 255, 255, 0.05);
+      color: #e2e8f0;
+    }
+
+    table.obs-table td:last-child {
+      border-right: none;
+    }
+
+    table.obs-table tbody tr:nth-child(even) {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    table.obs-table tbody tr:hover {
+      background: rgba(56, 189, 248, 0.04);
+    }
+
+    /* Viva Voce Box */
+    .viva-box {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-top: 0.75rem;
+    }
+
+    .viva-item {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--bg-card-border);
+      border-radius: var(--radius-sm);
+      padding: 1.1rem 1.35rem;
+    }
+
+    .viva-q {
+      font-weight: 700;
+      color: var(--accent-blue);
+      margin-bottom: 0.4rem;
+      font-size: 0.93rem;
+    }
+
+    .viva-a {
+      color: #e2e8f0;
+      font-size: 0.91rem;
+      line-height: 1.6;
+    }
+
+    /* Footer */
+    footer.manual-footer {
+      border-top: 1px solid var(--bg-card-border);
+      background: #080c17;
+      padding: 3rem 2rem;
+      text-align: center;
+      position: relative;
+      z-index: 10;
+    }
+
+    .footer-brand-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+      color: #fff;
+    }
+
+    .footer-desc {
+      color: var(--text-dim);
+      font-size: 0.86rem;
+      max-width: 600px;
+      margin: 0 auto 1.5rem auto;
+      line-height: 1.6;
+    }
+
+    .footer-dev-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1.25rem;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 9999px;
+      font-size: 0.88rem;
+      color: var(--text-muted);
+    }
+
+    .footer-dev-badge a {
+      color: var(--accent-blue);
+      font-weight: 700;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-dev-badge a:hover {
+      text-decoration: underline;
+      color: #fff;
+    }
+
+    /* Back to top button */
+    .btn-back-top {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--bg-surface);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      color: var(--accent-blue);
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+      transition: all 0.2s;
+      z-index: 90;
+    }
+
+    .btn-back-top:hover {
+      background: var(--accent-blue);
+      color: #000;
+      transform: translateY(-3px);
+    }
+
+    /* Mobile / Responsive */
+    @media (max-width: 1024px) {
+      aside.manual-sidebar {
+        display: none;
+      }
+      main.manual-content {
+        padding: 1.5rem;
+      }
+      header.manual-header {
+        padding: 0 1.25rem;
+      }
+      article.exp-manual-card {
+        padding: 1.5rem;
+      }
+    }
+
+    /* Print Stylesheet */
+    @media print {
+      body {
+        background: #fff !important;
+        color: #000 !important;
+        font-size: 11pt;
+        line-height: 1.45;
+      }
+      header.manual-header,
+      aside.manual-sidebar,
+      .ambient-glow,
+      .card-top-actions,
+      .manual-hero,
+      .btn-back-top,
+      footer.manual-footer {
+        display: none !important;
+      }
+      main.manual-content {
+        max-width: 100% !important;
+        padding: 0 !important;
+      }
+      article.exp-manual-card {
+        background: #fff !important;
+        border: none !important;
+        padding: 0 !important;
+        margin-bottom: 3rem !important;
+        page-break-before: always;
+      }
+      article.exp-manual-card:first-of-type {
+        page-break-before: avoid;
+      }
+      .card-header-bar {
+        border-bottom: 2px solid #000 !important;
+        padding-bottom: 0.8rem !important;
+        margin-bottom: 1.2rem !important;
+      }
+      .exp-manual-title {
+        color: #000 !important;
+        font-size: 16pt !important;
+      }
+      .exp-id-pill {
+        color: #333 !important;
+        font-weight: bold;
+      }
+      .sec-heading {
+        color: #000 !important;
+        border-bottom: 1px solid #ccc !important;
+        font-size: 12pt !important;
+      }
+      .sec-body {
+        color: #111 !important;
+      }
+      .formula-callout {
+        background: #f8f9fa !important;
+        border-left: 4px solid #333 !important;
+        color: #000 !important;
+      }
+      table.obs-table {
+        border: 1px solid #999 !important;
+      }
+      table.obs-table th {
+        background: #eee !important;
+        color: #000 !important;
+        border: 1px solid #999 !important;
+      }
+      table.obs-table td {
+        border: 1px solid #999 !important;
+        color: #000 !important;
+      }
+      .viva-item {
+        background: #fdfdfd !important;
+        border: 1px solid #ddd !important;
+      }
+      .viva-q {
+        color: #000 !important;
+      }
+      .viva-a {
+        color: #222 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="ambient-glow"></div>
+
+  <!-- Header -->
+  <header class="manual-header">
+    <a href="index.html" class="brand-wrap" title="National Model Schools Physics Hub">
+      <div class="brand-logo-badge">⚛</div>
+      <div class="brand-info">
+        <h1>National Model Schools</h1>
+        <p>SENIOR SECONDARY PHYSICS LABORATORY</p>
+      </div>
+    </a>
+    <div class="header-actions">
+      <a href="index.html" class="btn-hdr btn-hdr-home">
+        <span>🏠</span> Portal Hub
+      </a>
+      <button class="btn-hdr btn-hdr-print" onclick="window.print()" title="Print complete laboratory manual">
+        <span>🖨️</span> Print Manual
+      </button>
+    </div>
+  </header>
+
+  <!-- Layout Container -->
+  <div class="manual-layout">
+    <!-- Sidebar -->
+    <aside class="manual-sidebar">
+      <div class="sidebar-search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="manualSearchInput" placeholder="Filter experiments..." oninput="filterManuals(this.value)">
+      </div>
+
+      <div class="sidebar-nav-title">EXPERIMENTS DIRECTORY</div>
+      <ul class="sidebar-nav-list" id="sidebarList">
+        <li>
+          <a href="#exp1" class="sidebar-nav-link" id="nav-exp1">
+            <span class="sidebar-nav-badge">01</span>
+            <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">Vernier Callipers</span>
+          </a>
+        </li>
+        <li>
+          <a href="#exp2" class="sidebar-nav-link" id="nav-exp2">
+            <span class="sidebar-nav-badge">02</span>
+            <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">Screw Gauge</span>
+          </a>
+        </li>
+        <li>
+          <a href="#exp3" class="sidebar-nav-link" id="nav-exp3">
+            <span class="sidebar-nav-badge">03</span>
+            <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">Spherometer</span>
+          </a>
+        </li>
+        <li>
+          <a href="#exp4" class="sidebar-nav-link" id="nav-exp4">
+            <span class="sidebar-nav-badge">04</span>
+            <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">Volume of Irregular Lamina</span>
+          </a>
+        </li>
+        <li>
+          <a href="#exp5" class="sidebar-nav-link" id="nav-exp5">
+            <span class="sidebar-nav-badge">05</span>
+            <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">Physical Beam Balance</span>
+          </a>
+        </li>
+        <li>
+          <a href="#exp6" class="sidebar-nav-link" id="nav-exp6">
+            <span class="sidebar-nav-badge">06</span>
+            <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">Parallelogram Law of Vectors</span>
+          </a>
+        </li>
+        <li>
+          <a href="#exp7" class="sidebar-nav-link" id="nav-exp7">
+            <span class="sidebar-nav-badge">07</span>
+            <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">Simple Pendulum</span>
+          </a>
+        </li>
+        <li>
+          <a href="#exp8" class="sidebar-nav-link" id="nav-exp8">
+            <span class="sidebar-nav-badge">08</span>
+            <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">Limiting Friction vs Normal Reaction (F–R Graph)</span>
+          </a>
+        </li>
+        <li>
+          <a href="#exp9" class="sidebar-nav-link" id="nav-exp9">
+            <span class="sidebar-nav-badge">09</span>
+            <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">Inclined Plane</span>
+          </a>
+        </li>
+        <li>
+          <a href="#exp10" class="sidebar-nav-link" id="nav-exp10">
+            <span class="sidebar-nav-badge">10</span>
+            <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">Ohm's Law</span>
+          </a>
+        </li>
+        <li>
+          <a href="#exp11" class="sidebar-nav-link" id="nav-exp11">
+            <span class="sidebar-nav-badge">11</span>
+            <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">Meter Bridge (Slide Wire Bridge)</span>
+          </a>
+        </li>
+        <li>
+          <a href="#exp12" class="sidebar-nav-link" id="nav-exp12">
+            <span class="sidebar-nav-badge">12</span>
+            <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">Wheatstone's Bridge Simulator</span>
+          </a>
+        </li>
+
+      </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="manual-content">
+      <!-- Hero Intro Banner -->
+      <section class="manual-hero">
+        <div class="hero-badge-tag">📘 CBSE / State Board Senior Secondary Curriculum</div>
+        <h2>Physics Practical Reference & Laboratory Manual</h2>
+        <p>Complete academic laboratory manuals accompanying the National Model Schools Virtual Physics Simulations. Each experiment features detailed theory with mathematical formulation, apparatus specifications, standardized procedures, tabular observations, critical precautions, and viva-voce preparation.</p>
+        <div class="hero-features">
+          <div class="hf-item"><span>📐</span> Formulae Rendered with KaTeX</div>
+          <div class="hf-item"><span>📊</span> Tabular Observation Records</div>
+          <div class="hf-item"><span>🖨️</span> Print-Ready Formats</div>
+          <div class="hf-item"><span>⚡</span> 1-Click Launch to Interactive Simulators</div>
+        </div>
+      </section>
+
+      <!-- Experiment Cards Container -->
+      <div id="experimentsContainer">
+
+      <!-- Experiment 01 -->
+      <article class="exp-manual-card" id="exp1">
+        <div class="card-header-bar">
+          <div>
+            <div class="exp-id-pill">EXPERIMENT 01 • Class XI Physics</div>
+            <h2 class="exp-manual-title">Vernier Callipers: Dimensions & Volume Lab</h2>
+          </div>
+          <div class="card-top-actions">
+            <a href="vernier-callipers-virtual-lab.html" class="btn-sim-launch" target="_blank" title="Launch simulation in new window">
+              <span>🚀 Launch Simulator</span>
+            </a>
+            <button class="btn-print-exp" onclick="window.print()" title="Print this experiment">
+              <span>🖨️</span> Print
+            </button>
+          </div>
+        </div>
+
+        <!-- 1. Aim -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>🎯</span> Aim of the Experiment</div>
+          <div class="sec-body"><p>To determine the internal diameter, external diameter, and depth of a hollow cylindrical calorimeter/beaker and calculate its internal volume using Vernier Callipers.</p></div>
+        </div>
+
+        <!-- 2. Apparatus -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>🧰</span> Apparatus & Materials Required</div>
+          <div class="sec-body"><p>Vernier Callipers, cylindrical calorimeter/beaker, spherical bob, magnifying lens.</p></div>
+        </div>
+
+        <!-- 3. Theory -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>📐</span> Governing Theory & Formulae</div>
+          <div class="sec-body"><p>A Vernier Calliper operates on the principle that $N$ divisions of the sliding Vernier Scale coincide with $(N - 1)$ divisions of the stationary Main Scale.</p>
+<div class="formula-callout">
+  <strong>Least Count (LC):</strong><br>
+  $$LC = 1\text{ MSD} - 1\text{ VSD} = \frac{1\text{ MSD}}{N} = \frac{1\text{ mm}}{10} = 0.1\text{ mm} = 0.01\text{ cm}$$
+  <br>
+  <strong>Total Reading (TR):</strong><br>
+  $$TR = MSR + (VSR \times LC) - (\pm e)$$
+  where $MSR$ is Main Scale Reading, $VSR$ is Vernier Scale Coincidence, and $e$ is zero error.<br><br>
+  <strong>Internal Volume of Cylinder ($V$):</strong><br>
+  $$V = \frac{\pi D_i^2}{4} \times d$$
+  where $D_i$ is mean internal diameter and $d$ is depth.
+</div></div>
+        </div>
+
+        <!-- 4. Procedure -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>📝</span> Step-by-Step Procedure</div>
+          <div class="sec-body"><ol>
+  <li>Examine the Vernier Callipers to determine its Least Count ($0.01\text{ cm}$).</li>
+  <li>Bring jaws $A$ and $B$ into contact to inspect zero error. If zero of Vernier scale lies to the right of main scale zero, error is positive; if to the left, error is negative.</li>
+  <li>To measure external diameter ($D_e$), place the cylinder between external jaws $A$ and $B$ and tighten gently using the clamp screw.</li>
+  <li>Record the main scale reading immediately preceding the vernier zero mark.</li>
+  <li>Observe which vernier division aligns exactly with any main scale graduation using a magnifying lens.</li>
+  <li>Repeat readings at 3 different cross-sections at mutually perpendicular directions to eliminate ellipticity.</li>
+  <li>To measure internal diameter ($D_i$), place upper jaws $C$ and $D$ inside the hollow cylinder and expand until snug.</li>
+  <li>To measure depth ($d$), insert the thin metallic depth strip vertically until it touches the cylinder base while the calliper edge rests flat on the rim.</li>
+  <li>Compute mean internal diameter and depth, then calculate internal volume.</li>
+</ol></div>
+        </div>
+
+        <!-- 5. Observations -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>📊</span> Observation Tables & Sample Readings</div>
+          <div class="sec-body"><div class="table-container">
+  <table class="obs-table">
+    <thead>
+      <tr>
+        <th>Dimension</th>
+        <th>Obs. No.</th>
+        <th>MSR ($cm$)</th>
+        <th>VSR ($div$)</th>
+        <th>VSR $\times$ LC ($cm$)</th>
+        <th>Total Reading ($cm$)</th>
+        <th>Corrected Reading ($cm$)</th>
+        <th>Mean Value ($cm$)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td rowspan="3"><strong>Internal Diameter ($D_i$)</strong></td><td>1</td><td>4.2</td><td>5</td><td>0.05</td><td>4.25</td><td>4.25</td><td rowspan="3"><strong>4.25 cm</strong></td></tr>
+      <tr><td>2</td><td>4.2</td><td>6</td><td>0.06</td><td>4.26</td><td>4.26</td></tr>
+      <tr><td>3</td><td>4.2</td><td>4</td><td>0.04</td><td>4.24</td><td>4.24</td></tr>
+      <tr><td rowspan="3"><strong>Depth ($d$)</strong></td><td>1</td><td>8.5</td><td>3</td><td>0.03</td><td>8.53</td><td>8.53</td><td rowspan="3"><strong>8.54 cm</strong></td></tr>
+      <tr><td>2</td><td>8.5</td><td>5</td><td>0.05</td><td>8.55</td><td>8.55</td></tr>
+      <tr><td>3</td><td>8.5</td><td>4</td><td>0.04</td><td>8.54</td><td>8.54</td></tr>
+    </tbody>
+  </table>
+</div></div>
+        </div>
+
+        <!-- 6. Precautions -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>⚠️</span> Precautions & Sources of Error</div>
+          <div class="sec-body"><ul>
+  <li>Do not apply excessive pressure on the jaws; turn the adjusting screw smoothly to avoid bending or deforming the jaws.</li>
+  <li>Always record observations at three mutually perpendicular diameters to account for non-uniform circular cross-sections.</li>
+  <li>View the vernier alignment directly perpendicular to the scale to avoid parallax error.</li>
+  <li>Always apply zero correction with proper algebraic sign ($TR = \text{Observed} - \text{Zero Error}$).</li>
+</ul></div>
+        </div>
+
+        <!-- 7. Viva Voce -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>💬</span> Practical Viva-Voce Questions</div>
+          <div class="sec-body"><div class="viva-box">
+  <div class="viva-item">
+    <div class="viva-q">Q1: What is the principle of a Vernier?</div>
+    <div class="viva-a">A: The vernier principle relies on making $N$ vernier scale divisions equal in length to $(N-1)$ main scale divisions, allowing measurement down to a fraction of a main scale division.</div>
+  </div>
+  <div class="viva-item">
+    <div class="viva-q">Q2: What is the difference between positive and negative zero error?</div>
+    <div class="viva-a">A: In positive zero error, vernier zero lies to the right of main scale zero (measured reading is greater than actual, so zero correction is subtracted). In negative zero error, vernier zero lies to the left (measured reading is smaller, so correction is added).</div>
+  </div>
+  <div class="viva-item">
+    <div class="viva-q">Q3: Why are the tips of the external jaws slightly curved?</div>
+    <div class="viva-a">A: Curved edges provide narrow contact surfaces for measuring cylindrical or spherical objects accurately along their true diametrical line without pinching.</div>
+  </div>
+</div></div>
+        </div>
+      </article>
+    
+      <!-- Experiment 02 -->
+      <article class="exp-manual-card" id="exp2">
+        <div class="card-header-bar">
+          <div>
+            <div class="exp-id-pill">EXPERIMENT 02 • Class XI Physics</div>
+            <h2 class="exp-manual-title">Screw Gauge: Wire Diameter & Sheet Thickness Measurement</h2>
+          </div>
+          <div class="card-top-actions">
+            <a href="screw-gauge-micrometer-virtual-lab.html" class="btn-sim-launch" target="_blank" title="Launch simulation in new window">
+              <span>🚀 Launch Simulator</span>
+            </a>
+            <button class="btn-print-exp" onclick="window.print()" title="Print this experiment">
+              <span>🖨️</span> Print
+            </button>
+          </div>
+        </div>
+
+        <!-- 1. Aim -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>🎯</span> Aim of the Experiment</div>
+          <div class="sec-body"><p>To measure the diameter of a given wire and thickness of a given sheet using a micrometer screw gauge and calculate its cross-sectional area and volume.</p></div>
+        </div>
+
+        <!-- 2. Apparatus -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>🧰</span> Apparatus & Materials Required</div>
+          <div class="sec-body"><p>Screw gauge ($0-25\text{ mm}$, $LC = 0.001\text{ cm}$), thin copper/nichrome wire, metallic sheet, half-meter rule.</p></div>
+        </div>
+
+        <!-- 3. Theory -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>📐</span> Governing Theory & Formulae</div>
+          <div class="sec-body"><p>The micrometer screw gauge is based on the principle of the screw: linear advancement along the axis is directly proportional to circular rotation of the thimble head.</p>
+<div class="formula-callout">
+  <strong>Pitch of the Screw:</strong><br>
+  $$\text{Pitch} = \frac{\text{Distance moved on Linear Pitch Scale}}{\text{Number of complete rotations}} = 1\text{ mm}$$
+  <br>
+  <strong>Least Count (LC):</strong><br>
+  $$LC = \frac{\text{Pitch}}{\text{Total Circular Head Divisions}} = \frac{1\text{ mm}}{100} = 0.01\text{ mm} = 0.001\text{ cm}$$
+  <br>
+  <strong>Cross-Sectional Area ($A$) & Volume ($V$):</strong><br>
+  $$A = \frac{\pi D^2}{4}, \quad V = A \times L = \frac{\pi D^2 L}{4}$$
+</div></div>
+        </div>
+
+        <!-- 4. Procedure -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>📝</span> Step-by-Step Procedure</div>
+          <div class="sec-body"><ol>
+  <li>Determine pitch by rotating the thimble 5 complete turns and observing linear progression along the sleeve scale.</li>
+  <li>Determine least count ($LC = 0.001\text{ cm}$).</li>
+  <li>Rotate the ratchet stop until anvil and spindle faces meet. Inspect zero error against reference datum line.</li>
+  <li>Place the wire between anvil and spindle. Turn the ratchet head until it slips with 3 distinct audible clicks.</li>
+  <li>Note the Pitch Scale Reading (PSR) and the Circular Scale Division (CSR) aligned with the reference line.</li>
+  <li>Repeat measurements at 5 equidistant locations along the wire, taking two perpendicular diameters at each spot.</li>
+  <li>Measure total length $L$ with a meter scale and compute wire volume.</li>
+</ol></div>
+        </div>
+
+        <!-- 5. Observations -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>📊</span> Observation Tables & Sample Readings</div>
+          <div class="sec-body"><div class="table-container">
+  <table class="obs-table">
+    <thead>
+      <tr>
+        <th>Position</th>
+        <th>Direction</th>
+        <th>PSR ($mm$)</th>
+        <th>HSR ($div$)</th>
+        <th>HSR $\times$ LC ($mm$)</th>
+        <th>Observed $D$ ($mm$)</th>
+        <th>Corrected $D$ ($mm$)</th>
+        <th>Mean Diameter ($mm$)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td rowspan="2">Position 1</td><td>Horizontal</td><td>0.0</td><td>42</td><td>0.42</td><td>0.42</td><td>0.42</td><td rowspan="4"><strong>0.423 mm (0.0423 cm)</strong></td></tr>
+      <tr><td>Vertical</td><td>0.0</td><td>43</td><td>0.43</td><td>0.43</td><td>0.43</td></tr>
+      <tr><td rowspan="2">Position 2</td><td>Horizontal</td><td>0.0</td><td>42</td><td>0.42</td><td>0.42</td><td>0.42</td></tr>
+      <tr><td>Vertical</td><td>0.0</td><td>42</td><td>0.42</td><td>0.42</td><td>0.42</td></tr>
+    </tbody>
+  </table>
+</div></div>
+        </div>
+
+        <!-- 6. Precautions -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>⚠️</span> Precautions & Sources of Error</div>
+          <div class="sec-body"><ul>
+  <li>Always advance and tighten the screw using the ratchet stop, never the knurled thimble directly, to avoid crushing the specimen or stripping screw threads.</li>
+  <li>Turn the screw only in one direction during measurement to prevent backlash error caused by mechanical thread wear.</li>
+  <li>Clean the planar faces of both anvil and spindle before zero error inspection.</li>
+</ul></div>
+        </div>
+
+        <!-- 7. Viva Voce -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>💬</span> Practical Viva-Voce Questions</div>
+          <div class="sec-body"><div class="viva-box">
+  <div class="viva-item">
+    <div class="viva-q">Q1: What is backlash error in a screw gauge?</div>
+    <div class="viva-a">A: Backlash error is the mechanical play between screw threads and internal nut caused by wear and tear. When the direction of rotation is reversed, the screw rotates through a small angle without translating linearly. It is eliminated by advancing the screw always in the same direction.</div>
+  </div>
+  <div class="viva-item">
+    <div class="viva-q">Q2: Why is a ratchet stop provided on a screw gauge?</div>
+    <div class="viva-a">A: The ratchet contains a spring-loaded clutch mechanism that slips when a predetermined gentle pressure is reached, ensuring uniform contact pressure across all trials regardless of user strength.</div>
+  </div>
+</div></div>
+        </div>
+      </article>
+    
+      <!-- Experiment 03 -->
+      <article class="exp-manual-card" id="exp3">
+        <div class="card-header-bar">
+          <div>
+            <div class="exp-id-pill">EXPERIMENT 03 • Class XI Physics</div>
+            <h2 class="exp-manual-title">Spherometer: Radius of Curvature of Spherical Surfaces</h2>
+          </div>
+          <div class="card-top-actions">
+            <a href="spherometer-virtual-lab.html" class="btn-sim-launch" target="_blank" title="Launch simulation in new window">
+              <span>🚀 Launch Simulator</span>
+            </a>
+            <button class="btn-print-exp" onclick="window.print()" title="Print this experiment">
+              <span>🖨️</span> Print
+            </button>
+          </div>
+        </div>
+
+        <!-- 1. Aim -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>🎯</span> Aim of the Experiment</div>
+          <div class="sec-body"><p>To determine the radius of curvature of a given spherical surface (convex watch glass/concave mirror) using a spherometer.</p></div>
+        </div>
+
+        <!-- 2. Apparatus -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>🧰</span> Apparatus & Materials Required</div>
+          <div class="sec-body"><p>Spherometer, plane glass plate, spherical watch glass/convex mirror, sheet of white paper, sharp pencil, millimeter rule.</p></div>
+        </div>
+
+        <!-- 3. Theory -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>📐</span> Governing Theory & Formulae</div>
+          <div class="sec-body"><p>A spherometer measures the sagitta (height of bulge or depth of depression $h$) of a spherical cap supported on an equilateral triangular base of leg distance $l$.</p>
+<div class="formula-callout">
+  <strong>Radius of Curvature ($R$):</strong><br>
+  $$R = \frac{l^2}{6h} + \frac{h}{2}$$
+  where $l = \frac{l_1 + l_2 + l_3}{3}$ is the mean distance between the outer three prongs, and $h$ is the sagitta height measured by the central micrometer screw.
+</div></div>
+        </div>
+
+        <!-- 4. Procedure -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>📝</span> Step-by-Step Procedure</div>
+          <div class="sec-body"><ol>
+  <li>Press the spherometer legs gently onto paper to produce 3 prong indentations forming an equilateral triangle. Measure distances $l_1, l_2, l_3$ and compute mean $l$.</li>
+  <li>Place the spherometer on a flat plane glass slab. Rotate central screw downwards until its tip just touches the glass without lifting the three outer legs.</li>
+  <li>Record the plane zero vertical scale and circular head readings.</li>
+  <li>Place the spherometer centrally on the convex/concave spherical surface.</li>
+  <li>Turn the screw until the central tip touches the apex of the spherical surface.</li>
+  <li>Calculate sagitta $h = |\text{Surface Reading} - \text{Plane Zero Reading}|$.</li>
+  <li>Substitute $l$ and $h$ into formula to calculate radius of curvature $R$.</li>
+</ol></div>
+        </div>
+
+        <!-- 5. Observations -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>📊</span> Observation Tables & Sample Readings</div>
+          <div class="sec-body"><div class="table-container">
+  <table class="obs-table">
+    <thead>
+      <tr>
+        <th>Prong Distance</th>
+        <th>$l_1$ ($cm$)</th>
+        <th>$l_2$ ($cm$)</th>
+        <th>$l_3$ ($cm$)</th>
+        <th>Mean $l$ ($cm$)</th>
+        <th>Pitch ($mm$)</th>
+        <th>LC ($mm$)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Values</td><td>4.10</td><td>4.12</td><td>4.11</td><td>4.11</td><td>1.0</td><td>0.01</td></tr>
+    </tbody>
+  </table>
+  <table class="obs-table">
+    <thead>
+      <tr>
+        <th>Trial</th>
+        <th>Plane Zero Reading ($mm$)</th>
+        <th>Spherical Surface Reading ($mm$)</th>
+        <th>Sagitta $h$ ($mm$)</th>
+        <th>Sagitta $h$ ($cm$)</th>
+        <th>Calculated $R$ ($cm$)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td>0.00</td><td>1.45</td><td>1.45</td><td>0.145</td><td>19.46</td></tr>
+      <tr><td>2</td><td>0.00</td><td>1.46</td><td>1.46</td><td>0.146</td><td>19.33</td></tr>
+      <tr><td>3</td><td>0.00</td><td>1.45</td><td>1.45</td><td>0.145</td><td>19.46</td></tr>
+    </tbody>
+  </table>
+</div></div>
+        </div>
+
+        <!-- 6. Precautions -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>⚠️</span> Precautions & Sources of Error</div>
+          <div class="sec-body"><ul>
+  <li>Ensure the central screw does not press so hard that the outer legs lift off the surface. Use a thin paper strip under each leg to test contact.</li>
+  <li>Rotate the micrometer screw strictly in one direction to eliminate backlash error.</li>
+</ul></div>
+        </div>
+
+        <!-- 7. Viva Voce -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>💬</span> Practical Viva-Voce Questions</div>
+          <div class="sec-body"><div class="viva-box">
+  <div class="viva-item">
+    <div class="viva-q">Q1: What is meant by sagitta?</div>
+    <div class="viva-a">A: Sagitta is the perpendicular height of the central apex of a spherical cap above the plane passing through the three base points of the spherometer legs.</div>
+  </div>
+  <div class="viva-item">
+    <div class="viva-q">Q2: Why does $R = \frac{l^2}{6h} + \frac{h}{2}$ contain $h/2$?</div>
+    <div class="viva-a">A: Derived from geometry of intersecting chords in a circle: $h(2R - h) = r^2$. Since base radius $r = l / \sqrt{3}$, $2Rh - h^2 = l^2/3$, giving $R = \frac{l^2}{6h} + \frac{h}{2}$.</div>
+  </div>
+</div></div>
+        </div>
+      </article>
+    
+      <!-- Experiment 04 -->
+      <article class="exp-manual-card" id="exp4">
+        <div class="card-header-bar">
+          <div>
+            <div class="exp-id-pill">EXPERIMENT 04 • Class XI Physics</div>
+            <h2 class="exp-manual-title">Volume of Irregular Lamina: Screw Gauge & Graph Paper</h2>
+          </div>
+          <div class="card-top-actions">
+            <a href="volume-of-irregular-lamina-virtual-lab.html" class="btn-sim-launch" target="_blank" title="Launch simulation in new window">
+              <span>🚀 Launch Simulator</span>
+            </a>
+            <button class="btn-print-exp" onclick="window.print()" title="Print this experiment">
+              <span>🖨️</span> Print
+            </button>
+          </div>
+        </div>
+
+        <!-- 1. Aim -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>🎯</span> Aim of the Experiment</div>
+          <div class="sec-body"><p>To determine the volume of a given irregular thin lamina using millimeter graph paper and a micrometer screw gauge.</p></div>
+        </div>
+
+        <!-- 2. Apparatus -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>🧰</span> Apparatus & Materials Required</div>
+          <div class="sec-body"><p>Irregular lamina (cardboard/metallic plate), $1\text{ mm}$ graph sheet, sharp pencil, micrometer screw gauge.</p></div>
+        </div>
+
+        <!-- 3. Theory -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>📐</span> Governing Theory & Formulae</div>
+          <div class="sec-body"><p>Volume of any regular or irregular prismatic sheet is the product of its surface area $A$ and uniform thickness $t$.</p>
+<div class="formula-callout">
+  <strong>Volume ($V$):</strong><br>
+  $$V = \text{Surface Area } (A) \times \text{Thickness } (t)$$
+  <br>
+  <strong>Area via Millimeter Grid Squares:</strong><br>
+  $$A = \left(N_1 + \frac{1}{2} N_2\right) \times 1\text{ mm}^2$$
+  where $N_1$ is number of complete enclosed $1\text{ mm}^2$ squares, and $N_2$ is number of squares more than or equal to half enclosed within the boundary contour.
+</div></div>
+        </div>
+
+        <!-- 4. Procedure -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>📝</span> Step-by-Step Procedure</div>
+          <div class="sec-body"><ol>
+  <li>Place the irregular lamina flat on a sheet of millimeter graph paper.</li>
+  <li>Trace its perimeter boundary carefully using a very sharp pencil held perpendicularly.</li>
+  <li>Count all complete squares enclosed within the boundary ($N_1$).</li>
+  <li>Count all boundary squares that have half or more than half their area inside the contour ($N_2$). Ignore squares with less than half area inside.</li>
+  <li>Compute total surface area $A$.</li>
+  <li>Measure thickness $t$ at 5 widely separated locations using a calibrated screw gauge with zero error correction applied.</li>
+  <li>Calculate total volume $V = A \times t$.</li>
+</ol></div>
+        </div>
+
+        <!-- 5. Observations -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>📊</span> Observation Tables & Sample Readings</div>
+          <div class="sec-body"><div class="table-container">
+  <table class="obs-table">
+    <thead>
+      <tr>
+        <th>Trial</th>
+        <th>Full Squares ($N_1$)</th>
+        <th>Half/More Squares ($N_2$)</th>
+        <th>Total Area ($mm^2$)</th>
+        <th>Total Area ($cm^2$)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td>1420</td><td>116</td><td>1478</td><td>14.78</td></tr>
+    </tbody>
+  </table>
+  <table class="obs-table">
+    <thead>
+      <tr>
+        <th>Spot</th>
+        <th>PSR ($mm$)</th>
+        <th>HSR ($div$)</th>
+        <th>Observed $t$ ($mm$)</th>
+        <th>Corrected $t$ ($mm$)</th>
+        <th>Mean Thickness ($cm$)</th>
+        <th>Calculated Volume ($cm^3$)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td>1.0</td><td>24</td><td>1.24</td><td>1.24</td><td rowspan="3"><strong>0.124 cm</strong></td><td rowspan="3"><strong>1.833 cm³</strong></td></tr>
+      <tr><td>2</td><td>1.0</td><td>25</td><td>1.25</td><td>1.25</td></tr>
+      <tr><td>3</td><td>1.0</td><td>23</td><td>1.23</td><td>1.23</td></tr>
+    </tbody>
+  </table>
+</div></div>
+        </div>
+
+        <!-- 6. Precautions -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>⚠️</span> Precautions & Sources of Error</div>
+          <div class="sec-body"><ul>
+  <li>Use an extremely sharp 2H pencil so that boundary line thickness does not introduce area bias.</li>
+  <li>Ensure the lamina is perfectly flat without warping or bent corners.</li>
+</ul></div>
+        </div>
+
+        <!-- 7. Viva Voce -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>💬</span> Practical Viva-Voce Questions</div>
+          <div class="sec-body"><div class="viva-box">
+  <div class="viva-item">
+    <div class="viva-q">Q1: Why cannot Archimedes liquid immersion be used for very thin sheets?</div>
+    <div class="viva-a">A: Thin laminae have negligible volume compared to liquid surface tension meniscus uncertainties in measuring cylinders, resulting in high fractional measurement error.</div>
+  </div>
+</div></div>
+        </div>
+      </article>
+    
+      <!-- Experiment 05 -->
+      <article class="exp-manual-card" id="exp5">
+        <div class="card-header-bar">
+          <div>
+            <div class="exp-id-pill">EXPERIMENT 05 • Class XI Physics</div>
+            <h2 class="exp-manual-title">Physical Beam Balance: Determination of Mass</h2>
+          </div>
+          <div class="card-top-actions">
+            <a href="beam-balance-virtual-lab.html" class="btn-sim-launch" target="_blank" title="Launch simulation in new window">
+              <span>🚀 Launch Simulator</span>
+            </a>
+            <button class="btn-print-exp" onclick="window.print()" title="Print this experiment">
+              <span>🖨️</span> Print
+            </button>
+          </div>
+        </div>
+
+        <!-- 1. Aim -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>🎯</span> Aim of the Experiment</div>
+          <div class="sec-body"><p>To determine the mass of a given body using a physical beam balance by the method of resting point oscillations.</p></div>
+        </div>
+
+        <!-- 2. Apparatus -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>🧰</span> Apparatus & Materials Required</div>
+          <div class="sec-body"><p>Physical balance, analytical weight box with forceps, fractional milligram weights, spirit level, plumb line, unknown body.</p></div>
+        </div>
+
+        <!-- 3. Theory -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>📐</span> Governing Theory & Formulae</div>
+          <div class="sec-body"><p>A beam balance operates on the principle of moments: equilibrium occurs when clockwise moment equals counter-clockwise moment about the central fulcrum.</p>
+<div class="formula-callout">
+  $$M_{\text{body}} \times g \times l_1 = M_{\text{weights}} \times g \times l_2$$
+  For equal arms ($l_1 = l_2$), $M_{\text{body}} = M_{\text{weights}}$.<br><br>
+  <strong>Resting Point (RP) by Oscillations:</strong><br>
+  $$RP = \frac{L_1 + 2L_2 + L_3}{4}$$
+  where $L_1, L_3$ are turning points on left and $L_2$ is turning point on right.<br>
+  $$\text{Mass Correction } \Delta M = \frac{ZRP - RP}{\text{Sensitivity}} \times 10\text{ mg}$$
+</div></div>
+        </div>
+
+        <!-- 4. Procedure -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>📝</span> Step-by-Step Procedure</div>
+          <div class="sec-body"><ol>
+  <li>Level the balance using foot screws until the plumb line aligns with the pointed cone index.</li>
+  <li>Release the beam arresting knob and determine the Zero Resting Point (ZRP) by recording three consecutive turning points of the pointer on the graduated scale.</li>
+  <li>Arrest the beam. Place the unknown body in the left pan.</li>
+  <li>Place standard gram weights in the right pan using forceps. Always arrest the beam before changing weights!</li>
+  <li>Add fractional milligram weights until pointer swings symmetrically across scale.</li>
+  <li>Determine resting point with weights ($RP$). Calculate exact mass with oscillation correction.</li>
+</ol></div>
+        </div>
+
+        <!-- 5. Observations -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>📊</span> Observation Tables & Sample Readings</div>
+          <div class="sec-body"><div class="table-container">
+  <table class="obs-table">
+    <thead>
+      <tr>
+        <th>Condition</th>
+        <th>Turning Point 1 ($L_1$)</th>
+        <th>Turning Point 2 ($L_2$)</th>
+        <th>Turning Point 3 ($L_3$)</th>
+        <th>Calculated RP</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Zero Load (ZRP)</td><td>9.2</td><td>11.4</td><td>9.4</td><td>10.35</td></tr>
+      <tr><td>With Body + 24.35 g</td><td>8.8</td><td>11.8</td><td>9.0</td><td>10.35</td></tr>
+    </tbody>
+  </table>
+</div></div>
+        </div>
+
+        <!-- 6. Precautions -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>⚠️</span> Precautions & Sources of Error</div>
+          <div class="sec-body"><ul>
+  <li>Always arrest the beam completely before adding or removing weights to protect delicate agate knife-edges.</li>
+  <li>Handle weights strictly with clean bone-tipped forceps; finger oil/sweat alters fractional milligram accuracy.</li>
+  <li>Keep glass doors shut during oscillation readings to eliminate air draft currents.</li>
+</ul></div>
+        </div>
+
+        <!-- 7. Viva Voce -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>💬</span> Practical Viva-Voce Questions</div>
+          <div class="sec-body"><div class="viva-box">
+  <div class="viva-item">
+    <div class="viva-q">Q1: Why are knife-edges and bearing planes made of agate?</div>
+    <div class="viva-a">A: Agate is extremely hard, non-corrosive, and non-magnetic, ensuring knife-edges retain ultra-sharp line contact without wearing down.</div>
+  </div>
+</div></div>
+        </div>
+      </article>
+    
+      <!-- Experiment 06 -->
+      <article class="exp-manual-card" id="exp6">
+        <div class="card-header-bar">
+          <div>
+            <div class="exp-id-pill">EXPERIMENT 06 • Class XI Physics</div>
+            <h2 class="exp-manual-title">Parallelogram Law of Vectors: Gravesand's Apparatus</h2>
+          </div>
+          <div class="card-top-actions">
+            <a href="parallelogram-law-of-vectors-virtual-lab.html" class="btn-sim-launch" target="_blank" title="Launch simulation in new window">
+              <span>🚀 Launch Simulator</span>
+            </a>
+            <button class="btn-print-exp" onclick="window.print()" title="Print this experiment">
+              <span>🖨️</span> Print
+            </button>
+          </div>
+        </div>
+
+        <!-- 1. Aim -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>🎯</span> Aim of the Experiment</div>
+          <div class="sec-body"><p>To determine the weight of a given body using the Parallelogram Law of Vectors on Gravesand's apparatus.</p></div>
+        </div>
+
+        <!-- 2. Apparatus -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>🧰</span> Apparatus & Materials Required</div>
+          <div class="sec-body"><p>Gravesand's vertical drawing board, 2 low-friction pulleys, slotted weights with hangers, white paper, drawing pins, mirror strip, thread, unknown weight.</p></div>
+        </div>
+
+        <!-- 3. Theory -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>📐</span> Governing Theory & Formulae</div>
+          <div class="sec-body"><p>If two concurrent forces $\vec{P}$ and $\vec{Q}$ acting at a point are represented in magnitude and direction by adjacent sides of a parallelogram, their resultant $\vec{R}$ is represented by the diagonal passing through their common junction.</p>
+<div class="formula-callout">
+  $$R = \sqrt{P^2 + Q^2 + 2PQ \cos\theta}$$
+  In static equilibrium with unknown suspended weight $W$ acting vertically downward:<br>
+  $$\vec{P} + \vec{Q} + \vec{W} = 0 \implies W = R$$
+</div></div>
+        </div>
+
+        <!-- 4. Procedure -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>📝</span> Step-by-Step Procedure</div>
+          <div class="sec-body"><ol>
+  <li>Fix drawing paper to vertical board. Ensure pulleys move without friction.</li>
+  <li>Pass thread over pulleys. Suspend known weights $P$ and $Q$ on sides and unknown weight $W$ from central junction knot $O$.</li>
+  <li>Adjust weights until knot $O$ rests near center of board without touching paper.</li>
+  <li>Mark directions of all three threads using plane mirror parallax method (align thread with its reflection).</li>
+  <li>Choose suitable vector scale ($1\text{ cm} = 50\text{ g-wt}$) and draw vectors $\vec{OA} = P$ and $\vec{OB} = Q$.</li>
+  <li>Complete parallelogram $OACB$ and measure length of diagonal $OC$.</li>
+  <li>Calculate unknown weight $W = OC \times \text{Scale}$. Compare with spring balance reading.</li>
+</ol></div>
+        </div>
+
+        <!-- 5. Observations -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>📊</span> Observation Tables & Sample Readings</div>
+          <div class="sec-body"><div class="table-container">
+  <table class="obs-table">
+    <thead>
+      <tr>
+        <th>Trial</th>
+        <th>Weight $P$ ($g$-wt)</th>
+        <th>Weight $Q$ ($g$-wt)</th>
+        <th>Included Angle $\theta$</th>
+        <th>Diagonal Length $OC$ ($cm$)</th>
+        <th>Resultant $R$ ($g$-wt)</th>
+        <th>True Weight $W$ ($g$-wt)</th>
+        <th>Error (%)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td>150</td><td>150</td><td>72°</td><td>4.85</td><td>242.5</td><td>240</td><td>+1.0%</td></tr>
+      <tr><td>2</td><td>200</td><td>150</td><td>65°</td><td>5.88</td><td>294.0</td><td>295</td><td>-0.3%</td></tr>
+    </tbody>
+  </table>
+</div></div>
+        </div>
+
+        <!-- 6. Precautions -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>⚠️</span> Precautions & Sources of Error</div>
+          <div class="sec-body"><ul>
+  <li>Pulleys must be frictionless and oiled.</li>
+  <li>Threads must remain parallel to drawing board without rubbing against paper.</li>
+</ul></div>
+        </div>
+
+        <!-- 7. Viva Voce -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>💬</span> Practical Viva-Voce Questions</div>
+          <div class="sec-body"><div class="viva-box">
+  <div class="viva-item">
+    <div class="viva-q">Q1: Why is a mirror strip used to mark thread lines?</div>
+    <div class="viva-a">A: Placing a mirror behind thread and positioning eye such that thread covers its own reflection completely eliminates optical parallax error.</div>
+  </div>
+</div></div>
+        </div>
+      </article>
+    
+      <!-- Experiment 07 -->
+      <article class="exp-manual-card" id="exp7">
+        <div class="card-header-bar">
+          <div>
+            <div class="exp-id-pill">EXPERIMENT 07 • Class XI Physics</div>
+            <h2 class="exp-manual-title">Simple Pendulum: L–T² Graph & Determination of 'g'</h2>
+          </div>
+          <div class="card-top-actions">
+            <a href="simple-pendulum-virtual-lab.html" class="btn-sim-launch" target="_blank" title="Launch simulation in new window">
+              <span>🚀 Launch Simulator</span>
+            </a>
+            <button class="btn-print-exp" onclick="window.print()" title="Print this experiment">
+              <span>🖨️</span> Print
+            </button>
+          </div>
+        </div>
+
+        <!-- 1. Aim -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>🎯</span> Aim of the Experiment</div>
+          <div class="sec-body"><p>To study the variation of time period $T$ with length $L$ of a simple pendulum, plot an $L-T^2$ graph, determine acceleration due to gravity $g$, and find length of a second's pendulum.</p></div>
+        </div>
+
+        <!-- 2. Apparatus -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>🧰</span> Apparatus & Materials Required</div>
+          <div class="sec-body"><p>Heavy metallic spherical bob with hook, light inextensible cord, split cork, rigid retort stand, vernier callipers, meter scale, precision digital stopwatch.</p></div>
+        </div>
+
+        <!-- 3. Theory -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>📐</span> Governing Theory & Formulae</div>
+          <div class="sec-body"><p>For small angular displacement ($\theta \le 4^\circ$), the simple pendulum executes Simple Harmonic Motion (SHM).</p>
+<div class="formula-callout">
+  $$T = 2\pi \sqrt{\frac{L}{g}} \implies T^2 = \left(\frac{4\pi^2}{g}\right) L$$
+  $$\text{Slope of } L-T^2 \text{ graph } S = \frac{T^2}{L} \implies g = \frac{4\pi^2}{\text{Slope}} = 4\pi^2 \left(\frac{L}{T^2}\right)$$
+  <br>
+  <strong>Second's Pendulum ($T = 2\text{ s}$):</strong><br>
+  $$L_{\text{sec}} = \frac{g \times (2)^2}{4\pi^2} = \frac{g}{\pi^2} \approx 99.3\text{ cm}$$
+</div></div>
+        </div>
+
+        <!-- 4. Procedure -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>📝</span> Step-by-Step Procedure</div>
+          <div class="sec-body"><ol>
+  <li>Measure bob diameter with Vernier Callipers to get radius $r$.</li>
+  <li>Clamp cord firmly between two halves of split cork. Adjust effective length $L = l + r + e$ to $60\text{ cm}$.</li>
+  <li>Pull bob aside by small angle ($< 4^\circ$) and release without imparting spin.</li>
+  <li>Start stopwatch as bob crosses central equilibrium line. Measure time for 20 complete oscillations twice.</li>
+  <li>Repeat for lengths $70, 80, 90, 100, 110\text{ cm}$.</li>
+  <li>Compute period $T = t / 20$, $T^2$, and $L/T^2$. Plot $L$ vs $T^2$ linear graph and deduce $g$.</li>
+</ol></div>
+        </div>
+
+        <!-- 5. Observations -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>📊</span> Observation Tables & Sample Readings</div>
+          <div class="sec-body"><div class="table-container">
+  <table class="obs-table">
+    <thead>
+      <tr>
+        <th>Length $L$ ($cm$)</th>
+        <th>Time for 20 osc $t_1$ ($s$)</th>
+        <th>Time for 20 osc $t_2$ ($s$)</th>
+        <th>Mean Time ($s$)</th>
+        <th>Period $T$ ($s$)</th>
+        <th>$T^2$ ($s^2$)</th>
+        <th>$L / T^2$ ($cm/s^2$)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>60.0</td><td>31.1</td><td>31.0</td><td>31.05</td><td>1.553</td><td>2.410</td><td>24.89</td></tr>
+      <tr><td>80.0</td><td>35.9</td><td>35.8</td><td>35.85</td><td>1.793</td><td>3.213</td><td>24.90</td></tr>
+      <tr><td>100.0</td><td>40.1</td><td>40.2</td><td>40.15</td><td>2.008</td><td>4.030</td><td>24.81</td></tr>
+    </tbody>
+  </table>
+</div></div>
+        </div>
+
+        <!-- 6. Precautions -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>⚠️</span> Precautions & Sources of Error</div>
+          <div class="sec-body"><ul>
+  <li>Angular amplitude must remain under $4^\circ$ so that $\sin\theta \approx \theta$.</li>
+  <li>Oscillations must be planar without conical or spinning motion.</li>
+</ul></div>
+        </div>
+
+        <!-- 7. Viva Voce -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>💬</span> Practical Viva-Voce Questions</div>
+          <div class="sec-body"><div class="viva-box">
+  <div class="viva-item">
+    <div class="viva-q">Q1: What is a second's pendulum?</div>
+    <div class="viva-a">A: A pendulum whose period of oscillation is exactly 2 seconds (it takes 1 second to swing from one extreme to the other). Its length at sea level is approximately 99.3 cm.</div>
+  </div>
+</div></div>
+        </div>
+      </article>
+    
+      <!-- Experiment 08 -->
+      <article class="exp-manual-card" id="exp8">
+        <div class="card-header-bar">
+          <div>
+            <div class="exp-id-pill">EXPERIMENT 08 • Class XI Physics</div>
+            <h2 class="exp-manual-title">Limiting Friction vs Normal Reaction (F–R Graph)</h2>
+          </div>
+          <div class="card-top-actions">
+            <a href="limiting-friction-virtual-lab.html" class="btn-sim-launch" target="_blank" title="Launch simulation in new window">
+              <span>🚀 Launch Simulator</span>
+            </a>
+            <button class="btn-print-exp" onclick="window.print()" title="Print this experiment">
+              <span>🖨️</span> Print
+            </button>
+          </div>
+        </div>
+
+        <!-- 1. Aim -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>🎯</span> Aim of the Experiment</div>
+          <div class="sec-body"><p>To study the relationship between the force of limiting friction and normal reaction, and determine the coefficient of static friction $\mu_s$ between a wooden block and a horizontal table.</p></div>
+        </div>
+
+        <!-- 2. Apparatus -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>🧰</span> Apparatus & Materials Required</div>
+          <div class="sec-body"><p>Horizontal wooden bench with frictionless pulley, wooden block with hook, pan, slotted weights ($50\text{ g}, 100\text{ g}$), spring balance, thread.</p></div>
+        </div>
+
+        <!-- 3. Theory -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>📐</span> Governing Theory & Formulae</div>
+          <div class="sec-body"><p>The maximum opposing frictional force before a body begins to slide is the limiting friction $F_s$, directly proportional to normal reaction $R$.</p>
+<div class="formula-callout">
+  $$F_s = \mu_s R$$
+  where $\mu_s$ is the coefficient of static friction.<br>
+  $$R = (M_{\text{block}} + m_{\text{weights on block}}) g, \quad F = (m_{\text{pan}} + m_{\text{weights on pan}}) g$$
+  $$\mu_s = \frac{F}{R} = \text{Slope of } F-R \text{ graph}$$
+</div></div>
+        </div>
+
+        <!-- 4. Procedure -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>📝</span> Step-by-Step Procedure</div>
+          <div class="sec-body"><ol>
+  <li>Weigh the wooden block and scale pan using a spring balance.</li>
+  <li>Place block on clean horizontal bench. Attach thread passing horizontally over pulley to suspended pan.</li>
+  <li>Add small weights to pan and tap bench gently until block just begins to slide. Note total pan mass.</li>
+  <li>Add $50\text{ g}, 100\text{ g}, 150\text{ g}, 200\text{ g}$ atop the block to increase normal reaction $R$.</li>
+  <li>Record corresponding limiting pulling force $F$. Plot $F$ vs $R$ and determine slope $\mu_s$.</li>
+</ol></div>
+        </div>
+
+        <!-- 5. Observations -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>📊</span> Observation Tables & Sample Readings</div>
+          <div class="sec-body"><div class="table-container">
+  <table class="obs-table">
+    <thead>
+      <tr>
+        <th>Trial</th>
+        <th>Weight on Block ($g$)</th>
+        <th>Total Normal Reaction $R$ ($g$-wt)</th>
+        <th>Weight in Pan ($g$)</th>
+        <th>Limiting Friction $F$ ($g$-wt)</th>
+        <th>$\mu_s = F / R$</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td>0</td><td>200</td><td>62</td><td>82</td><td>0.41</td></tr>
+      <tr><td>2</td><td>100</td><td>300</td><td>103</td><td>123</td><td>0.41</td></tr>
+      <tr><td>3</td><td>200</td><td>400</td><td>145</td><td>165</td><td>0.41</td></tr>
+    </tbody>
+  </table>
+</div></div>
+        </div>
+
+        <!-- 6. Precautions -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>⚠️</span> Precautions & Sources of Error</div>
+          <div class="sec-body"><ul>
+  <li>The string connecting block to pulley must be strictly horizontal.</li>
+  <li>Always tap the bench gently to overcome initial contact stickiness.</li>
+</ul></div>
+        </div>
+
+        <!-- 7. Viva Voce -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>💬</span> Practical Viva-Voce Questions</div>
+          <div class="sec-body"><div class="viva-box">
+  <div class="viva-item">
+    <div class="viva-q">Q1: Why is static friction called a self-adjusting force?</div>
+    <div class="viva-a">A: It adjusts both its magnitude and direction to exactly oppose any applied force up to the threshold of limiting friction.</div>
+  </div>
+</div></div>
+        </div>
+      </article>
+    
+      <!-- Experiment 09 -->
+      <article class="exp-manual-card" id="exp9">
+        <div class="card-header-bar">
+          <div>
+            <div class="exp-id-pill">EXPERIMENT 09 • Class XI Physics</div>
+            <h2 class="exp-manual-title">Inclined Plane: Downward Force vs sin θ Relationship</h2>
+          </div>
+          <div class="card-top-actions">
+            <a href="inclined-plane-roller-virtual-lab.html" class="btn-sim-launch" target="_blank" title="Launch simulation in new window">
+              <span>🚀 Launch Simulator</span>
+            </a>
+            <button class="btn-print-exp" onclick="window.print()" title="Print this experiment">
+              <span>🖨️</span> Print
+            </button>
+          </div>
+        </div>
+
+        <!-- 1. Aim -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>🎯</span> Aim of the Experiment</div>
+          <div class="sec-body"><p>To study the downward force along an inclined plane acting on a roller due to gravity and verify its relationship with $\sin\theta$.</p></div>
+        </div>
+
+        <!-- 2. Apparatus -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>🧰</span> Apparatus & Materials Required</div>
+          <div class="sec-body"><p>Inclined plane with protractor and pulley, heavy metallic roller, spring balance, weight pan, slotted weights, light cord.</p></div>
+        </div>
+
+        <!-- 3. Theory -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>📐</span> Governing Theory & Formulae</div>
+          <div class="sec-body"><p>A mass $m$ placed on an incline tilted at angle $\theta$ experiences gravitational components:</p>
+<div class="formula-callout">
+  $$W_{\parallel} = mg \sin\theta \quad (\text{downward along slope})$$
+  $$W_{\perp} = mg \cos\theta \quad (\text{normal reaction into slope})$$
+  A plot of $F_{\text{down}}$ versus $\sin\theta$ yields a straight line passing through origin with slope equal to $mg$.
+</div></div>
+        </div>
+
+        <!-- 4. Procedure -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>📝</span> Step-by-Step Procedure</div>
+          <div class="sec-body"><ol>
+  <li>Weigh roller and pan. Set inclined plane angle $\theta = 20^\circ$.</li>
+  <li>Attach cord to roller, pass over top pulley, and attach to pan.</li>
+  <li>Determine weight $W_1$ needed in pan for roller to move up with constant speed.</li>
+  <li>Determine weight $W_2$ in pan when roller moves down with constant speed.</li>
+  <li>Mean downward force $F = \frac{W_1 + W_2}{2}$ eliminates rolling friction.</li>
+  <li>Repeat for $\theta = 30^\circ, 40^\circ, 45^\circ, 50^\circ$. Plot $F$ vs $\sin\theta$.</li>
+</ol></div>
+        </div>
+
+        <!-- 5. Observations -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>📊</span> Observation Tables & Sample Readings</div>
+          <div class="sec-body"><div class="table-container">
+  <table class="obs-table">
+    <thead>
+      <tr>
+        <th>Angle $\theta$</th>
+        <th>$\sin\theta$</th>
+        <th>$W_1$ (Moving Up, $g$-wt)</th>
+        <th>$W_2$ (Moving Down, $g$-wt)</th>
+        <th>Mean Force $F$ ($g$-wt)</th>
+        <th>Theoretical $mg\sin\theta$</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>20°</td><td>0.342</td><td>185</td><td>155</td><td>170</td><td>171</td></tr>
+      <tr><td>30°</td><td>0.500</td><td>265</td><td>235</td><td>250</td><td>250</td></tr>
+      <tr><td>45°</td><td>0.707</td><td>370</td><td>340</td><td>355</td><td>354</td></tr>
+    </tbody>
+  </table>
+</div></div>
+        </div>
+
+        <!-- 6. Precautions -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>⚠️</span> Precautions & Sources of Error</div>
+          <div class="sec-body"><ul>
+  <li>Cord must be parallel to the plane surface.</li>
+  <li>Pulley must be frictionless and clean.</li>
+</ul></div>
+        </div>
+
+        <!-- 7. Viva Voce -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>💬</span> Practical Viva-Voce Questions</div>
+          <div class="sec-body"><div class="viva-box">
+  <div class="viva-item">
+    <div class="viva-q">Q1: Why do we take average of upward and downward moving weights?</div>
+    <div class="viva-a">A: Moving up: $T_1 = mg\sin\theta + f_r$. Moving down: $T_2 = mg\sin\theta - f_r$. The mean $(T_1 + T_2)/2 = mg\sin\theta$ cancels friction completely.</div>
+  </div>
+</div></div>
+        </div>
+      </article>
+    
+      <!-- Experiment 10 -->
+      <article class="exp-manual-card" id="exp10">
+        <div class="card-header-bar">
+          <div>
+            <div class="exp-id-pill">EXPERIMENT 10 • Class XII Physics</div>
+            <h2 class="exp-manual-title">Ohm's Law: V–I Characteristic, Resistance & Resistivity</h2>
+          </div>
+          <div class="card-top-actions">
+            <a href="ohms-law-virtual-lab.html" class="btn-sim-launch" target="_blank" title="Launch simulation in new window">
+              <span>🚀 Launch Simulator</span>
+            </a>
+            <button class="btn-print-exp" onclick="window.print()" title="Print this experiment">
+              <span>🖨️</span> Print
+            </button>
+          </div>
+        </div>
+
+        <!-- 1. Aim -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>🎯</span> Aim of the Experiment</div>
+          <div class="sec-body"><p>To determine resistance per unit length of a given wire by plotting a graph of potential difference versus current, and calculate specific resistance (resistivity) of its material.</p></div>
+        </div>
+
+        <!-- 2. Apparatus -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>🧰</span> Apparatus & Materials Required</div>
+          <div class="sec-body"><p>Resistance wire (Constantan/Nichrome), DC power supply ($0-6\text{ V}$), DC ammeter ($0-1.5\text{ A}$), DC voltmeter ($0-3\text{ V}$), rheostat, plug key, connecting wires, screw gauge, meter scale.</p></div>
+        </div>
+
+        <!-- 3. Theory -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>📐</span> Governing Theory & Formulae</div>
+          <div class="sec-body"><p>Ohm's Law: Electric current $I$ flowing through a conductor is directly proportional to potential difference $V$ across its ends, provided physical conditions (temperature, strain) remain constant.</p>
+<div class="formula-callout">
+  $$V = I \cdot R \implies R = \frac{V}{I} = \text{Slope of } V-I \text{ graph}$$
+  <br>
+  <strong>Specific Resistance (Resistivity $\rho$):</strong><br>
+  $$\rho = R \frac{A}{L} = R \frac{\pi D^2}{4L} \quad (\Omega \cdot \text{m})$$
+</div></div>
+        </div>
+
+        <!-- 4. Procedure -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>📝</span> Step-by-Step Procedure</div>
+          <div class="sec-body"><ol>
+  <li>Clean wire terminals with sandpaper. Connect battery, key, rheostat, ammeter, and resistance wire in series.</li>
+  <li>Connect voltmeter in parallel across the resistance wire.</li>
+  <li>Insert key and adjust rheostat so that ammeter and voltmeter show measurable deflections.</li>
+  <li>Record ammeter current $I$ and voltmeter voltage $V$.</li>
+  <li>Shift rheostat slider to obtain 6 distinct sets of $V$ and $I$ values.</li>
+  <li>Measure wire length with meter rule and diameter with screw gauge.</li>
+  <li>Plot $V$ vs $I$ graph and compute slope $R$ and resistivity $\rho$.</li>
+</ol></div>
+        </div>
+
+        <!-- 5. Observations -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>📊</span> Observation Tables & Sample Readings</div>
+          <div class="sec-body"><div class="table-container">
+  <table class="obs-table">
+    <thead>
+      <tr>
+        <th>Obs. No.</th>
+        <th>Ammeter Current $I$ ($A$)</th>
+        <th>Voltmeter Voltage $V$ ($V$)</th>
+        <th>Resistance $R = V / I$ ($\Omega$)</th>
+        <th>Mean Resistance ($\Omega$)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td>0.20</td><td>1.00</td><td>5.00</td><td rowspan="4"><strong>5.01 Ω</strong></td></tr>
+      <tr><td>2</td><td>0.40</td><td>2.01</td><td>5.02</td></tr>
+      <tr><td>3</td><td>0.60</td><td>3.00</td><td>5.00</td></tr>
+      <tr><td>4</td><td>0.80</td><td>4.02</td><td>5.02</td></tr>
+    </tbody>
+  </table>
+</div></div>
+        </div>
+
+        <!-- 6. Precautions -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>⚠️</span> Precautions & Sources of Error</div>
+          <div class="sec-body"><ul>
+  <li>Keep the plug key open between readings to prevent Joule heating ($I^2Rt$), which increases resistance.</li>
+  <li>Connect voltmeter strictly in parallel and ammeter in series with correct polarity ($+$ to $+$).</li>
+</ul></div>
+        </div>
+
+        <!-- 7. Viva Voce -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>💬</span> Practical Viva-Voce Questions</div>
+          <div class="sec-body"><div class="viva-box">
+  <div class="viva-item">
+    <div class="viva-q">Q1: Why does Ohm's law fail if current flows continuously for long periods?</div>
+    <div class="viva-a">A: Continuous current heats the wire via Joule heating ($H = I^2Rt$). In metallic conductors, increased temperature increases lattice vibrations, increasing resistance and curving the V-I line.</div>
+  </div>
+</div></div>
+        </div>
+      </article>
+    
+      <!-- Experiment 11 -->
+      <article class="exp-manual-card" id="exp11">
+        <div class="card-header-bar">
+          <div>
+            <div class="exp-id-pill">EXPERIMENT 11 • Class XII Physics</div>
+            <h2 class="exp-manual-title">Meter Bridge (Slide Wire Bridge): Unknown Resistance & Resistivity</h2>
+          </div>
+          <div class="card-top-actions">
+            <a href="meter-bridge-virtual-lab.html" class="btn-sim-launch" target="_blank" title="Launch simulation in new window">
+              <span>🚀 Launch Simulator</span>
+            </a>
+            <button class="btn-print-exp" onclick="window.print()" title="Print this experiment">
+              <span>🖨️</span> Print
+            </button>
+          </div>
+        </div>
+
+        <!-- 1. Aim -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>🎯</span> Aim of the Experiment</div>
+          <div class="sec-body"><p>To find the resistance of a given wire using a meter bridge and determine the specific resistance (resistivity) of its material.</p></div>
+        </div>
+
+        <!-- 2. Apparatus -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>🧰</span> Apparatus & Materials Required</div>
+          <div class="sec-body"><p>Meter bridge ($100\text{ cm}$ slide wire), center-zero galvanometer, Leclanché/DC cell, resistance box ($1-100\,\Omega$), sliding jockey, unknown resistance wire, screw gauge, meter scale.</p></div>
+        </div>
+
+        <!-- 3. Theory -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>📐</span> Governing Theory & Formulae</div>
+          <div class="sec-body"><p>The meter bridge is a practical laboratory realization of the Wheatstone bridge null deflection principle.</p>
+<div class="formula-callout">
+  $$\frac{P}{Q} = \frac{R}{X} \implies \frac{\sigma l}{\sigma (100 - l)} = \frac{R}{X}$$
+  $$X = R \left(\frac{100 - l}{l}\right)$$
+  <br>
+  <strong>Specific Resistivity ($\rho$):</strong><br>
+  $$\rho = X \frac{\pi D^2}{4L}$$
+</div></div>
+        </div>
+
+        <!-- 4. Procedure -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>📝</span> Step-by-Step Procedure</div>
+          <div class="sec-body"><ol>
+  <li>Connect standard resistance box $R$ in left gap and unknown coil $X$ in right gap. Connect battery across end brass terminals $A$ and $C$, and galvanometer between central terminal $B$ and jockey.</li>
+  <li>Test connection by touching jockey at $l=5\text{ cm}$ and $l=95\text{ cm}$; galvanometer needle must deflect in opposite directions.</li>
+  <li>Take out suitable resistance $R$ from box ($2-6\,\Omega$). Slide jockey gently to locate null deflection point ($I_g = 0$).</li>
+  <li>Record balancing length $l$ from zero end.</li>
+  <li>Repeat for 5 different values of $R$ ensuring balance point remains between $35\text{ cm}$ and $65\text{ cm}$.</li>
+  <li>Measure wire diameter with screw gauge and calculate resistivity $\rho$.</li>
+</ol></div>
+        </div>
+
+        <!-- 5. Observations -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>📊</span> Observation Tables & Sample Readings</div>
+          <div class="sec-body"><div class="table-container">
+  <table class="obs-table">
+    <thead>
+      <tr>
+        <th>Obs. No.</th>
+        <th>Known Resistance $R$ ($\Omega$)</th>
+        <th>Balancing Length $l$ ($cm$)</th>
+        <th>$(100 - l)$ ($cm$)</th>
+        <th>$X = R(100 - l) / l$ ($\Omega$)</th>
+        <th>Mean $X$ ($\Omega$)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td>2.0</td><td>40.0</td><td>60.0</td><td>3.00</td><td rowspan="3"><strong>3.01 Ω</strong></td></tr>
+      <tr><td>2</td><td>3.0</td><td>50.0</td><td>50.0</td><td>3.00</td></tr>
+      <tr><td>3</td><td>4.0</td><td>57.0</td><td>43.0</td><td>3.02</td></tr>
+    </tbody>
+  </table>
+</div></div>
+        </div>
+
+        <!-- 6. Precautions -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>⚠️</span> Precautions & Sources of Error</div>
+          <div class="sec-body"><ul>
+  <li>Jockey must be touched lightly onto wire, never dragged or scraped (scraping distorts wire diameter uniformity).</li>
+  <li>Keep balancing length near $50\text{ cm}$ for maximum bridge sensitivity and minimal percentage error.</li>
+</ul></div>
+        </div>
+
+        <!-- 7. Viva Voce -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>💬</span> Practical Viva-Voce Questions</div>
+          <div class="sec-body"><div class="viva-box">
+  <div class="viva-item">
+    <div class="viva-q">Q1: Why is the meter bridge most sensitive when the null point is near 50cm?</div>
+    <div class="viva-a">A: Bridge sensitivity is maximum when all four arms have nearly equal resistance ($P \approx Q \approx R \approx X$). Near 50cm, fractional error $\frac{\Delta X}{X} = \frac{\Delta l}{l} + \frac{\Delta l}{100 - l}$ is mathematically minimized.</div>
+  </div>
+</div></div>
+        </div>
+      </article>
+    
+      <!-- Experiment 12 -->
+      <article class="exp-manual-card" id="exp12">
+        <div class="card-header-bar">
+          <div>
+            <div class="exp-id-pill">EXPERIMENT 12 • Class XII Physics</div>
+            <h2 class="exp-manual-title">Wheatstone's Bridge Simulator: 4-Arm Null Balance Network</h2>
+          </div>
+          <div class="card-top-actions">
+            <a href="wheatstone-bridge-virtual-lab.html" class="btn-sim-launch" target="_blank" title="Launch simulation in new window">
+              <span>🚀 Launch Simulator</span>
+            </a>
+            <button class="btn-print-exp" onclick="window.print()" title="Print this experiment">
+              <span>🖨️</span> Print
+            </button>
+          </div>
+        </div>
+
+        <!-- 1. Aim -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>🎯</span> Aim of the Experiment</div>
+          <div class="sec-body"><p>To determine the unknown resistance of a resistor by setting up a 4-arm Wheatstone's bridge network and verifying null condition.</p></div>
+        </div>
+
+        <!-- 2. Apparatus -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>🧰</span> Apparatus & Materials Required</div>
+          <div class="sec-body"><p>Wheatstone bridge quadrilateral assembly with ratio arms ($P, Q$), adjustable resistance arm ($R$), unknown arm ($S$), galvanometer, DC battery, key.</p></div>
+        </div>
+
+        <!-- 3. Theory -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>📐</span> Governing Theory & Formulae</div>
+          <div class="sec-body"><p>In a closed bridge network $ABCD$, when potential at junction $B$ equals potential at junction $D$, no current flows through galvanometer ($I_g = 0$).</p>
+<div class="formula-callout">
+  $$\frac{P}{Q} = \frac{R}{S} \implies S = R \left(\frac{Q}{P}\right)$$
+</div></div>
+        </div>
+
+        <!-- 4. Procedure -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>📝</span> Step-by-Step Procedure</div>
+          <div class="sec-body"><ol>
+  <li>Set ratio arms $P$ and $Q$ to desired ratio (e.g. $10\,\Omega : 10\,\Omega$ or $100\,\Omega : 10\,\Omega$).</li>
+  <li>Connect unknown resistor in arm $S$.</li>
+  <li>Depress battery key $K_1$ first, then tap galvanometer key $K_2$.</li>
+  <li>Adjust resistance $R$ until galvanometer deflection drops to exactly zero.</li>
+  <li>Compute unknown resistance $S = R(Q/P)$.</li>
+</ol></div>
+        </div>
+
+        <!-- 5. Observations -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>📊</span> Observation Tables & Sample Readings</div>
+          <div class="sec-body"><div class="table-container">
+  <table class="obs-table">
+    <thead>
+      <tr>
+        <th>Trial</th>
+        <th>Arm $P$ ($\Omega$)</th>
+        <th>Arm $Q$ ($\Omega$)</th>
+        <th>Ratio $Q / P$</th>
+        <th>Standard $R$ ($\Omega$)</th>
+        <th>Unknown $S$ ($\Omega$)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td>100</td><td>100</td><td>1.0</td><td>15.0</td><td>15.0</td></tr>
+      <tr><td>2</td><td>1000</td><td>100</td><td>0.1</td><td>150.0</td><td>15.0</td></tr>
+    </tbody>
+  </table>
+</div></div>
+        </div>
+
+        <!-- 6. Precautions -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>⚠️</span> Precautions & Sources of Error</div>
+          <div class="sec-body"><ul>
+  <li>Always close battery key first, then galvanometer key to prevent transient inductive deflection kick.</li>
+</ul></div>
+        </div>
+
+        <!-- 7. Viva Voce -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>💬</span> Practical Viva-Voce Questions</div>
+          <div class="sec-body"><div class="viva-box">
+  <div class="viva-item">
+    <div class="viva-q">Q1: What happens if battery and galvanometer connections are interchanged?</div>
+    <div class="viva-a">A: The balance condition remains completely unaltered ($\frac{P}{Q} = \frac{R}{S}$ is symmetrical). However, sensitivity may slightly change.</div>
+  </div>
+</div></div>
+        </div>
+      </article>
+    
+      </div>
+    </main>
+  </div>
+
+  <!-- Back to top button -->
+  <button class="btn-back-top" onclick="window.scrollTo({top:0, behavior:'smooth'})" title="Back to top">↑</button>
+
+  <!-- Footer -->
+  <footer class="manual-footer">
+    <div class="footer-brand-title">National Model Schools</div>
+    <p class="footer-desc">Senior Secondary Virtual Physics Laboratory & Practical Compendium. Optimized for digital pedagogy, self-paced student experimentation, and board practical readiness.</p>
+    <div class="footer-dev-badge">
+      Developed with ❤ by <a href="https://github.com/mazhar-in" target="_blank" rel="noopener noreferrer">Syed Mazhar Ali</a>
+    </div>
+  </footer>
+
+  <!-- KaTeX Scripts -->
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      // Auto-render math via KaTeX
+      function renderMath() {
+        if (window.renderMathInElement) {
+          renderMathInElement(document.body, {
+            delimiters: [
+              {left: '$$', right: '$$', display: true},
+              {left: '$', right: '$', display: false},
+              {left: '\\(', right: '\\)', display: false},
+              {left: '\\[', right: '\\]', display: true}
+            ],
+            throwOnError: false
+          });
+        } else {
+          setTimeout(renderMath, 100);
+        }
+      }
+      renderMath();
+
+      // Scroll Spy for sidebar
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const id = entry.target.getAttribute('id');
+            document.querySelectorAll('.sidebar-nav-link').forEach(link => {
+              link.classList.remove('active');
+            });
+            const activeLink = document.getElementById('nav-' + id);
+            if (activeLink) activeLink.classList.add('active');
+          }
+        });
+      }, { rootMargin: '-20% 0px -70% 0px' });
+
+      document.querySelectorAll('article.exp-manual-card').forEach(article => {
+        observer.observe(article);
+      });
+    });
+
+    // Filter manuals via search
+    function filterManuals(query) {
+      const q = query.toLowerCase().trim();
+      const articles = document.querySelectorAll('article.exp-manual-card');
+      const navLinks = document.querySelectorAll('.sidebar-nav-link');
+
+      articles.forEach(art => {
+        const text = art.innerText.toLowerCase();
+        const id = art.getAttribute('id');
+        const match = text.includes(q);
+        art.style.display = match ? 'block' : 'none';
+
+        const nav = document.getElementById('nav-' + id);
+        if (nav) {
+          nav.parentElement.style.display = match ? 'block' : 'none';
+        }
+      });
+    }
+  </script>
+</body>
+</html>

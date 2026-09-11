@@ -598,6 +598,31 @@
       border-color: rgba(255, 255, 255, 0.25);
     }
 
+    .btn-card-manual {
+      background: rgba(56, 189, 248, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      color: #38bdf8;
+      height: 46px;
+      padding: 0 0.85rem;
+      border-radius: 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      text-decoration: none;
+      font-size: 0.84rem;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .btn-card-manual:hover {
+      background: rgba(56, 189, 248, 0.22);
+      color: #ffffff;
+      border-color: rgba(56, 189, 248, 0.5);
+      transform: translateY(-2px);
+    }
+
     /* Empty state */
     .empty-search-state {
       display: none;
@@ -753,6 +778,9 @@
       </a>
 
       <div class="header-actions">
+        <a href="manuals.html" class="btn-fs-toggle" title="Comprehensive Physics Practical Manuals" style="text-decoration:none; background:rgba(56, 189, 248, 0.15); border-color:rgba(56, 189, 248, 0.4); color:#38bdf8;">
+          <span>📖</span> Lab Manuals
+        </a>
         <button class="btn-fs-toggle" id="btnFullscreenToggle" title="Toggle Fullscreen Mode">
           <span>⛶</span> Fullscreen
         </button>
@@ -791,6 +819,12 @@
           <div class="stat-number">KaTeX</div>
           <div class="stat-label">Math Equations</div>
         </div>
+      </div>
+
+      <div style="margin-top: 1.75rem; display: flex; justify-content: center;">
+        <a href="manuals.html" style="display: inline-flex; align-items: center; gap: 0.65rem; padding: 0.75rem 1.6rem; border-radius: 14px; background: linear-gradient(135deg, rgba(56, 189, 248, 0.2) 0%, rgba(99, 102, 241, 0.25) 100%); border: 1px solid rgba(56, 189, 248, 0.4); color: #ffffff; text-decoration: none; font-weight: 700; font-size: 0.95rem; box-shadow: 0 4px 20px rgba(56, 189, 248, 0.2); transition: all 0.25s ease;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 24px rgba(56, 189, 248, 0.35)'" onmouseout="this.style.transform='none'; this.style.boxShadow='0 4px 20px rgba(56, 189, 248, 0.2)'">
+          <span>📖</span> Open Comprehensive Practical Manuals & Observation Tables →
+        </a>
       </div>
     </section>
 
@@ -865,6 +899,9 @@
             <a href="vernier-callipers-virtual-lab.html" class="btn-launch">
               <span>🚀 Launch Lab</span>
             </a>
+            <a href="manuals.html#exp1" class="btn-card-manual" title="View Practical Lab Manual">
+              <span>📖</span> Manual
+            </a>
             <a href="vernier-callipers-virtual-lab.html" target="_blank" class="btn-card-pop" title="Open in New Tab">↗</a>
           </div>
         </div>
@@ -890,6 +927,9 @@
           <div class="card-actions">
             <a href="screw-gauge-micrometer-virtual-lab.html" class="btn-launch">
               <span>🚀 Launch Lab</span>
+            </a>
+            <a href="manuals.html#exp2" class="btn-card-manual" title="View Practical Lab Manual">
+              <span>📖</span> Manual
             </a>
             <a href="screw-gauge-micrometer-virtual-lab.html" target="_blank" class="btn-card-pop" title="Open in New Tab">↗</a>
           </div>
@@ -917,6 +957,9 @@
             <a href="spherometer-virtual-lab.html" class="btn-launch">
               <span>🚀 Launch Lab</span>
             </a>
+            <a href="manuals.html#exp3" class="btn-card-manual" title="View Practical Lab Manual">
+              <span>📖</span> Manual
+            </a>
             <a href="spherometer-virtual-lab.html" target="_blank" class="btn-card-pop" title="Open in New Tab">↗</a>
           </div>
         </div>
@@ -943,6 +986,9 @@
             <a href="volume-of-irregular-lamina-virtual-lab.html" class="btn-launch">
               <span>🚀 Launch Lab</span>
             </a>
+            <a href="manuals.html#exp4" class="btn-card-manual" title="View Practical Lab Manual">
+              <span>📖</span> Manual
+            </a>
             <a href="volume-of-irregular-lamina-virtual-lab.html" target="_blank" class="btn-card-pop" title="Open in New Tab">↗</a>
           </div>
         </div>
@@ -968,6 +1014,9 @@
           <div class="card-actions">
             <a href="beam-balance-virtual-lab.html" class="btn-launch">
               <span>🚀 Launch Lab</span>
+            </a>
+            <a href="manuals.html#exp5" class="btn-card-manual" title="View Practical Lab Manual">
+              <span>📖</span> Manual
             </a>
             <a href="beam-balance-virtual-lab.html" target="_blank" class="btn-card-pop" title="Open in New Tab">↗</a>
           </div>
@@ -1007,6 +1056,9 @@
             <a href="parallelogram-law-of-vectors-virtual-lab.html" class="btn-launch">
               <span>🚀 Launch Lab</span>
             </a>
+            <a href="manuals.html#exp6" class="btn-card-manual" title="View Practical Lab Manual">
+              <span>📖</span> Manual
+            </a>
             <a href="parallelogram-law-of-vectors-virtual-lab.html" target="_blank" class="btn-card-pop" title="Open in New Tab">↗</a>
           </div>
         </div>
@@ -1032,6 +1084,9 @@
           <div class="card-actions">
             <a href="simple-pendulum-virtual-lab.html" class="btn-launch">
               <span>🚀 Launch Lab</span>
+            </a>
+            <a href="manuals.html#exp7" class="btn-card-manual" title="View Practical Lab Manual">
+              <span>📖</span> Manual
             </a>
             <a href="simple-pendulum-virtual-lab.html" target="_blank" class="btn-card-pop" title="Open in New Tab">↗</a>
           </div>
@@ -1059,6 +1114,9 @@
             <a href="limiting-friction-virtual-lab.html" class="btn-launch">
               <span>🚀 Launch Lab</span>
             </a>
+            <a href="manuals.html#exp8" class="btn-card-manual" title="View Practical Lab Manual">
+              <span>📖</span> Manual
+            </a>
             <a href="limiting-friction-virtual-lab.html" target="_blank" class="btn-card-pop" title="Open in New Tab">↗</a>
           </div>
         </div>
@@ -1084,6 +1142,9 @@
           <div class="card-actions">
             <a href="inclined-plane-roller-virtual-lab.html" class="btn-launch">
               <span>🚀 Launch Lab</span>
+            </a>
+            <a href="manuals.html#exp9" class="btn-card-manual" title="View Practical Lab Manual">
+              <span>📖</span> Manual
             </a>
             <a href="inclined-plane-roller-virtual-lab.html" target="_blank" class="btn-card-pop" title="Open in New Tab">↗</a>
           </div>
@@ -1123,6 +1184,9 @@
             <a href="ohms-law-virtual-lab.html" class="btn-launch">
               <span>🚀 Launch Lab</span>
             </a>
+            <a href="manuals.html#exp10" class="btn-card-manual" title="View Practical Lab Manual">
+              <span>📖</span> Manual
+            </a>
             <a href="ohms-law-virtual-lab.html" target="_blank" class="btn-card-pop" title="Open in New Tab">↗</a>
           </div>
         </div>
@@ -1149,6 +1213,9 @@
             <a href="meter-bridge-virtual-lab.html" class="btn-launch">
               <span>🚀 Launch Lab</span>
             </a>
+            <a href="manuals.html#exp11" class="btn-card-manual" title="View Practical Lab Manual">
+              <span>📖</span> Manual
+            </a>
             <a href="meter-bridge-virtual-lab.html" target="_blank" class="btn-card-pop" title="Open in New Tab">↗</a>
           </div>
         </div>
@@ -1174,6 +1241,9 @@
           <div class="card-actions">
             <a href="wheatstone-bridge-virtual-lab.html" class="btn-launch">
               <span>🚀 Launch Lab</span>
+            </a>
+            <a href="manuals.html#exp12" class="btn-card-manual" title="View Practical Lab Manual">
+              <span>📖</span> Manual
             </a>
             <a href="wheatstone-bridge-virtual-lab.html" target="_blank" class="btn-card-pop" title="Open in New Tab">↗</a>
           </div>
