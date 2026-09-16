@@ -745,23 +745,23 @@
       function checkPinHit(px, py, w, h) {
         const { Qx, Qy, normalAngle1 } = getGeometry(w, h);
         const iRad = (currentI * Math.PI) / 180;
-        const incAngle = normalAngle1 + iRad;
-        const rayLen = 135;
+        const incAngle = normalAngle1 - iRad;
+        const rayLen = 145;
 
-        const P1x = Qx + Math.cos(incAngle) * rayLen * 0.85;
-        const P1y = Qy + Math.sin(incAngle) * rayLen * 0.85;
-        const P2x = Qx + Math.cos(incAngle) * rayLen * 0.45;
-        const P2y = Qy + Math.sin(incAngle) * rayLen * 0.45;
+        const P1x = Qx + Math.cos(incAngle) * rayLen * 0.82;
+        const P1y = Qy + Math.sin(incAngle) * rayLen * 0.82;
+        const P2x = Qx + Math.cos(incAngle) * rayLen * 0.40;
+        const P2y = Qy + Math.sin(incAngle) * rayLen * 0.40;
 
-        if (Math.hypot(px - P1x, py - P1y) <= 22) return true;
-        if (Math.hypot(px - P2x, py - P2y) <= 18) return true;
+        if (Math.hypot(px - P1x, py - P1y) <= 24) return true;
+        if (Math.hypot(px - P2x, py - P2y) <= 20) return true;
         return false;
       }
 
       function updateAngleFromPointer(px, py, w, h) {
         const { Qx, Qy, normalAngle1 } = getGeometry(w, h);
         const ptrAngle = Math.atan2(py - Qy, px - Qx);
-        let diffRad = ptrAngle - normalAngle1;
+        let diffRad = normalAngle1 - ptrAngle;
         while (diffRad < -Math.PI) diffRad += Math.PI * 2;
         while (diffRad > Math.PI) diffRad -= Math.PI * 2;
 
@@ -999,17 +999,17 @@
       ctx.fillText('N₂', Rx + n2x * 82, Ry + n2y * 82);
       ctx.restore();
 
-      // 9. Incident Ray and Pins P1, P2
+      // 9. Incident Ray and Pins P1, P2 (Coming from DOWN-LEFT towards face AB)
       const iRad = (currentI * Math.PI) / 180;
-      const incAngle = normalAngle1 + iRad;
-      const rayLen = 140;
+      const incAngle = normalAngle1 - iRad;
+      const rayLen = 145;
       const Px = Qx + Math.cos(incAngle) * rayLen;
       const Py = Qy + Math.sin(incAngle) * rayLen;
 
-      // Incident Glowing Ray
+      // Incident Glowing Ray (from P up to Q)
       drawGlowingBeam(Px, Py, Qx, Qy, 'rgba(56, 189, 248, 0.28)', '#38bdf8', false);
 
-      // Pins on Incident Ray
+      // Pins on Incident Ray (Lower-Left area)
       const P1x = Qx + (Px - Qx) * 0.82;
       const P1y = Qy + (Py - Qy) * 0.82;
       const P2x = Qx + (Px - Qx) * 0.40;
@@ -1018,10 +1018,10 @@
       drawRealisticPin(P1x, P1y, 'P₁ (Drag)', '#f59e0b', isDraggingPin);
       drawRealisticPin(P2x, P2y, 'P₂', '#f59e0b', false);
 
-      // Angle of Incidence (i) Arc
+      // Angle of Incidence (i) Arc between Normal N1 and Incident Ray
       drawAngleArc(Qx, Qy, normalAngle1, incAngle, 34, `i = ${currentI.toFixed(1)}°`, '#38bdf8');
 
-      // 10. Multi-Wavelength Dispersion inside Prism
+      // 10. Multi-Wavelength Dispersion inside Prism & Emergence
       const wavelengths = [
         { name: 'red', dMu: -0.018, color: '#ef4444', glow: 'rgba(239, 68, 68, 0.4)' },
         { name: 'orange', dMu: -0.009, color: '#f97316', glow: 'rgba(249, 115, 22, 0.4)' },
@@ -1053,14 +1053,14 @@
             ctx.lineTo(Rx_w, Ry_w);
             ctx.stroke();
 
-            // Emergent ray fan
+            // Emergent ray fan (bends towards base BC into lower-right)
             const r2_w = (PRISM_A_DEG * Math.PI / 180) - r1_w;
             const sinE_w = muW * Math.sin(r2_w);
             if (sinE_w <= 1.0) {
               const eRad_w = Math.asin(sinE_w);
               const emergAngle_w = normalAngle2 + eRad_w;
-              const Sx_w = Rx_w + Math.cos(emergAngle_w) * (rayLen * 0.9);
-              const Sy_w = Ry_w + Math.sin(emergAngle_w) * (rayLen * 0.9);
+              const Sx_w = Rx_w + Math.cos(emergAngle_w) * (rayLen * 0.92);
+              const Sy_w = Ry_w + Math.sin(emergAngle_w) * (rayLen * 0.92);
 
               ctx.strokeStyle = wvl.color;
               ctx.lineWidth = wvl.name === 'yellow' ? 2.2 : 1.1;
@@ -1073,8 +1073,8 @@
         }
       });
 
-      // Refraction Angle (r1) Arc at Q
-      drawAngleArc(Qx, Qy, refractedRayAngle, inwardNormalAngle1, 28, `r₁ = ${r1Deg.toFixed(1)}°`, '#eab308');
+      // Refraction Angle (r1) Arc at Q inside prism
+      drawAngleArc(Qx, Qy, inwardNormalAngle1, refractedRayAngle, 20, `r₁=${r1Deg.toFixed(1)}°`, '#eab308');
 
       // 11. Emergent Ray & Pins P3, P4
       if (!isNaN(eDeg)) {
@@ -1083,10 +1083,17 @@
         const Sx = Rx + Math.cos(emergentRayAngle) * rayLen;
         const Sy = Ry + Math.sin(emergentRayAngle) * rayLen;
 
+        // Angle r2 Arc at R inside prism
+        const inwardNormalAngle2 = normalAngle2 + Math.PI;
+        drawAngleArc(Rx, Ry, inwardNormalAngle2, refractedRayAngle + Math.PI, 20, `r₂=${r2Deg.toFixed(1)}°`, '#eab308');
+
         // Angle of Emergence (e) Arc at R
         drawAngleArc(Rx, Ry, normalAngle2, emergentRayAngle, 32, `e = ${eDeg.toFixed(1)}°`, '#10b981');
 
-        // Emergent Pins P3 and P4
+        // Emergent Glowing Central Beam (from R down-right to S)
+        drawGlowingBeam(Rx, Ry, Sx, Sy, 'rgba(16, 185, 129, 0.28)', '#10b981', false);
+
+        // Emergent Pins P3 and P4 in lower-right
         const P3x = Rx + (Sx - Rx) * 0.38;
         const P3y = Ry + (Sy - Ry) * 0.38;
         const P4x = Rx + (Sx - Rx) * 0.80;
@@ -1095,43 +1102,46 @@
         drawRealisticPin(P3x, P3y, 'P₃', '#ef4444', false);
         drawRealisticPin(P4x, P4y, 'P₄', '#ef4444', false);
 
-        // 12. Extended straight rays for Deviation Angle Delta
-        ctx.save();
-        ctx.setLineDash([3, 3]);
-        ctx.lineWidth = 1.3;
+        // 12. Extended straight rays for Deviation Angle Delta (Meeting at M above QR)
+        const incDirX = (Qx - Px) / rayLen;
+        const incDirY = (Qy - Py) / rayLen;
+        const emergBackX = (Rx - Sx) / rayLen;
+        const emergBackY = (Ry - Sy) / rayLen;
 
-        // Incident ray produced forward
-        const straightIncX = Qx - (Px - Qx) * 0.95;
-        const straightIncY = Qy - (Py - Qy) * 0.95;
-        ctx.strokeStyle = 'rgba(56, 189, 248, 0.6)';
-        ctx.beginPath();
-        ctx.moveTo(Qx, Qy);
-        ctx.lineTo(straightIncX, straightIncY);
-        ctx.stroke();
-
-        // Emergent ray produced backward
-        const backEmergX = Rx - (Sx - Rx) * 0.95;
-        const backEmergY = Ry - (Sy - Ry) * 0.95;
-        ctx.strokeStyle = 'rgba(16, 185, 129, 0.6)';
-        ctx.beginPath();
-        ctx.moveTo(Rx, Ry);
-        ctx.lineTo(backEmergX, backEmergY);
-        ctx.stroke();
-        ctx.restore();
-
-        // Intersection point M of extended rays
-        const d1x = straightIncX - Qx; const d1y = straightIncY - Qy;
-        const d2x = backEmergX - Rx; const d2y = backEmergY - Ry;
-        const dDenom = d1x * d2y - d1y * d2x;
+        const dDenom = incDirX * emergBackY - incDirY * emergBackX;
         if (Math.abs(dDenom) > 0.001) {
-          const tM = ((Rx - Qx) * d2y - (Ry - Qy) * d2x) / dDenom;
-          const Mx = Qx + d1x * tM;
-          const My = Qy + d1y * tM;
+          const tInc = ((Rx - Qx) * emergBackY - (Ry - Qy) * emergBackX) / dDenom;
+          const Mx = Qx + incDirX * tInc;
+          const My = Qy + incDirY * tInc;
 
-          // Glowing Deviation Node
+          const extIncX = Mx + incDirX * 36;
+          const extIncY = My + incDirY * 36;
+          const extEmergX = Mx + emergBackX * 36;
+          const extEmergY = My + emergBackY * 36;
+
+          ctx.save();
+          ctx.setLineDash([3, 3]);
+          ctx.lineWidth = 1.3;
+
+          // Incident ray produced forward through M
+          ctx.strokeStyle = 'rgba(56, 189, 248, 0.75)';
+          ctx.beginPath();
+          ctx.moveTo(Qx, Qy);
+          ctx.lineTo(extIncX, extIncY);
+          ctx.stroke();
+
+          // Emergent ray produced backward through M
+          ctx.strokeStyle = 'rgba(16, 185, 129, 0.75)';
+          ctx.beginPath();
+          ctx.moveTo(Rx, Ry);
+          ctx.lineTo(extEmergX, extEmergY);
+          ctx.stroke();
+          ctx.restore();
+
+          // Glowing Deviation Node at M
           ctx.save();
           const devGrad = ctx.createRadialGradient(Mx, My, 0, Mx, My, 12);
-          devGrad.addColorStop(0, 'rgba(245, 158, 11, 0.9)');
+          devGrad.addColorStop(0, 'rgba(245, 158, 11, 0.95)');
           devGrad.addColorStop(1, 'transparent');
           ctx.fillStyle = devGrad;
           ctx.beginPath();
@@ -1143,19 +1153,24 @@
           ctx.arc(Mx, My, 3.5, 0, Math.PI * 2);
           ctx.fill();
 
-          // Badge with Deviation Angle
-          ctx.fillStyle = 'rgba(15, 23, 42, 0.88)';
+          // Deviation Angle (delta) Arc at M
+          const forwardIncAngle = Math.atan2(incDirY, incDirX);
+          const emergDirection = Math.atan2(Sy - Ry, Sx - Rx);
+          drawAngleArc(Mx, My, forwardIncAngle, emergDirection, 20, '', '#f59e0b');
+
+          // Deviation Angle Badge above node M
+          ctx.fillStyle = 'rgba(15, 23, 42, 0.92)';
           ctx.strokeStyle = '#f59e0b';
-          ctx.lineWidth = 1;
+          ctx.lineWidth = 1.2;
           ctx.beginPath();
-          ctx.roundRect(Mx + 10, My - 22, 74, 20, 4);
+          ctx.roundRect(Mx - 38, My - 30, 76, 20, 4);
           ctx.fill();
           ctx.stroke();
 
           ctx.fillStyle = '#f59e0b';
-          ctx.font = 'bold 10px monospace';
+          ctx.font = 'bold 10.5px monospace';
           ctx.textAlign = 'center';
-          ctx.fillText(`δ = ${deltaDeg.toFixed(1)}°`, Mx + 47, My - 8);
+          ctx.fillText(`δ = ${deltaDeg.toFixed(1)}°`, Mx, My - 16);
           ctx.restore();
         }
       }
@@ -1287,46 +1302,65 @@
       ctx.translate(cx, cy);
       ctx.rotate(baseAngle - Math.PI / 2);
 
-      const r = 92;
-      ctx.fillStyle = 'rgba(15, 23, 42, 0.88)';
-      ctx.strokeStyle = 'rgba(56, 189, 248, 0.7)';
+      const r = 96;
+      ctx.fillStyle = 'rgba(15, 23, 42, 0.90)';
+      ctx.strokeStyle = 'rgba(56, 189, 248, 0.85)';
       ctx.lineWidth = 1.8;
 
+      // Semicircular protractor outline
       ctx.beginPath();
       ctx.arc(0, 0, r, 0, Math.PI, false);
       ctx.closePath();
       ctx.fill();
       ctx.stroke();
 
-      // Degree Graduation marks
-      ctx.fillStyle = '#94a3b8';
-      ctx.font = '7.5px monospace';
-      ctx.textAlign = 'center';
-
-      for (let deg = 0; deg <= 180; deg += 5) {
+      // Degree Graduation marks (0° to 180°)
+      for (let deg = 0; deg <= 180; deg += 1) {
         const rad = (deg * Math.PI) / 180;
-        const isMajor = deg % 30 === 0;
-        const isMid = deg % 10 === 0;
-        const tickLen = isMajor ? 9 : (isMid ? 6 : 3.5);
+        const is10 = deg % 10 === 0;
+        const is5 = deg % 5 === 0;
+        const tickLen = is10 ? 10 : (is5 ? 6.5 : 3.5);
 
         const x1 = Math.cos(rad) * (r - tickLen);
         const y1 = Math.sin(rad) * (r - tickLen);
         const x2 = Math.cos(rad) * r;
         const y2 = Math.sin(rad) * r;
 
+        ctx.strokeStyle = is10 ? '#38bdf8' : (is5 ? '#94a3b8' : 'rgba(148, 163, 184, 0.5)');
+        ctx.lineWidth = is10 ? 1.2 : 0.8;
         ctx.beginPath();
         ctx.moveTo(x1, y1);
         ctx.lineTo(x2, y2);
         ctx.stroke();
 
-        if (isMajor) {
-          ctx.fillText(deg, Math.cos(rad) * (r - 18), Math.sin(rad) * (r - 18) + 2.5);
+        if (is10) {
+          // Angle from normal: at 90 deg, angle from normal is 0 deg
+          const angFromNormal = Math.abs(90 - deg);
+          ctx.fillStyle = '#f8fafc';
+          ctx.font = 'bold 7px -apple-system, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText(`${angFromNormal}°`, Math.cos(rad) * (r - 18), Math.sin(rad) * (r - 18) + 2.5);
         }
       }
 
+      // Normal reference line (deg = 90°)
+      ctx.strokeStyle = 'rgba(245, 158, 11, 0.85)';
+      ctx.setLineDash([3, 2]);
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.lineTo(0, r);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      ctx.fillStyle = '#f59e0b';
+      ctx.font = 'bold 7.5px -apple-system, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('N₁ (0°)', 0, r - 26);
+
       // Center Origin Crosshairs
       ctx.strokeStyle = '#38bdf8';
-      ctx.lineWidth = 1;
+      ctx.lineWidth = 1.2;
       ctx.beginPath();
       ctx.arc(0, 0, 4, 0, Math.PI * 2);
       ctx.moveTo(-8, 0); ctx.lineTo(8, 0);
