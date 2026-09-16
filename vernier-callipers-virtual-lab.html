@@ -10,6 +10,15 @@
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous" onload="initMathTypesetting()"></script>
 
+  <!-- Progressive Web App (PWA) Configuration -->
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <meta name="theme-color" content="#0284c7">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
   <style>
     :root {
       --bg-main: #070d18;
@@ -983,10 +992,12 @@ body.is-fullscreen .nms-lab-footer {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: opacity 0.35s ease, visibility 0.35s ease;
+  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.3s ease;
+  transform: translateZ(0);
 }
 .fs-prompt-overlay.dismissed {
   opacity: 0;
+  transform: scale(1.03) translateZ(0);
   visibility: hidden;
   pointer-events: none;
 }
@@ -1129,7 +1140,7 @@ body.is-fullscreen .nms-lab-footer {
           <button class="btn btn-outline" style="min-height:34px; padding:0.2rem 0.6rem; font-size:0.78rem;" onclick="resetCallipers()">
             ↺ Reset
           </button>
-          <button class="btn btn-outline" style="min-height:34px; padding:0.2rem 0.6rem; font-size:0.78rem;" onclick="snapFitSpecimen()">
+          <button class="btn btn-outline" id="btnSnugFit" style="min-height:34px; padding:0.2rem 0.6rem; font-size:0.78rem;" onclick="snapFitSpecimen()">
             🧲 Snug Fit Jaws
           </button>
         </div>
@@ -1341,33 +1352,59 @@ body.is-fullscreen .nms-lab-footer {
     triggerMath(document.body);
   }
 
-  // Get current raw total reading, MSR, and VSR
+  // Get current raw total reading, MSR, and VSR with CBSE zero error support
   function computeCalliperReading(jaw) {
-    // Total physical position measured by callipers:
+    if (state.task === 'zeroError') {
+      const err = state.zeroError;
+      if (Math.abs(err) < 0.001) {
+        return { msr: 0.0, n: 0, vsr: 0.00, observed: 0.00, corrected: 0.00 };
+      } else if (err > 0) {
+        // Positive zero error: Vernier 0 is to right of Main Scale 0 by err cm (e.g. +0.02 cm)
+        // Division n = err / LC = 0.02 / 0.01 = 2 aligns with 2 mm main scale mark
+        const n = Math.round(err / LC);
+        return {
+          msr: 0.0,
+          n: n,
+          vsr: parseFloat((n * LC).toFixed(2)),
+          observed: parseFloat(err.toFixed(2)),
+          corrected: 0.00
+        };
+      } else {
+        // Negative zero error: Vernier 0 is to left of Main Scale 0 by |err| cm (e.g. -0.03 cm)
+        // Standard CBSE practical rule: coinciding division n = 10 - (|err| / LC) = 10 - 3 = 7
+        const n = Math.round(10 - Math.abs(err) / LC);
+        return {
+          msr: 0.0,
+          n: n,
+          vsr: parseFloat((n * LC).toFixed(2)),
+          observed: parseFloat(err.toFixed(2)),
+          corrected: 0.00
+        };
+      }
+    }
+
+    // Specimen measurement mode:
     const physicalOpening = jaw + state.zeroError;
     const clamped = Math.max(0, Math.min(10.5, physicalOpening));
 
     // MSR is the largest full millimeter (0.1 cm) mark before or at Vernier zero
-    const msr = Math.floor(clamped * 10.0 + 1e-6) / 10.0;
+    const msr = Math.floor(clamped * 10.0 + 1e-5) / 10.0;
+    const fractionCm = clamped - msr;
 
-    // Difference in mm
-    const diffMm = (clamped - msr) * 10.0;
-
-    // Vernier coincidence index n (0 to 9, or 10)
-    let n = Math.round(diffMm);
+    let n = Math.round(fractionCm / LC);
     if (n > 9) n = 9;
     if (n < 0) n = 0;
 
-    const vsr = n * LC; // cm
-    const observed = msr + vsr;
-    const corrected = observed - state.zeroError;
+    const vsr = n * LC;
+    const observed = parseFloat((msr + vsr).toFixed(2));
+    const corrected = parseFloat((observed - state.zeroError).toFixed(2));
 
     return {
-      msr: parseFloat(msr.toFixed(2)),
+      msr: parseFloat(msr.toFixed(1)),
       n: n,
-      vsr: parseFloat(vsr.toFixed(3)),
-      observed: parseFloat(observed.toFixed(3)),
-      corrected: parseFloat(corrected.toFixed(3))
+      vsr: parseFloat(vsr.toFixed(2)),
+      observed: observed,
+      corrected: corrected
     };
   }
 
@@ -1388,10 +1425,16 @@ body.is-fullscreen .nms-lab-footer {
     ctx.scale(dpr, dpr);
   }
 
-  window.addEventListener('resize', () => {
-    resizeWorkbenchCanvas();
-    renderCallipersScene();
-  });
+  let resizeRaf = null;
+  function smoothResizeWorkbench() {
+    if (resizeRaf) cancelAnimationFrame(resizeRaf);
+    resizeRaf = requestAnimationFrame(() => {
+      resizeWorkbenchCanvas();
+      renderCallipersScene();
+    });
+  }
+
+  window.addEventListener('resize', smoothResizeWorkbench);
 
   function renderCallipersScene() {
     const rect = canvasBox.getBoundingClientRect();
@@ -1402,25 +1445,26 @@ body.is-fullscreen .nms-lab-footer {
     const isMobile = w < 640;
 
     // Visual theme: polished stainless steel with graduation markings
-    // Scale transformation: 1 cm on Calliper = ~42 pixels on desktop, ~32 on mobile
-    const pxPerCm = isMobile ? 32.0 : 42.0;
+    const pxPerCm = isMobile ? 30.0 : 40.0;
 
     // Calliper origins
-    const originX = isMobile ? 80 : 130;
-    const beamY = isMobile ? 190 : 210;
-    const beamH = isMobile ? 48 : 56;
-    const jawDrop = isMobile ? 125 : 155;
-    const upperJawH = isMobile ? 55 : 68;
+    const originX = isMobile ? 70 : 110;
+    const beamY = isMobile ? 180 : 195;
+    const beamH = isMobile ? 46 : 54;
+    const jawDrop = isMobile ? 120 : 150;
+    const upperJawH = isMobile ? 52 : 66;
 
-    // Current sliding displacement in pixels
-    const slidePixels = state.jawPos * pxPerCm;
-    const slideX = originX + slidePixels;
+    // Physical jaw contact face position (where specimen is clamped)
+    const jawEdgeX = originX + state.jawPos * pxPerCm;
 
-    // 1. Specimen Rendering (Placed between Jaws, on Internal Jaws, or under Depth Gauge)
-    drawActiveSpecimen(originX, slideX, beamY, jawDrop, upperJawH, pxPerCm, isMobile);
+    // Vernier scale 0 mark position (shifted by zero error)
+    const vernierScaleX = originX + (state.jawPos + state.zeroError) * pxPerCm;
 
-    // 2. Extending Depth Gauge Strip (Slides out from right tail)
-    drawDepthGaugeStrip(originX + 11.5 * pxPerCm, beamY + beamH * 0.45, slidePixels, isMobile);
+    // 1. Specimen / Apparatus Rendering
+    drawActiveSpecimen(originX, jawEdgeX, beamY, jawDrop, upperJawH, pxPerCm, isMobile, w, h, beamH);
+
+    // 2. Extending Depth Gauge Strip
+    drawDepthGaugeStrip(originX + 11.5 * pxPerCm, beamY + beamH * 0.45, state.jawPos * pxPerCm, isMobile);
 
     // 3. Fixed Main Beam & Fixed Jaws (Frame)
     drawFixedMainFrame(originX, beamY, beamH, jawDrop, upperJawH, pxPerCm, isMobile);
@@ -1428,11 +1472,11 @@ body.is-fullscreen .nms-lab-footer {
     // 4. Main Scale Millimeter Graduations (0 to 11 cm visible)
     drawMainScaleGraduations(originX, beamY, beamH, pxPerCm, isMobile);
 
-    // 5. Sliding Vernier Vernier Block & Sliding Jaws
-    drawSlidingVernierAssembly(slideX, beamY, beamH, jawDrop, upperJawH, pxPerCm, isMobile);
+    // 5. Sliding Vernier Carriage & Sliding Jaws
+    drawSlidingVernierAssembly(jawEdgeX, vernierScaleX, beamY, beamH, jawDrop, upperJawH, pxPerCm, isMobile);
 
-    // 6. High-Magnification Zoom Loupe (4x Inset Window)
-    drawMagnificationLoupe(w, h, originX, slideX, beamY, beamH, pxPerCm, isMobile);
+    // 6. High-Magnification Zoom Loupe (4x Inset Window focused on Vernier Zero)
+    drawMagnificationLoupe(w, h, originX, vernierScaleX, beamY, beamH, pxPerCm, isMobile);
   }
 
   function drawFixedMainFrame(ox, by, bh, jd, uj, pxPerCm, isMobile) {
@@ -1531,7 +1575,7 @@ body.is-fullscreen .nms-lab-footer {
     ctx.restore();
   }
 
-  function drawSlidingVernierAssembly(sx, by, bh, jd, uj, pxPerCm, isMobile) {
+  function drawSlidingVernierAssembly(jx, sx, by, bh, jd, uj, pxPerCm, isMobile) {
     ctx.save();
     const vernierW = 2.4 * pxPerCm; // Width of sliding carriage
 
@@ -1547,8 +1591,10 @@ body.is-fullscreen .nms-lab-footer {
     ctx.lineWidth = 1.8;
 
     // Vernier outer carriage frame surrounding main beam
+    const carriageLeft = Math.min(jx, sx) - 8;
+    const carriageW = Math.max(jx, sx) - carriageLeft + vernierW + 8;
     ctx.beginPath();
-    ctx.roundRect(sx - 8, by - 8, vernierW + 16, bh + 16, 4);
+    ctx.roundRect(carriageLeft, by - 8, carriageW, bh + 16, 4);
     ctx.fill();
     ctx.stroke();
 
@@ -1559,13 +1605,13 @@ body.is-fullscreen .nms-lab-footer {
     ctx.fill();
     ctx.stroke();
 
-    // Sliding Lower Jaw (External Contact Face at sx)
+    // Sliding Lower Jaw (External Contact Face at jx)
     ctx.fillStyle = vGrad;
     ctx.beginPath();
-    ctx.moveTo(sx, by + bh + 8);
-    ctx.lineTo(sx + 28, by + bh + 8);
-    ctx.bezierCurveTo(sx + 26, by + bh + jd * 0.5, sx + 8, by + bh + jd, sx, by + bh + jd);
-    ctx.lineTo(sx, by + bh + 8);
+    ctx.moveTo(jx, by + bh + 8);
+    ctx.lineTo(jx + 28, by + bh + 8);
+    ctx.bezierCurveTo(jx + 26, by + bh + jd * 0.5, jx + 8, by + bh + jd, jx, by + bh + jd);
+    ctx.lineTo(jx, by + bh + 8);
     ctx.closePath();
     ctx.fill();
     ctx.stroke();
@@ -1574,17 +1620,17 @@ body.is-fullscreen .nms-lab-footer {
     ctx.strokeStyle = '#ffffff';
     ctx.lineWidth = 1.8;
     ctx.beginPath();
-    ctx.moveTo(sx, by + bh + 8);
-    ctx.lineTo(sx, by + bh + jd);
+    ctx.moveTo(jx, by + bh + 8);
+    ctx.lineTo(jx, by + bh + jd);
     ctx.stroke();
 
-    // Sliding Upper Jaw (Internal Contact Face at sx)
+    // Sliding Upper Jaw (Internal Contact Face at jx)
     ctx.fillStyle = vGrad;
     ctx.beginPath();
-    ctx.moveTo(sx, by - 8);
-    ctx.lineTo(sx + 20, by - 8);
-    ctx.bezierCurveTo(sx + 18, by - uj * 0.4, sx + 6, by - uj, sx, by - uj);
-    ctx.lineTo(sx, by - 8);
+    ctx.moveTo(jx, by - 8);
+    ctx.lineTo(jx + 20, by - 8);
+    ctx.bezierCurveTo(jx + 18, by - uj * 0.4, jx + 6, by - uj, jx, by - uj);
+    ctx.lineTo(jx, by - 8);
     ctx.closePath();
     ctx.fill();
     ctx.stroke();
@@ -1635,9 +1681,10 @@ body.is-fullscreen .nms-lab-footer {
   }
 
   function drawDepthGaugeStrip(tailStartX, tailY, slidePixels, isMobile) {
+    if (state.task === 'beakerDepth') return; // Dedicated Beaker Depth view rendered in drawActiveSpecimen
     ctx.save();
     // Thin metallic probe strip that emerges from right tail
-    const stripLen = 60 + slidePixels;
+    const stripLen = Math.min(100, 30 + slidePixels * 0.5);
     ctx.fillStyle = '#cbd5e1';
     ctx.strokeStyle = '#475569';
     ctx.lineWidth = 1.2;
@@ -1646,7 +1693,7 @@ body.is-fullscreen .nms-lab-footer {
     ctx.restore();
   }
 
-  function drawActiveSpecimen(ox, sx, by, jd, uj, pxPerCm, isMobile) {
+  function drawActiveSpecimen(ox, sx, by, jd, uj, pxPerCm, isMobile, w, h, bh) {
     ctx.save();
     const task = state.task;
 
@@ -1725,21 +1772,187 @@ body.is-fullscreen .nms-lab-footer {
       ctx.fill();
 
     } else if (task === 'beakerDepth') {
-      // Beaker upright under Depth Gauge Probe on the right
-      const tailX = ox + 11.5 * pxPerCm + 50;
-      const depthVal = state.specimens.beakerDepth.depth;
-      const bkW = 70;
-      const bkH = depthVal * pxPerCm * 0.58;
-      const topY = by + bh * 0.45 + 3;
+      // Dedicated Laboratory Depth Measurement Apparatus
+      const bkW = isMobile ? 86 : 110;
+      const bkH = isMobile ? 145 : 180;
+      // Centered or positioned conveniently within workbench bounds
+      const bkX = Math.min(w - bkW - 20, Math.max(ox + 4.5 * pxPerCm, w * 0.5 - bkW * 0.5));
+      const stageTopY = by + bh + 16;
+      const targetDepth = state.specimens.beakerDepth.depth; // 6.45 cm
+      const cavityH = bkH - 18;
+      const floorY = stageTopY + cavityH;
 
-      ctx.fillStyle = 'rgba(56, 189, 248, 0.18)';
-      ctx.strokeStyle = 'rgba(56, 189, 248, 0.7)';
-      ctx.lineWidth = 2.0;
-
+      // 1. Calliper Tail Reference Shoulder resting flat across Beaker Rim
+      ctx.fillStyle = '#64748b';
+      ctx.strokeStyle = '#cbd5e1';
+      ctx.lineWidth = 1.5;
       ctx.beginPath();
-      ctx.roundRect(tailX - bkW * 0.5, topY, bkW, bkH, [0, 0, 10, 10]);
+      ctx.roundRect(bkX - 16, stageTopY - 8, bkW + 32, 8, 2);
       ctx.fill();
       ctx.stroke();
+
+      ctx.fillStyle = '#38bdf8';
+      ctx.font = 'bold 9px -apple-system, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('CALLIPER SHOULDER ON RIM', bkX + bkW * 0.5, stageTopY - 12);
+
+      // 2. Translucent Glass Beaker with internal cavity
+      const bkGrad = ctx.createLinearGradient(bkX, stageTopY, bkX + bkW, stageTopY);
+      bkGrad.addColorStop(0, 'rgba(56, 189, 248, 0.22)');
+      bkGrad.addColorStop(0.15, 'rgba(56, 189, 248, 0.08)');
+      bkGrad.addColorStop(0.85, 'rgba(56, 189, 248, 0.08)');
+      bkGrad.addColorStop(1, 'rgba(56, 189, 248, 0.25)');
+
+      ctx.fillStyle = bkGrad;
+      ctx.strokeStyle = 'rgba(56, 189, 248, 0.75)';
+      ctx.lineWidth = 2.0;
+      ctx.beginPath();
+      ctx.roundRect(bkX, stageTopY, bkW, bkH, [0, 0, 14, 14]);
+      ctx.fill();
+      ctx.stroke();
+
+      // Thick glass bottom base
+      ctx.fillStyle = 'rgba(56, 189, 248, 0.35)';
+      ctx.beginPath();
+      ctx.roundRect(bkX + 2, floorY, bkW - 4, bkH - cavityH - 2, [0, 0, 12, 12]);
+      ctx.fill();
+
+      // Beaker Volumetric Scale Markings
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+      ctx.font = '8px monospace';
+      ctx.textAlign = 'left';
+      for (let mark = 1; mark <= 4; mark++) {
+        const my = floorY - (mark / 4.0) * (cavityH - 15);
+        ctx.beginPath();
+        ctx.moveTo(bkX + 4, my);
+        ctx.lineTo(bkX + 16, my);
+        ctx.stroke();
+        ctx.fillText(`${mark * 50}mL`, bkX + 19, my + 3);
+      }
+
+      // 3. Extending Metallic Depth Gauge Probe Strip
+      // Travel: at state.jawPos = 6.45 cm, tip reaches floorY exactly
+      const travelPx = (state.jawPos / targetDepth) * cavityH;
+      const probeX = bkX + bkW * 0.5;
+      const probeTipY = stageTopY + Math.min(cavityH + 12, travelPx);
+
+      // Probe Steel Bar
+      const probeGrad = ctx.createLinearGradient(probeX - 3, stageTopY, probeX + 3, stageTopY);
+      probeGrad.addColorStop(0, '#cbd5e1');
+      probeGrad.addColorStop(0.5, '#f8fafc');
+      probeGrad.addColorStop(1, '#94a3b8');
+
+      ctx.fillStyle = probeGrad;
+      ctx.strokeStyle = '#334155';
+      ctx.lineWidth = 1.0;
+      ctx.beginPath();
+      ctx.rect(probeX - 3, stageTopY, 6, Math.max(0, probeTipY - stageTopY));
+      ctx.fill();
+      ctx.stroke();
+
+      // Precision Probe Bevel Tip
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.moveTo(probeX - 3, probeTipY);
+      ctx.lineTo(probeX + 3, probeTipY);
+      ctx.lineTo(probeX, probeTipY + 4);
+      ctx.closePath();
+      ctx.fill();
+
+      // 4. Contact Feedback / Dimension Callouts
+      const diff = Math.abs(state.jawPos - targetDepth);
+      if (diff <= 0.03) {
+        // Glowing Contact with Beaker Floor
+        ctx.strokeStyle = '#4ade80';
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.arc(probeX, floorY, 8, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(probeX, floorY, 14, 0, Math.PI * 2);
+        ctx.stroke();
+
+        ctx.fillStyle = '#4ade80';
+        ctx.font = 'bold 10px -apple-system, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('🟢 PROBE CONTACTED BASE (h = 6.45 cm)', bkX + bkW * 0.5, floorY + 24);
+      } else if (state.jawPos < targetDepth - 0.03) {
+        // Gap indicator
+        ctx.setLineDash([3, 3]);
+        ctx.strokeStyle = 'rgba(251, 191, 36, 0.7)';
+        ctx.beginPath();
+        ctx.moveTo(probeX, probeTipY);
+        ctx.lineTo(probeX, floorY);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        ctx.fillStyle = '#fde047';
+        ctx.font = '9px monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText(`Gap: ${(targetDepth - state.jawPos).toFixed(2)} cm`, bkX + bkW * 0.5, probeTipY + (floorY - probeTipY) * 0.5 + 3);
+      } else {
+        // Over-extended past base
+        ctx.fillStyle = '#f87171';
+        ctx.font = 'bold 9px -apple-system, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('⚠️ Over-extended past base', bkX + bkW * 0.5, floorY + 24);
+      }
+
+      // Height dimension annotation bracket along right wall
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 1.2;
+      const dimX = bkX + bkW + 8;
+      ctx.beginPath();
+      ctx.moveTo(dimX, stageTopY);
+      ctx.lineTo(dimX + 6, stageTopY);
+      ctx.moveTo(dimX + 6, stageTopY);
+      ctx.lineTo(dimX + 6, floorY);
+      ctx.moveTo(dimX, floorY);
+      ctx.lineTo(dimX + 6, floorY);
+      ctx.stroke();
+
+      ctx.fillStyle = '#38bdf8';
+      ctx.font = 'bold 9px monospace';
+      ctx.textAlign = 'left';
+      ctx.fillText('h=6.45cm', dimX + 9, stageTopY + cavityH * 0.5 + 3);
+
+    } else if (task === 'zeroError') {
+      // Zero Error Calibration Guide overlay between jaws
+      const err = state.zeroError;
+      const infoY = by + jd + 18;
+
+      ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
+      ctx.strokeStyle = err === 0 ? '#38bdf8' : (err > 0 ? '#fbbf24' : '#f87171');
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.roundRect(ox - 20, infoY, 280, 52, 8);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.textAlign = 'left';
+      if (Math.abs(err) < 0.001) {
+        ctx.fillStyle = '#38bdf8';
+        ctx.font = 'bold 11px -apple-system, sans-serif';
+        ctx.fillText('🎯 Nil Zero Error (e = 0.00 cm)', ox - 10, infoY + 18);
+        ctx.fillStyle = '#cbd5e1';
+        ctx.font = '9.5px -apple-system, sans-serif';
+        ctx.fillText('Vernier 0 coincides with Main Scale 0. n = 0. Zero Correction = 0.00 cm.', ox - 10, infoY + 36);
+      } else if (err > 0) {
+        ctx.fillStyle = '#fbbf24';
+        ctx.font = 'bold 11px -apple-system, sans-serif';
+        ctx.fillText(`📐 Positive Zero Error (e = +${err.toFixed(2)} cm / +2 div)`, ox - 10, infoY + 18);
+        ctx.fillStyle = '#cbd5e1';
+        ctx.font = '9.5px -apple-system, sans-serif';
+        ctx.fillText(`Vernier 0 is to right. Division n = 2 coincides. Correction c = -${err.toFixed(2)} cm.`, ox - 10, infoY + 36);
+      } else {
+        ctx.fillStyle = '#f87171';
+        ctx.font = 'bold 11px -apple-system, sans-serif';
+        ctx.fillText(`📐 Negative Zero Error (e = ${err.toFixed(2)} cm / -3 div)`, ox - 10, infoY + 18);
+        ctx.fillStyle = '#cbd5e1';
+        ctx.font = '9.5px -apple-system, sans-serif';
+        ctx.fillText(`Vernier 0 is to left. Coinciding n = 7 (10-7=3). Correction c = +${Math.abs(err).toFixed(2)} cm.`, ox - 10, infoY + 36);
+      }
     }
 
     ctx.restore();
@@ -1768,11 +1981,11 @@ body.is-fullscreen .nms-lab-footer {
     ctx.roundRect(loupeX + 2, loupeY + 2, loupeW - 4, loupeH - 4, 8);
     ctx.clip();
 
-    // Loupe Magnification Factor (4x)
+    // Loupe Magnification Factor (4.2x)
     const zoom = 4.2;
     const reading = computeCalliperReading(state.jawPos);
 
-    // Center loupe view right around current vernier index
+    // Center loupe view right around current vernier zero index
     const focusCalliperX = sx;
     const lMidX = loupeX + loupeW * 0.35;
     const lMidY = loupeY + loupeH * 0.52;
@@ -1804,7 +2017,7 @@ body.is-fullscreen .nms-lab-footer {
       }
     }
 
-    // 2. Draw Zoomed Vernier Scale
+    // 2. Draw Zoomed Vernier Scale (Graduations shift smoothly with zero error)
     const vsdCm = 0.09;
     for (let n = 0; n <= 10; n++) {
       const worldVx = sx + (n * vsdCm) * pxPerCm;
@@ -1815,7 +2028,7 @@ body.is-fullscreen .nms-lab-footer {
         const isEnd = n === 0 || n === 10 || n === 5;
         const tickLen = (isEnd ? 26 : 16);
 
-        // Highlight coinciding division in glowing green/amber
+        // Highlight coinciding division in glowing green
         ctx.strokeStyle = isCoinciding ? '#4ade80' : '#f8fafc';
         ctx.lineWidth = isCoinciding ? 3.0 : (isEnd ? 2.0 : 1.4);
 
@@ -1848,7 +2061,7 @@ body.is-fullscreen .nms-lab-footer {
     ctx.fillStyle = '#86efac';
     ctx.font = 'bold 10px monospace';
     ctx.textAlign = 'left';
-    ctx.fillText(`Coinciding n = ${reading.n} (VSR = ${(reading.n * 0.01).toFixed(2)} cm)`, loupeX + 10, loupeY + 18);
+    ctx.fillText(`Coinciding n = ${reading.n} (VSR = ${(reading.vsr).toFixed(2)} cm)`, loupeX + 10, loupeY + 18);
 
     ctx.restore();
     ctx.restore();
@@ -1981,18 +2194,44 @@ body.is-fullscreen .nms-lab-footer {
 
     const diff = Math.abs(state.jawPos - targetDim);
 
-    if (diff < 0.02) {
-      badge.className = 'jaw-contact-badge snug';
-      dot.textContent = '🟢';
-      txt.textContent = 'Jaws in Snug Contact with Specimen';
-    } else if (state.jawPos < targetDim && state.task !== 'zeroError') {
-      badge.className = 'jaw-contact-badge loose';
-      dot.textContent = '🟡';
-      txt.textContent = 'Specimen compressed or not fully seated';
+    if (state.task === 'beakerDepth') {
+      if (diff <= 0.03) {
+        badge.className = 'jaw-contact-badge snug';
+        dot.textContent = '🟢';
+        txt.textContent = 'Depth probe in snug contact with beaker floor (h = 6.45 cm)';
+      } else if (state.jawPos < targetDim) {
+        badge.className = 'jaw-contact-badge loose';
+        dot.textContent = '⚪';
+        txt.textContent = 'Probe sliding inside beaker (slide or click Probe to Bottom)';
+      } else {
+        badge.className = 'jaw-contact-badge loose';
+        dot.textContent = '🟡';
+        txt.textContent = 'Probe pushed past beaker floor (adjust back to floor)';
+      }
+    } else if (state.task === 'zeroError') {
+      if (state.jawPos === 0.0) {
+        badge.className = 'jaw-contact-badge snug';
+        dot.textContent = '🟢';
+        txt.textContent = 'Jaws closed flush (Zero error calibration mode)';
+      } else {
+        badge.className = 'jaw-contact-badge loose';
+        dot.textContent = '⚪';
+        txt.textContent = 'Jaws open (slide to 0.00 cm for zero error calibration)';
+      }
     } else {
-      badge.className = 'jaw-contact-badge loose';
-      dot.textContent = '⚪';
-      txt.textContent = 'Jaws open (slide or click Snug Fit)';
+      if (diff <= 0.02) {
+        badge.className = 'jaw-contact-badge snug';
+        dot.textContent = '🟢';
+        txt.textContent = 'Jaws in Snug Contact with Specimen';
+      } else if (state.jawPos < targetDim) {
+        badge.className = 'jaw-contact-badge loose';
+        dot.textContent = '🟡';
+        txt.textContent = 'Specimen compressed or not fully seated';
+      } else {
+        badge.className = 'jaw-contact-badge loose';
+        dot.textContent = '⚪';
+        txt.textContent = 'Jaws open (slide or click Snug Fit)';
+      }
     }
   }
 
@@ -2028,6 +2267,7 @@ body.is-fullscreen .nms-lab-footer {
     const specHint = document.getElementById('specimenHint');
     const inputDim = document.getElementById('inputUserDim');
     const inputVol = document.getElementById('inputUserVol');
+    const btnSnug = document.getElementById('btnSnugFit');
     const feedback = document.getElementById('calcFeedback');
     feedback.className = 'calc-feedback';
     feedback.textContent = '';
@@ -2038,6 +2278,7 @@ body.is-fullscreen .nms-lab-footer {
       specHint.innerHTML = "Fit sphere between lower jaws. Compute volume $V = \\frac{4}{3}\\pi (D/2)^3$.";
       inputDim.placeholder = "Mean Diameter D (cm)";
       inputVol.placeholder = "Calculated Volume V (cm³)";
+      if (btnSnug) btnSnug.textContent = '🧲 Snug Fit Jaws';
       setJawPosition(0.0);
     } else if (newTask === 'cylinder') {
       canvasTitle.textContent = "Task B: Measure Diameter & Length of Solid Metallic Cylinder";
@@ -2045,27 +2286,31 @@ body.is-fullscreen .nms-lab-footer {
       specHint.innerHTML = "Measure diameter $D$ & length $L$. Compute volume $V = \\pi (D/2)^2 L$.";
       inputDim.placeholder = "Mean Diameter D (cm)";
       inputVol.placeholder = "Calculated Volume V (cm³)";
+      if (btnSnug) btnSnug.textContent = '🧲 Snug Fit Jaws';
       setJawPosition(0.0);
     } else if (newTask === 'beakerID') {
       canvasTitle.textContent = "Task C: Measure Internal Diameter of Calorimeter / Beaker";
       specTitle.textContent = "Target: Beaker / Calorimeter (Internal Diameter D)";
-      specHint.innerHTML = "Insert upper internal jaws inside rim. Note $MSR$ and coinciding division.";
+      specHint.innerHTML = "Insert upper internal jaws inside rim. Note $MSR$ and coinciding $n$. Compute cross-sectional area $A = \\frac{\\pi D^2}{4}$.";
       inputDim.placeholder = "Internal Diameter D (cm)";
       inputVol.placeholder = "Cross-sectional Area A (cm²)";
+      if (btnSnug) btnSnug.textContent = '🧲 Internal Rim Contact';
       setJawPosition(0.0);
     } else if (newTask === 'beakerDepth') {
       canvasTitle.textContent = "Task D: Measure Depth of Calorimeter / Beaker";
       specTitle.textContent = "Target: Beaker / Calorimeter (Depth h)";
-      specHint.innerHTML = "Place calliper edge on rim and slide depth probe to base. Compute volume.";
-      inputDim.placeholder = "Depth h (cm)";
+      specHint.innerHTML = "Rest calliper shoulder on beaker rim and slide depth probe to base ($h$). Given internal diameter $D = 4.82\\,\\text{cm}$, cross-sectional area $A = 18.25\\,\\text{cm}^2$. Compute $V = A \\times h$.";
+      inputDim.placeholder = "Measured Depth h (cm)";
       inputVol.placeholder = "Total Internal Volume V (cm³)";
+      if (btnSnug) btnSnug.textContent = '🧲 Probe to Bottom';
       setJawPosition(0.0);
     } else if (newTask === 'zeroError') {
       canvasTitle.textContent = "Task E: Zero Error Determination & Calibration";
-      specTitle.textContent = "Zero Error Check (Jaws in Full Contact)";
-      specHint.innerHTML = "Close jaws completely. Check if zero of Vernier coincides with zero of Main Scale.";
-      inputDim.placeholder = "Observed Zero Error (cm)";
+      specTitle.textContent = "Zero Error Check (Jaws Closed Flush)";
+      specHint.innerHTML = "Close jaws flush ($0.00\\,\\text{cm}$). Inspect Vernier 0 vs Main Scale 0 in 4× Loupe. Coinciding mark yields error $e$; correction $c = -e$.";
+      inputDim.placeholder = "Observed Zero Error e (cm)";
       inputVol.placeholder = "Zero Correction (-e) (cm)";
+      if (btnSnug) btnSnug.textContent = '🔒 Close Jaws Flush';
       setJawPosition(0.0);
     }
 
@@ -2129,7 +2374,7 @@ body.is-fullscreen .nms-lab-footer {
     const userVol = parseFloat(document.getElementById('inputUserVol').value);
     const feedback = document.getElementById('calcFeedback');
 
-    if (isNaN(userDim) || userDim <= 0) {
+    if (isNaN(userDim)) {
       feedback.className = 'calc-feedback error show';
       feedback.innerHTML = '⚠️ Please enter your measured dimension value in cm.';
       return;
@@ -2137,46 +2382,67 @@ body.is-fullscreen .nms-lab-footer {
 
     let actualDim = 0;
     let actualVol = 0;
+    let dimLabel = 'dimension';
+    let volLabel = 'Volume';
+    let volUnit = '\\text{cm}^3';
     const task = state.task;
 
     if (task === 'sphere') {
-      actualDim = state.specimens.sphere.diam;
+      actualDim = state.specimens.sphere.diam; // 2.34 cm
       const r = actualDim / 2.0;
       actualVol = (4.0 / 3.0) * Math.PI * Math.pow(r, 3);
+      dimLabel = 'Diameter D';
+      volLabel = 'Volume V';
     } else if (task === 'cylinder') {
-      actualDim = state.specimens.cylinder.diam;
-      const l = state.specimens.cylinder.length;
+      actualDim = state.specimens.cylinder.diam; // 1.86 cm
+      const l = state.specimens.cylinder.length; // 4.52 cm
       const r = actualDim / 2.0;
       actualVol = Math.PI * Math.pow(r, 2) * l;
-    } else if (task === 'beakerID' || task === 'beakerDepth') {
-      const d = state.specimens.beakerID.internalDiam;
-      const h = state.specimens.beakerDepth.depth;
-      actualDim = task === 'beakerID' ? d : h;
-      const r = d / 2.0;
-      actualVol = Math.PI * Math.pow(r, 2) * h;
+      dimLabel = 'Diameter D';
+      volLabel = 'Volume V';
+    } else if (task === 'beakerID') {
+      actualDim = state.specimens.beakerID.internalDiam; // 4.82 cm
+      const r = actualDim / 2.0;
+      actualVol = Math.PI * Math.pow(r, 2); // 18.25 cm²
+      dimLabel = 'Internal Diameter D';
+      volLabel = 'Cross-sectional Area A';
+      volUnit = '\\text{cm}^2';
+    } else if (task === 'beakerDepth') {
+      actualDim = state.specimens.beakerDepth.depth; // 6.45 cm
+      const d = state.specimens.beakerID.internalDiam; // 4.82 cm
+      const area = Math.PI * Math.pow(d / 2.0, 2);
+      actualVol = area * actualDim; // 117.69 cm³
+      dimLabel = 'Depth h';
+      volLabel = 'Internal Volume V';
     } else {
+      // zeroError
       actualDim = state.zeroError;
       actualVol = -state.zeroError;
+      dimLabel = 'Zero Error e';
+      volLabel = 'Zero Correction c';
+      volUnit = '\\text{cm}';
     }
 
-    const dimErr = Math.abs((userDim - actualDim) / actualDim) * 100.0;
+    const dimDiff = Math.abs(userDim - actualDim);
+    const dimErr = actualDim !== 0 ? (dimDiff / Math.abs(actualDim)) * 100.0 : (dimDiff === 0 ? 0 : 100);
 
     let volMsg = '';
-    if (!isNaN(userVol) && userVol > 0) {
-      const volErr = Math.abs((userVol - actualVol) / actualVol) * 100.0;
-      if (volErr <= 3.0) {
-        volMsg = `<br>✨ <strong>Volume calculation is spot-on!</strong> (Error: ${volErr.toFixed(1)}%).`;
+    if (!isNaN(userVol)) {
+      const volDiff = Math.abs(userVol - actualVol);
+      const volErr = actualVol !== 0 ? (volDiff / Math.abs(actualVol)) * 100.0 : (volDiff === 0 ? 0 : 100);
+      if (volErr <= 3.0 || volDiff < 0.02) {
+        volMsg = `<br>✨ <strong>${volLabel} is spot-on!</strong> User value of $${userVol.toFixed(2)}\\,${volUnit}$ matches expected $${actualVol.toFixed(2)}\\,${volUnit}$.`;
       } else {
-        volMsg = `<br>🔍 Calculated $V = ${userVol.toFixed(2)}\\,\\text{cm}^3$, Expected $V = ${actualVol.toFixed(2)}\\,\\text{cm}^3$ (Error: ${volErr.toFixed(1)}%). Check $r = D/2$ substitution!`;
+        volMsg = `<br>🔍 Calculated ${volLabel} = $${userVol.toFixed(2)}\\,${volUnit}$, Expected $${actualVol.toFixed(2)}\\,${volUnit}$. Check your substitution formula!`;
       }
     }
 
-    if (dimErr <= 2.0) {
+    if (dimErr <= 2.0 || dimDiff <= 0.02) {
       feedback.className = 'calc-feedback success show';
-      feedback.innerHTML = `🎉 <strong>Excellent Precision!</strong> Measured dimension of $${userDim.toFixed(2)}\\,\\text{cm}$ matches theoretical value within ${dimErr.toFixed(2)}% accuracy.${volMsg}`;
+      feedback.innerHTML = `🎉 <strong>Excellent Accuracy!</strong> Entered ${dimLabel} of $${userDim.toFixed(2)}\\,\\text{cm}$ matches theoretical value $${actualDim.toFixed(2)}\\,\\text{cm}$.${volMsg}`;
     } else {
       feedback.className = 'calc-feedback error show';
-      feedback.innerHTML = `❌ <strong>Deviation observed.</strong> Entered $${userDim.toFixed(2)}\\,\\text{cm}$ deviates by ${dimErr.toFixed(1)}% from expected $${actualDim.toFixed(2)}\\,\\text{cm}$. Check your coinciding Vernier division $n$!${volMsg}`;
+      feedback.innerHTML = `❌ <strong>Deviation observed.</strong> Entered ${dimLabel} = $${userDim.toFixed(2)}\\,\\text{cm}$, Expected $${actualDim.toFixed(2)}\\,\\text{cm}$. Check your coinciding Vernier division $n$!${volMsg}`;
     }
     triggerMath(feedback);
   }
@@ -2198,12 +2464,11 @@ body.is-fullscreen .nms-lab-footer {
     } else if (task === 'beakerID') {
       actualDim = state.specimens.beakerID.internalDiam;
       const r = actualDim / 2.0;
-      actualVol = Math.PI * Math.pow(r, 2); // cross-section
+      actualVol = Math.PI * Math.pow(r, 2); // 18.25 cm²
     } else if (task === 'beakerDepth') {
+      actualDim = state.specimens.beakerDepth.depth; // 6.45 cm
       const d = state.specimens.beakerID.internalDiam;
-      const h = state.specimens.beakerDepth.depth;
-      actualDim = h;
-      actualVol = (Math.PI * Math.pow(d / 2.0, 2)) * h;
+      actualVol = (Math.PI * Math.pow(d / 2.0, 2)) * actualDim; // 117.69 cm³
     } else {
       actualDim = state.zeroError;
       actualVol = -state.zeroError;
@@ -2374,36 +2639,6 @@ body.is-fullscreen .nms-lab-footer {
 </footer>
 
 <script>
-// Force Fullscreen on loading & first user gesture
-(function initAutoFullscreen() {
-  function tryFullscreen() {
-    if (!document.fullscreenElement && !document.webkitFullscreenElement) {
-      const elem = document.documentElement;
-      if (elem.requestFullscreen) {
-        elem.requestFullscreen().catch(() => {});
-      } else if (elem.webkitRequestFullscreen) {
-        elem.webkitRequestFullscreen();
-      }
-    }
-  }
-  // Attempt immediately on loading
-  if (document.readyState === 'complete' || document.readyState === 'interactive') {
-    tryFullscreen();
-  } else {
-    window.addEventListener('DOMContentLoaded', tryFullscreen);
-    window.addEventListener('load', tryFullscreen);
-  }
-  // Auto-engage on first user gesture if browser blocked initial load request
-  const gestureEvents = ['click', 'touchstart', 'pointerdown'];
-  const onFirstGesture = () => {
-    tryFullscreen();
-    gestureEvents.forEach(evt => window.removeEventListener(evt, onFirstGesture));
-  };
-  gestureEvents.forEach(evt => window.addEventListener(evt, onFirstGesture, { passive: true }));
-})();
-</script>
-
-
 <!-- Fullscreen Entry Splash Overlay -->
 <div id="fsPromptOverlay" class="fs-prompt-overlay">
   <div class="fs-prompt-card">
@@ -2419,9 +2654,41 @@ body.is-fullscreen .nms-lab-footer {
 </div>
 
 <script>
-(function setupFullscreenController() {
+// Smooth Fullscreen Controller
+(function setupSmoothFullscreenController() {
   const overlay = document.getElementById('fsPromptOverlay');
   const btnEnter = document.getElementById('btnEnterLabFS');
+
+  function isFullscreenOrStandalone() {
+    return !!(
+      document.fullscreenElement ||
+      document.webkitFullscreenElement ||
+      window.matchMedia('(display-mode: standalone)').matches ||
+      window.matchMedia('(display-mode: fullscreen)').matches ||
+      window.navigator.standalone === true
+    );
+  }
+
+  function dismissOverlayInstant() {
+    if (overlay) {
+      overlay.style.display = 'none';
+      overlay.classList.add('dismissed');
+    }
+  }
+
+  function dismissOverlaySmooth() {
+    if (overlay && !overlay.classList.contains('dismissed')) {
+      overlay.classList.add('dismissed');
+      setTimeout(() => {
+        overlay.style.display = 'none';
+      }, 340);
+    }
+  }
+
+  // If already standalone PWA or fullscreen, skip splash overlay immediately with zero flash
+  if (isFullscreenOrStandalone()) {
+    dismissOverlayInstant();
+  }
 
   function requestFS() {
     const el = document.documentElement;
@@ -2434,39 +2701,40 @@ body.is-fullscreen .nms-lab-footer {
     }
   }
 
-  function dismissOverlay() {
-    if (overlay && !overlay.classList.contains('dismissed')) {
-      overlay.classList.add('dismissed');
-      setTimeout(() => { overlay.style.display = 'none'; }, 350);
-    }
-    window.dispatchEvent(new Event('resize'));
-  }
-
-  function enterFullscreenAndStart() {
+  function enterFullscreenAndStart(e) {
+    if (e) e.stopPropagation();
     requestFS();
-    dismissOverlay();
-  }
-
-  // If already in fullscreen, dismiss immediately
-  if (document.fullscreenElement || document.webkitFullscreenElement) {
-    dismissOverlay();
+    dismissOverlaySmooth();
   }
 
   if (overlay) {
     overlay.addEventListener('click', enterFullscreenAndStart);
   }
   if (btnEnter) {
-    btnEnter.addEventListener('click', (e) => {
-      e.stopPropagation();
-      enterFullscreenAndStart();
-    });
+    btnEnter.addEventListener('click', enterFullscreenAndStart);
   }
 
   document.addEventListener('fullscreenchange', () => {
     if (document.fullscreenElement) {
-      dismissOverlay();
+      dismissOverlaySmooth();
+    }
+    if (typeof updateFullscreenState === 'function') {
+      updateFullscreenState();
     }
   });
+
+  // Smooth debounced resize during OS fullscreen transitions
+  let fsResizeTimer = null;
+  function triggerSmoothResize() {
+    if (fsResizeTimer) clearTimeout(fsResizeTimer);
+    fsResizeTimer = setTimeout(() => {
+      if (typeof resizeWorkbenchCanvas === 'function') resizeWorkbenchCanvas();
+      if (typeof renderCallipersScene === 'function') renderCallipersScene();
+    }, 100);
+  }
+
+  window.addEventListener('resize', triggerSmoothResize);
+  document.addEventListener('fullscreenchange', triggerSmoothResize);
 })();
 </script>
 

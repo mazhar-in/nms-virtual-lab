@@ -11,6 +11,16 @@
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
 
+  <!-- Progressive Web App (PWA) Configuration -->
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <meta name="theme-color" content="#0284c7">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Physics Lab">
+
   <!-- Modern Typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -764,9 +774,207 @@
         align-items: flex-start;
       }
     }
+
+    /* PWA Install Modal Overlay & Styling */
+    .pwa-install-overlay {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      background: radial-gradient(circle at center, rgba(7, 12, 24, 0.94) 0%, rgba(3, 6, 12, 0.98) 100%);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      z-index: 999999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.25rem;
+      opacity: 1;
+      visibility: visible;
+      transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.3s ease;
+    }
+    .pwa-install-overlay.pwa-hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+    .pwa-install-modal {
+      background: rgba(13, 21, 39, 0.95);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      border-radius: 26px;
+      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.8), 0 0 45px rgba(56, 189, 248, 0.25);
+      padding: 2.25rem 2rem;
+      max-width: 480px;
+      width: 100%;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.1rem;
+      position: relative;
+      animation: pwaPop 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes pwaPop {
+      0% { transform: scale(0.92) translateY(12px); opacity: 0; }
+      100% { transform: scale(1) translateY(0); opacity: 1; }
+    }
+    .pwa-install-badge {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #38bdf8;
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      padding: 0.3rem 0.85rem;
+      border-radius: 999px;
+    }
+    .pwa-install-icon-wrap {
+      width: 80px;
+      height: 80px;
+      border-radius: 20px;
+      background: #091224;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 10px 25px rgba(2, 132, 199, 0.35);
+    }
+    .pwa-install-title {
+      font-size: 1.45rem;
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1.25;
+      letter-spacing: -0.01em;
+    }
+    .pwa-install-desc {
+      font-size: 0.9rem;
+      color: #94a3b8;
+      line-height: 1.55;
+    }
+    .pwa-features-list {
+      width: 100%;
+      background: rgba(7, 12, 24, 0.6);
+      border: 1px solid rgba(56, 189, 248, 0.14);
+      border-radius: 14px;
+      padding: 0.9rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+      text-align: left;
+    }
+    .pwa-feat-item {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      font-size: 0.84rem;
+      color: #cbd5e1;
+    }
+    .pwa-feat-icon {
+      font-size: 1.15rem;
+      color: #38bdf8;
+      min-width: 24px;
+      display: flex;
+      justify-content: center;
+    }
+    .pwa-ios-guide {
+      background: rgba(251, 191, 36, 0.12);
+      border: 1px solid rgba(251, 191, 36, 0.3);
+      color: #fde047;
+      padding: 0.75rem 1rem;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      line-height: 1.45;
+      text-align: left;
+      width: 100%;
+    }
+    .pwa-actions-row {
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+      width: 100%;
+      margin-top: 0.35rem;
+    }
+    .btn-pwa-install {
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      color: #ffffff;
+      border: 1px solid rgba(56, 189, 248, 0.5);
+      padding: 0.85rem 1.4rem;
+      border-radius: 14px;
+      font-size: 1rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(2, 132, 199, 0.45);
+      transition: all 0.2s ease;
+    }
+    .btn-pwa-install:hover {
+      background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+      box-shadow: 0 8px 26px rgba(14, 165, 233, 0.6);
+      transform: translateY(-2px);
+    }
+    .btn-pwa-dismiss {
+      background: transparent;
+      border: none;
+      color: #94a3b8;
+      font-size: 0.86rem;
+      font-weight: 600;
+      padding: 0.5rem;
+      cursor: pointer;
+      transition: color 0.2s ease;
+    }
+    .btn-pwa-dismiss:hover {
+      color: #ffffff;
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
+
+  <!-- PWA Install Modal (Appears on first visit if not installed) -->
+  <div class="pwa-install-overlay pwa-hidden" id="pwaInstallOverlay">
+    <div class="pwa-install-modal">
+      <div class="pwa-install-badge">National Model Schools</div>
+      <div class="pwa-install-icon-wrap">
+        <img src="icons/icon.svg" alt="NMS Physics Lab" width="60" height="60" />
+      </div>
+      <h2 class="pwa-install-title">Install Physics Virtual Lab</h2>
+      <p class="pwa-install-desc">
+        Install the official National Model Schools laboratory app for an immersive, borderless fullscreen experience with instant offline access.
+      </p>
+
+      <div class="pwa-features-list">
+        <div class="pwa-feat-item">
+          <span class="pwa-feat-icon">⛶</span>
+          <span><strong>Borderless Fullscreen:</strong> Zero address bars or browser tabs</span>
+        </div>
+        <div class="pwa-feat-item">
+          <span class="pwa-feat-icon">⚡</span>
+          <span><strong>Instant &amp; Offline Ready:</strong> All 24 labs work without internet</span>
+        </div>
+        <div class="pwa-feat-item">
+          <span class="pwa-feat-icon">📐</span>
+          <span><strong>Precision Touch &amp; KaTeX:</strong> Optimized for smartboards &amp; tablets</span>
+        </div>
+      </div>
+
+      <div class="pwa-ios-guide" id="pwaIosGuide" style="display:none;">
+        <span>📱 <strong>Install on iPad / iPhone:</strong> Tap <strong>Share</strong> ⎋ at bottom of Safari, then choose <strong>Add to Home Screen</strong> ➕</span>
+      </div>
+
+      <div class="pwa-actions-row">
+        <button class="btn-pwa-install" id="btnPwaInstall">
+          <span>📲</span> Install Fullscreen App
+        </button>
+        <button class="btn-pwa-dismiss" id="btnPwaDismiss">
+          Continue in Web Browser
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- Top Navigation Bar -->
   <header class="main-header">
@@ -780,6 +988,9 @@
       </a>
 
       <div class="header-actions">
+        <button class="btn-fs-toggle" id="btnHeaderInstall" title="Install Fullscreen App" style="display:none; background:rgba(14, 165, 233, 0.18); border-color:rgba(56, 189, 248, 0.45); color:#38bdf8;">
+          <span>📲</span> Install App
+        </button>
         <a href="manuals.html" class="btn-fs-toggle" title="Comprehensive Physics Practical Manuals" style="text-decoration:none; background:rgba(56, 189, 248, 0.15); border-color:rgba(56, 189, 248, 0.4); color:#38bdf8;">
           <span>📖</span> Lab Manuals
         </a>
@@ -1825,9 +2036,10 @@
           }
         });
 
-        // Auto fullscreen on clicking Launch Lab
+        // Launch Lab button handler
         document.querySelectorAll('.btn-launch').forEach(btn => {
           btn.addEventListener('click', () => {
+            // Keep user transition smooth
             if (!document.fullscreenElement && !document.webkitFullscreenElement) {
               document.documentElement.requestFullscreen().catch(() => {});
             }
@@ -1837,35 +2049,171 @@
     });
   </script>
 
-<script>
-// Force Fullscreen on loading & first user gesture
-(function initAutoFullscreen() {
-  function tryFullscreen() {
-    if (!document.fullscreenElement && !document.webkitFullscreenElement) {
-      const elem = document.documentElement;
-      if (elem.requestFullscreen) {
-        elem.requestFullscreen().catch(() => {});
-      } else if (elem.webkitRequestFullscreen) {
-        elem.webkitRequestFullscreen();
+  <!-- PWA & Smooth Fullscreen Controller -->
+  <script>
+    (function initPWAAndFullscreen() {
+      // 1. Service Worker Registration
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('./sw.js').catch(err => {
+            console.warn('Service Worker registration note:', err);
+          });
+        });
       }
-    }
-  }
-  // Attempt immediately on loading
-  if (document.readyState === 'complete' || document.readyState === 'interactive') {
-    tryFullscreen();
-  } else {
-    window.addEventListener('DOMContentLoaded', tryFullscreen);
-    window.addEventListener('load', tryFullscreen);
-  }
-  // Auto-engage on first user gesture if browser blocked initial load request
-  const gestureEvents = ['click', 'touchstart', 'pointerdown'];
-  const onFirstGesture = () => {
-    tryFullscreen();
-    gestureEvents.forEach(evt => window.removeEventListener(evt, onFirstGesture));
-  };
-  gestureEvents.forEach(evt => window.addEventListener(evt, onFirstGesture, { passive: true }));
-})();
-</script>
+
+      // 2. Installation Detection
+      function isAppInstalled() {
+        return (
+          window.matchMedia('(display-mode: standalone)').matches ||
+          window.matchMedia('(display-mode: fullscreen)').matches ||
+          window.navigator.standalone === true ||
+          localStorage.getItem('nms_pwa_installed') === 'true'
+        );
+      }
+
+      const overlay = document.getElementById('pwaInstallOverlay');
+      const btnInstallModal = document.getElementById('btnPwaInstall');
+      const btnDismissModal = document.getElementById('btnPwaDismiss');
+      const btnHeaderInstall = document.getElementById('btnHeaderInstall');
+      const iosGuide = document.getElementById('pwaIosGuide');
+
+      let deferredPrompt = null;
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+      function showInstallModal() {
+        if (overlay && !isAppInstalled()) {
+          overlay.style.display = 'flex';
+          requestAnimationFrame(() => {
+            overlay.classList.remove('pwa-hidden');
+          });
+        }
+      }
+
+      function hideInstallModal() {
+        if (overlay) {
+          overlay.classList.add('pwa-hidden');
+          setTimeout(() => {
+            overlay.style.display = 'none';
+          }, 320);
+        }
+      }
+
+      // If already installed, ensure modal is completely suppressed
+      if (isAppInstalled()) {
+        if (overlay) overlay.style.display = 'none';
+        if (btnHeaderInstall) btnHeaderInstall.style.display = 'none';
+      } else {
+        // App is NOT installed -> check if user has previously dismissed modal in this session
+        const sessionDismissed = sessionStorage.getItem('nms_install_dismissed');
+        if (!sessionDismissed) {
+          // Present install screen pop-up smoothly on first visit
+          setTimeout(showInstallModal, 400);
+        } else if (btnHeaderInstall) {
+          btnHeaderInstall.style.display = 'inline-flex';
+        }
+      }
+
+      // Listen for browser install prompt
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+
+        if (!isAppInstalled()) {
+          if (btnHeaderInstall) btnHeaderInstall.style.display = 'inline-flex';
+          const sessionDismissed = sessionStorage.getItem('nms_install_dismissed');
+          if (!sessionDismissed) {
+            showInstallModal();
+          }
+        }
+      });
+
+      // Show iOS instruction if on Safari on iOS
+      if (isIOS && !isAppInstalled() && iosGuide) {
+        iosGuide.style.display = 'block';
+        if (btnInstallModal) btnInstallModal.style.display = 'none';
+      }
+
+      // Handle Install Click (Modal)
+      if (btnInstallModal) {
+        btnInstallModal.addEventListener('click', async () => {
+          if (deferredPrompt) {
+            deferredPrompt.prompt();
+            const choice = await deferredPrompt.userChoice;
+            if (choice.outcome === 'accepted') {
+              localStorage.setItem('nms_pwa_installed', 'true');
+              hideInstallModal();
+              if (btnHeaderInstall) btnHeaderInstall.style.display = 'none';
+            }
+            deferredPrompt = null;
+          } else {
+            alert("To install, tap your browser's menu (⋮ or ⋯) and select 'Install App' or 'Add to Home Screen'.");
+            hideInstallModal();
+          }
+        });
+      }
+
+      // Handle Header Install Button
+      if (btnHeaderInstall) {
+        btnHeaderInstall.addEventListener('click', async () => {
+          if (deferredPrompt) {
+            deferredPrompt.prompt();
+            const choice = await deferredPrompt.userChoice;
+            if (choice.outcome === 'accepted') {
+              localStorage.setItem('nms_pwa_installed', 'true');
+              btnHeaderInstall.style.display = 'none';
+            }
+            deferredPrompt = null;
+          } else {
+            showInstallModal();
+          }
+        });
+      }
+
+      // Dismiss Button
+      if (btnDismissModal) {
+        btnDismissModal.addEventListener('click', () => {
+          sessionStorage.setItem('nms_install_dismissed', '1');
+          hideInstallModal();
+          if (btnHeaderInstall && !isAppInstalled()) {
+            btnHeaderInstall.style.display = 'inline-flex';
+          }
+        });
+      }
+
+      // When app is successfully installed
+      window.addEventListener('appinstalled', () => {
+        localStorage.setItem('nms_pwa_installed', 'true');
+        hideInstallModal();
+        if (btnHeaderInstall) btnHeaderInstall.style.display = 'none';
+        console.log('NMS Physics Virtual Lab PWA was installed successfully.');
+      });
+
+      // Smooth Fullscreen Header Toggle
+      const fsToggle = document.getElementById('btnFullscreenToggle');
+      if (fsToggle) {
+        fsToggle.addEventListener('click', () => {
+          if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+            const el = document.documentElement;
+            if (el.requestFullscreen) el.requestFullscreen().catch(() => {});
+            else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+            fsToggle.innerHTML = '<span>🗗</span> Exit Fullscreen';
+          } else {
+            if (document.exitFullscreen) document.exitFullscreen().catch(() => {});
+            else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+            fsToggle.innerHTML = '<span>⛶</span> Fullscreen';
+          }
+        });
+
+        document.addEventListener('fullscreenchange', () => {
+          if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+            fsToggle.innerHTML = '<span>⛶</span> Fullscreen';
+          } else {
+            fsToggle.innerHTML = '<span>🗗</span> Exit Fullscreen';
+          }
+        });
+      }
+    })();
+  </script>
 
 </body>
 </html>

@@ -596,7 +596,8 @@ body.is-fullscreen .nms-lab-footer {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: opacity 0.35s ease, visibility 0.35s ease;
+  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.3s ease;
+  transform: translateZ(0);
 }
 .fs-prompt-overlay.dismissed {
   opacity: 0;
@@ -681,6 +682,14 @@ body.is-fullscreen .nms-lab-footer {
 }
 
 </style>
+  <!-- Progressive Web App (PWA) Configuration -->
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <meta name="theme-color" content="#0284c7">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 </head>
 <body>
 
@@ -1574,36 +1583,6 @@ body.is-fullscreen .nms-lab-footer {
 </footer>
 
 <script>
-// Force Fullscreen on loading & first user gesture
-(function initAutoFullscreen() {
-  function tryFullscreen() {
-    if (!document.fullscreenElement && !document.webkitFullscreenElement) {
-      const elem = document.documentElement;
-      if (elem.requestFullscreen) {
-        elem.requestFullscreen().catch(() => {});
-      } else if (elem.webkitRequestFullscreen) {
-        elem.webkitRequestFullscreen();
-      }
-    }
-  }
-  // Attempt immediately on loading
-  if (document.readyState === 'complete' || document.readyState === 'interactive') {
-    tryFullscreen();
-  } else {
-    window.addEventListener('DOMContentLoaded', tryFullscreen);
-    window.addEventListener('load', tryFullscreen);
-  }
-  // Auto-engage on first user gesture if browser blocked initial load request
-  const gestureEvents = ['click', 'touchstart', 'pointerdown'];
-  const onFirstGesture = () => {
-    tryFullscreen();
-    gestureEvents.forEach(evt => window.removeEventListener(evt, onFirstGesture));
-  };
-  gestureEvents.forEach(evt => window.addEventListener(evt, onFirstGesture, { passive: true }));
-})();
-</script>
-
-
 <!-- Fullscreen Entry Splash Overlay -->
 <div id="fsPromptOverlay" class="fs-prompt-overlay">
   <div class="fs-prompt-card">
@@ -1619,9 +1598,41 @@ body.is-fullscreen .nms-lab-footer {
 </div>
 
 <script>
-(function setupFullscreenController() {
+// Smooth Fullscreen Controller
+(function setupSmoothFullscreenController() {
   const overlay = document.getElementById('fsPromptOverlay');
   const btnEnter = document.getElementById('btnEnterLabFS');
+
+  function isFullscreenOrStandalone() {
+    return !!(
+      document.fullscreenElement ||
+      document.webkitFullscreenElement ||
+      window.matchMedia('(display-mode: standalone)').matches ||
+      window.matchMedia('(display-mode: fullscreen)').matches ||
+      window.navigator.standalone === true
+    );
+  }
+
+  function dismissOverlayInstant() {
+    if (overlay) {
+      overlay.style.display = 'none';
+      overlay.classList.add('dismissed');
+    }
+  }
+
+  function dismissOverlaySmooth() {
+    if (overlay && !overlay.classList.contains('dismissed')) {
+      overlay.classList.add('dismissed');
+      setTimeout(() => {
+        overlay.style.display = 'none';
+      }, 340);
+    }
+  }
+
+  // If already standalone PWA or fullscreen, skip splash overlay immediately with zero flash
+  if (isFullscreenOrStandalone()) {
+    dismissOverlayInstant();
+  }
 
   function requestFS() {
     const el = document.documentElement;
@@ -1634,39 +1645,39 @@ body.is-fullscreen .nms-lab-footer {
     }
   }
 
-  function dismissOverlay() {
-    if (overlay && !overlay.classList.contains('dismissed')) {
-      overlay.classList.add('dismissed');
-      setTimeout(() => { overlay.style.display = 'none'; }, 350);
-    }
-    window.dispatchEvent(new Event('resize'));
-  }
-
-  function enterFullscreenAndStart() {
+  function enterFullscreenAndStart(e) {
+    if (e) e.stopPropagation();
     requestFS();
-    dismissOverlay();
-  }
-
-  // If already in fullscreen, dismiss immediately
-  if (document.fullscreenElement || document.webkitFullscreenElement) {
-    dismissOverlay();
+    dismissOverlaySmooth();
   }
 
   if (overlay) {
     overlay.addEventListener('click', enterFullscreenAndStart);
   }
   if (btnEnter) {
-    btnEnter.addEventListener('click', (e) => {
-      e.stopPropagation();
-      enterFullscreenAndStart();
-    });
+    btnEnter.addEventListener('click', enterFullscreenAndStart);
   }
 
   document.addEventListener('fullscreenchange', () => {
     if (document.fullscreenElement) {
-      dismissOverlay();
+      dismissOverlaySmooth();
+    }
+    if (typeof updateFullscreenState === 'function') {
+      updateFullscreenState();
     }
   });
+
+  // Smooth debounced resize during OS fullscreen transitions
+  let fsResizeTimer = null;
+  function triggerSmoothResize() {
+    if (fsResizeTimer) clearTimeout(fsResizeTimer);
+    fsResizeTimer = setTimeout(() => {
+      window.dispatchEvent(new Event('resize'));
+    }, 120);
+  }
+
+  window.addEventListener('resize', triggerSmoothResize);
+  document.addEventListener('fullscreenchange', triggerSmoothResize);
 })();
 </script>
 
