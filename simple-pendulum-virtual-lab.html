@@ -890,7 +890,7 @@ body.is-fullscreen .nms-lab-footer {
 
     // Oscillation State Variables
     let theta0 = 8.0 * (Math.PI / 180); // initial angle (radians)
-    let theta = 0;                      // current angle (radians)
+    let theta = theta0;                 // current angle (radians)
     let omega = 0;                      // angular velocity (rad/s)
     let isOscillating = false;
     let isDraggingBob = false;
@@ -971,6 +971,7 @@ body.is-fullscreen .nms-lab-footer {
       txtAngleVal.innerText = '8.0°';
 
       stopOscillation();
+      theta = theta0;
       resetTimer();
       observations = [];
       renderTable();
@@ -983,7 +984,7 @@ body.is-fullscreen .nms-lab-footer {
       thread_l = effectiveL - hook_h - bob_r;
       txtLVal.innerText = `${effectiveL.toFixed(1)} cm`;
       valEffL.innerText = `${effectiveL.toFixed(1)} cm`;
-      if (!isOscillating) theta = 0;
+      if (!isOscillating) theta = theta0;
     });
 
     document.getElementById('btnMinus5L').onclick = () => adjustLength(-5);
@@ -1289,6 +1290,78 @@ body.is-fullscreen .nms-lab-footer {
       pCtx.strokeStyle = '#78350f';
       pCtx.strokeRect(cx - 8, clampPivot.y - 14, 16, 14);
 
+      // 1b. Precision Laboratory Protractor Dial at Clamp Pivot
+      const protractorR = 54;
+      const maxProtractorRad = 18 * Math.PI / 180;
+
+      // Frosted protractor plate arc
+      pCtx.fillStyle = 'rgba(15, 23, 42, 0.75)';
+      pCtx.strokeStyle = 'rgba(148, 163, 184, 0.28)';
+      pCtx.lineWidth = 1;
+      pCtx.beginPath();
+      pCtx.moveTo(clampPivot.x, clampPivot.y);
+      pCtx.arc(clampPivot.x, clampPivot.y, protractorR, Math.PI * 0.5 - maxProtractorRad, Math.PI * 0.5 + maxProtractorRad);
+      pCtx.closePath();
+      pCtx.fill();
+      pCtx.stroke();
+
+      // Protractor graduation ticks & labels
+      pCtx.font = '8px monospace';
+      pCtx.textAlign = 'center';
+      pCtx.textBaseline = 'middle';
+
+      for (let deg = -15; deg <= 15; deg += 1) {
+        const rad = deg * Math.PI / 180;
+        const isMajor = deg % 5 === 0;
+        const isZero = deg === 0;
+        const tickLen = isZero ? 8 : (isMajor ? 6 : 3);
+        const innerR = protractorR - tickLen;
+
+        const x1 = clampPivot.x + innerR * Math.sin(rad);
+        const y1 = clampPivot.y + innerR * Math.cos(rad);
+        const x2 = clampPivot.x + protractorR * Math.sin(rad);
+        const y2 = clampPivot.y + protractorR * Math.cos(rad);
+
+        pCtx.lineWidth = isZero ? 1.5 : (isMajor ? 1 : 0.6);
+        pCtx.strokeStyle = isZero ? '#38bdf8' : (isMajor ? 'rgba(203, 213, 225, 0.75)' : 'rgba(148, 163, 184, 0.35)');
+        pCtx.beginPath();
+        pCtx.moveTo(x1, y1);
+        pCtx.lineTo(x2, y2);
+        pCtx.stroke();
+
+        if (isMajor) {
+          const textR = protractorR - 13;
+          const tx = clampPivot.x + textR * Math.sin(rad);
+          const ty = clampPivot.y + textR * Math.cos(rad);
+          pCtx.fillStyle = isZero ? '#38bdf8' : '#94a3b8';
+          pCtx.fillText(isZero ? '0°' : `${Math.abs(deg)}°`, tx, ty);
+        }
+      }
+
+      // 1c. Active Angular Displacement Sector & Glowing Arc (Always on correct physical displacement side)
+      if (Math.abs(theta) >= 0.005) {
+        const angleVertical = Math.PI * 0.5;
+        const angleThread = Math.PI * 0.5 - theta;
+        const startAng = Math.min(angleVertical, angleThread);
+        const endAng = Math.max(angleVertical, angleThread);
+        const arcR = 48;
+
+        // Translucent sector between vertical reference and suspended thread
+        pCtx.fillStyle = 'rgba(56, 189, 248, 0.2)';
+        pCtx.beginPath();
+        pCtx.moveTo(clampPivot.x, clampPivot.y);
+        pCtx.arc(clampPivot.x, clampPivot.y, arcR, startAng, endAng);
+        pCtx.closePath();
+        pCtx.fill();
+
+        // High-contrast glowing arc
+        pCtx.strokeStyle = '#38bdf8';
+        pCtx.lineWidth = 2;
+        pCtx.beginPath();
+        pCtx.arc(clampPivot.x, clampPivot.y, arcR, startAng, endAng);
+        pCtx.stroke();
+      }
+
       // Vertical Equilibrium Reference Dotted Line
       pCtx.strokeStyle = 'rgba(148, 163, 184, 0.25)';
       pCtx.setLineDash([4, 4]);
@@ -1358,19 +1431,38 @@ body.is-fullscreen .nms-lab-footer {
       pCtx.arc(bobX, bobY, 2.5, 0, Math.PI * 2);
       pCtx.fill();
 
-      // Arc showing angular displacement
-      if (Math.abs(theta) > 0.01) {
+      // 3. Dynamic Angle Measurement Badge (Pill) on the exact displacement side
+      if (Math.abs(theta) >= 0.005) {
+        const degVal = (Math.abs(theta) * 180 / Math.PI).toFixed(1);
+        const midTheta = theta * 0.5;
+        const labelR = 66;
+        const lx = clampPivot.x + labelR * Math.sin(midTheta);
+        const ly = clampPivot.y + labelR * Math.cos(midTheta);
+
+        const labelText = `θ = ${degVal}°`;
+        pCtx.font = 'bold 10px monospace';
+        const tm = pCtx.measureText(labelText);
+        const badgeW = tm.width + 10;
+        const badgeH = 18;
+        const badgeX = (theta >= 0) ? lx + 6 : lx - badgeW - 6;
+        const badgeY = ly - badgeH * 0.5;
+
+        pCtx.fillStyle = 'rgba(10, 16, 27, 0.92)';
         pCtx.strokeStyle = '#38bdf8';
         pCtx.lineWidth = 1.2;
         pCtx.beginPath();
-        const startAng = Math.PI * 0.5 - (theta > 0 ? 0 : -theta);
-        const endAng = Math.PI * 0.5 + (theta > 0 ? theta : 0);
-        pCtx.arc(clampPivot.x, clampPivot.y, 45, startAng, endAng);
+        if (pCtx.roundRect) {
+          pCtx.roundRect(badgeX, badgeY, badgeW, badgeH, 4);
+        } else {
+          pCtx.rect(badgeX, badgeY, badgeW, badgeH);
+        }
+        pCtx.fill();
         pCtx.stroke();
 
         pCtx.fillStyle = '#38bdf8';
-        pCtx.font = '10px sans-serif';
-        pCtx.fillText(`${(Math.abs(theta) * 180 / Math.PI).toFixed(1)}°`, cx + (theta > 0 ? 52 : -68), clampPivot.y + 55);
+        pCtx.textAlign = 'center';
+        pCtx.textBaseline = 'middle';
+        pCtx.fillText(labelText, badgeX + badgeW * 0.5, badgeY + badgeH * 0.5);
       }
     }
 
