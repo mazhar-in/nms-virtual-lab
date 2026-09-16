@@ -577,6 +577,7 @@
 
       buildQuiz();
       updatePhysics();
+      setupCanvasInteractions();
       setTimeout(initKaTeX, 300);
     });
 
@@ -717,6 +718,383 @@
       renderCanvas();
     }
 
+    // =========================================================================
+    // ENHANCED REALISTIC OPTICAL BENCH & PARALLAX ENGINE
+    // =========================================================================
+
+    let draggingTarget = null; // 'object' | 'needle' | null
+
+    function setupCanvasInteractions() {
+      if (!canvas) return;
+
+      function getCoords(e) {
+        const rect = canvas.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        return {
+          x: clientX - rect.left,
+          y: clientY - rect.top,
+          w: rect.width,
+          h: rect.height
+        };
+      }
+
+      function getHit(px, py, w, h) {
+        const axisY = h * 0.50;
+        const lensX = w * 0.46;
+        const benchScale = (w - 190) / 100;
+        const objX = lensX - currentU * benchScale;
+        const needleX = lensX + currentVneedle * benchScale;
+
+        if (Math.abs(px - objX) <= 20 && py >= axisY - 80 && py <= axisY + 75) return 'object';
+        if (Math.abs(px - needleX) <= 20 && py >= axisY - 80 && py <= axisY + 75) return 'needle';
+        return null;
+      }
+
+      canvas.addEventListener('mousedown', (e) => {
+        const pt = getCoords(e);
+        const hit = getHit(pt.x, pt.y, pt.w, pt.h);
+        if (hit) {
+          draggingTarget = hit;
+          canvas.style.cursor = 'grabbing';
+          e.preventDefault();
+        }
+      });
+
+      window.addEventListener('mousemove', (e) => {
+        const pt = getCoords(e);
+        if (draggingTarget) {
+          const lensX = pt.w * 0.46;
+          const benchScale = (pt.w - 190) / 100;
+          if (draggingTarget === 'object') {
+            const rawU = (lensX - pt.x) / benchScale;
+            const newU = Math.min(60, Math.max(18, Math.round(rawU * 2) / 2));
+            if (newU !== currentU) {
+              document.getElementById('sliderU').value = newU;
+              onUChange(newU);
+            }
+          } else if (draggingTarget === 'needle') {
+            const rawV = (pt.x - lensX) / benchScale;
+            const newV = Math.min(90, Math.max(18, Math.round(rawV * 2) / 2));
+            if (newV !== currentVneedle) {
+              document.getElementById('sliderV').value = newV;
+              onVneedleChange(newV);
+            }
+          }
+        } else {
+          const hit = getHit(pt.x, pt.y, pt.w, pt.h);
+          canvas.style.cursor = hit ? 'ew-resize' : 'default';
+        }
+      });
+
+      window.addEventListener('mouseup', () => {
+        if (draggingTarget) {
+          draggingTarget = null;
+          canvas.style.cursor = 'default';
+        }
+      });
+
+      canvas.addEventListener('touchstart', (e) => {
+        const pt = getCoords(e);
+        const hit = getHit(pt.x, pt.y, pt.w, pt.h);
+        if (hit) {
+          draggingTarget = hit;
+          e.preventDefault();
+        }
+      }, { passive: false });
+
+      window.addEventListener('touchmove', (e) => {
+        if (!draggingTarget) return;
+        const pt = getCoords(e);
+        const lensX = pt.w * 0.46;
+        const benchScale = (pt.w - 190) / 100;
+        if (draggingTarget === 'object') {
+          const rawU = (lensX - pt.x) / benchScale;
+          const newU = Math.min(60, Math.max(18, Math.round(rawU * 2) / 2));
+          if (newU !== currentU) {
+            document.getElementById('sliderU').value = newU;
+            onUChange(newU);
+          }
+        } else if (draggingTarget === 'needle') {
+          const rawV = (pt.x - lensX) / benchScale;
+          const newV = Math.min(90, Math.max(18, Math.round(rawV * 2) / 2));
+          if (newV !== currentVneedle) {
+            document.getElementById('sliderV').value = newV;
+            onVneedleChange(newV);
+          }
+        }
+        e.preventDefault();
+      }, { passive: false });
+
+      window.addEventListener('touchend', () => {
+        draggingTarget = null;
+      });
+    }
+
+    // Helper: Draw luminous glowing ray with directional arrow
+    function drawGlowingRay(x1, y1, x2, y2, colorGlow, colorCore) {
+      // Outer luminous bloom
+      ctx.strokeStyle = colorGlow;
+      ctx.lineWidth = 4.5;
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2, y2);
+      ctx.stroke();
+
+      // Sharp central photon core
+      ctx.strokeStyle = colorCore;
+      ctx.lineWidth = 1.6;
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2, y2);
+      ctx.stroke();
+
+      // Directional photon chevron
+      const dx = x2 - x1;
+      const dy = y2 - y1;
+      const len = Math.hypot(dx, dy);
+      if (len > 35) {
+        const mx = x1 + dx * 0.55;
+        const my = y1 + dy * 0.55;
+        const ang = Math.atan2(dy, dx);
+        ctx.fillStyle = colorCore;
+        ctx.beginPath();
+        ctx.moveTo(mx + Math.cos(ang) * 6, my + Math.sin(ang) * 6);
+        ctx.lineTo(mx + Math.cos(ang + 2.5) * 6, my + Math.sin(ang + 2.5) * 6);
+        ctx.lineTo(mx + Math.cos(ang - 2.5) * 6, my + Math.sin(ang - 2.5) * 6);
+        ctx.closePath();
+        ctx.fill();
+      }
+    }
+
+    // Helper: Draw sliding metallic upright saddle on optical bench
+    function drawUprightSaddle(x, bedY, label, color) {
+      ctx.save();
+      // Sliding metallic collar
+      const saddleW = 26;
+      const saddleH = 20;
+      const sGrad = ctx.createLinearGradient(x - saddleW * 0.5, bedY, x + saddleW * 0.5, bedY);
+      sGrad.addColorStop(0, '#334155');
+      sGrad.addColorStop(0.3, '#64748b');
+      sGrad.addColorStop(0.7, '#94a3b8');
+      sGrad.addColorStop(1, '#334155');
+      ctx.fillStyle = sGrad;
+      ctx.fillRect(x - saddleW * 0.5, bedY - 4, saddleW, saddleH);
+      ctx.strokeStyle = '#1e293b';
+      ctx.lineWidth = 1.2;
+      ctx.strokeRect(x - saddleW * 0.5, bedY - 4, saddleW, saddleH);
+
+      // Knurled brass clamping thumbscrew
+      ctx.fillStyle = '#eab308';
+      ctx.fillRect(x - 5, bedY + saddleH - 4, 10, 6);
+      ctx.strokeStyle = '#713f12';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(x - 5, bedY + saddleH - 4, 10, 6);
+
+      // Fiducial index arrow pointing down to millimeter scale
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.moveTo(x - 3, bedY + 12);
+      ctx.lineTo(x + 3, bedY + 12);
+      ctx.lineTo(x, bedY + 17);
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+    }
+
+    // Helper: Draw 3D Precision Laboratory Optical Needle (Pin)
+    function drawPrecisionNeedle(x, baseY, height, isUpright, stemColor, capColor, label, isAerial = false) {
+      ctx.save();
+      ctx.globalAlpha = isAerial ? 0.82 : 1.0;
+      const tipY = isUpright ? (baseY - height) : (baseY + height);
+
+      // Shadow on upright
+      if (!isAerial) {
+        ctx.fillStyle = 'rgba(0,0,0,0.35)';
+        ctx.fillRect(x - 2, baseY, 4, 28);
+      }
+
+      // Vertical pin stem (stainless steel / chrome shading)
+      const stemGrad = ctx.createLinearGradient(x - 2.5, 0, x + 2.5, 0);
+      if (isAerial) {
+        stemGrad.addColorStop(0, 'rgba(251, 191, 36, 0.4)');
+        stemGrad.addColorStop(0.5, 'rgba(254, 240, 138, 0.95)');
+        stemGrad.addColorStop(1, 'rgba(217, 119, 6, 0.4)');
+      } else {
+        stemGrad.addColorStop(0, '#475569');
+        stemGrad.addColorStop(0.4, '#e2e8f0');
+        stemGrad.addColorStop(0.7, '#cbd5e1');
+        stemGrad.addColorStop(1, '#334155');
+      }
+      ctx.fillStyle = stemGrad;
+      ctx.fillRect(x - 2.5, Math.min(baseY, tipY + (isUpright ? 12 : -12)), 5, height - 12);
+
+      // Knurled collar bushing at pin base
+      if (!isAerial) {
+        ctx.fillStyle = '#ca8a04';
+        ctx.fillRect(x - 5, baseY - 5, 10, 6);
+        ctx.strokeStyle = '#713f12';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(x - 5, baseY - 5, 10, 6);
+      }
+
+      // Sharp pointed pinhead tip with colored lacquer
+      ctx.fillStyle = capColor;
+      ctx.beginPath();
+      if (isUpright) {
+        ctx.moveTo(x - 4, tipY + 12);
+        ctx.lineTo(x + 4, tipY + 12);
+        ctx.lineTo(x, tipY);
+      } else {
+        ctx.moveTo(x - 4, tipY - 12);
+        ctx.lineTo(x + 4, tipY - 12);
+        ctx.lineTo(x, tipY);
+      }
+      ctx.closePath();
+      ctx.fill();
+      ctx.strokeStyle = isAerial ? '#fef08a' : '#fff';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      // Pinhead specular reflection
+      ctx.fillStyle = '#fff';
+      ctx.beginPath();
+      ctx.arc(x, isUpright ? tipY + 4 : tipY - 4, 1.5, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Label badge
+      ctx.fillStyle = isAerial ? '#fbbf24' : capColor;
+      ctx.font = 'bold 9.5px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText(label, x, isUpright ? tipY - 10 : tipY + 18);
+      ctx.restore();
+    }
+
+    // Helper: Draw Circular Eyepiece Observation Chamber (Through-the-Lens View)
+    function drawEyepieceChamber(w, h, vReal, isZeroParallax) {
+      const boxSize = 135;
+      const cx = w - boxSize * 0.5 - 12;
+      const cy = boxSize * 0.5 + 14;
+      const r = boxSize * 0.44;
+
+      ctx.save();
+      // Outer brass & dark steel mounting bezel
+      ctx.beginPath();
+      ctx.arc(cx, cy, r + 6, 0, Math.PI * 2);
+      ctx.fillStyle = '#1e293b';
+      ctx.fill();
+      ctx.strokeStyle = isZeroParallax ? '#10b981' : '#eab308';
+      ctx.lineWidth = 3;
+      ctx.stroke();
+
+      // Outer bezel screws
+      for (let a = 0; a < Math.PI * 2; a += Math.PI / 4) {
+        const sx = cx + (r + 4) * Math.cos(a);
+        const sy = cy + (r + 4) * Math.sin(a);
+        ctx.fillStyle = '#f59e0b';
+        ctx.beginPath(); ctx.arc(sx, sy, 1.8, 0, Math.PI * 2); ctx.fill();
+      }
+
+      // Eyepiece dark field of view
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      ctx.clip();
+
+      const epGrad = ctx.createRadialGradient(cx, cy, r * 0.2, cx, cy, r);
+      epGrad.addColorStop(0, '#0f172a');
+      epGrad.addColorStop(1, '#020617');
+      ctx.fillStyle = epGrad;
+      ctx.fillRect(cx - r, cy - r, r * 2, r * 2);
+
+      // Reticle graticule crosshairs
+      ctx.strokeStyle = 'rgba(16, 185, 129, 0.35)';
+      ctx.lineWidth = 0.8;
+      ctx.setLineDash([2, 2]);
+      ctx.beginPath();
+      ctx.moveTo(cx - r, cy); ctx.lineTo(cx + r, cy);
+      ctx.moveTo(cx, cy - r); ctx.lineTo(cx, cy + r);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // In-Lens Optical View:
+      // Real inverted image tip pointing DOWN from top
+      // Physical search needle tip pointing UP from bottom
+      // Lateral shift due to eye parallax
+      const parallaxPx = (currentVneedle - vReal) * (eyeShift / 30) * 3.2;
+
+      // Inverted Image Tip (pointing DOWN to center)
+      const imgTipX = cx + parallaxPx;
+      const imgTipY = cy;
+      ctx.fillStyle = '#fbbf24';
+      ctx.strokeStyle = '#d97706';
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.moveTo(imgTipX - 6, imgTipY - 24);
+      ctx.lineTo(imgTipX + 6, imgTipY - 24);
+      ctx.lineTo(imgTipX, imgTipY);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      // Search Needle Tip (pointing UP to center)
+      const needleTipX = cx;
+      const needleTipY = cy;
+      ctx.fillStyle = '#10b981';
+      ctx.strokeStyle = '#047857';
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.moveTo(needleTipX - 6, needleTipY + 24);
+      ctx.lineTo(needleTipX + 6, needleTipY + 24);
+      ctx.lineTo(needleTipX, needleTipY);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      // Coincidence Spark when Zero Parallax
+      if (isZeroParallax) {
+        ctx.fillStyle = '#fff';
+        ctx.shadowColor = '#38bdf8';
+        ctx.shadowBlur = 10;
+        ctx.beginPath();
+        ctx.arc(cx, cy, 3, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+      }
+
+      // Lens reflection sheen
+      const sheenGrad = ctx.createLinearGradient(cx - r, cy - r, cx + r, cy + r);
+      sheenGrad.addColorStop(0, 'rgba(255,255,255,0.12)');
+      sheenGrad.addColorStop(0.5, 'transparent');
+      sheenGrad.addColorStop(1, 'rgba(56, 189, 248, 0.08)');
+      ctx.fillStyle = sheenGrad;
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.restore(); // end clip
+
+      // Eyepiece title banner
+      ctx.fillStyle = 'rgba(15, 23, 42, 0.9)';
+      ctx.strokeStyle = isZeroParallax ? '#10b981' : '#64748b';
+      ctx.lineWidth = 1;
+      const bW = boxSize - 6;
+      const bH = 16;
+      ctx.beginPath();
+      if (ctx.roundRect) ctx.roundRect(cx - bW * 0.5, cy + r + 2, bW, bH, 4);
+      else ctx.rect(cx - bW * 0.5, cy + r + 2, bW, bH);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = isZeroParallax ? '#34d399' : '#f59e0b';
+      ctx.font = 'bold 8.5px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(isZeroParallax ? '🎯 ZERO PARALLAX' : '👁️ SIGHTING EYEPIECE', cx, cy + r + 10);
+      ctx.restore();
+    }
+
+    // MAIN CANVAS RENDERER
     function renderCanvas() {
       if (!ctx || !canvas) return;
       const w = canvas.width / (window.devicePixelRatio || 1);
@@ -724,31 +1102,104 @@
 
       ctx.clearRect(0, 0, w, h);
 
-      const axisY = h * 0.52;
-      const lensX = w * 0.50;
-      const benchScale = (w - 80) / 100; // 100 cm range
+      // 1. Dark Laboratory Tabletop Atmosphere
+      ctx.fillStyle = '#080d1a';
+      ctx.fillRect(0, 0, w, h);
 
-      // 1. Principal Axis & Scale
-      ctx.strokeStyle = '#475569';
-      ctx.lineWidth = 1.5;
-      ctx.beginPath();
-      ctx.moveTo(30, axisY);
-      ctx.lineTo(w - 30, axisY);
-      ctx.stroke();
-
-      ctx.fillStyle = '#64748b';
-      ctx.font = '9px monospace';
-      ctx.textAlign = 'center';
-      for (let cm = -50; cm <= 50; cm += 10) {
-        const x = lensX + cm * benchScale;
-        ctx.beginPath(); ctx.moveTo(x, axisY + 2); ctx.lineTo(x, axisY + 8); ctx.stroke();
-        ctx.fillText(Math.abs(cm), x, axisY + 18);
+      // Subtle atmospheric laboratory grid
+      ctx.strokeStyle = 'rgba(30, 41, 59, 0.4)';
+      ctx.lineWidth = 0.5;
+      for (let x = 30; x < w; x += 40) {
+        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
+      }
+      for (let y = 30; y < h; y += 40) {
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
       }
 
-      // 2. Convex Lens in Center
-      drawConvexLens(lensX, axisY, 65);
+      const axisY = h * 0.50;
+      const lensX = w * 0.46;
+      const benchScale = (w - 190) / 100; // 100 cm range on bench
 
-      // Mark Focus F1, 2F1 (Left) and F2, 2F2 (Right)
+      // 2. REALISTIC DUAL-RAIL OPTICAL BENCH
+      const bedY = axisY + 48;
+      const bedLeft = 24;
+      const bedRight = w - 165;
+      const bedW = bedRight - bedLeft;
+
+      // Heavy cast-iron bench end supports
+      ctx.fillStyle = '#1e293b';
+      ctx.strokeStyle = '#0f172a';
+      ctx.lineWidth = 2;
+      // Left bracket
+      ctx.fillRect(bedLeft - 10, bedY - 12, 16, 42);
+      ctx.strokeRect(bedLeft - 10, bedY - 12, 16, 42);
+      // Right bracket
+      ctx.fillRect(bedRight - 6, bedY - 12, 16, 42);
+      ctx.strokeRect(bedRight - 6, bedY - 12, 16, 42);
+
+      // Brass leveling screws at ends
+      ctx.fillStyle = '#eab308';
+      ctx.fillRect(bedLeft - 7, bedY + 30, 10, 8);
+      ctx.fillRect(bedRight - 3, bedY + 30, 10, 8);
+
+      // Dual stainless-steel cylindrical rails (Top & Bottom)
+      const rail1Y = bedY - 6;
+      const rail2Y = bedY + 14;
+
+      const chromeGrad1 = ctx.createLinearGradient(0, rail1Y - 4, 0, rail1Y + 4);
+      chromeGrad1.addColorStop(0, '#64748b');
+      chromeGrad1.addColorStop(0.3, '#f1f5f9');
+      chromeGrad1.addColorStop(0.7, '#cbd5e1');
+      chromeGrad1.addColorStop(1, '#334155');
+
+      ctx.fillStyle = chromeGrad1;
+      ctx.fillRect(bedLeft, rail1Y - 4, bedW, 8);
+      ctx.fillRect(bedLeft, rail2Y - 4, bedW, 8);
+
+      // Inlaid millimeter rule brass scale between the rails
+      const ruleY = bedY + 1;
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(bedLeft, ruleY, bedW, 10);
+      ctx.strokeStyle = '#334155';
+      ctx.lineWidth = 0.8;
+      ctx.strokeRect(bedLeft, ruleY, bedW, 10);
+
+      // Engraved centimeter graduations & numbers
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = '8.5px monospace';
+      ctx.textAlign = 'center';
+
+      for (let cm = -50; cm <= 50; cm += 2) {
+        const x = lensX + cm * benchScale;
+        if (x >= bedLeft + 4 && x <= bedRight - 4) {
+          const isMajor = cm % 10 === 0;
+          const isMid = cm % 5 === 0;
+          const tickLen = isMajor ? 7 : (isMid ? 5 : 3);
+          ctx.strokeStyle = isMajor ? '#38bdf8' : (isMid ? '#cbd5e1' : '#64748b');
+          ctx.lineWidth = isMajor ? 1.2 : 0.6;
+          ctx.beginPath();
+          ctx.moveTo(x, ruleY);
+          ctx.lineTo(x, ruleY + tickLen);
+          ctx.stroke();
+
+          if (isMajor) {
+            ctx.fillStyle = cm === 0 ? '#38bdf8' : '#94a3b8';
+            ctx.fillText(Math.abs(cm), x, ruleY + 18);
+          }
+        }
+      }
+
+      // 3. Principal Axis Reference Line
+      ctx.strokeStyle = 'rgba(148, 163, 184, 0.35)';
+      ctx.setLineDash([5, 4]);
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.moveTo(20, axisY);
+      ctx.lineTo(w - 165, axisY);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Cardinal Foci & Centers of Curvature
       const f1X = lensX - ACTUAL_F * benchScale;
       const c1X = lensX - 2 * ACTUAL_F * benchScale;
       const f2X = lensX + ACTUAL_F * benchScale;
@@ -756,106 +1207,127 @@
 
       ctx.fillStyle = '#f59e0b';
       ctx.beginPath(); ctx.arc(f1X, axisY, 3, 0, Math.PI * 2); ctx.fill();
-      ctx.fillText('F₁', f1X, axisY - 10);
+      ctx.fillText('F₁ (15cm)', f1X, axisY - 10);
       ctx.beginPath(); ctx.arc(f2X, axisY, 3, 0, Math.PI * 2); ctx.fill();
-      ctx.fillText('F₂', f2X, axisY - 10);
+      ctx.fillText('F₂ (15cm)', f2X, axisY - 10);
 
       ctx.fillStyle = '#10b981';
       ctx.beginPath(); ctx.arc(c1X, axisY, 3, 0, Math.PI * 2); ctx.fill();
-      ctx.fillText('2F₁', c1X, axisY - 10);
+      ctx.fillText('2F₁ (30cm)', c1X, axisY - 10);
       ctx.beginPath(); ctx.arc(c2X, axisY, 3, 0, Math.PI * 2); ctx.fill();
-      ctx.fillText('2F₂', c2X, axisY - 10);
+      ctx.fillText('2F₂ (30cm)', c2X, axisY - 10);
 
-      // 3. Object Needle (Left of Lens)
+      // 4. Coordinates of Object, Image, and Needles
       const objX = lensX - currentU * benchScale;
-      const objHeight = 50;
-      drawNeedle(objX, axisY, objHeight, true, '#38bdf8', 'Object Needle');
+      const objHeight = 48;
+      const objTipY = axisY - objHeight;
 
-      // 4. Theoretical Image & Parallax Shift (Right of Lens)
       const vReal = (currentU * ACTUAL_F) / (currentU - ACTUAL_F);
       const imgHeight = objHeight * (vReal / currentU);
       const imgX = lensX + vReal * benchScale;
+      const imgTipY = axisY + imgHeight;
 
       const parallaxDisplacement = (currentVneedle - vReal) * benchScale * (eyeShift / 30);
-
-      // Inverted Real Image
-      drawNeedle(imgX + parallaxDisplacement, axisY, imgHeight, false, '#fbbf24', 'Real Image', true);
-
-      // 5. Image Needle Upright
+      const isZeroParallax = Math.abs(currentVneedle - vReal) <= 0.4;
       const needleX = lensX + currentVneedle * benchScale;
-      drawNeedle(needleX, axisY, imgHeight, false, '#10b981', 'Image Needle');
 
-      // 6. Ray Tracing
+      // Draw sliding upright saddles on bench
+      drawUprightSaddle(objX, bedY, 'Object Upright', '#38bdf8');
+      drawUprightSaddle(lensX, bedY, 'Lens Holder', '#eab308');
+      drawUprightSaddle(needleX, bedY, 'Image Upright', '#10b981');
+
+      // Upright mounting rods extending from saddle to axis
+      ctx.fillStyle = '#64748b';
+      ctx.fillRect(objX - 1.5, axisY, 3, bedY - axisY);
+      ctx.fillRect(lensX - 2, axisY, 4, bedY - axisY);
+      ctx.fillRect(needleX - 1.5, axisY, 3, bedY - axisY);
+
+      // 5. LUMINOUS 3-RAY OPTICS ENGINE
       ctx.save();
-      ctx.lineWidth = 1.2;
+      // Ray 1: Parallel to axis -> refracts through right Focus F2
+      drawGlowingRay(objX, objTipY, lensX, objTipY, 'rgba(251, 191, 36, 0.22)', 'rgba(254, 240, 138, 0.95)');
+      drawGlowingRay(lensX, objTipY, imgX, imgTipY, 'rgba(251, 191, 36, 0.22)', 'rgba(254, 240, 138, 0.95)');
 
-      // Ray 1: Parallel to axis, refracts through F2
-      ctx.strokeStyle = 'rgba(251, 191, 36, 0.75)';
-      ctx.beginPath();
-      ctx.moveTo(objX, axisY - objHeight);
-      ctx.lineTo(lensX, axisY - objHeight);
-      ctx.lineTo(imgX, axisY + imgHeight);
-      ctx.stroke();
+      // Ray 2: Passing undeviated through optical center O
+      drawGlowingRay(objX, objTipY, lensX, axisY, 'rgba(56, 189, 248, 0.22)', 'rgba(186, 230, 253, 0.95)');
+      drawGlowingRay(lensX, axisY, imgX, imgTipY, 'rgba(56, 189, 248, 0.22)', 'rgba(186, 230, 253, 0.95)');
 
-      // Ray 2: Passing straight through Optical Center O
-      ctx.strokeStyle = 'rgba(56, 189, 248, 0.7)';
-      ctx.beginPath();
-      ctx.moveTo(objX, axisY - objHeight);
-      ctx.lineTo(lensX, axisY);
-      ctx.lineTo(imgX, axisY + imgHeight);
-      ctx.stroke();
-
+      // Ray 3: Passing through front focus F1 -> emerges parallel to axis
+      drawGlowingRay(objX, objTipY, lensX, imgTipY, 'rgba(236, 72, 153, 0.20)', 'rgba(244, 114, 182, 0.95)');
+      drawGlowingRay(lensX, imgTipY, imgX, imgTipY, 'rgba(236, 72, 153, 0.20)', 'rgba(244, 114, 182, 0.95)');
       ctx.restore();
+
+      // 6. Biconvex Glass Lens Apparatus
+      drawConvexLens(lensX, axisY, 66);
+
+      // 7. Physical Needles and Inverted Image
+      // Object Needle (Upright pin with scarlet red cap)
+      drawPrecisionNeedle(objX, axisY, objHeight, true, '#38bdf8', '#ef4444', `Object (u = ${currentU.toFixed(1)})`);
+
+      // Inverted Real Aerial Image (translucent glowing golden pin)
+      drawPrecisionNeedle(imgX + parallaxDisplacement, axisY, imgHeight, false, '#fbbf24', '#f59e0b', `Image (v = ${vReal.toFixed(1)})`, true);
+
+      // Search Needle (Upright pin with emerald green cap)
+      drawPrecisionNeedle(needleX, axisY, imgHeight, false, '#10b981', '#10b981', `Needle (v = ${currentVneedle.toFixed(1)})`);
+
+      // 8. Coincidence Contact Spark when Zero Parallax
+      if (isZeroParallax) {
+        ctx.save();
+        ctx.fillStyle = '#fff';
+        ctx.shadowColor = '#10b981';
+        ctx.shadowBlur = 14;
+        ctx.beginPath();
+        ctx.arc(needleX, axisY + imgHeight, 4, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+
+      // 9. Through-the-Lens Eyepiece Chamber (Parallax Observation View)
+      drawEyepieceChamber(w, h, vReal, isZeroParallax);
     }
 
     function drawConvexLens(x, y, radius) {
       ctx.save();
-      ctx.strokeStyle = '#38bdf8';
-      ctx.fillStyle = 'rgba(56, 189, 248, 0.15)';
-      ctx.lineWidth = 2.5;
-
+      // Glass body with refractive gradient
       ctx.beginPath();
-      ctx.arc(x - radius * 0.75, y, radius, -0.65, 0.65);
-      ctx.arc(x + radius * 0.75, y, radius, Math.PI - 0.65, Math.PI + 0.65);
+      ctx.arc(x - radius * 0.76, y, radius, -0.66, 0.66);
+      ctx.arc(x + radius * 0.76, y, radius, Math.PI - 0.66, Math.PI + 0.66);
       ctx.closePath();
+
+      const lGrad = ctx.createLinearGradient(x - 12, y - 45, x + 12, y + 45);
+      lGrad.addColorStop(0, 'rgba(224, 242, 254, 0.45)');
+      lGrad.addColorStop(0.5, 'rgba(56, 189, 248, 0.15)');
+      lGrad.addColorStop(1, 'rgba(2, 132, 199, 0.35)');
+      ctx.fillStyle = lGrad;
       ctx.fill();
+
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 2.2;
       ctx.stroke();
 
-      ctx.strokeStyle = '#64748b';
-      ctx.lineWidth = 3;
-      ctx.beginPath(); ctx.moveTo(x, y + 42); ctx.lineTo(x, y + 55); ctx.stroke();
-      ctx.fillStyle = '#38bdf8';
-      ctx.font = 'bold 10px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText('Convex Lens', x, y - 48);
-      ctx.restore();
-    }
-
-    function drawNeedle(x, baseY, height, isUpright, color, label, isFaint = false) {
-      ctx.save();
-      ctx.globalAlpha = isFaint ? 0.75 : 1.0;
-      const tipY = isUpright ? (baseY - height) : (baseY + height);
-
-      ctx.strokeStyle = color;
-      ctx.lineWidth = 2.5;
-      ctx.beginPath(); ctx.moveTo(x, baseY); ctx.lineTo(x, tipY); ctx.stroke();
-
-      ctx.fillStyle = color;
+      // Optical glass reflection highlight
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.55)';
+      ctx.lineWidth = 1.2;
       ctx.beginPath();
-      if (isUpright) {
-        ctx.moveTo(x - 4, tipY + 10); ctx.lineTo(x + 4, tipY + 10); ctx.lineTo(x, tipY);
-      } else {
-        ctx.moveTo(x - 4, tipY - 10); ctx.lineTo(x + 4, tipY - 10); ctx.lineTo(x, tipY);
-      }
-      ctx.fill();
+      ctx.arc(x - radius * 0.76, y, radius - 2, -0.45, 0.45);
+      ctx.stroke();
 
-      ctx.fillStyle = '#334155';
-      ctx.fillRect(x - 6, baseY - 3, 12, 6);
+      // Brass lens rim and clamp ring
+      ctx.strokeStyle = '#ca8a04';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(x, y - 46); ctx.lineTo(x, y - 56);
+      ctx.moveTo(x, y + 46); ctx.lineTo(x, y + 56);
+      ctx.stroke();
 
-      ctx.fillStyle = color;
-      ctx.font = 'bold 10px sans-serif';
+      // Optical Center marker
+      ctx.fillStyle = '#38bdf8';
+      ctx.beginPath(); ctx.arc(x, y, 2.5, 0, Math.PI * 2); ctx.fill();
+
+      ctx.fillStyle = '#38bdf8';
+      ctx.font = 'bold 9.5px sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText(label, x, isUpright ? (tipY - 8) : (tipY + 16));
+      ctx.fillText('Convex Lens (f = 15.0 cm)', x, y - 58);
       ctx.restore();
     }
 

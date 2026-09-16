@@ -561,6 +561,7 @@
 
       buildQuiz();
       updatePhysics();
+      setupCanvasInteractions();
       setTimeout(initKaTeX, 300);
     });
 
@@ -719,6 +720,98 @@
       renderCanvas();
     }
 
+    // =========================================================================
+    // ENHANCED REALISTIC TRAVELLING MICROSCOPE RIG & VERNIER LOUPE ENGINE
+    // =========================================================================
+
+    let isDraggingTube = false;
+
+    function setupCanvasInteractions() {
+      if (!canvas) return;
+
+      function getCoords(e) {
+        const rect = canvas.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        return {
+          x: clientX - rect.left,
+          y: clientY - rect.top,
+          w: rect.width,
+          h: rect.height
+        };
+      }
+
+      function checkMicroscopeHit(px, py, w, h) {
+        const splitX = w * 0.58;
+        const baseY = h - 45;
+        const pillarX = 65;
+        const tableCenterX = splitX * 0.58;
+        const carriageY = baseY - (currentHeight / 6) * (baseY - 70) - 40;
+
+        // Check if pointer is on carriage, horizontal arm, or microscope tube
+        if (px >= pillarX - 15 && px <= tableCenterX + 35 && py >= carriageY - 20 && py <= carriageY + 110) {
+          return true;
+        }
+        return false;
+      }
+
+      function updateHeightFromPointer(py, h) {
+        const baseY = h - 45;
+        const rawH = ((baseY - 40 - py) / (baseY - 70)) * 6;
+        const newH = Math.min(6.000, Math.max(1.000, Math.round(rawH * 200) / 200));
+        if (newH !== currentHeight) {
+          currentHeight = Math.round(newH * 1000) / 1000;
+          document.getElementById('sliderHeight').value = currentHeight;
+          document.getElementById('valHeight').textContent = currentHeight.toFixed(3) + ' cm';
+          updatePhysics();
+        }
+      }
+
+      canvas.addEventListener('mousedown', (e) => {
+        const pt = getCoords(e);
+        if (checkMicroscopeHit(pt.x, pt.y, pt.w, pt.h)) {
+          isDraggingTube = true;
+          canvas.style.cursor = 'grabbing';
+          e.preventDefault();
+        }
+      });
+
+      window.addEventListener('mousemove', (e) => {
+        const pt = getCoords(e);
+        if (isDraggingTube) {
+          updateHeightFromPointer(pt.y, pt.h);
+        } else {
+          const hit = checkMicroscopeHit(pt.x, pt.y, pt.w, pt.h);
+          canvas.style.cursor = hit ? 'ns-resize' : 'default';
+        }
+      });
+
+      window.addEventListener('mouseup', () => {
+        if (isDraggingTube) {
+          isDraggingTube = false;
+          canvas.style.cursor = 'default';
+        }
+      });
+
+      canvas.addEventListener('touchstart', (e) => {
+        const pt = getCoords(e);
+        if (checkMicroscopeHit(pt.x, pt.y, pt.w, pt.h)) {
+          isDraggingTube = true;
+          e.preventDefault();
+        }
+      }, { passive: false });
+
+      window.addEventListener('touchmove', (e) => {
+        if (!isDraggingTube) return;
+        const pt = getCoords(e);
+        updateHeightFromPointer(pt.y, pt.h);
+      }, { passive: false });
+
+      window.addEventListener('touchend', () => {
+        isDraggingTube = false;
+      });
+    }
+
     function renderCanvas() {
       if (!ctx || !canvas) return;
       const w = canvas.width / (window.devicePixelRatio || 1);
@@ -726,8 +819,8 @@
 
       ctx.clearRect(0, 0, w, h);
 
-      // Left Panel (60% width): Travelling Microscope Physical Rig + Vernier Scale
-      // Right Panel (40% width): Eyepiece Field of View with Cross-hairs
+      // Left Panel (58% width): Travelling Microscope Physical Rig + Vernier Scale
+      // Right Panel (42% width): Eyepiece Field of View with Cross-hairs
       const splitX = w * 0.58;
 
       drawMicroscopeRig(0, 0, splitX, h);
@@ -735,177 +828,300 @@
     }
 
     function drawMicroscopeRig(rx, ry, rw, rh) {
-      // Background
-      ctx.fillStyle = '#0a101d';
+      // Apparatus Background
+      const bgGrad = ctx.createLinearGradient(rx, ry, rx + rw, ry + rh);
+      bgGrad.addColorStop(0, '#0a101d');
+      bgGrad.addColorStop(1, '#060a14');
+      ctx.fillStyle = bgGrad;
       ctx.fillRect(rx, ry, rw, rh);
 
       const baseY = rh - 45;
       const pillarX = rx + 65;
 
-      // Heavy Iron Base
-      ctx.fillStyle = '#1e293b';
-      ctx.fillRect(rx + 25, baseY, rw - 50, 24);
-      ctx.strokeStyle = '#475569';
-      ctx.lineWidth = 2;
-      ctx.strokeRect(rx + 25, baseY, rw - 50, 24);
-
-      // Leveling screws
-      ctx.fillStyle = '#f59e0b';
-      ctx.fillRect(rx + 35, baseY + 24, 18, 8);
-      ctx.fillRect(rx + rw - 53, baseY + 24, 18, 8);
-
-      // Vertical Brass Pillar
-      ctx.fillStyle = '#334155';
-      ctx.fillRect(pillarX, 40, 22, baseY - 40);
+      // 1. Heavy Cast-Iron Heavy Base with Leveling Screws
+      const ironGrad = ctx.createLinearGradient(rx + 20, baseY, rx + rw - 20, baseY);
+      ironGrad.addColorStop(0, '#1e293b');
+      ironGrad.addColorStop(0.5, '#475569');
+      ironGrad.addColorStop(1, '#0f172a');
+      ctx.fillStyle = ironGrad;
+      ctx.beginPath();
+      ctx.roundRect(rx + 20, baseY, rw - 40, 26, 4);
+      ctx.fill();
       ctx.strokeStyle = '#64748b';
-      ctx.strokeRect(pillarX, 40, 22, baseY - 40);
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
 
-      // Main Vertical Metric Scale on Pillar
-      ctx.fillStyle = '#94a3b8';
-      ctx.font = '8px monospace';
+      // Brass Leveling Screws
+      [rx + 36, rx + rw - 50].forEach(sx => {
+        ctx.fillStyle = '#b45309';
+        ctx.beginPath();
+        ctx.roundRect(sx - 8, baseY + 24, 16, 8, 2);
+        ctx.fill();
+        ctx.fillStyle = '#f59e0b';
+        ctx.beginPath();
+        ctx.roundRect(sx - 6, baseY + 25, 12, 6, 1.5);
+        ctx.fill();
+      });
+
+      // 2. Vertical Pillar with Rack Gear Teeth
+      const pillarGrad = ctx.createLinearGradient(pillarX, 0, pillarX + 24, 0);
+      pillarGrad.addColorStop(0, '#334155');
+      pillarGrad.addColorStop(0.35, '#cbd5e1');
+      pillarGrad.addColorStop(0.7, '#64748b');
+      pillarGrad.addColorStop(1, '#1e293b');
+      ctx.fillStyle = pillarGrad;
+      ctx.fillRect(pillarX, 35, 24, baseY - 35);
+      ctx.strokeStyle = '#475569';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(pillarX, 35, 24, baseY - 35);
+
+      // Gear Rack Teeth on right side of pillar
+      ctx.fillStyle = '#1e293b';
+      for (let gy = 40; gy < baseY; gy += 6) {
+        ctx.fillRect(pillarX + 21, gy, 3, 3);
+      }
+
+      // Main Vertical Scale Graduations on Pillar (1 to 6 cm)
+      ctx.fillStyle = '#0f172a';
       ctx.textAlign = 'right';
       for (let cm = 1; cm <= 6; cm++) {
         const y = baseY - (cm / 6) * (baseY - 70);
-        ctx.fillRect(pillarX, y, 8, 1.5);
-        ctx.fillText(`${cm}`, pillarX - 3, y + 3);
+        ctx.fillRect(pillarX, y, 7, 1.5);
+        ctx.fillStyle = '#f8fafc';
+        ctx.font = 'bold 8.5px monospace';
+        ctx.fillText(`${cm}`, pillarX - 4, y + 3);
+        ctx.fillStyle = '#0f172a';
       }
 
-      // Glass Slab on Table
+      // 3. Specimen Stage Table & Glass Slab
       const tableCenterX = rx + rw * 0.58;
-      const slabW = 90;
+      const slabW = 96;
       const slabH = currentSlabThickness * 18;
 
-      // Paper sheet on base
+      // Clean White Paper Sheet
+      ctx.save();
       ctx.fillStyle = '#f8fafc';
-      ctx.fillRect(tableCenterX - 60, baseY - 4, 120, 4);
+      ctx.shadowColor = 'rgba(0,0,0,0.4)';
+      ctx.shadowBlur = 6;
+      ctx.fillRect(tableCenterX - 62, baseY - 5, 124, 5);
+      ctx.restore();
 
-      // Ink Mark P on paper
+      // Sharp Red Ink Cross Mark P on paper
       ctx.fillStyle = '#ef4444';
-      ctx.fillRect(tableCenterX - 6, baseY - 6, 12, 3);
-      ctx.fillRect(tableCenterX - 1.5, baseY - 10, 3, 11);
+      ctx.fillRect(tableCenterX - 7, baseY - 7, 14, 2.5);
+      ctx.fillRect(tableCenterX - 1.2, baseY - 11, 2.4, 10);
 
+      // Glass Slab placement based on Stage
       if (currentStage >= 2) {
-        // Draw Glass Slab over paper
-        ctx.fillStyle = 'rgba(56, 189, 248, 0.25)';
-        ctx.strokeStyle = '#38bdf8';
-        ctx.lineWidth = 1.5;
-        ctx.fillRect(tableCenterX - slabW / 2, baseY - 4 - slabH, slabW, slabH);
-        ctx.strokeRect(tableCenterX - slabW / 2, baseY - 4 - slabH, slabW, slabH);
+        ctx.save();
+        // 3D Glass Slab Body
+        const slabGrad = ctx.createLinearGradient(tableCenterX - slabW / 2, 0, tableCenterX + slabW / 2, 0);
+        slabGrad.addColorStop(0, 'rgba(56, 189, 248, 0.28)');
+        slabGrad.addColorStop(0.5, 'rgba(168, 85, 247, 0.22)');
+        slabGrad.addColorStop(1, 'rgba(56, 189, 248, 0.28)');
+        ctx.fillStyle = slabGrad;
+        ctx.fillRect(tableCenterX - slabW / 2, baseY - 5 - slabH, slabW, slabH);
 
-        // Slab label
-        ctx.fillStyle = 'rgba(255,255,255,0.7)';
-        ctx.font = '9px sans-serif';
+        // Polished Glass Edges & Bevels
+        ctx.strokeStyle = '#38bdf8';
+        ctx.lineWidth = 1.8;
+        ctx.strokeRect(tableCenterX - slabW / 2, baseY - 5 - slabH, slabW, slabH);
+
+        // Glass Reflection Glint
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.45)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(tableCenterX - slabW / 2 + 6, baseY - 5 - slabH + 3);
+        ctx.lineTo(tableCenterX + slabW / 2 - 6, baseY - 5 - slabH + 3);
+        ctx.stroke();
+
+        ctx.fillStyle = '#f8fafc';
+        ctx.font = 'bold 9px -apple-system, sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText(`Glass Slab (t = ${currentSlabThickness.toFixed(2)} cm)`, tableCenterX, baseY - 4 - slabH / 2 + 3);
+        ctx.fillText(`Glass Slab (t = ${currentSlabThickness.toFixed(2)} cm)`, tableCenterX, baseY - 5 - slabH / 2 + 3);
+        ctx.restore();
 
         if (currentStage === 3) {
           // Lycopodium powder grains on top surface
-          ctx.fillStyle = '#fbbf24';
-          for (let gx = -30; gx <= 30; gx += 8) {
+          ctx.save();
+          ctx.fillStyle = '#f59e0b';
+          for (let gx = -32; gx <= 32; gx += 7) {
             ctx.beginPath();
-            ctx.arc(tableCenterX + gx, baseY - 4 - slabH - 1, 2, 0, Math.PI * 2);
+            ctx.arc(tableCenterX + gx, baseY - 5 - slabH - 1.5, 2.2, 0, Math.PI * 2);
             ctx.fill();
           }
+          ctx.restore();
         }
       }
 
-      // Microscope Carriage (moves with currentHeight)
+      // 4. Microscope Carriage (moves with currentHeight)
       const carriageY = baseY - (currentHeight / 6) * (baseY - 70) - 40;
 
-      // Carriage mount on pillar
-      ctx.fillStyle = '#1e293b';
-      ctx.strokeStyle = '#0284c7';
-      ctx.lineWidth = 2;
-      ctx.fillRect(pillarX - 8, carriageY, 38, 50);
-      ctx.strokeRect(pillarX - 8, carriageY, 38, 50);
-
-      // Horizontal Arm holding microscope tube
-      ctx.fillStyle = '#334155';
-      ctx.fillRect(pillarX + 30, carriageY + 16, tableCenterX - (pillarX + 30), 16);
-
-      // Microscope Body Tube
-      const tubeX = tableCenterX;
-      const tubeY = carriageY - 10;
-      const tubeW = 24;
-      const tubeH = 80;
-
-      ctx.fillStyle = '#0f172a';
+      // Sliding Carriage Block
+      ctx.save();
+      const cGrad = ctx.createLinearGradient(pillarX - 8, 0, pillarX + 32, 0);
+      cGrad.addColorStop(0, '#1e293b');
+      cGrad.addColorStop(0.5, '#475569');
+      cGrad.addColorStop(1, '#0f172a');
+      ctx.fillStyle = cGrad;
+      ctx.beginPath();
+      ctx.roundRect(pillarX - 8, carriageY, 40, 52, 4);
+      ctx.fill();
       ctx.strokeStyle = '#38bdf8';
-      ctx.lineWidth = 2;
-      ctx.fillRect(tubeX - tubeW / 2, tubeY, tubeW, tubeH);
-      ctx.strokeRect(tubeX - tubeW / 2, tubeY, tubeW, tubeH);
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
 
-      // Eyepiece at top
+      // Knurled Coarse Adjustment Knob
+      ctx.fillStyle = '#b45309';
+      ctx.beginPath();
+      ctx.roundRect(pillarX - 18, carriageY + 12, 10, 26, 3);
+      ctx.fill();
+      ctx.fillStyle = '#f59e0b';
+      for (let ky = carriageY + 15; ky <= carriageY + 34; ky += 4) {
+        ctx.fillRect(pillarX - 17, ky, 8, 1.5);
+      }
+
+      // Fine Adjustment Micrometer Thimble
+      ctx.fillStyle = '#f59e0b';
+      ctx.beginPath();
+      ctx.roundRect(pillarX - 15, carriageY + 40, 8, 9, 2);
+      ctx.fill();
+
+      // Horizontal Chrome Rig Arm
+      const armGrad = ctx.createLinearGradient(0, carriageY + 18, 0, carriageY + 34);
+      armGrad.addColorStop(0, '#475569');
+      armGrad.addColorStop(0.5, '#cbd5e1');
+      armGrad.addColorStop(1, '#1e293b');
+      ctx.fillStyle = armGrad;
+      ctx.fillRect(pillarX + 32, carriageY + 18, tableCenterX - (pillarX + 32), 16);
+
+      // 5. Microscope Optical Tube
+      const tubeX = tableCenterX;
+      const tubeY = carriageY - 12;
+      const tubeW = 26;
+      const tubeH = 82;
+
+      // Tube Barrel
+      const tGrad = ctx.createLinearGradient(tubeX - tubeW / 2, 0, tubeX + tubeW / 2, 0);
+      tGrad.addColorStop(0, '#0f172a');
+      tGrad.addColorStop(0.4, '#334155');
+      tGrad.addColorStop(1, '#090e1a');
+      ctx.fillStyle = tGrad;
+      ctx.beginPath();
+      ctx.roundRect(tubeX - tubeW / 2, tubeY, tubeW, tubeH, 3);
+      ctx.fill();
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 1.6;
+      ctx.stroke();
+
+      // Eyepiece Mount Top Ring
       ctx.fillStyle = '#1e293b';
-      ctx.fillRect(tubeX - tubeW / 2 - 4, tubeY - 12, tubeW + 8, 12);
+      ctx.fillRect(tubeX - tubeW / 2 - 4, tubeY - 14, tubeW + 8, 14);
+      ctx.strokeStyle = '#cbd5e1';
+      ctx.strokeRect(tubeX - tubeW / 2 - 4, tubeY - 14, tubeW + 8, 14);
 
-      // Objective lens cone at bottom
+      // Objective Lens Turret Cone at Bottom
       ctx.beginPath();
       ctx.moveTo(tubeX - tubeW / 2, tubeY + tubeH);
       ctx.lineTo(tubeX + tubeW / 2, tubeY + tubeH);
-      ctx.lineTo(tubeX + 6, tubeY + tubeH + 16);
-      ctx.lineTo(tubeX - 6, tubeY + tubeH + 16);
+      ctx.lineTo(tubeX + 7, tubeY + tubeH + 18);
+      ctx.lineTo(tubeX - 7, tubeY + tubeH + 18);
       ctx.closePath();
       ctx.fillStyle = '#334155';
       ctx.fill();
+      ctx.strokeStyle = '#64748b';
       ctx.stroke();
 
-      // Vernier Scale Magnifying Loupe Window
-      drawVernierLoupe(rx + 15, 20, 110, 110);
+      // Optical Focus Rays from Objective to Object
+      ctx.strokeStyle = 'rgba(56, 189, 248, 0.4)';
+      ctx.lineWidth = 1;
+      ctx.setLineDash([3, 3]);
+      ctx.beginPath();
+      ctx.moveTo(tubeX - 7, tubeY + tubeH + 18);
+      ctx.lineTo(tableCenterX, baseY - 5);
+      ctx.moveTo(tubeX + 7, tubeY + tubeH + 18);
+      ctx.lineTo(tableCenterX, baseY - 5);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.restore();
+
+      // 6. High-Precision Vernier Loupe HUD
+      drawVernierLoupe(rx + 14, 18, 118, 118);
     }
 
     function drawVernierLoupe(lx, ly, lw, lh) {
       ctx.save();
-      ctx.fillStyle = 'rgba(17, 26, 46, 0.95)';
+      // Outer Loupe Frame
+      ctx.fillStyle = 'rgba(15, 23, 42, 0.95)';
       ctx.strokeStyle = '#38bdf8';
-      ctx.lineWidth = 1.5;
-      ctx.fillRect(lx, ly, lw, lh);
-      ctx.strokeRect(lx, ly, lw, lh);
+      ctx.lineWidth = 1.8;
+      ctx.beginPath();
+      ctx.roundRect(lx, ly, lw, lh, 8);
+      ctx.fill();
+      ctx.stroke();
+
+      // Loupe Glass Reflection Highlight
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.arc(lx + lw / 2, ly + lh / 2, lw * 0.45, -Math.PI * 0.75, -Math.PI * 0.25);
+      ctx.stroke();
 
       ctx.fillStyle = '#38bdf8';
-      ctx.font = 'bold 9px sans-serif';
+      ctx.font = 'bold 9px -apple-system, sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText('VERNIER LOUPE (LC 0.001)', lx + lw / 2, ly + 14);
+      ctx.fillText('VERNIER LOUPE (LC 0.001)', lx + lw / 2, ly + 15);
 
-      // Draw Main Scale (MS) on left side of window
-      const msX = lx + 36;
-      ctx.strokeStyle = '#94a3b8';
-      ctx.lineWidth = 1;
-
-      // Current height to mm:
       const msr = Math.floor(currentHeight / 0.05) * 0.05;
       const vsc = Math.round((currentHeight - msr) / 0.001);
 
-      ctx.fillStyle = '#fff';
+      // Measurement Metrics Text
+      ctx.fillStyle = '#94a3b8';
       ctx.font = '8px monospace';
       ctx.textAlign = 'right';
-      ctx.fillText(`MSR: ${msr.toFixed(2)} cm`, lx + lw - 8, ly + 32);
+      ctx.fillText(`MSR: ${msr.toFixed(2)} cm`, lx + lw - 8, ly + 33);
       ctx.fillText(`VSC: ${vsc} div`, lx + lw - 8, ly + 46);
-      ctx.fillStyle = '#10b981';
+      ctx.fillStyle = '#34d399';
       ctx.fillText(`TR: ${currentHeight.toFixed(3)} cm`, lx + lw - 8, ly + 62);
 
-      // Main scale ticks
+      // Main Scale (Left column)
+      const msX = lx + 38;
+      ctx.strokeStyle = '#94a3b8';
+      ctx.lineWidth = 1.2;
+
       for (let i = -4; i <= 4; i++) {
-        const tickVal = msr + i * 0.05;
-        const ty = ly + lh / 2 - i * 9;
+        const ty = ly + lh / 2 - i * 9.5;
         if (ty > ly + 22 && ty < ly + lh - 8) {
           ctx.beginPath();
-          ctx.moveTo(msX - 10, ty);
+          ctx.moveTo(msX - 11, ty);
           ctx.lineTo(msX, ty);
           ctx.stroke();
         }
       }
 
-      // Vernier scale ticks
+      // Vernier Scale (Right column with 50-division feel)
       const vsX = msX + 6;
       ctx.strokeStyle = '#f59e0b';
+      ctx.lineWidth = 1.2;
+
       for (let v = 0; v <= 10; v++) {
-        const vy = ly + lh / 2 - (v - vsc) * 2.2;
+        const vy = ly + lh / 2 - (v - vsc) * 2.3;
         if (vy > ly + 22 && vy < ly + lh - 8) {
           ctx.beginPath();
           ctx.moveTo(vsX, vy);
-          ctx.lineTo(vsX + 8, vy);
+          ctx.lineTo(vsX + 9, vy);
           ctx.stroke();
+
+          if (v === vsc) {
+            // Coincidence Spark Arrow
+            ctx.fillStyle = '#10b981';
+            ctx.beginPath();
+            ctx.moveTo(vsX + 13, vy);
+            ctx.lineTo(vsX + 17, vy - 3);
+            ctx.lineTo(vsX + 17, vy + 3);
+            ctx.closePath();
+            ctx.fill();
+          }
         }
       }
 
@@ -913,7 +1129,6 @@
     }
 
     function drawEyepieceView(ex, ey, ew, eh) {
-      // Eyepiece circular aperture background
       ctx.fillStyle = '#060a17';
       ctx.fillRect(ex, ey, ew, eh);
 
@@ -925,13 +1140,13 @@
       const cy = ey + eh / 2;
       const radius = Math.min(ew * 0.42, eh * 0.42);
 
-      // Clip inside eyepiece circle
+      // Clip inside circular aperture
       ctx.save();
       ctx.beginPath();
       ctx.arc(cx, cy, radius, 0, Math.PI * 2);
       ctx.clip();
 
-      // Eyepiece illumination gradient
+      // Field of View Illumination
       const fovGrad = ctx.createRadialGradient(cx, cy, 10, cx, cy, radius);
       fovGrad.addColorStop(0, '#fef08a');
       fovGrad.addColorStop(0.7, '#facc15');
@@ -939,25 +1154,22 @@
       ctx.fillStyle = fovGrad;
       ctx.fillRect(cx - radius, cy - radius, radius * 2, radius * 2);
 
-      // Calculate defocus amount
+      // Calculate Defocus amount
       const target = getTargetFocusHeight(currentStage);
       const deltaH = Math.abs(currentHeight - target);
-      const blurPx = Math.min(18, deltaH * 140);
+      const blurPx = Math.min(18, deltaH * 150);
 
-      // Draw specimen object based on currentStage
+      // Draw Specimen based on Stage
       if (currentStage === 1) {
-        // Sharp/blurred ink cross mark on paper
         drawCrossMark(cx, cy, blurPx, '#1e293b');
       } else if (currentStage === 2) {
-        // Apparent ink cross mark through glass slab (slightly tinted by glass)
         drawCrossMark(cx, cy, blurPx, '#0f172a');
       } else {
-        // Lycopodium powder grains
         drawLycopodiumGrains(cx, cy, blurPx);
       }
 
-      // Draw Cross-hairs (Fixed in eyepiece focal plane, ALWAYS razor sharp!)
-      ctx.strokeStyle = '#000';
+      // Fixed Eyepiece Razor-Sharp Crosshairs
+      ctx.strokeStyle = '#000000';
       ctx.lineWidth = 1.2;
       ctx.beginPath();
       ctx.moveTo(cx - radius, cy);
@@ -966,9 +1178,21 @@
       ctx.lineTo(cx, cy + radius);
       ctx.stroke();
 
+      // Auxiliary Reticle Graticule Ticks
+      for (let t = -4; t <= 4; t++) {
+        if (t !== 0) {
+          ctx.beginPath();
+          ctx.moveTo(cx + t * 14, cy - 3);
+          ctx.lineTo(cx + t * 14, cy + 3);
+          ctx.moveTo(cx - 3, cy + t * 14);
+          ctx.lineTo(cx + 3, cy + t * 14);
+          ctx.stroke();
+        }
+      }
+
       ctx.restore();
 
-      // Eyepiece Outer Metal Bezel
+      // Outer Metallic Microscope Bezel
       ctx.save();
       ctx.strokeStyle = '#475569';
       ctx.lineWidth = 10;
@@ -980,17 +1204,17 @@
       ctx.lineWidth = 2;
       ctx.stroke();
 
-      ctx.fillStyle = '#fff';
-      ctx.font = 'bold 11px sans-serif';
+      ctx.fillStyle = '#f8fafc';
+      ctx.font = 'bold 11px -apple-system, sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText('EYEPIECE CROSS-HAIRS', cx, cy - radius - 14);
+      ctx.fillText('EYEPIECE RETICLE FIELD', cx, cy - radius - 14);
 
       if (blurPx <= 1.2) {
         ctx.fillStyle = '#10b981';
-        ctx.fillText('● PERFECT FOCUS', cx, cy + radius + 22);
+        ctx.fillText('● PERFECT SHARP FOCUS', cx, cy + radius + 22);
       } else {
         ctx.fillStyle = '#f59e0b';
-        ctx.fillText('○ OUT OF FOCUS', cx, cy + radius + 22);
+        ctx.fillText('○ OUT OF FOCUS (ADJUST TUBE)', cx, cy + radius + 22);
       }
       ctx.restore();
     }
@@ -1003,15 +1227,15 @@
       ctx.strokeStyle = color;
       ctx.lineWidth = 5;
       ctx.beginPath();
-      ctx.moveTo(cx - 30, cy - 30);
-      ctx.lineTo(cx + 30, cy + 30);
-      ctx.moveTo(cx + 30, cy - 30);
-      ctx.lineTo(cx - 30, cy + 30);
+      ctx.moveTo(cx - 32, cy - 32);
+      ctx.lineTo(cx + 32, cy + 32);
+      ctx.moveTo(cx + 32, cy - 32);
+      ctx.lineTo(cx - 32, cy + 32);
       ctx.stroke();
 
       ctx.fillStyle = color;
       ctx.beginPath();
-      ctx.arc(cx, cy, 6, 0, Math.PI * 2);
+      ctx.arc(cx, cy, 6.5, 0, Math.PI * 2);
       ctx.fill();
       ctx.restore();
     }
@@ -1023,8 +1247,8 @@
       }
       ctx.fillStyle = '#78350f';
       const grainCoords = [
-        [-15, -12, 4], [18, -10, 5], [-8, 20, 4.5], [14, 16, 5],
-        [0, 0, 4], [-24, 6, 3.5], [26, -22, 4]
+        [-16, -14, 4.5], [19, -11, 5], [-9, 21, 4.5], [15, 17, 5],
+        [0, 0, 4.5], [-25, 7, 3.8], [27, -23, 4.2]
       ];
       grainCoords.forEach(([gx, gy, gr]) => {
         ctx.beginPath();

@@ -548,6 +548,7 @@
 
       buildQuiz();
       updatePhysics();
+      setupCanvasInteractions();
       setTimeout(initKaTeX, 300);
     });
 
@@ -728,6 +729,96 @@
       renderCanvas();
     }
 
+    // =========================================================================
+    // ENHANCED REALISTIC RETORT STAND & LIQUID LENS ENGINE
+    // =========================================================================
+
+    let isDraggingNeedle = false;
+
+    function setupCanvasInteractions() {
+      if (!canvas) return;
+
+      function getCoords(e) {
+        const rect = canvas.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        return {
+          x: clientX - rect.left,
+          y: clientY - rect.top,
+          w: rect.width,
+          h: rect.height
+        };
+      }
+
+      function checkNeedleHit(px, py, w, h) {
+        const tableBaseY = h - 50;
+        const mirrorH = 8;
+        const centerX = w * 0.48;
+        const standX = centerX - 130;
+        const needleTipY = tableBaseY - mirrorH - (currentH / 45) * (tableBaseY - 65);
+
+        if (px >= standX - 10 && px <= centerX + 25 && Math.abs(py - needleTipY) <= 22) {
+          return true;
+        }
+        return false;
+      }
+
+      function updateHeightFromPointer(py, h) {
+        const tableBaseY = h - 50;
+        const mirrorH = 8;
+        const rawH = ((tableBaseY - mirrorH - py) / (tableBaseY - 65)) * 45;
+        const newH = Math.min(45.0, Math.max(15.0, Math.round(rawH * 2) / 2));
+        if (newH !== currentH) {
+          document.getElementById('sliderH').value = newH;
+          onHChange(newH);
+        }
+      }
+
+      canvas.addEventListener('mousedown', (e) => {
+        const pt = getCoords(e);
+        if (checkNeedleHit(pt.x, pt.y, pt.w, pt.h)) {
+          isDraggingNeedle = true;
+          canvas.style.cursor = 'grabbing';
+          e.preventDefault();
+        }
+      });
+
+      window.addEventListener('mousemove', (e) => {
+        const pt = getCoords(e);
+        if (isDraggingNeedle) {
+          updateHeightFromPointer(pt.y, pt.h);
+        } else {
+          const hit = checkNeedleHit(pt.x, pt.y, pt.w, pt.h);
+          canvas.style.cursor = hit ? 'ns-resize' : 'default';
+        }
+      });
+
+      window.addEventListener('mouseup', () => {
+        if (isDraggingNeedle) {
+          isDraggingNeedle = false;
+          canvas.style.cursor = 'default';
+        }
+      });
+
+      canvas.addEventListener('touchstart', (e) => {
+        const pt = getCoords(e);
+        if (checkNeedleHit(pt.x, pt.y, pt.w, pt.h)) {
+          isDraggingNeedle = true;
+          e.preventDefault();
+        }
+      }, { passive: false });
+
+      window.addEventListener('touchmove', (e) => {
+        if (!isDraggingNeedle) return;
+        const pt = getCoords(e);
+        updateHeightFromPointer(pt.y, pt.h);
+      }, { passive: false });
+
+      window.addEventListener('touchend', () => {
+        isDraggingNeedle = false;
+      });
+    }
+
     function renderCanvas() {
       if (!ctx || !canvas) return;
       const w = canvas.width / (window.devicePixelRatio || 1);
@@ -735,80 +826,149 @@
 
       ctx.clearRect(0, 0, w, h);
 
+      // Ambient background gradient
+      const bgGrad = ctx.createRadialGradient(w * 0.45, h * 0.45, 50, w * 0.45, h * 0.45, w * 0.7);
+      bgGrad.addColorStop(0, '#0d1629');
+      bgGrad.addColorStop(1, '#050913');
+      ctx.fillStyle = bgGrad;
+      ctx.fillRect(0, 0, w, h);
+
       const tableBaseY = h - 50;
-      const centerX = w * 0.52;
-      const standX = centerX - 140;
+      const centerX = w * 0.48;
+      const standX = centerX - 130;
 
-      // 1. Wooden Lab Bench Table
-      ctx.fillStyle = '#1e293b';
-      ctx.fillRect(centerX - 180, tableBaseY, 360, 24);
-      ctx.strokeStyle = '#334155';
-      ctx.lineWidth = 2;
-      ctx.strokeRect(centerX - 180, tableBaseY, 360, 24);
+      // 1. Heavy Wooden Lab Bench Table
+      const woodGrad = ctx.createLinearGradient(0, tableBaseY, 0, tableBaseY + 28);
+      woodGrad.addColorStop(0, '#1e293b');
+      woodGrad.addColorStop(0.3, '#334155');
+      woodGrad.addColorStop(1, '#0f172a');
+      ctx.fillStyle = woodGrad;
+      ctx.fillRect(centerX - 190, tableBaseY, 380, 26);
+      ctx.strokeStyle = '#475569';
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(centerX - 190, tableBaseY, 380, 26);
 
-      // 2. Vertical Retort Stand Pillar
-      ctx.fillStyle = '#475569';
-      ctx.fillRect(standX, 35, 14, tableBaseY - 35);
+      // 2. Heavy Cast-Iron Retort Stand Base & Pillar
+      ctx.save();
+      const baseGrad = ctx.createLinearGradient(standX - 35, 0, standX + 35, 0);
+      baseGrad.addColorStop(0, '#1e293b');
+      baseGrad.addColorStop(0.5, '#475569');
+      baseGrad.addColorStop(1, '#0f172a');
+      ctx.fillStyle = baseGrad;
+      ctx.beginPath();
+      ctx.roundRect(standX - 32, tableBaseY - 10, 64, 12, 4);
+      ctx.fill();
       ctx.strokeStyle = '#64748b';
-      ctx.strokeRect(standX, 35, 14, tableBaseY - 35);
+      ctx.lineWidth = 1;
+      ctx.stroke();
 
-      // Vertical Metric Graduation on Pillar
-      ctx.fillStyle = '#94a3b8';
-      ctx.font = '8px monospace';
+      // Chrome Stainless Steel Rod
+      const rodGrad = ctx.createLinearGradient(standX - 5, 0, standX + 5, 0);
+      rodGrad.addColorStop(0, '#475569');
+      rodGrad.addColorStop(0.35, '#f8fafc');
+      rodGrad.addColorStop(0.7, '#94a3b8');
+      rodGrad.addColorStop(1, '#1e293b');
+      ctx.fillStyle = rodGrad;
+      ctx.fillRect(standX - 5, 30, 10, tableBaseY - 40);
+
+      // Millimeter Scale Etchings on Rod
+      ctx.fillStyle = '#0f172a';
       ctx.textAlign = 'right';
-      for (let cm = 10; cm <= 45; cm += 5) {
-        const py = tableBaseY - (cm / 45) * (tableBaseY - 60);
-        ctx.fillRect(standX, py, 6, 1);
-        ctx.fillText(`${cm}`, standX - 2, py + 3);
+      for (let cm = 10; cm <= 45; cm += 2) {
+        const py = tableBaseY - (cm / 45) * (tableBaseY - 65);
+        const isMajor = cm % 10 === 0;
+        const isMid = cm % 5 === 0;
+        const markW = isMajor ? 5 : (isMid ? 3.5 : 2);
+        ctx.fillRect(standX - 5, py, markW, 1);
+
+        if (isMajor || isMid) {
+          ctx.fillStyle = '#94a3b8';
+          ctx.font = 'bold 8px monospace';
+          ctx.fillText(cm, standX - 8, py + 3);
+          ctx.fillStyle = '#0f172a';
+        }
       }
+      ctx.restore();
 
       // 3. Plane Mirror on Table
-      const mirrorW = 120;
+      const mirrorW = 130;
       const mirrorH = 8;
-      ctx.fillStyle = '#94a3b8';
-      ctx.fillRect(centerX - mirrorW / 2, tableBaseY - mirrorH, mirrorW, mirrorH);
-      ctx.strokeStyle = '#cbd5e1';
-      ctx.lineWidth = 1.5;
-      ctx.strokeRect(centerX - mirrorW / 2, tableBaseY - mirrorH, mirrorW, mirrorH);
+      const mirrorY = tableBaseY - mirrorH;
 
-      // Mirror reflection hatches
-      ctx.strokeStyle = '#475569';
+      ctx.save();
+      const mGrad = ctx.createLinearGradient(0, mirrorY, 0, mirrorY + mirrorH);
+      mGrad.addColorStop(0, '#f1f5f9');
+      mGrad.addColorStop(0.5, '#94a3b8');
+      mGrad.addColorStop(1, '#475569');
+      ctx.fillStyle = mGrad;
+      ctx.fillRect(centerX - mirrorW / 2, mirrorY, mirrorW, mirrorH);
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(centerX - mirrorW / 2, mirrorY, mirrorW, mirrorH);
+
+      // Silvered bottom hatchings
+      ctx.strokeStyle = '#334155';
       ctx.lineWidth = 1;
       for (let mx = centerX - mirrorW / 2 + 6; mx < centerX + mirrorW / 2; mx += 10) {
         ctx.beginPath();
-        ctx.moveTo(mx, tableBaseY);
-        ctx.lineTo(mx + 6, tableBaseY + 6);
+        ctx.moveTo(mx, mirrorY + mirrorH);
+        ctx.lineTo(mx + 6, mirrorY + mirrorH + 6);
         ctx.stroke();
       }
 
-      // 4. Liquid Layer (if toggled on)
-      const lensW = 90;
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = 'bold 8.5px -apple-system, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('PLANE MIRROR', centerX, tableBaseY + 16);
+      ctx.restore();
+
+      // 4. Plano-Concave Liquid Lens (if active)
+      const lensW = 96;
       if (hasLiquid) {
         ctx.save();
-        ctx.fillStyle = 'rgba(56, 189, 248, 0.45)';
-        ctx.strokeStyle = '#38bdf8';
-        ctx.lineWidth = 1;
+        let fluidColor = 'rgba(56, 189, 248, 0.45)';
+        let rimColor = '#38bdf8';
+        if (selectedLiquidName.includes('Glycer')) {
+          fluidColor = 'rgba(16, 185, 129, 0.45)';
+          rimColor = '#10b981';
+        } else if (selectedLiquidName.includes('Castor')) {
+          fluidColor = 'rgba(245, 158, 11, 0.45)';
+          rimColor = '#f59e0b';
+        } else if (selectedLiquidName.includes('Turpentine')) {
+          fluidColor = 'rgba(168, 85, 247, 0.45)';
+          rimColor = '#c084fc';
+        }
+
+        ctx.fillStyle = fluidColor;
+        ctx.strokeStyle = rimColor;
+        ctx.lineWidth = 1.2;
+
         ctx.beginPath();
-        ctx.moveTo(centerX - lensW / 2 + 6, tableBaseY - mirrorH);
-        ctx.lineTo(centerX + lensW / 2 - 6, tableBaseY - mirrorH);
-        ctx.quadraticCurveTo(centerX, tableBaseY - mirrorH - 6, centerX - lensW / 2 + 6, tableBaseY - mirrorH);
+        ctx.moveTo(centerX - lensW / 2 + 8, mirrorY);
+        ctx.lineTo(centerX + lensW / 2 - 8, mirrorY);
+        ctx.quadraticCurveTo(centerX, mirrorY - 7, centerX - lensW / 2 + 8, mirrorY);
         ctx.closePath();
         ctx.fill();
         ctx.stroke();
 
-        ctx.fillStyle = '#38bdf8';
-        ctx.font = '9px sans-serif';
+        ctx.fillStyle = rimColor;
+        ctx.font = 'bold 9px -apple-system, sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText(`Plano-Concave ${selectedLiquidName} Lens`, centerX, tableBaseY - mirrorH + 18);
+        ctx.fillText(`Plano-Concave Liquid Lens (${selectedLiquidName}, μ = ${selectedLiquidMu})`, centerX, mirrorY - 24);
         ctx.restore();
       }
 
       // 5. Convex Lens resting on mirror / liquid
-      const lensY = tableBaseY - mirrorH - 6;
+      const lensY = mirrorY - 6;
       ctx.save();
-      ctx.fillStyle = 'rgba(56, 189, 248, 0.2)';
+      const lensGrad = ctx.createRadialGradient(centerX, lensY - 6, 5, centerX, lensY - 6, 45);
+      lensGrad.addColorStop(0, 'rgba(255, 255, 255, 0.35)');
+      lensGrad.addColorStop(0.6, 'rgba(56, 189, 248, 0.22)');
+      lensGrad.addColorStop(1, 'rgba(2, 132, 199, 0.35)');
+
+      ctx.fillStyle = lensGrad;
       ctx.strokeStyle = '#38bdf8';
-      ctx.lineWidth = 2;
+      ctx.lineWidth = 2.2;
       ctx.beginPath();
       ctx.moveTo(centerX - lensW / 2, lensY);
       ctx.quadraticCurveTo(centerX, lensY - 18, centerX + lensW / 2, lensY);
@@ -817,108 +977,285 @@
       ctx.fill();
       ctx.stroke();
 
-      ctx.fillStyle = 'rgba(255,255,255,0.75)';
-      ctx.font = '10px sans-serif';
+      // Refraction highlight curve
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.55)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(centerX - lensW / 2 + 12, lensY - 2);
+      ctx.quadraticCurveTo(centerX, lensY - 14, centerX + lensW / 2 - 12, lensY - 2);
+      ctx.stroke();
+
+      ctx.fillStyle = '#f8fafc';
+      ctx.font = 'bold 9.5px -apple-system, sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText('Convex Lens L (f₁ = 20 cm)', centerX, lensY - 22);
+      ctx.fillText('Convex Lens L (f₁ = 20.0 cm)', centerX, lensY - 22);
       ctx.restore();
 
-      // 6. Needle Pointer Clamp on Stand
-      const needleTipY = tableBaseY - mirrorH - (currentH / 45) * (tableBaseY - 60);
+      // 6. Needle Pointer Bosshead Clamp & Horizontal Arm
+      const needleTipY = tableBaseY - mirrorH - (currentH / 45) * (tableBaseY - 65);
 
-      // Stand Bosshead & Arm
-      ctx.fillStyle = '#1e293b';
-      ctx.strokeStyle = '#0284c7';
-      ctx.lineWidth = 2;
-      ctx.fillRect(standX - 6, needleTipY - 10, 26, 20);
-      ctx.strokeRect(standX - 6, needleTipY - 10, 26, 20);
+      ctx.save();
+      // Brass knurled bosshead
+      const bossGrad = ctx.createLinearGradient(standX - 8, 0, standX + 16, 0);
+      bossGrad.addColorStop(0, '#b45309');
+      bossGrad.addColorStop(0.4, '#fde68a');
+      bossGrad.addColorStop(1, '#92400e');
+      ctx.fillStyle = bossGrad;
+      ctx.beginPath();
+      ctx.roundRect(standX - 8, needleTipY - 9, 24, 18, 3);
+      ctx.fill();
+      ctx.strokeStyle = '#f59e0b';
+      ctx.lineWidth = 1;
+      ctx.stroke();
 
-      ctx.fillStyle = '#475569';
-      ctx.fillRect(standX + 20, needleTipY - 4, centerX - (standX + 20), 8);
+      // Thumbscrew
+      ctx.fillStyle = '#f59e0b';
+      ctx.beginPath();
+      ctx.arc(standX - 11, needleTipY, 4, 0, Math.PI * 2);
+      ctx.fill();
 
-      // Real Upright Needle Pin
-      const apparentNeedleX = centerX - (eyeShift * 0.4);
-      drawVerticalNeedle(apparentNeedleX, needleTipY, '#f59e0b', true, `Object Pointer (${currentH.toFixed(1)} cm)`);
+      // Horizontal Chrome Support Arm
+      const armGrad = ctx.createLinearGradient(0, needleTipY - 3, 0, needleTipY + 3);
+      armGrad.addColorStop(0, '#475569');
+      armGrad.addColorStop(0.5, '#cbd5e1');
+      armGrad.addColorStop(1, '#334155');
+      ctx.fillStyle = armGrad;
+      ctx.fillRect(standX + 16, needleTipY - 3, centerX - (standX + 16), 6);
+      ctx.restore();
 
-      // 7. Inverted Reflected Image formed by mirror reflection
+      // 7. Physical Object Needle Pointer (Pointing Downwards, Scarlet Cap)
+      const apparentNeedleX = centerX - (eyeShift * 0.35);
+      drawPrecisionVerticalPointer(apparentNeedleX, needleTipY, '#ef4444', true, `Object Pointer (${currentH.toFixed(1)} cm)`, isDraggingNeedle);
+
+      // 8. Inverted Reflected Aerial Image
       const trueF = getTrueFocus();
-      const trueImageTipY = tableBaseY - mirrorH - (trueF / 45) * (tableBaseY - 60);
-      const apparentImageX = centerX + (eyeShift * 1.6);
-      drawVerticalNeedle(apparentImageX, trueImageTipY, '#38bdf8', false, 'Inverted Image');
+      const trueImageTipY = tableBaseY - mirrorH - (trueF / 45) * (tableBaseY - 65);
+      const apparentImageX = centerX + (eyeShift * 1.5);
+      drawPrecisionVerticalPointer(apparentImageX, trueImageTipY, '#38bdf8', false, 'Aerial Image', false);
 
-      // 8. Ray Tracing Paths
-      drawReflectionRays(centerX, apparentNeedleX, needleTipY, lensY, tableBaseY - mirrorH);
+      // 9. Luminous Reflection Rays
+      drawReflectionRays(centerX, apparentNeedleX, needleTipY, lensY, mirrorY);
 
-      // 9. Parallax Visual Cue
+      // 10. Coincidence Indicator or Parallax Shift
       const parallaxDiff = Math.abs(currentH - trueF);
-      if (parallaxDiff > 0.3 && Math.abs(eyeShift) > 0) {
+      const isZeroParallax = parallaxDiff <= 0.35;
+
+      if (isZeroParallax) {
+        // Zero Parallax Alignment Flash
+        ctx.save();
+        const flashGrad = ctx.createRadialGradient(apparentNeedleX, needleTipY, 0, apparentNeedleX, needleTipY, 18);
+        flashGrad.addColorStop(0, 'rgba(52, 211, 153, 0.95)');
+        flashGrad.addColorStop(0.5, 'rgba(16, 185, 129, 0.4)');
+        flashGrad.addColorStop(1, 'transparent');
+        ctx.fillStyle = flashGrad;
+        ctx.beginPath();
+        ctx.arc(apparentNeedleX, needleTipY, 18, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = '#34d399';
+        ctx.font = 'bold 11px -apple-system, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('⚡ ZERO PARALLAX COINCIDENCE', apparentNeedleX, needleTipY - 48);
+        ctx.restore();
+      } else if (Math.abs(eyeShift) > 0) {
+        // Parallax separation line
+        ctx.save();
         ctx.strokeStyle = '#f59e0b';
-        ctx.lineWidth = 1.5;
+        ctx.lineWidth = 1.6;
         ctx.setLineDash([3, 3]);
         ctx.beginPath();
         ctx.moveTo(apparentNeedleX, needleTipY);
         ctx.lineTo(apparentImageX, trueImageTipY);
         ctx.stroke();
-        ctx.setLineDash([]);
-        ctx.fillStyle = '#f59e0b';
-        ctx.font = '10px sans-serif';
+        ctx.restore();
+
+        ctx.fillStyle = '#fbbf24';
+        ctx.font = 'bold 9.5px -apple-system, sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText('Parallax Gap', (apparentNeedleX + apparentImageX) / 2, (needleTipY + trueImageTipY) / 2 - 8);
+        ctx.fillText(`Parallax: ${(parallaxDiff * 10).toFixed(1)} mm`, (apparentNeedleX + apparentImageX) / 2, (needleTipY + trueImageTipY) / 2 - 8);
       }
+
+      // 11. Eyepiece Observation Chamber (HUD)
+      drawEyepieceObservationChamber(w, h, currentH, trueF, isZeroParallax);
+    }
+
+    function drawPrecisionVerticalPointer(x, tipY, color, isPointingDown, label, isGrabbed) {
+      ctx.save();
+      const len = 38;
+      const baseEndY = isPointingDown ? (tipY - len) : (tipY + len);
+
+      // Vertical Needle Shaft
+      const shaftGrad = ctx.createLinearGradient(x - 1.5, 0, x + 1.5, 0);
+      shaftGrad.addColorStop(0, '#64748b');
+      shaftGrad.addColorStop(0.5, '#f8fafc');
+      shaftGrad.addColorStop(1, '#334155');
+      ctx.fillStyle = shaftGrad;
+      ctx.fillRect(x - 1.5, Math.min(tipY, baseEndY), 3, len);
+
+      // Sharp Conical Tip
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.moveTo(x - 3.5, tipY + (isPointingDown ? -7 : 7));
+      ctx.lineTo(x + 3.5, tipY + (isPointingDown ? -7 : 7));
+      ctx.lineTo(x, tipY);
+      ctx.closePath();
+      ctx.fill();
+
+      // Needle Cap Bead
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.arc(x, baseEndY, 4.5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(255,255,255,0.8)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      if (isGrabbed) {
+        ctx.strokeStyle = '#38bdf8';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(x, tipY, 8, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+
+      // Label
+      ctx.fillStyle = color;
+      ctx.font = 'bold 9px -apple-system, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(label, x, isPointingDown ? (baseEndY - 6) : (baseEndY + 14));
+
+      ctx.restore();
     }
 
     function drawReflectionRays(cx, nx, ny, lensY, mirrorY) {
       ctx.save();
-      ctx.lineWidth = 1.2;
 
-      // Incident ray from needle to lens
-      ctx.strokeStyle = 'rgba(245, 158, 11, 0.7)';
+      // Wide Glow
+      ctx.strokeStyle = 'rgba(245, 158, 11, 0.25)';
+      ctx.lineWidth = 4;
       ctx.beginPath();
       ctx.moveTo(nx, ny);
-      ctx.lineTo(cx - 24, lensY);
+      ctx.lineTo(cx - 26, lensY);
       ctx.moveTo(nx, ny);
-      ctx.lineTo(cx + 24, lensY);
+      ctx.lineTo(cx + 26, lensY);
+      ctx.stroke();
+
+      // Sharp Core
+      ctx.strokeStyle = '#f59e0b';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(nx, ny);
+      ctx.lineTo(cx - 26, lensY);
+      ctx.moveTo(nx, ny);
+      ctx.lineTo(cx + 26, lensY);
       ctx.stroke();
 
       // Parallel rays from lens to plane mirror
-      ctx.strokeStyle = 'rgba(56, 189, 248, 0.7)';
+      ctx.strokeStyle = 'rgba(56, 189, 248, 0.25)';
+      ctx.lineWidth = 4;
       ctx.beginPath();
-      ctx.moveTo(cx - 24, lensY);
-      ctx.lineTo(cx - 24, mirrorY);
-      ctx.moveTo(cx + 24, lensY);
-      ctx.lineTo(cx + 24, mirrorY);
+      ctx.moveTo(cx - 26, lensY);
+      ctx.lineTo(cx - 26, mirrorY);
+      ctx.moveTo(cx + 26, lensY);
+      ctx.lineTo(cx + 26, mirrorY);
+      ctx.stroke();
+
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(cx - 26, lensY);
+      ctx.lineTo(cx - 26, mirrorY);
+      ctx.moveTo(cx + 26, lensY);
+      ctx.lineTo(cx + 26, mirrorY);
       ctx.stroke();
 
       ctx.restore();
     }
 
-    function drawVerticalNeedle(x, tipY, color, isPointingDown, label) {
+    function drawEyepieceObservationChamber(w, h, curH, targetH, isZeroParallax) {
+      const boxSize = Math.min(130, Math.max(100, h * 0.32));
+      const cx = w - boxSize * 0.5 - 12;
+      const cy = boxSize * 0.5 + 14;
+      const r = boxSize * 0.44;
+
       ctx.save();
-      const length = 38;
-      const baseEndY = isPointingDown ? (tipY - length) : (tipY + length);
 
-      // Needle body
-      ctx.strokeStyle = color;
-      ctx.fillStyle = color;
-      ctx.lineWidth = 2.5;
-
+      // Outer Eyepiece Housing
+      ctx.fillStyle = '#090e1a';
+      ctx.strokeStyle = '#334155';
+      ctx.lineWidth = 3;
       ctx.beginPath();
-      ctx.moveTo(x, baseEndY);
-      ctx.lineTo(x, tipY);
+      ctx.arc(cx, cy, r + 4, 0, Math.PI * 2);
+      ctx.fill();
       ctx.stroke();
 
-      // Needle sharp tip
+      // Lens Vignette Gradient
+      const vGrad = ctx.createRadialGradient(cx, cy, r * 0.2, cx, cy, r);
+      vGrad.addColorStop(0, '#131f38');
+      vGrad.addColorStop(0.75, '#0a1224');
+      vGrad.addColorStop(1, '#020617');
+      ctx.fillStyle = vGrad;
       ctx.beginPath();
-      ctx.moveTo(x - 3.5, tipY + (isPointingDown ? -6 : 6));
-      ctx.lineTo(x + 3.5, tipY + (isPointingDown ? -6 : 6));
-      ctx.lineTo(x, tipY);
+      ctx.arc(cx, cy, r, 0, Math.PI * 2);
       ctx.fill();
 
-      // Label
-      ctx.fillStyle = color;
-      ctx.font = '10px sans-serif';
+      // Reticle Crosshairs
+      ctx.strokeStyle = 'rgba(148, 163, 184, 0.25)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(cx - r + 4, cy);
+      ctx.lineTo(cx + r - 4, cy);
+      ctx.moveTo(cx, cy - r + 4);
+      ctx.lineTo(cx, cy + r - 4);
+      ctx.stroke();
+
+      // Parallax Shift within Eyepiece
+      const parallaxPx = (curH - targetH) * (eyeShift / 30) * 3.4;
+
+      // Real Reflected Aerial Image Tip (Pointing Upwards, Cyan)
+      const tipImgX = cx + parallaxPx;
+      ctx.fillStyle = '#38bdf8';
+      ctx.beginPath();
+      ctx.moveTo(tipImgX - 3.5, cy + 22);
+      ctx.lineTo(tipImgX + 3.5, cy + 22);
+      ctx.lineTo(tipImgX, cy + 1);
+      ctx.closePath();
+      ctx.fill();
+
+      // Physical Object Needle Tip (Pointing Downwards, Scarlet)
+      const tipNeedleX = cx;
+      ctx.fillStyle = '#ef4444';
+      ctx.beginPath();
+      ctx.moveTo(tipNeedleX - 3.5, cy - 22);
+      ctx.lineTo(tipNeedleX + 3.5, cy - 22);
+      ctx.lineTo(tipNeedleX, cy - 1);
+      ctx.closePath();
+      ctx.fill();
+
+      // Zero-Parallax Contact Spark
+      if (isZeroParallax) {
+        ctx.fillStyle = '#34d399';
+        ctx.beginPath();
+        ctx.arc(cx, cy, 3, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = '#6ee7b7';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      }
+
+      // Glass Rim
+      ctx.strokeStyle = '#475569';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // HUD Label
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = 'bold 8.5px -apple-system, sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText(label, x, isPointingDown ? (tipY - length - 6) : (tipY + length + 14));
+      ctx.fillText('EYEPIECE VIEW', cx, cy + r + 11);
+
       ctx.restore();
     }
 
