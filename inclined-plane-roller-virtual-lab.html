@@ -1461,8 +1461,15 @@ body.is-fullscreen .nms-lab-footer {
       pCtx.fill();
 
       // 6. Suspended Vertical String & Scale Pan
+      // Inextensible string constraint:
+      // When roller moves UP the inclined plane (rollerPosNormalized increases), the pan moves DOWN towards the table.
+      // When roller rolls DOWN the inclined plane (rollerPosNormalized decreases), the pan moves UP towards the pulley.
       const stringDropX = pulX + pulleyR;
-      const panDropY = Math.min(baseY + 8, pulY + 65 + (1.0 - state.rollerPosNormalized) * 90);
+      const minPanY = pulY + 30; // Uppermost pan position (just below pulley)
+      const maxPanY = Math.max(minPanY + 35, baseY - 38); // Lowermost pan position (just above baseboard)
+      const rollerFrac = (state.rollerPosNormalized - 0.12) / (0.86 - 0.12);
+      const travelFrac = Math.max(0, Math.min(1, rollerFrac));
+      const panDropY = minPanY + travelFrac * (maxPanY - minPanY);
 
       pCtx.strokeStyle = '#f8fafc';
       pCtx.lineWidth = 1.8;
@@ -1496,10 +1503,31 @@ body.is-fullscreen .nms-lab-footer {
       pCtx.strokeStyle = '#713f12';
       pCtx.strokeRect(stringDropX - 16, panDropY + 18, 32, 6);
 
-      pCtx.fillStyle = '#38bdf8';
+      // Force readout pill badge
+      const pLabel = `P = ${state.pan_total_force.toFixed(1)} g.wt`;
       pCtx.font = 'bold 10px monospace';
+      const pMetric = pCtx.measureText(pLabel);
+      const pBadgeW = pMetric.width + 10;
+      const pBadgeH = 16;
+      const pBadgeX = stringDropX - pBadgeW * 0.5;
+      const pBadgeY = panDropY + 32;
+
+      pCtx.fillStyle = 'rgba(15, 23, 42, 0.9)';
+      pCtx.strokeStyle = '#38bdf8';
+      pCtx.lineWidth = 1;
+      pCtx.beginPath();
+      if (pCtx.roundRect) {
+        pCtx.roundRect(pBadgeX, pBadgeY, pBadgeW, pBadgeH, 4);
+      } else {
+        pCtx.rect(pBadgeX, pBadgeY, pBadgeW, pBadgeH);
+      }
+      pCtx.fill();
+      pCtx.stroke();
+
+      pCtx.fillStyle = '#38bdf8';
       pCtx.textAlign = 'center';
-      pCtx.fillText(`P = ${state.pan_total_force.toFixed(1)}g`, stringDropX, panDropY + 40);
+      pCtx.textBaseline = 'middle';
+      pCtx.fillText(pLabel, stringDropX, pBadgeY + pBadgeH * 0.5);
     }
 
     function drawFBDArrow(ctx, fx, fy, tx, ty, color) {
