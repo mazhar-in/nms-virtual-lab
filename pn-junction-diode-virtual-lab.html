@@ -1,0 +1,1301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
+  <title>P-N Junction Diode I–V Characteristics | National Model Schools Physics Virtual Lab</title>
+  <meta name="description" content="Draw the I-V characteristic curve of a semiconductor p-n junction diode in forward and reverse bias with interactive depletion region animation." />
+
+  <!-- KaTeX for Formula Rendering -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous" onload="initKaTeX()"></script>
+
+  <style>
+    :root {
+      --bg-main: #090e1a;
+      --bg-panel: #111a2e;
+      --bg-card: #1a253f;
+      --bg-subtle: #243456;
+      --accent: #38bdf8;
+      --accent-hover: #0284c7;
+      --accent-glow: rgba(56, 189, 248, 0.25);
+      --copper: #f59e0b;
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --border: #334155;
+      --border-light: #475569;
+      --success: #10b981;
+      --danger: #ef4444;
+      --circuit-bg: #060a17;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+      background-color: var(--bg-main); color: var(--text-primary); line-height: 1.5; padding: 0.75rem; overflow-x: hidden; font-size: 1rem;
+    }
+    @media (min-width: 768px) { body { padding: 1.2rem; } }
+
+    .app-wrapper { max-width: 1440px; margin: 0 auto; display: flex; flex-direction: column; gap: 0.85rem; min-height: 100vh; }
+
+    /* Non-Scrollable Fullscreen Mode */
+    :fullscreen, :-webkit-full-screen { overflow: hidden !important; background-color: var(--bg-main) !important; }
+    body.is-fullscreen { overflow: hidden !important; padding: 0.35rem 0.55rem !important; height: 100vh !important; width: 100vw !important; }
+
+    :fullscreen .app-wrapper, :-webkit-full-screen .app-wrapper, body.is-fullscreen .app-wrapper, .app-wrapper.is-fullscreen {
+      width: 100vw !important; height: 100vh !important; max-width: 100vw !important; max-height: 100vh !important;
+      padding: 0.35rem 0.55rem !important; margin: 0 !important; background-color: var(--bg-main); overflow: hidden !important;
+      display: flex !important; flex-direction: column !important; gap: 0.35rem !important; box-sizing: border-box;
+    }
+
+    .app-wrapper.is-fullscreen header { padding: 0.35rem 0.75rem !important; gap: 0.4rem !important; flex-shrink: 0 !important; border-radius: 8px; }
+    .app-wrapper.is-fullscreen h1 { font-size: 1.12rem !important; }
+    .app-wrapper.is-fullscreen .badge { font-size: 0.68rem !important; padding: 0.15rem 0.45rem !important; }
+    .app-wrapper.is-fullscreen .btn { min-height: 32px !important; padding: 0.25rem 0.6rem !important; font-size: 0.84rem !important; }
+    .app-wrapper.is-fullscreen .mode-nav { padding: 0.2rem 0.4rem !important; gap: 0.35rem !important; flex-shrink: 0 !important; }
+    .app-wrapper.is-fullscreen .mode-tab { padding: 0.35rem 0.75rem !important; font-size: 0.85rem !important; }
+
+    .app-wrapper.is-fullscreen .tab-content.active {
+      flex: 1 1 auto !important; min-height: 0 !important; height: calc(100vh - 110px) !important; max-height: calc(100vh - 110px) !important;
+      overflow: hidden !important; display: flex !important; flex-direction: column !important;
+    }
+
+    .app-wrapper.is-fullscreen .sim-grid {
+      display: grid !important; grid-template-columns: 1.25fr 0.75fr !important; gap: 0.5rem !important;
+      flex: 1 1 auto !important; height: 100% !important; min-height: 0 !important; overflow: hidden !important;
+    }
+
+    .app-wrapper.is-fullscreen .panel { height: 100% !important; min-height: 0 !important; display: flex !important; flex-direction: column !important; overflow: hidden !important; }
+    .app-wrapper.is-fullscreen .panel-header { padding: 0.4rem 0.75rem !important; font-size: 0.88rem !important; flex-shrink: 0 !important; }
+    .app-wrapper.is-fullscreen .panel-body { padding: 0.55rem !important; gap: 0.5rem !important; flex: 1 1 auto !important; min-height: 0 !important; overflow-y: auto !important; }
+    .app-wrapper.is-fullscreen .step-banner { padding: 0.35rem 0.65rem !important; font-size: 0.8rem !important; flex-shrink: 0 !important; }
+    .app-wrapper.is-fullscreen .canvas-container { flex: 1 1 auto !important; min-height: 0 !important; height: 100% !important; width: 100% !important; }
+    .app-wrapper.is-fullscreen .control-card { padding: 0.55rem 0.75rem !important; gap: 0.4rem !important; }
+    .app-wrapper.is-fullscreen .output-box { padding: 0.55rem 0.75rem !important; gap: 0.4rem !important; }
+    .app-wrapper.is-fullscreen .output-metric { padding: 0.4rem !important; }
+    .app-wrapper.is-fullscreen .metric-val { font-size: 1rem !important; }
+
+    .app-wrapper.is-fullscreen .table-card, .app-wrapper.is-fullscreen .graph-card, .app-wrapper.is-fullscreen .theory-wrap {
+      flex: 1 1 auto !important; min-height: 0 !important; height: 100% !important; overflow-y: auto !important;
+    }
+
+    body.is-fullscreen footer, .app-wrapper.is-fullscreen footer { display: none !important; }
+
+    /* Normal Header */
+    header {
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.8) 100%);
+      backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 12px;
+      padding: 0.85rem 1.25rem; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 0.75rem; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+    .header-left { display: flex; align-items: center; gap: 1rem; }
+    .header-brand { display: flex; flex-direction: column; }
+    .badge-row { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.2rem; }
+    .badge {
+      font-size: 0.75rem; font-weight: 700; padding: 0.15rem 0.6rem; border-radius: 20px;
+      text-transform: uppercase; letter-spacing: 0.5px;
+      background: rgba(56, 189, 248, 0.15); color: var(--accent); border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+    .badge-class { background: rgba(16, 185, 129, 0.15); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.3); }
+    h1 { font-size: 1.35rem; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 0.5rem; }
+    .header-actions { display: flex; align-items: center; gap: 0.6rem; }
+
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
+      padding: 0.45rem 0.9rem; font-size: 0.9rem; font-weight: 600; border-radius: 8px;
+      border: 1px solid transparent; cursor: pointer; transition: all 0.2s ease; text-decoration: none; user-select: none;
+    }
+    .btn-primary { background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); color: #fff; }
+    .btn-primary:hover { transform: translateY(-1px); }
+    .btn-outline { background: rgba(30, 41, 59, 0.6); color: var(--text-primary); border-color: var(--border); }
+    .btn-outline:hover { background: var(--bg-card); border-color: var(--accent); color: var(--accent); }
+    .btn-success { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: #fff; }
+
+    .mode-nav { display: flex; gap: 0.5rem; overflow-x: auto; padding-bottom: 0.2rem; }
+    .mode-tab {
+      padding: 0.55rem 1.1rem; background: var(--bg-panel); border: 1px solid var(--border);
+      border-radius: 8px; color: var(--text-secondary); font-weight: 600; font-size: 0.92rem;
+      cursor: pointer; display: flex; align-items: center; gap: 0.5rem; white-space: nowrap; transition: all 0.2s;
+    }
+    .mode-tab:hover { color: var(--text-primary); background: var(--bg-card); }
+    .mode-tab.active {
+      color: #fff; background: linear-gradient(135deg, rgba(56, 189, 248, 0.2) 0%, rgba(2, 132, 199, 0.25) 100%);
+      border-color: var(--accent); box-shadow: 0 0 12px var(--accent-glow);
+    }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    .sim-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+    @media (min-width: 1024px) { .sim-grid { grid-template-columns: 1.25fr 0.75fr; } }
+
+    .panel { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25); }
+    .panel-header { background: var(--bg-card); padding: 0.65rem 1rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; font-weight: 700; font-size: 0.95rem; }
+    .panel-body { padding: 1rem; display: flex; flex-direction: column; gap: 1rem; }
+
+    .canvas-container {
+      position: relative; background: var(--circuit-bg); border-radius: 8px; border: 1px solid var(--border);
+      overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      min-height: 420px; flex: 1 1 auto;
+    }
+    canvas#diodeCanvas { width: 100%; height: 100%; min-height: 420px; display: block; }
+
+    .control-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 0.9rem; display: flex; flex-direction: column; gap: 0.75rem; }
+    .control-card-title { font-size: 0.92rem; font-weight: 700; color: #fff; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 0.4rem; }
+    .control-group { display: flex; flex-direction: column; gap: 0.35rem; }
+    .control-label-row { display: flex; justify-content: space-between; font-size: 0.88rem; }
+    .control-label { color: var(--text-secondary); font-weight: 600; }
+    .control-val { font-weight: 700; color: var(--accent); font-family: monospace; }
+
+    input[type="range"] { -webkit-appearance: none; width: 100%; height: 6px; background: var(--bg-subtle); border-radius: 4px; outline: none; cursor: pointer; }
+    input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: var(--accent); cursor: pointer; box-shadow: 0 0 8px var(--accent-glow); }
+
+    .bias-toggle-group { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+    .bias-btn { padding: 0.55rem; font-size: 0.88rem; font-weight: 700; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-subtle); color: var(--text-secondary); cursor: pointer; text-align: center; transition: all 0.2s; }
+    .bias-btn.active.forward { background: linear-gradient(135deg, #10b981 0%, #047857 100%); color: #fff; border-color: #34d399; }
+    .bias-btn.active.reverse { background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%); color: #fff; border-color: #f87171; }
+
+    .output-box { background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 10px; padding: 1rem; display: flex; flex-direction: column; gap: 0.65rem; }
+    .output-title { font-size: 0.88rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--accent); font-weight: 700; display: flex; align-items: center; gap: 0.4rem; }
+    .output-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+    .output-metric { background: rgba(0,0,0,0.25); padding: 0.6rem; border-radius: 6px; border: 1px solid rgba(255,255,255,0.06); }
+    .metric-lbl { font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 0.2rem; }
+    .metric-val { font-size: 1.15rem; font-weight: 700; color: #fff; font-family: monospace; }
+
+    .step-banner { background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 8px; padding: 0.65rem 0.9rem; font-size: 0.88rem; color: #e0f2fe; display: flex; align-items: flex-start; gap: 0.5rem; line-height: 1.4; }
+
+    .table-card, .graph-card, .theory-wrap { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; display: flex; flex-direction: column; gap: 1rem; }
+    canvas#ivPlotCanvas { width: 100%; height: 420px; background: var(--circuit-bg); border-radius: 8px; border: 1px solid var(--border); display: block; }
+    .table-scroll { overflow-x: auto; }
+    table.obs-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; text-align: center; }
+    table.obs-table th { background: var(--bg-card); color: var(--accent); padding: 0.65rem 0.5rem; border: 1px solid var(--border); font-weight: 700; white-space: nowrap; }
+    table.obs-table td { padding: 0.55rem 0.5rem; border: 1px solid var(--border); color: var(--text-primary); white-space: nowrap; }
+    table.obs-table tbody tr:hover { background: rgba(56, 189, 248, 0.05); }
+
+    .theory-section { display: flex; flex-direction: column; gap: 0.6rem; }
+    .theory-heading { font-size: 1.15rem; font-weight: 700; color: var(--accent); display: flex; align-items: center; gap: 0.5rem; border-bottom: 1px solid var(--border); padding-bottom: 0.4rem; }
+    .formula-callout { background: var(--bg-card); border-left: 4px solid var(--accent); padding: 0.9rem 1.2rem; border-radius: 0 8px 8px 0; font-size: 1rem; overflow-x: auto; }
+
+    .quiz-container { display: flex; flex-direction: column; gap: 1rem; }
+    .quiz-item { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; }
+    .quiz-q { font-weight: 700; color: #fff; margin-bottom: 0.6rem; }
+    .quiz-options { display: flex; flex-direction: column; gap: 0.4rem; }
+    .quiz-opt { padding: 0.5rem 0.8rem; border-radius: 6px; background: var(--bg-subtle); border: 1px solid var(--border); cursor: pointer; font-size: 0.9rem; transition: all 0.2s; }
+    .quiz-opt:hover { border-color: var(--accent); background: rgba(56, 189, 248, 0.15); }
+    .quiz-opt.correct { background: rgba(16, 185, 129, 0.2) !important; border-color: var(--success) !important; color: #6ee7b7 !important; }
+    .quiz-opt.wrong { background: rgba(239, 68, 68, 0.2) !important; border-color: var(--danger) !important; color: #fca5a5 !important; }
+
+    footer { text-align: center; color: var(--text-secondary); font-size: 0.85rem; padding: 1rem 0; border-top: 1px solid var(--border); margin-top: 1rem; }
+    footer a { color: var(--accent); text-decoration: none; }
+  </style>
+</head>
+<body>
+  <div class="app-wrapper" id="appWrapper">
+    
+    <!-- Header -->
+    <header>
+      <div class="header-left">
+        <a href="index.html" class="btn btn-outline" title="Return to Physics Lab Catalog"><span>←</span> Hub</a>
+        <div class="header-brand">
+          <div class="badge-row">
+            <span class="badge">National Model Schools • Physics Lab</span>
+            <span class="badge badge-class">Class XII • Exp 24</span>
+          </div>
+          <h1><span>⚡</span> P-N Junction Diode I–V Characteristics</h1>
+        </div>
+      </div>
+      <div class="header-actions">
+        <a href="manuals.html#exp24" class="btn btn-outline" title="View Practical Manual"><span>📖</span> Manual</a>
+        <button class="btn btn-outline" id="btnSoundToggle" title="Toggle audio effects"><span id="soundIcon">🔊</span> Audio</button>
+        <button class="btn btn-primary" id="btnFullscreenToggle" title="Toggle fullscreen view"><span>⛶</span> Fullscreen</button>
+      </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="mode-nav">
+      <button class="mode-tab active" data-tab="tab-sim"><span>🔬</span> Diode Circuit &amp; Junction Simulator</button>
+      <button class="mode-tab" data-tab="tab-table"><span>📊</span> Observation Tables</button>
+      <button class="mode-tab" data-tab="tab-graph"><span>📈</span> 4-Quadrant I–V Curve</button>
+      <button class="mode-tab" data-tab="tab-theory"><span>📘</span> Semiconductor Theory &amp; Viva</button>
+    </nav>
+
+    <!-- TAB 1: Simulator -->
+    <div class="tab-content active" id="tab-sim">
+      <div class="sim-grid">
+        
+        <!-- Left: Canvas Area -->
+        <div class="panel">
+          <div class="panel-header">
+            <span>📐 Active Circuit &amp; Microscopic Depletion Layer Animation</span>
+            <button class="btn btn-outline" style="font-size:0.8rem; padding:0.25rem 0.6rem;" onclick="resetCircuit()">↺ Reset</button>
+          </div>
+          <div class="panel-body">
+            <div class="step-banner" id="guideStepBanner">
+              <span>💡</span>
+              <div id="guideStepText">
+                <strong>Forward Bias:</strong> Increase $V_F$ from $0$ to $1.2\text{ V}$. Current remains minimal until the knee voltage ($V_k \approx 0.7\text{ V}$ for Si, $0.3\text{ V}$ for Ge), then shoots up steeply in milliamperes (mA).<br>
+                <strong>Reverse Bias:</strong> Switch to Reverse Bias. Current is tiny microamperes ($\mu\text{A}$) until breakdown ($V_z \approx 35\text{ V}$).
+              </div>
+            </div>
+
+            <div class="canvas-container">
+              <canvas id="diodeCanvas"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Controls & Meters -->
+        <div class="panel">
+          <div class="panel-header">
+            <span>⚙️ Biasing Mode &amp; DC Power Supply</span>
+          </div>
+          <div class="panel-body">
+            
+            <div class="control-card">
+              <div class="control-card-title">
+                <span>1. Select Biasing Mode</span>
+              </div>
+              <div class="bias-toggle-group">
+                <button class="bias-btn active forward" id="btnForward" onclick="setBiasMode('forward')">Forward Bias (+ / -)</button>
+                <button class="bias-btn" id="btnReverse" onclick="setBiasMode('reverse')">Reverse Bias (- / +)</button>
+              </div>
+            </div>
+
+            <div class="control-card">
+              <div class="control-card-title">
+                <span>2. DC Voltage Potentiometer</span>
+                <span id="sliderRangeLabel" style="font-size:0.75rem; color:var(--text-secondary);">Range: 0.0 to 1.2 V (mA range)</span>
+              </div>
+              
+              <div class="control-group">
+                <div class="control-label-row">
+                  <span class="control-label">Applied Voltage:</span>
+                  <span class="control-val" id="valV">0.00 V</span>
+                </div>
+                <input type="range" id="sliderV" min="0.0" max="1.2" step="0.02" value="0.0" oninput="onVChange(this.value)" />
+                <div style="display:flex; justify-content:space-between; margin-top:0.2rem;">
+                  <button class="btn btn-outline" id="btnAdjMinus" style="padding:0.2rem 0.5rem; font-size:0.78rem;" onclick="adjustV(-0.05)">◀ -0.05 V</button>
+                  <button class="btn btn-outline" id="btnAdjPlus" style="padding:0.2rem 0.5rem; font-size:0.78rem;" onclick="adjustV(0.05)">+0.05 V ▶</button>
+                </div>
+              </div>
+
+              <div class="control-group" style="margin-top:0.3rem;">
+                <div class="control-label-row">
+                  <span class="control-label">Semiconductor Material:</span>
+                  <span class="control-val" id="valMaterial">Silicon (Vk ≈ 0.7 V)</span>
+                </div>
+                <select id="selectMaterial" onchange="onMaterialChange(this.value)" style="background:var(--bg-subtle); color:var(--text-primary); border:1px solid var(--border); border-radius:6px; padding:0.45rem; font-size:0.88rem; outline:none;">
+                  <option value="si">Silicon (Vk = 0.70 V, Vz = 35 V)</option>
+                  <option value="ge">Germanium (Vk = 0.30 V, Vz = 25 V)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Meter Outputs -->
+            <div class="output-box">
+              <div class="output-title"><span>📊</span> Digital Meter Readings</div>
+              <div class="output-grid">
+                <div class="output-metric">
+                  <div class="metric-lbl">Diode Voltage ($V$)</div>
+                  <div class="metric-val" id="dispMeterV">0.00 V</div>
+                </div>
+                <div class="output-metric">
+                  <div class="metric-lbl" id="lblMeterI">Diode Current ($I_F$ mA)</div>
+                  <div class="metric-val" id="dispMeterI" style="color:var(--accent);">0.00 mA</div>
+                </div>
+                <div class="output-metric">
+                  <div class="metric-lbl">Knee Voltage ($V_k$)</div>
+                  <div class="metric-val" id="dispVk">0.70 V</div>
+                </div>
+                <div class="output-metric">
+                  <div class="metric-lbl">Dynamic Resistance ($r_d$)</div>
+                  <div class="metric-val" id="dispRd">-- Ω</div>
+                </div>
+              </div>
+            </div>
+
+            <button class="btn btn-primary" onclick="recordObservation()" style="width:100%; padding:0.65rem;">
+              <span>📝</span> Record to Observation Table
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- TAB 2: Observation Table -->
+    <div class="tab-content" id="tab-table">
+      <div class="table-card">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <h2 style="font-size:1.15rem; color:#fff; display:flex; align-items:center; gap:0.5rem;">
+            <span>📋</span> Observation Tables: Forward &amp; Reverse Bias
+          </h2>
+          <div style="display:flex; gap:0.5rem;">
+            <button class="btn btn-outline" onclick="populateStandardCharacteristics()"><span>⚡</span> Fill Typical Data</button>
+            <button class="btn btn-outline" onclick="exportCSV()"><span>💾</span> Export CSV</button>
+            <button class="btn btn-outline" onclick="clearTable()"><span>🗑️</span> Clear Table</button>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-top:0.5rem;">
+          <div>
+            <h3 style="font-size:0.95rem; color:#10b981; margin-bottom:0.4rem;">Table A: Forward Bias ($V_F$ vs $I_F$)</h3>
+            <div class="table-scroll">
+              <table class="obs-table">
+                <thead>
+                  <tr>
+                    <th>Obs #</th>
+                    <th>Forward Voltage $V_F$ (V)</th>
+                    <th>Forward Current $I_F$ (mA)</th>
+                  </tr>
+                </thead>
+                <tbody id="fwdTableBody">
+                  <tr><td colspan="3" style="color:var(--text-secondary); padding:0.8rem;">No forward readings logged yet.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div>
+            <h3 style="font-size:0.95rem; color:#ef4444; margin-bottom:0.4rem;">Table B: Reverse Bias ($V_R$ vs $I_R$)</h3>
+            <div class="table-scroll">
+              <table class="obs-table">
+                <thead>
+                  <tr>
+                    <th>Obs #</th>
+                    <th>Reverse Voltage $V_R$ (V)</th>
+                    <th>Reverse Current $I_R$ (μA)</th>
+                  </tr>
+                </thead>
+                <tbody id="revTableBody">
+                  <tr><td colspan="3" style="color:var(--text-secondary); padding:0.8rem;">No reverse readings logged yet.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: 4-Quadrant I-V Plot -->
+    <div class="tab-content" id="tab-graph">
+      <div class="graph-card">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <h2 style="font-size:1.15rem; color:#fff; display:flex; align-items:center; gap:0.5rem;">
+            <span>📈</span> Diode 4-Quadrant Characteristic Curve
+          </h2>
+          <div style="font-size:0.85rem; color:var(--text-secondary);">
+            Quadrant 1: Forward Bias ($+V_F, +I_F$) • Quadrant 3: Reverse Bias ($-V_R, -I_R$)
+          </div>
+        </div>
+
+        <canvas id="ivPlotCanvas"></canvas>
+      </div>
+    </div>
+
+    <!-- TAB 4: Theory & Viva Voce -->
+    <div class="tab-content" id="tab-theory">
+      <div class="theory-wrap">
+        <div class="theory-section">
+          <div class="theory-heading"><span>🎯</span> Aim of the Experiment</div>
+          <p>To draw the $I-V$ characteristic curve for a p-n junction diode in forward bias and reverse bias.</p>
+        </div>
+
+        <div class="theory-section">
+          <div class="theory-heading"><span>📐</span> Working Formulas &amp; Diode Parameters</div>
+          <div class="formula-callout">
+            $$I = I_s \left(e^{\frac{V}{\eta V_T}} - 1\right)$$
+            $$\text{Dynamic Forward Resistance } r_f = \frac{\Delta V_F}{\Delta I_F} \quad (\approx 10\text{ to } 100\ \Omega)$$
+            $$\text{Dynamic Reverse Resistance } r_r = \frac{\Delta V_R}{\Delta I_R} \quad (\approx \text{Mega-ohms } M\Omega)$$
+          </div>
+        </div>
+
+        <div class="theory-section">
+          <div class="theory-heading"><span>🔬</span> Key Phenomena Explained</div>
+          <ul style="margin-left:1.5rem; line-height:1.7; color:var(--text-primary); font-size:0.95rem;">
+            <li><strong>Knee Voltage / Cut-in Voltage ($V_k$):</strong> The forward voltage at which diode conduction rapidly starts ($0.7\text{ V}$ for Silicon, $0.3\text{ V}$ for Germanium).</li>
+            <li><strong>Depletion Layer Behavior:</strong> In forward bias, external field opposes the barrier potential, compressing and thinning the depletion region. In reverse bias, external field widens the depletion layer.</li>
+            <li><strong>Breakdown Voltage ($V_z$):</strong> At high reverse voltages ($V_z \approx 35\text{ V}$ for Si, $25\text{ V}$ for Ge), covalent bonds rupture and avalanche breakdown occurs, causing current to rise steeply.</li>
+          </ul>
+        </div>
+
+        <div class="theory-section">
+          <div class="theory-heading"><span>❓</span> Viva Voce Interactive Quiz</div>
+          <div class="quiz-container" id="quizContainer"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      <p>Physics Virtual Laboratory • Senior Secondary Practical Simulations</p>
+      <p style="margin-top:0.25rem;">Developed by <a href="https://github.com/mazhar-in" target="_blank" rel="noopener">Syed Mazhar Ali</a> • National Model Schools</p>
+    </footer>
+
+  </div>
+
+  <script>
+    // Audio synthesizer
+    let audioCtx = null;
+    let audioEnabled = true;
+
+    function playTone(freq, duration = 0.04, type = 'sine') {
+      if (!audioEnabled) return;
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.06, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch(e) {}
+    }
+
+    // Physical Constants & State
+    let biasMode = 'forward'; // 'forward' or 'reverse'
+    let material = 'si';     // 'si' (Vk = 0.7V, Vz = 35V) or 'ge' (Vk = 0.3V, Vz = 25V)
+    let currentV = 0.0;      // Volts applied
+    let fwdObs = [];
+    let revObs = [];
+
+    let canvas, ctx;
+    let animOffset = 0;
+
+    function showToast(message, type = 'success') {
+      let toast = document.getElementById('labToast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'labToast';
+        toast.style.cssText = 'position:fixed; bottom:24px; right:24px; z-index:99999; padding:0.65rem 1.1rem; border-radius:8px; font-size:0.9rem; font-weight:600; box-shadow:0 8px 24px rgba(0,0,0,0.4); display:flex; align-items:center; gap:0.5rem; transition:all 0.3s ease; pointer-events:none; opacity:0; transform:translateY(10px);';
+        document.body.appendChild(toast);
+      }
+      if (type === 'error') {
+        toast.style.background = 'linear-gradient(135deg, #ef4444 0%, #b91c1c 100%)';
+        toast.style.color = '#fff';
+        toast.style.border = '1px solid #f87171';
+      } else {
+        toast.style.background = 'linear-gradient(135deg, #10b981 0%, #047857 100%)';
+        toast.style.color = '#fff';
+        toast.style.border = '1px solid #34d399';
+      }
+      toast.innerHTML = (type === 'error' ? '⚠️ ' : '✓ ') + message;
+      toast.style.opacity = '1';
+      toast.style.transform = 'translateY(0)';
+      clearTimeout(toast._timer);
+      toast._timer = setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(10px)';
+      }, 2400);
+    }
+
+    function initKaTeX() {
+      if (window.renderMathInElement) {
+        renderMathInElement(document.body, {
+          delimiters: [
+            {left: '$$', right: '$$', display: true},
+            {left: '$', right: '$', display: false}
+          ],
+          throwOnError: false
+        });
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      canvas = document.getElementById('diodeCanvas');
+      ctx = canvas.getContext('2d');
+      resizeCanvas();
+      window.addEventListener('resize', resizeCanvas);
+
+      const tabs = document.querySelectorAll('.mode-tab');
+      tabs.forEach(tab => {
+        tab.addEventListener('click', (e) => {
+          e.preventDefault();
+          tabs.forEach(t => t.classList.remove('active'));
+          document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+          tab.classList.add('active');
+          const targetId = tab.dataset.tab;
+          document.getElementById(targetId).classList.add('active');
+          if (targetId === 'tab-sim') resizeCanvas();
+          if (targetId === 'tab-graph') renderIVPlot();
+          if (window.renderMathInElement) initKaTeX();
+        });
+      });
+
+      document.getElementById('btnSoundToggle').addEventListener('click', () => {
+        audioEnabled = !audioEnabled;
+        document.getElementById('soundIcon').textContent = audioEnabled ? '🔊' : '🔇';
+      });
+
+      document.getElementById('btnFullscreenToggle').addEventListener('click', toggleFullscreen);
+      document.addEventListener('fullscreenchange', updateFullscreenState);
+      document.addEventListener('webkitfullscreenchange', updateFullscreenState);
+
+      buildQuiz();
+      updatePhysics();
+      requestAnimationFrame(animationLoop);
+      setTimeout(initKaTeX, 300);
+    });
+
+    function animationLoop() {
+      animOffset += 0.8;
+      renderCanvas();
+      requestAnimationFrame(animationLoop);
+    }
+
+    function updateFullscreenState() {
+      const isFS = !!(document.fullscreenElement || document.webkitFullscreenElement);
+      const wrapper = document.getElementById('appWrapper');
+      const btn = document.getElementById('btnFullscreenToggle');
+
+      if (isFS) {
+        document.body.classList.add('is-fullscreen');
+        if (wrapper) wrapper.classList.add('is-fullscreen');
+        if (btn) btn.innerHTML = '<span>⛶</span> Exit Fullscreen';
+      } else {
+        document.body.classList.remove('is-fullscreen');
+        if (wrapper) wrapper.classList.remove('is-fullscreen');
+        if (btn) btn.innerHTML = '<span>⛶</span> Fullscreen';
+      }
+
+      resizeCanvas();
+      setTimeout(resizeCanvas, 50);
+      setTimeout(resizeCanvas, 150);
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+        if (document.documentElement.requestFullscreen) {
+          document.documentElement.requestFullscreen().catch(() => {});
+        } else if (document.documentElement.webkitRequestFullscreen) {
+          document.documentElement.webkitRequestFullscreen();
+        }
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen().catch(() => {});
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+        }
+      }
+    }
+
+    function resizeCanvas() {
+      if (!canvas || !canvas.parentElement) return;
+      const rect = canvas.parentElement.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      const isFS = document.body.classList.contains('is-fullscreen') || !!(document.fullscreenElement || document.webkitFullscreenElement);
+
+      const w = rect.width;
+      const h = isFS ? Math.max(260, rect.height) : Math.max(420, rect.height || 420);
+
+      canvas.width = w * dpr;
+      canvas.height = h * dpr;
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.scale(dpr, dpr);
+      renderCanvas();
+    }
+
+    function setBiasMode(mode) {
+      biasMode = mode;
+      const btnF = document.getElementById('btnForward');
+      const btnR = document.getElementById('btnReverse');
+      const slider = document.getElementById('sliderV');
+      const rangeLabel = document.getElementById('sliderRangeLabel');
+      const lblMeterI = document.getElementById('lblMeterI');
+      const btnMinus = document.getElementById('btnAdjMinus');
+      const btnPlus = document.getElementById('btnAdjPlus');
+
+      if (mode === 'forward') {
+        btnF.className = 'bias-btn active forward';
+        btnR.className = 'bias-btn';
+        slider.min = '0.0';
+        slider.max = '1.2';
+        slider.step = '0.02';
+        slider.value = '0.0';
+        currentV = 0.0;
+        rangeLabel.textContent = 'Range: 0.0 to 1.2 V (mA range)';
+        lblMeterI.textContent = 'Diode Current (IF mA)';
+        btnMinus.textContent = '◀ -0.05 V';
+        btnMinus.setAttribute('onclick', 'adjustV(-0.05)');
+        btnPlus.textContent = '+0.05 V ▶';
+        btnPlus.setAttribute('onclick', 'adjustV(0.05)');
+        showToast('Switched to Forward Bias Mode (0 to 1.2V)');
+      } else {
+        btnR.className = 'bias-btn active reverse';
+        btnF.className = 'bias-btn';
+        slider.min = '0.0';
+        slider.max = '40.0';
+        slider.step = '1.0';
+        slider.value = '0.0';
+        currentV = 0.0;
+        rangeLabel.textContent = 'Range: 0 to 40 V (μA range)';
+        lblMeterI.textContent = 'Diode Current (IR μA)';
+        btnMinus.textContent = '◀ -1.0 V';
+        btnMinus.setAttribute('onclick', 'adjustV(-1.0)');
+        btnPlus.textContent = '+1.0 V ▶';
+        btnPlus.setAttribute('onclick', 'adjustV(1.0)');
+        showToast('Switched to Reverse Bias Mode (0 to 40V)');
+      }
+      playTone(520, 0.08);
+      onVChange(0);
+    }
+
+    function onMaterialChange(val) {
+      material = val;
+      const vk = material === 'si' ? '0.70 V' : '0.30 V';
+      document.getElementById('valMaterial').textContent = material === 'si' ? 'Silicon (Vk ≈ 0.7 V)' : 'Germanium (Vk ≈ 0.3 V)';
+      document.getElementById('dispVk').textContent = vk;
+      playTone(480, 0.05);
+      showToast(`Selected ${material === 'si' ? 'Silicon' : 'Germanium'} Diode (Vk = ${vk})`);
+      updatePhysics();
+    }
+
+    function onVChange(val) {
+      currentV = parseFloat(val);
+      document.getElementById('valV').textContent = currentV.toFixed(2) + ' V';
+      playTone(300 + currentV * 25, 0.015);
+      updatePhysics();
+    }
+
+    function adjustV(delta) {
+      const maxV = biasMode === 'forward' ? 1.2 : 40.0;
+      let nextV = Math.min(maxV, Math.max(0.0, currentV + delta));
+      if (biasMode === 'forward') nextV = Math.round(nextV * 50) / 50;
+      else nextV = Math.round(nextV);
+      document.getElementById('sliderV').value = nextV;
+      onVChange(nextV);
+    }
+
+    function resetCircuit() {
+      currentV = 0.0;
+      document.getElementById('sliderV').value = 0.0;
+      onVChange(0.0);
+    }
+
+    function calculateCurrent(v, mode, mat) {
+      const vk = mat === 'si' ? 0.70 : 0.30;
+      const vz = mat === 'si' ? 35.0 : 25.0;
+
+      if (mode === 'forward') {
+        if (v <= 0) return 0;
+        if (v < vk) {
+          // Sub-threshold exponential rise
+          return 0.05 * Math.exp((v / vk) * 2.5) - 0.05;
+        } else {
+          // Sharp conduction above knee
+          const excess = v - vk;
+          const baseAtVk = 0.05 * Math.exp(2.5) - 0.05; // ~0.55 mA
+          return baseAtVk + excess * 90 + Math.pow(excess, 2) * 120;
+        }
+      } else {
+        // Reverse bias: microamperes
+        if (v <= 0) return 0;
+        const iSat = mat === 'si' ? 1.2 : 4.5; // microamps
+        if (v < vz) {
+          return iSat * (1 - Math.exp(-v / 2)) + (v / vz) * 0.8;
+        } else {
+          // Zener / avalanche breakdown
+          const excess = v - vz;
+          return iSat + 2.0 + Math.pow(excess * 6, 2) + excess * 25;
+        }
+      }
+    }
+
+    function updatePhysics() {
+      const current = calculateCurrent(currentV, biasMode, material);
+
+      document.getElementById('dispMeterV').textContent = currentV.toFixed(2) + ' V';
+      if (biasMode === 'forward') {
+        document.getElementById('dispMeterI').textContent = current.toFixed(2) + ' mA';
+      } else {
+        document.getElementById('dispMeterI').textContent = current.toFixed(1) + ' μA';
+      }
+
+      // Dynamic resistance
+      let rd = '--';
+      if (biasMode === 'forward' && currentV > 0.4) {
+        const dV = 0.02;
+        const i1 = calculateCurrent(currentV - dV, biasMode, material);
+        const i2 = calculateCurrent(currentV + dV, biasMode, material);
+        const di = (i2 - i1) * 1e-3; // Amp
+        if (di > 0) {
+          const r = (2 * dV) / di;
+          rd = `${r.toFixed(1)} Ω`;
+        }
+      } else if (biasMode === 'reverse' && currentV > 2 && currentV < (material === 'si' ? 34 : 24)) {
+        rd = '> 10 MΩ';
+      } else if (biasMode === 'reverse' && currentV >= (material === 'si' ? 35 : 25)) {
+        rd = '< 50 Ω (Breakdown)';
+      }
+      document.getElementById('dispRd').textContent = rd;
+    }
+
+    function renderCanvas() {
+      if (!ctx || !canvas) return;
+      const w = canvas.width / (window.devicePixelRatio || 1);
+      const h = canvas.height / (window.devicePixelRatio || 1);
+
+      ctx.clearRect(0, 0, w, h);
+
+      // Top Half: Microscopic P-N Junction & Depletion Zone (48% height)
+      // Bottom Half: Active Circuit Schematic (52% height)
+      const splitY = h * 0.48;
+
+      drawPNJunctionMicro(0, 0, w, splitY);
+      drawCircuitSchematic(0, splitY, w, h - splitY);
+    }
+
+    function drawPNJunctionMicro(x, y, w, h) {
+      ctx.fillStyle = '#0a101d';
+      ctx.fillRect(x, y, w, h);
+
+      ctx.strokeStyle = '#1e293b';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(x, y, w, h);
+
+      const blockW = Math.min(420, w - 60);
+      const blockH = Math.min(130, h - 45);
+      const bx = (w - blockW) / 2;
+      const by = y + (h - blockH) / 2;
+
+      // Depletion layer width based on bias and voltage
+      let depletionW = 70; // baseline equilibrium in px
+      if (biasMode === 'forward') {
+        const vk = material === 'si' ? 0.70 : 0.30;
+        const ratio = Math.min(1.0, currentV / vk);
+        depletionW = Math.max(8, 70 * (1 - ratio * 0.85));
+      } else {
+        const vz = material === 'si' ? 35.0 : 25.0;
+        const ratio = Math.min(1.0, currentV / vz);
+        depletionW = Math.min(blockW * 0.75, 70 + ratio * 80);
+      }
+
+      const pW = (blockW - depletionW) / 2;
+      const nW = pW;
+
+      // P-Region (Holes + Acceptor Ions)
+      ctx.fillStyle = 'rgba(56, 189, 248, 0.18)';
+      ctx.fillRect(bx, by, pW, blockH);
+
+      // N-Region (Electrons + Donor Ions)
+      ctx.fillStyle = 'rgba(168, 85, 247, 0.18)';
+      ctx.fillRect(bx + pW + depletionW, by, nW, blockH);
+
+      // Depletion Layer
+      ctx.fillStyle = 'rgba(239, 68, 68, 0.15)';
+      ctx.fillRect(bx + pW, by, depletionW, blockH);
+
+      // Crystal Border
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(bx, by, blockW, blockH);
+
+      // Junction Line
+      ctx.strokeStyle = '#ef4444';
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.moveTo(bx + blockW / 2, by);
+      ctx.lineTo(bx + blockW / 2, by + blockH);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Region Labels
+      ctx.fillStyle = '#38bdf8';
+      ctx.font = 'bold 12px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('P-TYPE REGION (Holes ⊕)', bx + pW / 2, by + 20);
+
+      ctx.fillStyle = '#a855f7';
+      ctx.fillText('N-TYPE REGION (Electrons ⊖)', bx + pW + depletionW + nW / 2, by + 20);
+
+      ctx.fillStyle = '#f87171';
+      ctx.font = 'bold 10px sans-serif';
+      ctx.fillText('DEPLETION REGION', bx + blockW / 2, by + blockH + 18);
+      ctx.font = '9px monospace';
+      ctx.fillText(`Width: ${depletionW.toFixed(0)} px`, bx + blockW / 2, by + blockH + 30);
+
+      // Animated Charge Carriers
+      const current = calculateCurrent(currentV, biasMode, material);
+      const isConduction = biasMode === 'forward' && current > 0.5;
+
+      // Draw holes in P region
+      ctx.fillStyle = '#38bdf8';
+      for (let r = 0; r < 3; r++) {
+        for (let c = 0; c < 4; c++) {
+          let cx = bx + 20 + c * 24;
+          let cy = by + 42 + r * 25;
+          if (isConduction) {
+            cx += (animOffset % 24);
+          }
+          if (cx < bx + pW) {
+            ctx.beginPath();
+            ctx.arc(cx, cy, 5, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#fff';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+          }
+        }
+      }
+
+      // Draw electrons in N region
+      ctx.fillStyle = '#c084fc';
+      for (let r = 0; r < 3; r++) {
+        for (let c = 0; c < 4; c++) {
+          let cx = bx + pW + depletionW + 20 + c * 24;
+          let cy = by + 42 + r * 25;
+          if (isConduction) {
+            cx -= (animOffset % 24);
+          }
+          if (cx > bx + pW + depletionW) {
+            ctx.beginPath();
+            ctx.arc(cx, cy, 4, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+      }
+    }
+
+    function drawCircuitSchematic(x, y, w, h) {
+      ctx.fillStyle = '#060a17';
+      ctx.fillRect(x, y, w, h);
+
+      ctx.strokeStyle = '#1e293b';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(x, y, w, h);
+
+      const cx = w * 0.5;
+      const cy = y + h * 0.5;
+
+      // Circuit Wire Loop
+      const cw = Math.min(460, w - 80);
+      const ch = Math.min(120, h - 30);
+      const leftX = cx - cw / 2;
+      const rightX = cx + cw / 2;
+      const topY = cy - ch / 2;
+      const botY = cy + ch / 2;
+
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(leftX, topY);
+      ctx.lineTo(rightX, topY);
+      ctx.lineTo(rightX, botY);
+      ctx.lineTo(leftX, botY);
+      ctx.closePath();
+      ctx.stroke();
+
+      // DC Power Supply at Bottom
+      ctx.fillStyle = '#1e293b';
+      ctx.fillRect(cx - 35, botY - 14, 70, 28);
+      ctx.strokeStyle = '#475569';
+      ctx.strokeRect(cx - 35, botY - 14, 70, 28);
+      ctx.fillStyle = '#fff';
+      ctx.font = 'bold 10px sans-serif';
+      ctx.textAlign = 'center';
+      const polarity = biasMode === 'forward' ? '+ DC -' : '- DC +';
+      ctx.fillText(polarity, cx, botY + 4);
+
+      // Diode Symbol at Top Center
+      drawDiodeSymbol(cx, topY);
+
+      // Milliammeter / Microammeter on Left
+      drawMeterCircle(leftX, cy, biasMode === 'forward' ? 'mA' : 'μA', '#10b981');
+
+      // Voltmeter connected in parallel across diode
+      drawVoltmeterBridge(cx, topY - 26, '#f59e0b');
+    }
+
+    function drawDiodeSymbol(dx, dy) {
+      ctx.save();
+      ctx.fillStyle = '#060a17';
+      ctx.fillRect(dx - 30, dy - 18, 60, 36);
+
+      ctx.strokeStyle = '#38bdf8';
+      ctx.fillStyle = '#38bdf8';
+      ctx.lineWidth = 2;
+
+      // Triangle pointing towards cathode
+      const dir = biasMode === 'forward' ? 1 : -1;
+      ctx.beginPath();
+      ctx.moveTo(dx - 12 * dir, dy - 14);
+      ctx.lineTo(dx + 12 * dir, dy);
+      ctx.lineTo(dx - 12 * dir, dy + 14);
+      ctx.closePath();
+      ctx.fill();
+
+      // Cathode bar
+      ctx.beginPath();
+      ctx.moveTo(dx + 12 * dir, dy - 14);
+      ctx.lineTo(dx + 12 * dir, dy + 14);
+      ctx.stroke();
+
+      ctx.fillStyle = '#fff';
+      ctx.font = '9px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(biasMode === 'forward' ? 'Anode (p) ➔ Cathode (n)' : 'Cathode (n) ➔ Anode (p)', dx, dy - 20);
+      ctx.restore();
+    }
+
+    function drawMeterCircle(mx, my, label, color) {
+      ctx.save();
+      ctx.fillStyle = '#111a2e';
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2;
+
+      ctx.beginPath();
+      ctx.arc(mx, my, 18, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = color;
+      ctx.font = 'bold 10px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(label, mx, my + 4);
+      ctx.restore();
+    }
+
+    function drawVoltmeterBridge(vx, vy, color) {
+      ctx.save();
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 1.5;
+
+      ctx.beginPath();
+      ctx.moveTo(vx - 40, vy + 26);
+      ctx.lineTo(vx - 40, vy);
+      ctx.lineTo(vx + 40, vy);
+      ctx.lineTo(vx + 40, vy + 26);
+      ctx.stroke();
+
+      ctx.fillStyle = '#111a2e';
+      ctx.beginPath();
+      ctx.arc(vx, vy, 14, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = color;
+      ctx.font = 'bold 10px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('V', vx, vy + 4);
+      ctx.restore();
+    }
+
+    // Observation Recording (Async Toast)
+    function recordObservation() {
+      const current = calculateCurrent(currentV, biasMode, material);
+
+      if (biasMode === 'forward') {
+        const obs = {
+          sno: fwdObs.length + 1,
+          vf: currentV.toFixed(2),
+          if: current.toFixed(2)
+        };
+        fwdObs.push(obs);
+        renderTable();
+        playTone(850, 0.1, 'sine');
+        showToast(`Recorded Forward Obs #${obs.sno}: VF = ${obs.vf} V, IF = ${obs.if} mA`);
+      } else {
+        const obs = {
+          sno: revObs.length + 1,
+          vr: currentV.toFixed(1),
+          ir: current.toFixed(1)
+        };
+        revObs.push(obs);
+        renderTable();
+        playTone(850, 0.1, 'sine');
+        showToast(`Recorded Reverse Obs #${obs.sno}: VR = ${obs.vr} V, IR = ${obs.ir} μA`);
+      }
+    }
+
+    function populateStandardCharacteristics() {
+      fwdObs = [
+        { sno: 1, vf: "0.20", if: "0.02" },
+        { sno: 2, vf: "0.40", if: "0.10" },
+        { sno: 3, vf: "0.60", if: "0.42" },
+        { sno: 4, vf: "0.70", if: "1.25" },
+        { sno: 5, vf: "0.80", if: "10.5" },
+        { sno: 6, vf: "0.90", if: "28.0" },
+        { sno: 7, vf: "1.00", if: "52.4" }
+      ];
+
+      revObs = [
+        { sno: 1, vr: "5.0", ir: "1.2" },
+        { sno: 2, vr: "10.0", ir: "1.4" },
+        { sno: 3, vr: "15.0", ir: "1.6" },
+        { sno: 4, vr: "20.0", ir: "1.8" },
+        { sno: 5, vr: "25.0", ir: "2.1" },
+        { sno: 6, vr: "30.0", ir: "2.5" },
+        { sno: 7, vr: "35.0", ir: "18.5" }
+      ];
+
+      renderTable();
+      renderIVPlot();
+      showToast('Populated standard Silicon diode I-V characteristics!');
+    }
+
+    function renderTable() {
+      const fBody = document.getElementById('fwdTableBody');
+      const rBody = document.getElementById('revTableBody');
+
+      fBody.innerHTML = '';
+      if (fwdObs.length === 0) {
+        fBody.innerHTML = '<tr><td colspan="3" style="color:var(--text-secondary); padding:0.8rem;">No forward readings logged yet.</td></tr>';
+      } else {
+        fwdObs.forEach(o => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `<td>${o.sno}</td><td>${o.vf}</td><td style="color:#10b981; font-weight:700;">${o.if}</td>`;
+          fBody.appendChild(tr);
+        });
+      }
+
+      rBody.innerHTML = '';
+      if (revObs.length === 0) {
+        rBody.innerHTML = '<tr><td colspan="3" style="color:var(--text-secondary); padding:0.8rem;">No reverse readings logged yet.</td></tr>';
+      } else {
+        revObs.forEach(o => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `<td>${o.sno}</td><td>${o.vr}</td><td style="color:#ef4444; font-weight:700;">${o.ir}</td>`;
+          rBody.appendChild(tr);
+        });
+      }
+    }
+
+    function clearTable() {
+      if (confirm('Clear all logged forward and reverse observations?')) {
+        fwdObs = [];
+        revObs = [];
+        renderTable();
+        renderIVPlot();
+      }
+    }
+
+    function exportCSV() {
+      if (fwdObs.length === 0 && revObs.length === 0) {
+        showToast('No observation data to export!', 'error');
+        return;
+      }
+      let csv = "Type,Obs #,Voltage (V),Current\n";
+      fwdObs.forEach(o => {
+        csv += `Forward,${o.sno},${o.vf},${o.if} mA\n`;
+      });
+      revObs.forEach(o => {
+        csv += `Reverse,${o.sno},${o.vr},${o.ir} uA\n`;
+      });
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `pn_diode_iv_curve_${Date.now()}.csv`;
+      a.click();
+    }
+
+    // 4-Quadrant I-V Plot Canvas
+    function renderIVPlot() {
+      const gCanvas = document.getElementById('ivPlotCanvas');
+      if (!gCanvas) return;
+      const gCtx = gCanvas.getContext('2d');
+      const rect = gCanvas.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      gCanvas.width = rect.width * dpr;
+      gCanvas.height = 420 * dpr;
+      gCtx.setTransform(1, 0, 0, 1, 0, 0);
+      gCtx.scale(dpr, dpr);
+
+      const w = rect.width;
+      const h = 420;
+      gCtx.clearRect(0, 0, w, h);
+
+      // Origin at (w * 0.48, h * 0.50)
+      const originX = w * 0.48;
+      const originY = h * 0.50;
+
+      // Axes lines
+      gCtx.strokeStyle = '#475569';
+      gCtx.lineWidth = 1.5;
+
+      // X Axis (Voltage)
+      gCtx.beginPath();
+      gCtx.moveTo(30, originY);
+      gCtx.lineTo(w - 30, originY);
+      gCtx.stroke();
+
+      // Y Axis (Current)
+      gCtx.beginPath();
+      gCtx.moveTo(originX, 20);
+      gCtx.lineTo(originX, h - 20);
+      gCtx.stroke();
+
+      // Arrow heads & Labels
+      gCtx.fillStyle = '#94a3b8';
+      gCtx.font = 'bold 11px sans-serif';
+      gCtx.textAlign = 'right';
+      gCtx.fillText('+VF (Volts) ➔', w - 35, originY - 8);
+      gCtx.textAlign = 'left';
+      gCtx.fillText('◀ -VR (Volts)', 35, originY + 16);
+
+      gCtx.textAlign = 'center';
+      gCtx.fillText('▲ +IF (mA)', originX + 38, 28);
+      gCtx.fillText('▼ -IR (μA)', originX - 38, h - 26);
+
+      // Scale definitions
+      const scaleFwdX = (w - 60 - originX) / 1.2;
+      const scaleFwdY = (originY - 35) / 80;
+
+      const scaleRevX = (originX - 45) / 40;
+      const scaleRevY = (h - 35 - originY) / 40;
+
+      // Continuous theoretical Forward curve
+      gCtx.strokeStyle = '#10b981';
+      gCtx.lineWidth = 2.5;
+      gCtx.beginPath();
+      let first = true;
+      for (let vf = 0; vf <= 1.15; vf += 0.02) {
+        const iff = calculateCurrent(vf, 'forward', material);
+        const px = originX + vf * scaleFwdX;
+        const py = originY - iff * scaleFwdY;
+        if (first) { gCtx.moveTo(px, py); first = false; }
+        else { gCtx.lineTo(px, py); }
+      }
+      gCtx.stroke();
+
+      // Continuous theoretical Reverse curve
+      gCtx.strokeStyle = '#ef4444';
+      gCtx.lineWidth = 2.5;
+      gCtx.beginPath();
+      first = true;
+      for (let vr = 0; vr <= 38.0; vr += 0.5) {
+        const irr = calculateCurrent(vr, 'reverse', material);
+        const px = originX - vr * scaleRevX;
+        const py = originY + irr * scaleRevY;
+        if (first) { gCtx.moveTo(px, py); first = false; }
+        else { gCtx.lineTo(px, py); }
+      }
+      gCtx.stroke();
+
+      // Plot Recorded Forward Points
+      fwdObs.forEach(o => {
+        const vf = parseFloat(o.vf);
+        const iff = parseFloat(o.if);
+        const px = originX + vf * scaleFwdX;
+        const py = originY - iff * scaleFwdY;
+        gCtx.fillStyle = '#38bdf8';
+        gCtx.beginPath();
+        gCtx.arc(px, py, 4.5, 0, Math.PI * 2);
+        gCtx.fill();
+        gCtx.strokeStyle = '#fff';
+        gCtx.lineWidth = 1;
+        gCtx.stroke();
+      });
+
+      // Plot Recorded Reverse Points
+      revObs.forEach(o => {
+        const vr = parseFloat(o.vr);
+        const irr = parseFloat(o.ir);
+        const px = originX - vr * scaleRevX;
+        const py = originY + irr * scaleRevY;
+        gCtx.fillStyle = '#f59e0b';
+        gCtx.beginPath();
+        gCtx.arc(px, py, 4.5, 0, Math.PI * 2);
+        gCtx.fill();
+        gCtx.strokeStyle = '#fff';
+        gCtx.lineWidth = 1;
+        gCtx.stroke();
+      });
+
+      // Knee voltage label
+      const vk = material === 'si' ? 0.70 : 0.30;
+      const vkX = originX + vk * scaleFwdX;
+      gCtx.fillStyle = '#10b981';
+      gCtx.font = '10px monospace';
+      gCtx.fillText(`Vk = ${vk.toFixed(2)}V`, vkX, originY + 16);
+    }
+
+    // Quiz Questions
+    const quizData = [
+      {
+        q: "What is the knee voltage ($V_k$) for a silicon p-n junction diode?",
+        options: [
+          "Approximately 0.7 V",
+          "Approximately 0.3 V",
+          "Approximately 1.5 V",
+          "Zero volts"
+        ],
+        answer: 0
+      },
+      {
+        q: "Why does reverse bias current remain almost constant (saturation current) until breakdown occurs?",
+        options: [
+          "Because it is carried by minority charge carriers whose concentration is thermally generated and independent of reverse voltage",
+          "Because the diode becomes an insulator",
+          "Because majority carriers are accelerated",
+          "Because depletion layer vanishes"
+        ],
+        answer: 0
+      },
+      {
+        q: "In forward bias, how are the milliammeter and voltmeter connected relative to the diode?",
+        options: [
+          "Voltmeter in parallel across diode, milliammeter in series with diode",
+          "Voltmeter in series, milliammeter in parallel",
+          "Both in series",
+          "Both in parallel"
+        ],
+        answer: 0
+      },
+      {
+        q: "What happens to the width of the depletion layer when a p-n junction is reverse-biased?",
+        options: [
+          "It widens because the applied voltage pulls majority carriers away from the junction",
+          "It narrows to zero",
+          "It remains completely unchanged",
+          "It oscillates rapidly"
+        ],
+        answer: 0
+      }
+    ];
+
+    function buildQuiz() {
+      const container = document.getElementById('quizContainer');
+      container.innerHTML = '';
+      quizData.forEach((item, qIdx) => {
+        const div = document.createElement('div');
+        div.className = 'quiz-item';
+        div.innerHTML = `
+          <div class="quiz-q">${qIdx + 1}. ${item.q}</div>
+          <div class="quiz-options">
+            ${item.options.map((opt, oIdx) => `
+              <div class="quiz-opt" onclick="checkAnswer(${qIdx}, ${oIdx}, this)">${opt}</div>
+            `).join('')}
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function checkAnswer(qIdx, selectedIdx, elem) {
+      const parent = elem.parentElement;
+      if (parent.dataset.answered) return;
+      parent.dataset.answered = "true";
+
+      const correctIdx = quizData[qIdx].answer;
+      const options = parent.querySelectorAll('.quiz-opt');
+
+      if (selectedIdx === correctIdx) {
+        elem.classList.add('correct');
+        playTone(587, 0.1, 'triangle');
+        showToast('Correct answer! Well done.', 'success');
+      } else {
+        elem.classList.add('wrong');
+        options[correctIdx].classList.add('correct');
+        playTone(220, 0.15, 'sawtooth');
+        showToast('Incorrect. The correct option is highlighted in green.', 'error');
+      }
+    }
+  </script>
+</body>
+</html>

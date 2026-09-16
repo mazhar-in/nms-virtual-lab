@@ -9,13 +9,13 @@
 > **Live Hub:** [https://mazhar-in.github.io/nms-virtual-lab/](https://mazhar-in.github.io/nms-virtual-lab/)  
 > **Practical Manuals Compendium:** [https://mazhar-in.github.io/nms-virtual-lab/manuals.html](https://mazhar-in.github.io/nms-virtual-lab/manuals.html)
 
-A next-generation, browser-based **Virtual Physics Laboratory** engineered for **National Model Schools**. It provides senior secondary students (Grades XI & XII) and educators with realistic, interactive simulations of 12 core physics laboratory experiments, paired with complete academic practical manuals, step-by-step procedures, observation recording tables, and viva-voce preparation.
+A next-generation, browser-based **Virtual Physics Laboratory** engineered for **National Model Schools**. It provides senior secondary students (Grades XI & XII) and educators with realistic, interactive simulations of 24 core physics laboratory experiments, paired with complete academic practical manuals, step-by-step procedures, observation recording tables, and viva-voce preparation.
 
 ---
 
 ## 🌟 Key Features
 
-- **🎯 12 Interactive Physics Simulators**: Covers classical mechanics, measurements, vector addition, harmonic motion, friction, and electric bridge circuits.
+- **🎯 24 Interactive Physics Simulators**: Covers classical mechanics, measurements, vector addition, harmonic motion, friction, acoustic standing waves, electric bridge circuits, ray optics, and semiconductors.
 - **📖 Complete Practical Manual Suite (`manuals.html`)**: Complete with NCERT/CBSE standardized Aim, Apparatus, Mathematical Theory, Observation Tables, Precautions, and Viva-Voce Q&A.
 - **📐 High-Precision KaTeX Mathematical Rendering**: All formulas, fractions, square roots, and Greek symbols are rendered in vector math typesetting.
 - **📱 Touchscreen & Smartboard Ready**: Gesture-friendly sliders, draggable masses, virtual ratchets, and sliding keys optimized for tablets, iPads, smartboards, and desktops.
@@ -42,6 +42,18 @@ A next-generation, browser-based **Virtual Physics Laboratory** engineered for *
 | **10** | **Ohm's Law ($V - I$ Curve)** | XII | Current Electricity | [Launch Lab](https://mazhar-in.github.io/nms-virtual-lab/ohms-law-virtual-lab.html) | [Manual #10](https://mazhar-in.github.io/nms-virtual-lab/manuals.html#exp10) |
 | **11** | **Meter Bridge (Slide Wire)** | XII | Circuit Networks | [Launch Lab](https://mazhar-in.github.io/nms-virtual-lab/meter-bridge-virtual-lab.html) | [Manual #11](https://mazhar-in.github.io/nms-virtual-lab/manuals.html#exp11) |
 | **12** | **Wheatstone Bridge Network** | XII | Electrical Bridges | [Launch Lab](https://mazhar-in.github.io/nms-virtual-lab/wheatstone-bridge-virtual-lab.html) | [Manual #12](https://mazhar-in.github.io/nms-virtual-lab/manuals.html#exp12) |
+| **13** | **Frequency of AC Mains (Sonometer)** | XI / XII | Waves, AC & Resonance | [Launch Lab](https://mazhar-in.github.io/nms-virtual-lab/sonometer-ac-frequency-virtual-lab.html) | [Manual #13](https://mazhar-in.github.io/nms-virtual-lab/manuals.html#exp13) |
+| **14** | **Galvanometer Resistance & Figure of Merit** | XII | Current Electricity | [Launch Lab](https://mazhar-in.github.io/nms-virtual-lab/galvanometer-resistance-half-deflection-virtual-lab.html) | [Manual #14](https://mazhar-in.github.io/nms-virtual-lab/manuals.html#exp14) |
+| **15** | **Conversion of Galvanometer into Voltmeter** | XII | Current Electricity | [Launch Lab](https://mazhar-in.github.io/nms-virtual-lab/galvanometer-to-voltmeter-virtual-lab.html) | [Manual #15](https://mazhar-in.github.io/nms-virtual-lab/manuals.html#exp15) |
+| **16** | **Focal Length of Concave Mirror ($u - v$)** | XII | Ray Optics | [Launch Lab](https://mazhar-in.github.io/nms-virtual-lab/concave-mirror-focal-length-virtual-lab.html) | [Manual #16](https://mazhar-in.github.io/nms-virtual-lab/manuals.html#exp16) |
+| **17** | **Focal Length of Convex Mirror (Auxiliary Lens)** | XII | Ray Optics | [Launch Lab](https://mazhar-in.github.io/nms-virtual-lab/convex-mirror-focal-length-virtual-lab.html) | [Manual #17](https://mazhar-in.github.io/nms-virtual-lab/manuals.html#exp17) |
+| **18** | **Focal Length of Convex Lens ($u - v$ Graphs)** | XII | Ray Optics | [Launch Lab](https://mazhar-in.github.io/nms-virtual-lab/convex-lens-focal-length-virtual-lab.html) | [Manual #18](https://mazhar-in.github.io/nms-virtual-lab/manuals.html#exp18) |
+| **19** | **Focal Length of Concave Lens (Auxiliary Lens)** | XII | Ray Optics | [Launch Lab](https://mazhar-in.github.io/nms-virtual-lab/concave-lens-focal-length-virtual-lab.html) | [Manual #19](https://mazhar-in.github.io/nms-virtual-lab/manuals.html#exp19) |
+| **20** | **Prism: Angle of Minimum Deviation ($i - \delta$)** | XII | Ray Optics | [Launch Lab](https://mazhar-in.github.io/nms-virtual-lab/prism-minimum-deviation-virtual-lab.html) | [Manual #20](https://mazhar-in.github.io/nms-virtual-lab/manuals.html#exp20) |
+| **21** | **Refractive Index of Glass Slab (Microscope)** | XII | Optical Instruments | [Launch Lab](https://mazhar-in.github.io/nms-virtual-lab/travelling-microscope-glass-slab-virtual-lab.html) | [Manual #21](https://mazhar-in.github.io/nms-virtual-lab/manuals.html#exp21) |
+| **22** | **Liquid Refractive Index (Liquid Lens Method)** | XII | Ray Optics | [Launch Lab](https://mazhar-in.github.io/nms-virtual-lab/refractive-index-liquid-lens-virtual-lab.html) | [Manual #22](https://mazhar-in.github.io/nms-virtual-lab/manuals.html#exp22) |
+| **23** | **Liquid Refractive Index (Concave Mirror)** | XII | Ray Optics | [Launch Lab](https://mazhar-in.github.io/nms-virtual-lab/refractive-index-liquid-concave-mirror-virtual-lab.html) | [Manual #23](https://mazhar-in.github.io/nms-virtual-lab/manuals.html#exp23) |
+| **24** | **P-N Junction Diode $I - V$ Characteristics** | XII | Semiconductor Electronics | [Launch Lab](https://mazhar-in.github.io/nms-virtual-lab/pn-junction-diode-virtual-lab.html) | [Manual #24](https://mazhar-in.github.io/nms-virtual-lab/manuals.html#exp24) |
 
 ---
 
@@ -65,6 +77,18 @@ nms-virtual-lab/
 ├── ohms-law-virtual-lab.html                   # Exp 10: Ohm's Law
 ├── meter-bridge-virtual-lab.html               # Exp 11: Meter Bridge
 ├── wheatstone-bridge-virtual-lab.html          # Exp 12: Wheatstone Bridge
+├── sonometer-ac-frequency-virtual-lab.html     # Exp 13: Sonometer AC Frequency
+├── galvanometer-resistance-half-deflection-virtual-lab.html # Exp 14: Galvanometer Resistance
+├── galvanometer-to-voltmeter-virtual-lab.html  # Exp 15: Galvanometer to Voltmeter
+├── concave-mirror-focal-length-virtual-lab.html # Exp 16: Concave Mirror Focal Length
+├── convex-mirror-focal-length-virtual-lab.html # Exp 17: Convex Mirror Focal Length
+├── convex-lens-focal-length-virtual-lab.html   # Exp 18: Convex Lens Focal Length
+├── concave-lens-focal-length-virtual-lab.html  # Exp 19: Concave Lens Focal Length
+├── prism-minimum-deviation-virtual-lab.html    # Exp 20: Prism Minimum Deviation
+├── travelling-microscope-glass-slab-virtual-lab.html # Exp 21: Travelling Microscope
+├── refractive-index-liquid-lens-virtual-lab.html # Exp 22: Liquid Lens Refractive Index
+├── refractive-index-liquid-concave-mirror-virtual-lab.html # Exp 23: Liquid Concave Mirror
+├── pn-junction-diode-virtual-lab.html          # Exp 24: P-N Junction Diode
 │
 ├── archive/                                    # Raw initial source files archive
 └── README.md                                   # Comprehensive Project Documentation
@@ -95,6 +119,7 @@ npx serve .
 ```
 
 Then navigate to `http://localhost:8080` in your web browser.
+
 
 ---
 

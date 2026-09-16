@@ -10,3 +10,10 @@ __pycache__/
 # Editor configs
 .vscode/
 .idea/
+
+# Client distribution builds, templates, and setup files
+clients/
+dist/
+templates/
+scripts/
+package.json

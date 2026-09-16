@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
+  <title>Refractive Index of Glass Slab (Travelling Microscope) | National Model Schools Physics Virtual Lab</title>
+  <meta name="description" content="Determine refractive index of a glass slab using a vertical travelling microscope with vernier scale loupe, real and apparent depth measurements." />
+
+  <!-- KaTeX for Formula Rendering -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous" onload="initKaTeX()"></script>
+
+  <style>
+    :root {
+      --bg-main: #090e1a;
+      --bg-panel: #111a2e;
+      --bg-card: #1a253f;
+      --bg-subtle: #243456;
+      --accent: #38bdf8;
+      --accent-hover: #0284c7;
+      --accent-glow: rgba(56, 189, 248, 0.25);
+      --copper: #f59e0b;
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --border: #334155;
+      --border-light: #475569;
+      --success: #10b981;
+      --danger: #ef4444;
+      --circuit-bg: #060a17;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+      background-color: var(--bg-main); color: var(--text-primary); line-height: 1.5; padding: 0.75rem; overflow-x: hidden; font-size: 1rem;
+    }
+    @media (min-width: 768px) { body { padding: 1.2rem; } }
+
+    .app-wrapper { max-width: 1440px; margin: 0 auto; display: flex; flex-direction: column; gap: 0.85rem; min-height: 100vh; }
+
+    /* Non-Scrollable Fullscreen Mode */
+    :fullscreen, :-webkit-full-screen { overflow: hidden !important; background-color: var(--bg-main) !important; }
+    body.is-fullscreen { overflow: hidden !important; padding: 0.35rem 0.55rem !important; height: 100vh !important; width: 100vw !important; }
+
+    :fullscreen .app-wrapper, :-webkit-full-screen .app-wrapper, body.is-fullscreen .app-wrapper, .app-wrapper.is-fullscreen {
+      width: 100vw !important; height: 100vh !important; max-width: 100vw !important; max-height: 100vh !important;
+      padding: 0.35rem 0.55rem !important; margin: 0 !important; background-color: var(--bg-main); overflow: hidden !important;
+      display: flex !important; flex-direction: column !important; gap: 0.35rem !important; box-sizing: border-box;
+    }
+
+    .app-wrapper.is-fullscreen header { padding: 0.35rem 0.75rem !important; gap: 0.4rem !important; flex-shrink: 0 !important; border-radius: 8px; }
+    .app-wrapper.is-fullscreen h1 { font-size: 1.12rem !important; }
+    .app-wrapper.is-fullscreen .badge { font-size: 0.68rem !important; padding: 0.15rem 0.45rem !important; }
+    .app-wrapper.is-fullscreen .btn { min-height: 32px !important; padding: 0.25rem 0.6rem !important; font-size: 0.84rem !important; }
+    .app-wrapper.is-fullscreen .mode-nav { padding: 0.2rem 0.4rem !important; gap: 0.35rem !important; flex-shrink: 0 !important; }
+    .app-wrapper.is-fullscreen .mode-tab { padding: 0.35rem 0.75rem !important; font-size: 0.85rem !important; }
+
+    .app-wrapper.is-fullscreen .tab-content.active {
+      flex: 1 1 auto !important; min-height: 0 !important; height: calc(100vh - 110px) !important; max-height: calc(100vh - 110px) !important;
+      overflow: hidden !important; display: flex !important; flex-direction: column !important;
+    }
+
+    .app-wrapper.is-fullscreen .sim-grid {
+      display: grid !important; grid-template-columns: 1.25fr 0.75fr !important; gap: 0.5rem !important;
+      flex: 1 1 auto !important; height: 100% !important; min-height: 0 !important; overflow: hidden !important;
+    }
+
+    .app-wrapper.is-fullscreen .panel { height: 100% !important; min-height: 0 !important; display: flex !important; flex-direction: column !important; overflow: hidden !important; }
+    .app-wrapper.is-fullscreen .panel-header { padding: 0.4rem 0.75rem !important; font-size: 0.88rem !important; flex-shrink: 0 !important; }
+    .app-wrapper.is-fullscreen .panel-body { padding: 0.55rem !important; gap: 0.5rem !important; flex: 1 1 auto !important; min-height: 0 !important; overflow-y: auto !important; }
+    .app-wrapper.is-fullscreen .step-banner { padding: 0.35rem 0.65rem !important; font-size: 0.8rem !important; flex-shrink: 0 !important; }
+    .app-wrapper.is-fullscreen .canvas-container { flex: 1 1 auto !important; min-height: 0 !important; height: 100% !important; width: 100% !important; }
+    .app-wrapper.is-fullscreen canvas#microCanvas { height: 100% !important; width: 100% !important; }
+    .app-wrapper.is-fullscreen .control-card { padding: 0.55rem 0.75rem !important; gap: 0.4rem !important; }
+    .app-wrapper.is-fullscreen .output-box { padding: 0.55rem 0.75rem !important; gap: 0.4rem !important; }
+    .app-wrapper.is-fullscreen .output-metric { padding: 0.4rem !important; }
+    .app-wrapper.is-fullscreen .metric-val { font-size: 1rem !important; }
+
+    .app-wrapper.is-fullscreen .table-card, .app-wrapper.is-fullscreen .theory-wrap {
+      flex: 1 1 auto !important; min-height: 0 !important; height: 100% !important; overflow-y: auto !important;
+    }
+
+    body.is-fullscreen footer, .app-wrapper.is-fullscreen footer { display: none !important; }
+
+    /* Normal Header */
+    header {
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.8) 100%);
+      backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 12px;
+      padding: 0.85rem 1.25rem; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 0.75rem; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+    .header-left { display: flex; align-items: center; gap: 1rem; }
+    .header-brand { display: flex; flex-direction: column; }
+    .badge-row { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.2rem; }
+    .badge {
+      font-size: 0.75rem; font-weight: 700; padding: 0.15rem 0.6rem; border-radius: 20px;
+      text-transform: uppercase; letter-spacing: 0.5px;
+      background: rgba(56, 189, 248, 0.15); color: var(--accent); border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+    .badge-class { background: rgba(16, 185, 129, 0.15); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.3); }
+    h1 { font-size: 1.35rem; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 0.5rem; }
+    .header-actions { display: flex; align-items: center; gap: 0.6rem; }
+
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
+      padding: 0.45rem 0.9rem; font-size: 0.9rem; font-weight: 600; border-radius: 8px;
+      border: 1px solid transparent; cursor: pointer; transition: all 0.2s ease; text-decoration: none; user-select: none;
+    }
+    .btn-primary { background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); color: #fff; }
+    .btn-primary:hover { transform: translateY(-1px); }
+    .btn-outline { background: rgba(30, 41, 59, 0.6); color: var(--text-primary); border-color: var(--border); }
+    .btn-outline:hover { background: var(--bg-card); border-color: var(--accent); color: var(--accent); }
+    .btn-success { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: #fff; }
+
+    .mode-nav { display: flex; gap: 0.5rem; overflow-x: auto; padding-bottom: 0.2rem; }
+    .mode-tab {
+      padding: 0.55rem 1.1rem; background: var(--bg-panel); border: 1px solid var(--border);
+      border-radius: 8px; color: var(--text-secondary); font-weight: 600; font-size: 0.92rem;
+      cursor: pointer; display: flex; align-items: center; gap: 0.5rem; white-space: nowrap; transition: all 0.2s;
+    }
+    .mode-tab:hover { color: var(--text-primary); background: var(--bg-card); }
+    .mode-tab.active {
+      color: #fff; background: linear-gradient(135deg, rgba(56, 189, 248, 0.2) 0%, rgba(2, 132, 199, 0.25) 100%);
+      border-color: var(--accent); box-shadow: 0 0 12px var(--accent-glow);
+    }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    .sim-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+    @media (min-width: 1024px) { .sim-grid { grid-template-columns: 1.25fr 0.75fr; } }
+
+    .panel { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25); }
+    .panel-header { background: var(--bg-card); padding: 0.65rem 1rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; font-weight: 700; font-size: 0.95rem; }
+    .panel-body { padding: 1rem; display: flex; flex-direction: column; gap: 1rem; }
+
+    .canvas-container {
+      position: relative; background: var(--circuit-bg); border-radius: 8px; border: 1px solid var(--border);
+      overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      min-height: 400px; flex: 1 1 auto;
+    }
+    canvas#microCanvas { width: 100%; height: 100%; min-height: 400px; display: block; }
+
+    .canvas-hud {
+      position: absolute; top: 10px; left: 10px; background: rgba(9, 14, 26, 0.9);
+      border: 1px solid var(--border); border-radius: 8px; padding: 0.5rem 0.8rem; font-size: 0.85rem;
+      backdrop-filter: blur(8px); pointer-events: none;
+    }
+    .hud-row { display: flex; justify-content: space-between; gap: 1rem; margin-bottom: 0.2rem; }
+    .hud-row:last-child { margin-bottom: 0; }
+    .hud-label { color: var(--text-secondary); }
+    .hud-val { font-weight: 700; color: var(--accent); }
+
+    .control-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 0.9rem; display: flex; flex-direction: column; gap: 0.75rem; }
+    .control-card-title { font-size: 0.92rem; font-weight: 700; color: #fff; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 0.4rem; }
+    .control-group { display: flex; flex-direction: column; gap: 0.35rem; }
+    .control-label-row { display: flex; justify-content: space-between; font-size: 0.88rem; }
+    .control-label { color: var(--text-secondary); font-weight: 600; }
+    .control-val { font-weight: 700; color: var(--accent); font-family: monospace; }
+
+    input[type="range"] { -webkit-appearance: none; width: 100%; height: 6px; background: var(--bg-subtle); border-radius: 4px; outline: none; cursor: pointer; }
+    input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: var(--accent); cursor: pointer; box-shadow: 0 0 8px var(--accent-glow); }
+
+    .output-box { background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 10px; padding: 1rem; display: flex; flex-direction: column; gap: 0.65rem; }
+    .output-title { font-size: 0.88rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--accent); font-weight: 700; display: flex; align-items: center; gap: 0.4rem; }
+    .output-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+    .output-metric { background: rgba(0,0,0,0.25); padding: 0.6rem; border-radius: 6px; border: 1px solid rgba(255,255,255,0.06); }
+    .metric-lbl { font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 0.2rem; }
+    .metric-val { font-size: 1.15rem; font-weight: 700; color: #fff; font-family: monospace; }
+
+    .stage-btn-group { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.4rem; }
+    .stage-btn { padding: 0.4rem 0.5rem; font-size: 0.82rem; font-weight: 600; border-radius: 6px; border: 1px solid var(--border); background: var(--bg-subtle); color: var(--text-secondary); cursor: pointer; text-align: center; }
+    .stage-btn.active { background: var(--accent); color: #000; border-color: var(--accent); }
+
+    .step-banner { background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 8px; padding: 0.65rem 0.9rem; font-size: 0.88rem; color: #e0f2fe; display: flex; align-items: flex-start; gap: 0.5rem; line-height: 1.4; }
+
+    .table-card, .theory-wrap { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; display: flex; flex-direction: column; gap: 1rem; }
+    .table-scroll { overflow-x: auto; }
+    table.obs-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; text-align: center; }
+    table.obs-table th { background: var(--bg-card); color: var(--accent); padding: 0.65rem 0.5rem; border: 1px solid var(--border); font-weight: 700; white-space: nowrap; }
+    table.obs-table td { padding: 0.55rem 0.5rem; border: 1px solid var(--border); color: var(--text-primary); white-space: nowrap; }
+    table.obs-table tbody tr:hover { background: rgba(56, 189, 248, 0.05); }
+
+    .theory-section { display: flex; flex-direction: column; gap: 0.6rem; }
+    .theory-heading { font-size: 1.15rem; font-weight: 700; color: var(--accent); display: flex; align-items: center; gap: 0.5rem; border-bottom: 1px solid var(--border); padding-bottom: 0.4rem; }
+    .formula-callout { background: var(--bg-card); border-left: 4px solid var(--accent); padding: 0.9rem 1.2rem; border-radius: 0 8px 8px 0; font-size: 1rem; overflow-x: auto; }
+
+    .quiz-container { display: flex; flex-direction: column; gap: 1rem; }
+    .quiz-item { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; }
+    .quiz-q { font-weight: 700; color: #fff; margin-bottom: 0.6rem; }
+    .quiz-options { display: flex; flex-direction: column; gap: 0.4rem; }
+    .quiz-opt { padding: 0.5rem 0.8rem; border-radius: 6px; background: var(--bg-subtle); border: 1px solid var(--border); cursor: pointer; font-size: 0.9rem; transition: all 0.2s; }
+    .quiz-opt:hover { border-color: var(--accent); background: rgba(56, 189, 248, 0.15); }
+    .quiz-opt.correct { background: rgba(16, 185, 129, 0.2) !important; border-color: var(--success) !important; color: #6ee7b7 !important; }
+    .quiz-opt.wrong { background: rgba(239, 68, 68, 0.2) !important; border-color: var(--danger) !important; color: #fca5a5 !important; }
+
+    footer { text-align: center; color: var(--text-secondary); font-size: 0.85rem; padding: 1rem 0; border-top: 1px solid var(--border); margin-top: 1rem; }
+    footer a { color: var(--accent); text-decoration: none; }
+  </style>
+</head>
+<body>
+  <div class="app-wrapper" id="appWrapper">
+    
+    <!-- Header -->
+    <header>
+      <div class="header-left">
+        <a href="index.html" class="btn btn-outline" title="Return to Physics Lab Catalog"><span>←</span> Hub</a>
+        <div class="header-brand">
+          <div class="badge-row">
+            <span class="badge">National Model Schools • Physics Lab</span>
+            <span class="badge badge-class">Class XII • Exp 21</span>
+          </div>
+          <h1><span>🔬</span> Refractive Index of Glass Slab (Travelling Microscope)</h1>
+        </div>
+      </div>
+      <div class="header-actions">
+        <a href="manuals.html#exp21" class="btn btn-outline" title="View Practical Manual"><span>📖</span> Manual</a>
+        <button class="btn btn-outline" id="btnSoundToggle" title="Toggle audio effects"><span id="soundIcon">🔊</span> Audio</button>
+        <button class="btn btn-primary" id="btnFullscreenToggle" title="Toggle fullscreen view"><span>⛶</span> Fullscreen</button>
+      </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="mode-nav">
+      <button class="mode-tab active" data-tab="tab-sim"><span>🔬</span> Microscope &amp; Vernier Loupe</button>
+      <button class="mode-tab" data-tab="tab-table"><span>📊</span> Observation Table &amp; Results</button>
+      <button class="mode-tab" data-tab="tab-theory"><span>📘</span> Theory, Vernier LC &amp; Viva</button>
+    </nav>
+
+    <!-- TAB 1: Simulator -->
+    <div class="tab-content active" id="tab-sim">
+      <div class="sim-grid">
+        
+        <!-- Left: Canvas Area -->
+        <div class="panel">
+          <div class="panel-header">
+            <span>📐 Travelling Microscope Stage &amp; Eyepiece Field of View</span>
+            <div style="display:flex; gap:0.4rem;">
+              <button class="btn btn-outline" style="font-size:0.8rem; padding:0.25rem 0.6rem;" onclick="resetMicroscope()">↺ Reset</button>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="step-banner" id="guideStepBanner">
+              <span>💡</span>
+              <div id="guideStepText">
+                <strong>Stage 1:</strong> Focus cross-wires on the ink mark (P) on paper $\rightarrow$ Reading $R_1$.<br>
+                <strong>Stage 2:</strong> Place glass slab over mark. Refocus on raised virtual image (P') $\rightarrow$ Reading $R_2$.<br>
+                <strong>Stage 3:</strong> Focus on lycopodium powder on top face of slab $\rightarrow$ Reading $R_3$.
+              </div>
+            </div>
+
+            <div class="canvas-container">
+              <canvas id="microCanvas"></canvas>
+              
+              <div class="canvas-hud">
+                <div class="hud-row"><span class="hud-label">Current Stage:</span><span class="hud-val" id="hudStage">Stage 1: Mark (R₁)</span></div>
+                <div class="hud-row"><span class="hud-label">Main Scale Reading (MSR):</span><span class="hud-val" id="hudMSR">2.00 cm</span></div>
+                <div class="hud-row"><span class="hud-label">Vernier Scale Coincidence (VSC):</span><span class="hud-val" id="hudVSC">0 div</span></div>
+                <div class="hud-row"><span class="hud-label">Total Reading (TR):</span><span class="hud-val" id="hudTR">2.000 cm</span></div>
+                <div class="hud-row"><span class="hud-label">Cross-wire Focus:</span><span class="hud-val" id="hudFocus" style="color:#10b981;">SHARP FOCUS ✓</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Controls & Stage Selection -->
+        <div class="panel">
+          <div class="panel-header">
+            <span>⚙️ Vertical Height &amp; Vernier Controls</span>
+            <button class="btn btn-success" style="font-size:0.8rem; padding:0.25rem 0.6rem;" onclick="autoFocus()">⚡ Auto Focus</button>
+          </div>
+          <div class="panel-body">
+            
+            <div class="control-card">
+              <div class="control-card-title">
+                <span>1. Select Focusing Stage</span>
+              </div>
+              <div class="stage-btn-group">
+                <button class="stage-btn active" id="btnStage1" onclick="setStage(1)">Stage 1: Ink (R₁)</button>
+                <button class="stage-btn" id="btnStage2" onclick="setStage(2)">Stage 2: Slab (R₂)</button>
+                <button class="stage-btn" id="btnStage3" onclick="setStage(3)">Stage 3: Dust (R₃)</button>
+              </div>
+            </div>
+
+            <div class="control-card">
+              <div class="control-card-title">
+                <span>2. Vertical Height (Coarse &amp; Fine)</span>
+                <span style="font-size:0.75rem; color:var(--text-secondary);">LC = 0.001 cm</span>
+              </div>
+              
+              <div class="control-group">
+                <div class="control-label-row">
+                  <span class="control-label">Coarse Height Adjustment:</span>
+                  <span class="control-val" id="valHeight">2.000 cm</span>
+                </div>
+                <input type="range" id="sliderHeight" min="1.000" max="6.000" step="0.010" value="2.000" oninput="onHeightChange(this.value)" />
+              </div>
+
+              <div class="control-group">
+                <div class="control-label-row">
+                  <span class="control-label">Fine Micrometer Screw (mm):</span>
+                  <span class="control-val" id="valFine">0.00 mm</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; margin-top:0.2rem; gap:0.4rem;">
+                  <button class="btn btn-outline" style="flex:1; padding:0.25rem; font-size:0.8rem;" onclick="adjustHeight(-0.01)">-0.01 cm</button>
+                  <button class="btn btn-outline" style="flex:1; padding:0.25rem; font-size:0.8rem;" onclick="adjustHeight(-0.001)">-0.001 cm</button>
+                  <button class="btn btn-outline" style="flex:1; padding:0.25rem; font-size:0.8rem;" onclick="adjustHeight(0.001)">+0.001 cm</button>
+                  <button class="btn btn-outline" style="flex:1; padding:0.25rem; font-size:0.8rem;" onclick="adjustHeight(0.01)">+0.01 cm</button>
+                </div>
+              </div>
+
+              <div class="control-group" style="margin-top:0.3rem;">
+                <div class="control-label-row">
+                  <span class="control-label">Glass Slab Thickness ($t$):</span>
+                  <span class="control-val" id="valThickness">1.80 cm</span>
+                </div>
+                <input type="range" id="sliderThickness" min="1.20" max="2.40" step="0.10" value="1.80" oninput="onThicknessChange(this.value)" />
+              </div>
+            </div>
+
+            <!-- Optical Calculations Box -->
+            <div class="output-box">
+              <div class="output-title"><span>📊</span> Vernier &amp; Depth Results</div>
+              <div class="output-grid">
+                <div class="output-metric">
+                  <div class="metric-lbl">Paper Mark Reading (R₁)</div>
+                  <div class="metric-val" id="dispR1">2.000 cm</div>
+                </div>
+                <div class="output-metric">
+                  <div class="metric-lbl">Apparent Mark Reading (R₂)</div>
+                  <div class="metric-val" id="dispR2">-- cm</div>
+                </div>
+                <div class="output-metric">
+                  <div class="metric-lbl">Top Powder Reading (R₃)</div>
+                  <div class="metric-val" id="dispR3">-- cm</div>
+                </div>
+                <div class="output-metric">
+                  <div class="metric-lbl">Refractive Index $\mu = \frac{R_3 - R_1}{R_3 - R_2}$</div>
+                  <div class="metric-val" id="dispMu" style="color:var(--accent);">--</div>
+                </div>
+              </div>
+            </div>
+
+            <button class="btn btn-primary" onclick="recordCurrentStage()" style="width:100%; padding:0.65rem;">
+              <span>📝</span> Save Current Stage Reading
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- TAB 2: Observation Table -->
+    <div class="tab-content" id="tab-table">
+      <div class="table-card">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <h2 style="font-size:1.15rem; color:#fff; display:flex; align-items:center; gap:0.5rem;">
+            <span>📋</span> Observation Table: Real &amp; Apparent Depth of Glass Slab
+          </h2>
+          <div style="display:flex; gap:0.5rem;">
+            <button class="btn btn-outline" onclick="populateStandardSet()"><span>⚡</span> Populate Standard Set</button>
+            <button class="btn btn-outline" onclick="exportCSV()"><span>💾</span> Export CSV</button>
+            <button class="btn btn-outline" onclick="clearTable()"><span>🗑️</span> Clear Table</button>
+          </div>
+        </div>
+
+        <div class="table-scroll">
+          <table class="obs-table">
+            <thead>
+              <tr>
+                <th>Set #</th>
+                <th>$R_1$ Mark (cm)</th>
+                <th>$R_2$ Apparent (cm)</th>
+                <th>$R_3$ Top (cm)</th>
+                <th>Real Depth $(R_3 - R_1)$ cm</th>
+                <th>Apparent Depth $(R_3 - R_2)$ cm</th>
+                <th>Refractive Index $\mu = \frac{R_3 - R_1}{R_3 - R_2}$</th>
+              </tr>
+            </thead>
+            <tbody id="obsTableBody">
+              <tr>
+                <td colspan="7" style="color:var(--text-secondary); padding:1rem;">No completed reading sets yet. Record $R_1, R_2, R_3$ to form a set.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="output-box" style="margin-top:0.5rem;">
+          <div class="output-title"><span>📈</span> Final Experimental Results</div>
+          <div style="display:flex; justify-content:space-around; align-items:center; flex-wrap:wrap; gap:1rem;">
+            <div>
+              <span style="color:var(--text-secondary); font-size:0.9rem;">Mean Real Thickness ($t$): </span>
+              <span id="meanThick" style="font-weight:700; color:var(--text-primary); font-size:1.3rem;">-- cm</span>
+            </div>
+            <div>
+              <span style="color:var(--text-secondary); font-size:0.9rem;">Mean Refractive Index ($\mu$): </span>
+              <span id="meanMu" style="font-weight:700; color:#10b981; font-size:1.3rem;">--</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: Theory & Viva Voce -->
+    <div class="tab-content" id="tab-theory">
+      <div class="theory-wrap">
+        <div class="theory-section">
+          <div class="theory-heading"><span>🎯</span> Aim of the Experiment</div>
+          <p>To determine the refractive index of a glass slab using a travelling microscope by measuring its real thickness and apparent thickness.</p>
+        </div>
+
+        <div class="theory-section">
+          <div class="theory-heading"><span>📐</span> Working Formula &amp; Vernier Constant</div>
+          <div class="formula-callout">
+            $$\mu = \frac{\text{Real Depth}}{\text{Apparent Depth}} = \frac{R_3 - R_1}{R_3 - R_2}$$
+            <p style="margin-top:0.5rem; font-size:0.92rem; color:var(--text-secondary);">
+              <strong>Least Count of Travelling Microscope:</strong><br>
+              $1\text{ Main Scale Division (MSD)} = 0.05\text{ cm} = 0.5\text{ mm}$<br>
+              $50\text{ Vernier Scale Divisions (VSD)} = 49\text{ MSD}$<br>
+              $$\text{Least Count (LC)} = 1\text{ MSD} - 1\text{ VSD} = \frac{1\text{ MSD}}{50} = \frac{0.05\text{ cm}}{50} = 0.001\text{ cm} = 0.01\text{ mm}$$
+            </p>
+          </div>
+        </div>
+
+        <div class="theory-section">
+          <div class="theory-heading"><span>🔬</span> Why Apparent Depth is Less than Real Depth</div>
+          <p style="font-size:0.95rem; line-height:1.6; color:var(--text-primary);">
+            When light rays originate from the ink mark on paper and travel through the denser glass slab into rarer air, they refract away from the normal. When produced backward, the rays appear to diverge from a virtual image located above the actual mark. The vertical apparent shift is given by:
+            $$\Delta y = t\left(1 - \frac{1}{\mu}\right)$$
+          </p>
+        </div>
+
+        <div class="theory-section">
+          <div class="theory-heading"><span>❓</span> Viva Voce Interactive Quiz</div>
+          <div class="quiz-container" id="quizContainer"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      <p>Physics Virtual Laboratory • Senior Secondary Practical Simulations</p>
+      <p style="margin-top:0.25rem;">Developed by <a href="https://github.com/mazhar-in" target="_blank" rel="noopener">Syed Mazhar Ali</a> • National Model Schools</p>
+    </footer>
+
+  </div>
+
+  <script>
+    // Audio synthesizer
+    let audioCtx = null;
+    let audioEnabled = true;
+
+    function playTone(freq, duration = 0.04, type = 'sine') {
+      if (!audioEnabled) return;
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.06, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch(e) {}
+    }
+
+    // Physical Constants
+    const ACTUAL_MU = 1.50;           // Glass slab refractive index
+    let currentSlabThickness = 1.80;  // Real thickness in cm
+    const BASE_HEIGHT_R1 = 2.000;     // True R1 reading = 2.000 cm
+
+    // State Variables
+    let currentStage = 1;             // 1 = R1 (paper ink mark), 2 = R2 (apparent ink mark), 3 = R3 (top lycopodium dust)
+    let currentHeight = 2.000;        // Current microscope height reading in cm
+    let recordedR1 = null;
+    let recordedR2 = null;
+    let recordedR3 = null;
+    let observations = [];
+
+    let canvas, ctx;
+
+    function showToast(message, type = 'success') {
+      let toast = document.getElementById('labToast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'labToast';
+        toast.style.cssText = 'position:fixed; bottom:24px; right:24px; z-index:99999; padding:0.65rem 1.1rem; border-radius:8px; font-size:0.9rem; font-weight:600; box-shadow:0 8px 24px rgba(0,0,0,0.4); display:flex; align-items:center; gap:0.5rem; transition:all 0.3s ease; pointer-events:none; opacity:0; transform:translateY(10px);';
+        document.body.appendChild(toast);
+      }
+      if (type === 'error') {
+        toast.style.background = 'linear-gradient(135deg, #ef4444 0%, #b91c1c 100%)';
+        toast.style.color = '#fff';
+        toast.style.border = '1px solid #f87171';
+      } else {
+        toast.style.background = 'linear-gradient(135deg, #10b981 0%, #047857 100%)';
+        toast.style.color = '#fff';
+        toast.style.border = '1px solid #34d399';
+      }
+      toast.innerHTML = (type === 'error' ? '⚠️ ' : '✓ ') + message;
+      toast.style.opacity = '1';
+      toast.style.transform = 'translateY(0)';
+      clearTimeout(toast._timer);
+      toast._timer = setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(10px)';
+      }, 2400);
+    }
+
+    function initKaTeX() {
+      if (window.renderMathInElement) {
+        renderMathInElement(document.body, {
+          delimiters: [
+            {left: '$$', right: '$$', display: true},
+            {left: '$', right: '$', display: false}
+          ],
+          throwOnError: false
+        });
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      canvas = document.getElementById('microCanvas');
+      ctx = canvas.getContext('2d');
+      resizeCanvas();
+      window.addEventListener('resize', resizeCanvas);
+
+      const tabs = document.querySelectorAll('.mode-tab');
+      tabs.forEach(tab => {
+        tab.addEventListener('click', (e) => {
+          e.preventDefault();
+          tabs.forEach(t => t.classList.remove('active'));
+          document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+          tab.classList.add('active');
+          const targetId = tab.dataset.tab;
+          document.getElementById(targetId).classList.add('active');
+          if (targetId === 'tab-sim') resizeCanvas();
+          if (window.renderMathInElement) initKaTeX();
+        });
+      });
+
+      document.getElementById('btnSoundToggle').addEventListener('click', () => {
+        audioEnabled = !audioEnabled;
+        document.getElementById('soundIcon').textContent = audioEnabled ? '🔊' : '🔇';
+      });
+
+      document.getElementById('btnFullscreenToggle').addEventListener('click', toggleFullscreen);
+      document.addEventListener('fullscreenchange', updateFullscreenState);
+      document.addEventListener('webkitfullscreenchange', updateFullscreenState);
+
+      buildQuiz();
+      updatePhysics();
+      setTimeout(initKaTeX, 300);
+    });
+
+    function updateFullscreenState() {
+      const isFS = !!(document.fullscreenElement || document.webkitFullscreenElement);
+      const wrapper = document.getElementById('appWrapper');
+      const btn = document.getElementById('btnFullscreenToggle');
+
+      if (isFS) {
+        document.body.classList.add('is-fullscreen');
+        if (wrapper) wrapper.classList.add('is-fullscreen');
+        if (btn) btn.innerHTML = '<span>⛶</span> Exit Fullscreen';
+      } else {
+        document.body.classList.remove('is-fullscreen');
+        if (wrapper) wrapper.classList.remove('is-fullscreen');
+        if (btn) btn.innerHTML = '<span>⛶</span> Fullscreen';
+      }
+
+      resizeCanvas();
+      setTimeout(resizeCanvas, 50);
+      setTimeout(resizeCanvas, 150);
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+        if (document.documentElement.requestFullscreen) {
+          document.documentElement.requestFullscreen().catch(() => {});
+        } else if (document.documentElement.webkitRequestFullscreen) {
+          document.documentElement.webkitRequestFullscreen();
+        }
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen().catch(() => {});
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+        }
+      }
+    }
+
+    function resizeCanvas() {
+      if (!canvas || !canvas.parentElement) return;
+      const rect = canvas.parentElement.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      const isFS = document.body.classList.contains('is-fullscreen') || !!(document.fullscreenElement || document.webkitFullscreenElement);
+
+      const w = rect.width;
+      const h = isFS ? Math.max(260, rect.height) : Math.max(400, rect.height || 400);
+
+      canvas.width = w * dpr;
+      canvas.height = h * dpr;
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.scale(dpr, dpr);
+      renderCanvas();
+    }
+
+    function setStage(stage) {
+      currentStage = stage;
+      document.querySelectorAll('.stage-btn').forEach((b, idx) => {
+        b.classList.toggle('active', idx + 1 === stage);
+      });
+
+      const stageLabels = {
+        1: "Stage 1: Mark on Paper (R₁)",
+        2: "Stage 2: Apparent Mark through Slab (R₂)",
+        3: "Stage 3: Lycopodium Dust on Top (R₃)"
+      };
+      document.getElementById('hudStage').textContent = stageLabels[stage];
+      playTone(400 + stage * 100, 0.06);
+      updatePhysics();
+    }
+
+    function onHeightChange(val) {
+      currentHeight = parseFloat(val);
+      document.getElementById('valHeight').textContent = currentHeight.toFixed(3) + ' cm';
+      playTone(300 + currentHeight * 40, 0.015);
+      updatePhysics();
+    }
+
+    function adjustHeight(delta) {
+      let nextH = Math.min(6.000, Math.max(1.000, currentHeight + delta));
+      currentHeight = Math.round(nextH * 1000) / 1000;
+      document.getElementById('sliderHeight').value = currentHeight;
+      document.getElementById('valHeight').textContent = currentHeight.toFixed(3) + ' cm';
+      playTone(380 + currentHeight * 30, 0.015);
+      updatePhysics();
+    }
+
+    function onThicknessChange(val) {
+      currentSlabThickness = parseFloat(val);
+      document.getElementById('valThickness').textContent = currentSlabThickness.toFixed(2) + ' cm';
+      updatePhysics();
+    }
+
+    function getTargetFocusHeight(stage) {
+      if (stage === 1) {
+        return BASE_HEIGHT_R1; // 2.000 cm
+      } else if (stage === 2) {
+        // Apparent depth = t / mu
+        // Apparent height = R3 - (t / mu) = (R1 + t) - (t / mu) = R1 + t * (1 - 1/mu)
+        const apparentShift = currentSlabThickness * (1 - 1 / ACTUAL_MU);
+        return BASE_HEIGHT_R1 + apparentShift;
+      } else {
+        // Stage 3: Top surface = R1 + t
+        return BASE_HEIGHT_R1 + currentSlabThickness;
+      }
+    }
+
+    function autoFocus() {
+      const target = getTargetFocusHeight(currentStage);
+      currentHeight = Math.round(target * 1000) / 1000;
+      document.getElementById('sliderHeight').value = currentHeight;
+      document.getElementById('valHeight').textContent = currentHeight.toFixed(3) + ' cm';
+      playTone(680, 0.1, 'triangle');
+      showToast(`Autofocused to Stage ${currentStage} plane (H = ${currentHeight.toFixed(3)} cm)!`);
+      updatePhysics();
+    }
+
+    function resetMicroscope() {
+      currentStage = 1;
+      currentHeight = 2.000;
+      recordedR1 = null;
+      recordedR2 = null;
+      recordedR3 = null;
+      document.getElementById('sliderHeight').value = 2.000;
+      document.getElementById('valHeight').textContent = '2.000 cm';
+      document.getElementById('dispR1').textContent = '-- cm';
+      document.getElementById('dispR2').textContent = '-- cm';
+      document.getElementById('dispR3').textContent = '-- cm';
+      document.getElementById('dispMu').textContent = '--';
+      setStage(1);
+    }
+
+    function updatePhysics() {
+      const target = getTargetFocusHeight(currentStage);
+      const deltaH = Math.abs(currentHeight - target);
+      const isSharp = deltaH <= 0.008;
+
+      // Vernier scale calculation:
+      // LC = 0.001 cm. 1 MSD = 0.05 cm.
+      const msr = Math.floor(currentHeight / 0.05) * 0.05;
+      const vsc = Math.round((currentHeight - msr) / 0.001);
+
+      document.getElementById('hudMSR').textContent = msr.toFixed(2) + ' cm';
+      document.getElementById('hudVSC').textContent = `${vsc} div`;
+      document.getElementById('hudTR').textContent = currentHeight.toFixed(3) + ' cm';
+
+      const fElem = document.getElementById('hudFocus');
+      if (isSharp) {
+        fElem.textContent = 'SHARP FOCUS ✓';
+        fElem.style.color = '#10b981';
+      } else {
+        fElem.textContent = `Defocus Δh = ${(deltaH * 10).toFixed(2)} mm`;
+        fElem.style.color = '#f59e0b';
+      }
+
+      renderCanvas();
+    }
+
+    function renderCanvas() {
+      if (!ctx || !canvas) return;
+      const w = canvas.width / (window.devicePixelRatio || 1);
+      const h = canvas.height / (window.devicePixelRatio || 1);
+
+      ctx.clearRect(0, 0, w, h);
+
+      // Left Panel (60% width): Travelling Microscope Physical Rig + Vernier Scale
+      // Right Panel (40% width): Eyepiece Field of View with Cross-hairs
+      const splitX = w * 0.58;
+
+      drawMicroscopeRig(0, 0, splitX, h);
+      drawEyepieceView(splitX, 0, w - splitX, h);
+    }
+
+    function drawMicroscopeRig(rx, ry, rw, rh) {
+      // Background
+      ctx.fillStyle = '#0a101d';
+      ctx.fillRect(rx, ry, rw, rh);
+
+      const baseY = rh - 45;
+      const pillarX = rx + 65;
+
+      // Heavy Iron Base
+      ctx.fillStyle = '#1e293b';
+      ctx.fillRect(rx + 25, baseY, rw - 50, 24);
+      ctx.strokeStyle = '#475569';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(rx + 25, baseY, rw - 50, 24);
+
+      // Leveling screws
+      ctx.fillStyle = '#f59e0b';
+      ctx.fillRect(rx + 35, baseY + 24, 18, 8);
+      ctx.fillRect(rx + rw - 53, baseY + 24, 18, 8);
+
+      // Vertical Brass Pillar
+      ctx.fillStyle = '#334155';
+      ctx.fillRect(pillarX, 40, 22, baseY - 40);
+      ctx.strokeStyle = '#64748b';
+      ctx.strokeRect(pillarX, 40, 22, baseY - 40);
+
+      // Main Vertical Metric Scale on Pillar
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = '8px monospace';
+      ctx.textAlign = 'right';
+      for (let cm = 1; cm <= 6; cm++) {
+        const y = baseY - (cm / 6) * (baseY - 70);
+        ctx.fillRect(pillarX, y, 8, 1.5);
+        ctx.fillText(`${cm}`, pillarX - 3, y + 3);
+      }
+
+      // Glass Slab on Table
+      const tableCenterX = rx + rw * 0.58;
+      const slabW = 90;
+      const slabH = currentSlabThickness * 18;
+
+      // Paper sheet on base
+      ctx.fillStyle = '#f8fafc';
+      ctx.fillRect(tableCenterX - 60, baseY - 4, 120, 4);
+
+      // Ink Mark P on paper
+      ctx.fillStyle = '#ef4444';
+      ctx.fillRect(tableCenterX - 6, baseY - 6, 12, 3);
+      ctx.fillRect(tableCenterX - 1.5, baseY - 10, 3, 11);
+
+      if (currentStage >= 2) {
+        // Draw Glass Slab over paper
+        ctx.fillStyle = 'rgba(56, 189, 248, 0.25)';
+        ctx.strokeStyle = '#38bdf8';
+        ctx.lineWidth = 1.5;
+        ctx.fillRect(tableCenterX - slabW / 2, baseY - 4 - slabH, slabW, slabH);
+        ctx.strokeRect(tableCenterX - slabW / 2, baseY - 4 - slabH, slabW, slabH);
+
+        // Slab label
+        ctx.fillStyle = 'rgba(255,255,255,0.7)';
+        ctx.font = '9px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(`Glass Slab (t = ${currentSlabThickness.toFixed(2)} cm)`, tableCenterX, baseY - 4 - slabH / 2 + 3);
+
+        if (currentStage === 3) {
+          // Lycopodium powder grains on top surface
+          ctx.fillStyle = '#fbbf24';
+          for (let gx = -30; gx <= 30; gx += 8) {
+            ctx.beginPath();
+            ctx.arc(tableCenterX + gx, baseY - 4 - slabH - 1, 2, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+      }
+
+      // Microscope Carriage (moves with currentHeight)
+      const carriageY = baseY - (currentHeight / 6) * (baseY - 70) - 40;
+
+      // Carriage mount on pillar
+      ctx.fillStyle = '#1e293b';
+      ctx.strokeStyle = '#0284c7';
+      ctx.lineWidth = 2;
+      ctx.fillRect(pillarX - 8, carriageY, 38, 50);
+      ctx.strokeRect(pillarX - 8, carriageY, 38, 50);
+
+      // Horizontal Arm holding microscope tube
+      ctx.fillStyle = '#334155';
+      ctx.fillRect(pillarX + 30, carriageY + 16, tableCenterX - (pillarX + 30), 16);
+
+      // Microscope Body Tube
+      const tubeX = tableCenterX;
+      const tubeY = carriageY - 10;
+      const tubeW = 24;
+      const tubeH = 80;
+
+      ctx.fillStyle = '#0f172a';
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 2;
+      ctx.fillRect(tubeX - tubeW / 2, tubeY, tubeW, tubeH);
+      ctx.strokeRect(tubeX - tubeW / 2, tubeY, tubeW, tubeH);
+
+      // Eyepiece at top
+      ctx.fillStyle = '#1e293b';
+      ctx.fillRect(tubeX - tubeW / 2 - 4, tubeY - 12, tubeW + 8, 12);
+
+      // Objective lens cone at bottom
+      ctx.beginPath();
+      ctx.moveTo(tubeX - tubeW / 2, tubeY + tubeH);
+      ctx.lineTo(tubeX + tubeW / 2, tubeY + tubeH);
+      ctx.lineTo(tubeX + 6, tubeY + tubeH + 16);
+      ctx.lineTo(tubeX - 6, tubeY + tubeH + 16);
+      ctx.closePath();
+      ctx.fillStyle = '#334155';
+      ctx.fill();
+      ctx.stroke();
+
+      // Vernier Scale Magnifying Loupe Window
+      drawVernierLoupe(rx + 15, 20, 110, 110);
+    }
+
+    function drawVernierLoupe(lx, ly, lw, lh) {
+      ctx.save();
+      ctx.fillStyle = 'rgba(17, 26, 46, 0.95)';
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 1.5;
+      ctx.fillRect(lx, ly, lw, lh);
+      ctx.strokeRect(lx, ly, lw, lh);
+
+      ctx.fillStyle = '#38bdf8';
+      ctx.font = 'bold 9px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('VERNIER LOUPE (LC 0.001)', lx + lw / 2, ly + 14);
+
+      // Draw Main Scale (MS) on left side of window
+      const msX = lx + 36;
+      ctx.strokeStyle = '#94a3b8';
+      ctx.lineWidth = 1;
+
+      // Current height to mm:
+      const msr = Math.floor(currentHeight / 0.05) * 0.05;
+      const vsc = Math.round((currentHeight - msr) / 0.001);
+
+      ctx.fillStyle = '#fff';
+      ctx.font = '8px monospace';
+      ctx.textAlign = 'right';
+      ctx.fillText(`MSR: ${msr.toFixed(2)} cm`, lx + lw - 8, ly + 32);
+      ctx.fillText(`VSC: ${vsc} div`, lx + lw - 8, ly + 46);
+      ctx.fillStyle = '#10b981';
+      ctx.fillText(`TR: ${currentHeight.toFixed(3)} cm`, lx + lw - 8, ly + 62);
+
+      // Main scale ticks
+      for (let i = -4; i <= 4; i++) {
+        const tickVal = msr + i * 0.05;
+        const ty = ly + lh / 2 - i * 9;
+        if (ty > ly + 22 && ty < ly + lh - 8) {
+          ctx.beginPath();
+          ctx.moveTo(msX - 10, ty);
+          ctx.lineTo(msX, ty);
+          ctx.stroke();
+        }
+      }
+
+      // Vernier scale ticks
+      const vsX = msX + 6;
+      ctx.strokeStyle = '#f59e0b';
+      for (let v = 0; v <= 10; v++) {
+        const vy = ly + lh / 2 - (v - vsc) * 2.2;
+        if (vy > ly + 22 && vy < ly + lh - 8) {
+          ctx.beginPath();
+          ctx.moveTo(vsX, vy);
+          ctx.lineTo(vsX + 8, vy);
+          ctx.stroke();
+        }
+      }
+
+      ctx.restore();
+    }
+
+    function drawEyepieceView(ex, ey, ew, eh) {
+      // Eyepiece circular aperture background
+      ctx.fillStyle = '#060a17';
+      ctx.fillRect(ex, ey, ew, eh);
+
+      ctx.strokeStyle = '#334155';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(ex, ey, ew, eh);
+
+      const cx = ex + ew / 2;
+      const cy = ey + eh / 2;
+      const radius = Math.min(ew * 0.42, eh * 0.42);
+
+      // Clip inside eyepiece circle
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+      ctx.clip();
+
+      // Eyepiece illumination gradient
+      const fovGrad = ctx.createRadialGradient(cx, cy, 10, cx, cy, radius);
+      fovGrad.addColorStop(0, '#fef08a');
+      fovGrad.addColorStop(0.7, '#facc15');
+      fovGrad.addColorStop(1, '#ca8a04');
+      ctx.fillStyle = fovGrad;
+      ctx.fillRect(cx - radius, cy - radius, radius * 2, radius * 2);
+
+      // Calculate defocus amount
+      const target = getTargetFocusHeight(currentStage);
+      const deltaH = Math.abs(currentHeight - target);
+      const blurPx = Math.min(18, deltaH * 140);
+
+      // Draw specimen object based on currentStage
+      if (currentStage === 1) {
+        // Sharp/blurred ink cross mark on paper
+        drawCrossMark(cx, cy, blurPx, '#1e293b');
+      } else if (currentStage === 2) {
+        // Apparent ink cross mark through glass slab (slightly tinted by glass)
+        drawCrossMark(cx, cy, blurPx, '#0f172a');
+      } else {
+        // Lycopodium powder grains
+        drawLycopodiumGrains(cx, cy, blurPx);
+      }
+
+      // Draw Cross-hairs (Fixed in eyepiece focal plane, ALWAYS razor sharp!)
+      ctx.strokeStyle = '#000';
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.moveTo(cx - radius, cy);
+      ctx.lineTo(cx + radius, cy);
+      ctx.moveTo(cx, cy - radius);
+      ctx.lineTo(cx, cy + radius);
+      ctx.stroke();
+
+      ctx.restore();
+
+      // Eyepiece Outer Metal Bezel
+      ctx.save();
+      ctx.strokeStyle = '#475569';
+      ctx.lineWidth = 10;
+      ctx.beginPath();
+      ctx.arc(cx, cy, radius + 5, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      ctx.fillStyle = '#fff';
+      ctx.font = 'bold 11px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('EYEPIECE CROSS-HAIRS', cx, cy - radius - 14);
+
+      if (blurPx <= 1.2) {
+        ctx.fillStyle = '#10b981';
+        ctx.fillText('● PERFECT FOCUS', cx, cy + radius + 22);
+      } else {
+        ctx.fillStyle = '#f59e0b';
+        ctx.fillText('○ OUT OF FOCUS', cx, cy + radius + 22);
+      }
+      ctx.restore();
+    }
+
+    function drawCrossMark(cx, cy, blur, color) {
+      ctx.save();
+      if (blur > 0.5) {
+        ctx.filter = `blur(${blur.toFixed(1)}px)`;
+      }
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 5;
+      ctx.beginPath();
+      ctx.moveTo(cx - 30, cy - 30);
+      ctx.lineTo(cx + 30, cy + 30);
+      ctx.moveTo(cx + 30, cy - 30);
+      ctx.lineTo(cx - 30, cy + 30);
+      ctx.stroke();
+
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.arc(cx, cy, 6, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+
+    function drawLycopodiumGrains(cx, cy, blur) {
+      ctx.save();
+      if (blur > 0.5) {
+        ctx.filter = `blur(${blur.toFixed(1)}px)`;
+      }
+      ctx.fillStyle = '#78350f';
+      const grainCoords = [
+        [-15, -12, 4], [18, -10, 5], [-8, 20, 4.5], [14, 16, 5],
+        [0, 0, 4], [-24, 6, 3.5], [26, -22, 4]
+      ];
+      grainCoords.forEach(([gx, gy, gr]) => {
+        ctx.beginPath();
+        ctx.arc(cx + gx, cy + gy, gr, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      ctx.restore();
+    }
+
+    // Save Reading for Current Stage (Async Toast)
+    function recordCurrentStage() {
+      const target = getTargetFocusHeight(currentStage);
+      const isSharp = Math.abs(currentHeight - target) <= 0.015;
+
+      if (!isSharp) {
+        showToast(`Microscope is out of focus for Stage ${currentStage}! Use Auto Focus or fine screw.`, 'error');
+        return;
+      }
+
+      if (currentStage === 1) {
+        recordedR1 = currentHeight;
+        document.getElementById('dispR1').textContent = recordedR1.toFixed(3) + ' cm';
+        showToast(`Saved R₁ (Mark on paper): ${recordedR1.toFixed(3)} cm`);
+        setStage(2);
+      } else if (currentStage === 2) {
+        recordedR2 = currentHeight;
+        document.getElementById('dispR2').textContent = recordedR2.toFixed(3) + ' cm';
+        showToast(`Saved R₂ (Apparent mark): ${recordedR2.toFixed(3)} cm`);
+        setStage(3);
+      } else if (currentStage === 3) {
+        recordedR3 = currentHeight;
+        document.getElementById('dispR3').textContent = recordedR3.toFixed(3) + ' cm';
+        showToast(`Saved R₃ (Top powder): ${recordedR3.toFixed(3)} cm`);
+
+        // Check if full set complete
+        if (recordedR1 !== null && recordedR2 !== null && recordedR3 !== null) {
+          const realD = recordedR3 - recordedR1;
+          const appD = recordedR3 - recordedR2;
+          const muCalc = realD / appD;
+
+          document.getElementById('dispMu').textContent = muCalc.toFixed(3);
+
+          const obs = {
+            sno: observations.length + 1,
+            r1: recordedR1.toFixed(3),
+            r2: recordedR2.toFixed(3),
+            r3: recordedR3.toFixed(3),
+            realD: realD.toFixed(3),
+            appD: appD.toFixed(3),
+            mu: muCalc.toFixed(3)
+          };
+
+          observations.push(obs);
+          renderTable();
+          playTone(850, 0.12, 'sine');
+          showToast(`Full Set Recorded! Refractive Index μ = ${obs.mu}`, 'success');
+        }
+      }
+    }
+
+    function populateStandardSet() {
+      observations = [];
+      const thicknesses = [1.50, 1.80, 2.10, 2.40];
+      thicknesses.forEach((t, idx) => {
+        const r1 = 2.000 + idx * 0.1;
+        const appShift = t * (1 - 1 / ACTUAL_MU);
+        const r2 = r1 + appShift;
+        const r3 = r1 + t;
+        const realD = r3 - r1;
+        const appD = r3 - r2;
+        const mu = realD / appD;
+
+        observations.push({
+          sno: idx + 1,
+          r1: r1.toFixed(3),
+          r2: r2.toFixed(3),
+          r3: r3.toFixed(3),
+          realD: realD.toFixed(3),
+          appD: appD.toFixed(3),
+          mu: mu.toFixed(3)
+        });
+      });
+
+      renderTable();
+      showToast('Populated standard set of 4 observations!');
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById('obsTableBody');
+      tbody.innerHTML = '';
+
+      if (observations.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="color:var(--text-secondary); padding:1rem;">No completed reading sets yet. Record R₁, R₂, R₃ to form a set.</td></tr>';
+        document.getElementById('meanThick').textContent = '-- cm';
+        document.getElementById('meanMu').textContent = '--';
+        return;
+      }
+
+      let sumT = 0;
+      let sumMu = 0;
+
+      observations.forEach(o => {
+        sumT += parseFloat(o.realD);
+        sumMu += parseFloat(o.mu);
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${o.sno}</td>
+          <td>${o.r1}</td>
+          <td>${o.r2}</td>
+          <td>${o.r3}</td>
+          <td>${o.realD}</td>
+          <td>${o.appD}</td>
+          <td style="color:var(--accent); font-weight:700;">${o.mu}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      const avgT = (sumT / observations.length).toFixed(3);
+      const avgMu = (sumMu / observations.length).toFixed(3);
+
+      document.getElementById('meanThick').textContent = `${avgT} cm`;
+      document.getElementById('meanMu').textContent = avgMu;
+    }
+
+    function clearTable() {
+      if (confirm('Clear all recorded observations?')) {
+        observations = [];
+        renderTable();
+      }
+    }
+
+    function exportCSV() {
+      if (observations.length === 0) {
+        showToast('No observation data to export!', 'error');
+        return;
+      }
+      let csv = "Set #,R1 Mark (cm),R2 Apparent (cm),R3 Top (cm),Real Depth (cm),Apparent Depth (cm),Refractive Index mu\n";
+      observations.forEach(o => {
+        csv += `${o.sno},${o.r1},${o.r2},${o.r3},${o.realD},${o.appD},${o.mu}\n`;
+      });
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `travelling_microscope_glass_slab_${Date.now()}.csv`;
+      a.click();
+    }
+
+    // Quiz Questions
+    const quizData = [
+      {
+        q: "What is the least count of a standard travelling microscope with 1 MSD = 0.5 mm and 50 VSD = 49 MSD?",
+        options: [
+          "0.001 cm (0.01 mm)",
+          "0.01 cm (0.1 mm)",
+          "0.0001 cm (0.001 mm)",
+          "0.05 cm (0.5 mm)"
+        ],
+        answer: 0
+      },
+      {
+        q: "Why is lycopodium powder sprinkled on the top surface of the glass slab?",
+        options: [
+          "To provide visible particles on the transparent top surface to focus the microscope cross-hairs",
+          "To reduce surface reflection from the glass",
+          "To measure the refractive index of the powder",
+          "To prevent scratches on the glass slab"
+        ],
+        answer: 0
+      },
+      {
+        q: "In the formula $\\mu = \\frac{R_3 - R_1}{R_3 - R_2}$, what does $(R_3 - R_2)$ represent?",
+        options: [
+          "The apparent depth of the ink mark through the glass slab",
+          "The real thickness of the glass slab",
+          "The focal length of the objective lens",
+          "The vertical shift of the image"
+        ],
+        answer: 0
+      },
+      {
+        q: "Why does the ink mark appear raised when viewed through the glass slab?",
+        options: [
+          "Due to refraction of light rays bending away from the normal upon exiting the denser glass into air",
+          "Due to total internal reflection inside the slab",
+          "Due to diffraction at the edges of the ink mark",
+          "Due to polarization of reflected light"
+        ],
+        answer: 0
+      }
+    ];
+
+    function buildQuiz() {
+      const container = document.getElementById('quizContainer');
+      container.innerHTML = '';
+      quizData.forEach((item, qIdx) => {
+        const div = document.createElement('div');
+        div.className = 'quiz-item';
+        div.innerHTML = `
+          <div class="quiz-q">${qIdx + 1}. ${item.q}</div>
+          <div class="quiz-options">
+            ${item.options.map((opt, oIdx) => `
+              <div class="quiz-opt" onclick="checkAnswer(${qIdx}, ${oIdx}, this)">${opt}</div>
+            `).join('')}
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function checkAnswer(qIdx, selectedIdx, elem) {
+      const parent = elem.parentElement;
+      if (parent.dataset.answered) return;
+      parent.dataset.answered = "true";
+
+      const correctIdx = quizData[qIdx].answer;
+      const options = parent.querySelectorAll('.quiz-opt');
+
+      if (selectedIdx === correctIdx) {
+        elem.classList.add('correct');
+        playTone(587, 0.1, 'triangle');
+        showToast('Correct answer! Well done.', 'success');
+      } else {
+        elem.classList.add('wrong');
+        options[correctIdx].classList.add('correct');
+        playTone(220, 0.15, 'sawtooth');
+        showToast('Incorrect. The correct option is highlighted in green.', 'error');
+      }
+    }
+  </script>
+</body>
+</html>

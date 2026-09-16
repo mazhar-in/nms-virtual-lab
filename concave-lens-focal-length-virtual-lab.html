@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
+  <title>Focal Length of Concave Lens (Auxiliary Convex Lens) | National Model Schools Physics Virtual Lab</title>
+  <meta name="description" content="Determine the focal length of a concave lens using an auxiliary convex lens on an optical bench with virtual object ray tracing and parallax removal." />
+
+  <!-- KaTeX for Formula Rendering -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous" onload="initKaTeX()"></script>
+
+  <style>
+    :root {
+      --bg-main: #090e1a;
+      --bg-panel: #111a2e;
+      --bg-card: #1a253f;
+      --bg-subtle: #243456;
+      --accent: #38bdf8;
+      --accent-hover: #0284c7;
+      --accent-glow: rgba(56, 189, 248, 0.25);
+      --copper: #f59e0b;
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --border: #334155;
+      --border-light: #475569;
+      --success: #10b981;
+      --danger: #ef4444;
+      --circuit-bg: #060a17;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+      background-color: var(--bg-main); color: var(--text-primary); line-height: 1.5; padding: 0.75rem; overflow-x: hidden; font-size: 1rem;
+    }
+    @media (min-width: 768px) { body { padding: 1.2rem; } }
+
+    .app-wrapper { max-width: 1440px; margin: 0 auto; display: flex; flex-direction: column; gap: 0.85rem; min-height: 100vh; }
+
+    /* Non-Scrollable Fullscreen Mode */
+    :fullscreen, :-webkit-full-screen { overflow: hidden !important; background-color: var(--bg-main) !important; }
+    body.is-fullscreen { overflow: hidden !important; padding: 0.35rem 0.55rem !important; height: 100vh !important; width: 100vw !important; }
+
+    :fullscreen .app-wrapper, :-webkit-full-screen .app-wrapper, body.is-fullscreen .app-wrapper, .app-wrapper.is-fullscreen {
+      width: 100vw !important; height: 100vh !important; max-width: 100vw !important; max-height: 100vh !important;
+      padding: 0.35rem 0.55rem !important; margin: 0 !important; background-color: var(--bg-main); overflow: hidden !important;
+      display: flex !important; flex-direction: column !important; gap: 0.35rem !important; box-sizing: border-box;
+    }
+
+    .app-wrapper.is-fullscreen header { padding: 0.35rem 0.75rem !important; gap: 0.4rem !important; flex-shrink: 0 !important; border-radius: 8px; }
+    .app-wrapper.is-fullscreen h1 { font-size: 1.12rem !important; }
+    .app-wrapper.is-fullscreen .badge { font-size: 0.68rem !important; padding: 0.15rem 0.45rem !important; }
+    .app-wrapper.is-fullscreen .btn { min-height: 32px !important; padding: 0.25rem 0.6rem !important; font-size: 0.84rem !important; }
+    .app-wrapper.is-fullscreen .mode-nav { padding: 0.2rem 0.4rem !important; gap: 0.35rem !important; flex-shrink: 0 !important; }
+    .app-wrapper.is-fullscreen .mode-tab { padding: 0.35rem 0.75rem !important; font-size: 0.85rem !important; }
+
+    .app-wrapper.is-fullscreen .tab-content.active {
+      flex: 1 1 auto !important; min-height: 0 !important; height: calc(100vh - 110px) !important; max-height: calc(100vh - 110px) !important;
+      overflow: hidden !important; display: flex !important; flex-direction: column !important;
+    }
+
+    .app-wrapper.is-fullscreen .sim-grid {
+      display: grid !important; grid-template-columns: 1.25fr 0.75fr !important; gap: 0.5rem !important;
+      flex: 1 1 auto !important; height: 100% !important; min-height: 0 !important; overflow: hidden !important;
+    }
+
+    .app-wrapper.is-fullscreen .panel { height: 100% !important; min-height: 0 !important; display: flex !important; flex-direction: column !important; overflow: hidden !important; }
+    .app-wrapper.is-fullscreen .panel-header { padding: 0.4rem 0.75rem !important; font-size: 0.88rem !important; flex-shrink: 0 !important; }
+    .app-wrapper.is-fullscreen .panel-body { padding: 0.55rem !important; gap: 0.5rem !important; flex: 1 1 auto !important; min-height: 0 !important; overflow-y: auto !important; }
+    .app-wrapper.is-fullscreen .step-banner { padding: 0.35rem 0.65rem !important; font-size: 0.8rem !important; flex-shrink: 0 !important; }
+    .app-wrapper.is-fullscreen .canvas-container { flex: 1 1 auto !important; min-height: 0 !important; height: 100% !important; width: 100% !important; }
+    .app-wrapper.is-fullscreen canvas#opticsCanvas { height: 100% !important; width: 100% !important; }
+    .app-wrapper.is-fullscreen .control-card { padding: 0.55rem 0.75rem !important; gap: 0.4rem !important; }
+    .app-wrapper.is-fullscreen .output-box { padding: 0.55rem 0.75rem !important; gap: 0.4rem !important; }
+    .app-wrapper.is-fullscreen .output-metric { padding: 0.4rem !important; }
+    .app-wrapper.is-fullscreen .metric-val { font-size: 1rem !important; }
+
+    .app-wrapper.is-fullscreen .table-card, .app-wrapper.is-fullscreen .theory-wrap {
+      flex: 1 1 auto !important; min-height: 0 !important; height: 100% !important; overflow-y: auto !important;
+    }
+
+    body.is-fullscreen footer, .app-wrapper.is-fullscreen footer { display: none !important; }
+
+    /* Normal Header */
+    header {
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.8) 100%);
+      backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 12px;
+      padding: 0.85rem 1.25rem; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 0.75rem; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+    .header-left { display: flex; align-items: center; gap: 1rem; }
+    .header-brand { display: flex; flex-direction: column; }
+    .badge-row { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.2rem; }
+    .badge {
+      font-size: 0.75rem; font-weight: 700; padding: 0.15rem 0.6rem; border-radius: 20px;
+      text-transform: uppercase; letter-spacing: 0.5px;
+      background: rgba(56, 189, 248, 0.15); color: var(--accent); border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+    .badge-class { background: rgba(16, 185, 129, 0.15); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.3); }
+    h1 { font-size: 1.35rem; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 0.5rem; }
+    .header-actions { display: flex; align-items: center; gap: 0.6rem; }
+
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
+      padding: 0.45rem 0.9rem; font-size: 0.9rem; font-weight: 600; border-radius: 8px;
+      border: 1px solid transparent; cursor: pointer; transition: all 0.2s ease; text-decoration: none; user-select: none;
+    }
+    .btn-primary { background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); color: #fff; }
+    .btn-primary:hover { transform: translateY(-1px); }
+    .btn-outline { background: rgba(30, 41, 59, 0.6); color: var(--text-primary); border-color: var(--border); }
+    .btn-outline:hover { background: var(--bg-card); border-color: var(--accent); color: var(--accent); }
+    .btn-success { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: #fff; }
+
+    .mode-nav { display: flex; gap: 0.5rem; overflow-x: auto; padding-bottom: 0.2rem; }
+    .mode-tab {
+      padding: 0.55rem 1.1rem; background: var(--bg-panel); border: 1px solid var(--border);
+      border-radius: 8px; color: var(--text-secondary); font-weight: 600; font-size: 0.92rem;
+      cursor: pointer; display: flex; align-items: center; gap: 0.5rem; white-space: nowrap; transition: all 0.2s;
+    }
+    .mode-tab:hover { color: var(--text-primary); background: var(--bg-card); }
+    .mode-tab.active {
+      color: #fff; background: linear-gradient(135deg, rgba(56, 189, 248, 0.2) 0%, rgba(2, 132, 199, 0.25) 100%);
+      border-color: var(--accent); box-shadow: 0 0 12px var(--accent-glow);
+    }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    .sim-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+    @media (min-width: 1024px) { .sim-grid { grid-template-columns: 1.25fr 0.75fr; } }
+
+    .panel { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25); }
+    .panel-header { background: var(--bg-card); padding: 0.65rem 1rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; font-weight: 700; font-size: 0.95rem; }
+    .panel-body { padding: 1rem; display: flex; flex-direction: column; gap: 1rem; }
+
+    .canvas-container {
+      position: relative; background: var(--circuit-bg); border-radius: 8px; border: 1px solid var(--border);
+      overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      min-height: 380px; flex: 1 1 auto;
+    }
+    canvas#opticsCanvas { width: 100%; height: 100%; min-height: 380px; display: block; }
+
+    .canvas-hud {
+      position: absolute; top: 10px; left: 10px; background: rgba(9, 14, 26, 0.88);
+      border: 1px solid var(--border); border-radius: 8px; padding: 0.5rem 0.8rem; font-size: 0.85rem;
+      backdrop-filter: blur(8px); pointer-events: none;
+    }
+    .hud-row { display: flex; justify-content: space-between; gap: 1rem; margin-bottom: 0.2rem; }
+    .hud-row:last-child { margin-bottom: 0; }
+    .hud-label { color: var(--text-secondary); }
+    .hud-val { font-weight: 700; color: var(--accent); }
+
+    .control-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 0.9rem; display: flex; flex-direction: column; gap: 0.75rem; }
+    .control-card-title { font-size: 0.92rem; font-weight: 700; color: #fff; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 0.4rem; }
+    .control-group { display: flex; flex-direction: column; gap: 0.35rem; }
+    .control-label-row { display: flex; justify-content: space-between; font-size: 0.88rem; }
+    .control-label { color: var(--text-secondary); font-weight: 600; }
+    .control-val { font-weight: 700; color: var(--accent); font-family: monospace; }
+
+    input[type="range"] { -webkit-appearance: none; width: 100%; height: 6px; background: var(--bg-subtle); border-radius: 4px; outline: none; cursor: pointer; }
+    input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: var(--accent); cursor: pointer; box-shadow: 0 0 8px var(--accent-glow); }
+
+    .output-box { background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 10px; padding: 1rem; display: flex; flex-direction: column; gap: 0.65rem; }
+    .output-title { font-size: 0.88rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--accent); font-weight: 700; display: flex; align-items: center; gap: 0.4rem; }
+    .output-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+    .output-metric { background: rgba(0,0,0,0.25); padding: 0.6rem; border-radius: 6px; border: 1px solid rgba(255,255,255,0.06); }
+    .metric-lbl { font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 0.2rem; }
+    .metric-val { font-size: 1.15rem; font-weight: 700; color: #fff; font-family: monospace; }
+
+    .step-banner { background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 8px; padding: 0.65rem 0.9rem; font-size: 0.88rem; color: #e0f2fe; display: flex; align-items: flex-start; gap: 0.5rem; line-height: 1.4; }
+
+    .table-card, .theory-wrap { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; display: flex; flex-direction: column; gap: 1rem; }
+    .table-scroll { overflow-x: auto; }
+    table.obs-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; text-align: center; }
+    table.obs-table th { background: var(--bg-card); color: var(--accent); padding: 0.65rem 0.5rem; border: 1px solid var(--border); font-weight: 700; white-space: nowrap; }
+    table.obs-table td { padding: 0.55rem 0.5rem; border: 1px solid var(--border); color: var(--text-primary); white-space: nowrap; }
+    table.obs-table tbody tr:hover { background: rgba(56, 189, 248, 0.05); }
+
+    .theory-section { display: flex; flex-direction: column; gap: 0.6rem; }
+    .theory-heading { font-size: 1.15rem; font-weight: 700; color: var(--accent); display: flex; align-items: center; gap: 0.5rem; border-bottom: 1px solid var(--border); padding-bottom: 0.4rem; }
+    .formula-callout { background: var(--bg-card); border-left: 4px solid var(--accent); padding: 0.9rem 1.2rem; border-radius: 0 8px 8px 0; font-size: 1rem; overflow-x: auto; }
+
+    .quiz-container { display: flex; flex-direction: column; gap: 1rem; }
+    .quiz-item { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; }
+    .quiz-q { font-weight: 700; color: #fff; margin-bottom: 0.6rem; }
+    .quiz-options { display: flex; flex-direction: column; gap: 0.4rem; }
+    .quiz-opt { padding: 0.5rem 0.8rem; border-radius: 6px; background: var(--bg-subtle); border: 1px solid var(--border); cursor: pointer; font-size: 0.9rem; transition: all 0.2s; }
+    .quiz-opt:hover { border-color: var(--accent); background: rgba(56, 189, 248, 0.15); }
+    .quiz-opt.correct { background: rgba(16, 185, 129, 0.2) !important; border-color: var(--success) !important; color: #6ee7b7 !important; }
+    .quiz-opt.wrong { background: rgba(239, 68, 68, 0.2) !important; border-color: var(--danger) !important; color: #fca5a5 !important; }
+
+    footer { text-align: center; color: var(--text-secondary); font-size: 0.85rem; padding: 1rem 0; border-top: 1px solid var(--border); margin-top: 1rem; }
+    footer a { color: var(--accent); text-decoration: none; }
+  </style>
+</head>
+<body>
+  <div class="app-wrapper" id="appWrapper">
+    
+    <!-- Header -->
+    <header>
+      <div class="header-left">
+        <a href="index.html" class="btn btn-outline" title="Return to Physics Lab Catalog"><span>←</span> Hub</a>
+        <div class="header-brand">
+          <div class="badge-row">
+            <span class="badge">National Model Schools • Physics Lab</span>
+            <span class="badge badge-class">Class XII • Exp 19</span>
+          </div>
+          <h1><span>🔍</span> Focal Length of Concave Lens (Auxiliary Convex Lens)</h1>
+        </div>
+      </div>
+      <div class="header-actions">
+        <a href="manuals.html#exp19" class="btn btn-outline" title="View Practical Manual"><span>📖</span> Manual</a>
+        <button class="btn btn-outline" id="btnSoundToggle" title="Toggle audio effects"><span id="soundIcon">🔊</span> Audio</button>
+        <button class="btn btn-primary" id="btnFullscreenToggle" title="Toggle fullscreen view"><span>⛶</span> Fullscreen</button>
+      </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="mode-nav">
+      <button class="mode-tab active" data-tab="tab-sim"><span>🔬</span> Optical Bench Simulator</button>
+      <button class="mode-tab" data-tab="tab-table"><span>📊</span> Observation Table &amp; Calculations</button>
+      <button class="mode-tab" data-tab="tab-theory"><span>📘</span> Theory, Formula &amp; Viva Voce</button>
+    </nav>
+
+    <!-- TAB 1: Simulator -->
+    <div class="tab-content active" id="tab-sim">
+      <div class="sim-grid">
+        
+        <!-- Left: Canvas Area -->
+        <div class="panel">
+          <div class="panel-header">
+            <span>📐 Optical Bench: Auxiliary Convex Lens &amp; Concave Lens Combination</span>
+            <button class="btn btn-outline" style="font-size:0.8rem; padding:0.25rem 0.6rem;" onclick="resetBench()">↺ Reset Bench</button>
+          </div>
+          <div class="panel-body">
+            <div class="step-banner" id="guideStepBanner">
+              <span>💡</span>
+              <div id="guideStepText">
+                <strong>Experiment Step:</strong> In Stage 1, convex lens $L_1$ forms image $I_1$ at $60\text{ cm}$. In Stage 2, concave lens $L_2$ is placed between $L_1$ and $I_1$. Adjust the image needle to coincide with the shifted divergent image $I_2$ (zero parallax).
+              </div>
+            </div>
+
+            <div class="canvas-container">
+              <canvas id="opticsCanvas"></canvas>
+              
+              <div class="canvas-hud">
+                <div class="hud-row"><span class="hud-label">Concave Lens Pos $L_2$:</span><span class="hud-val" id="hudL2">48.0 cm</span></div>
+                <div class="hud-row"><span class="hud-label">Virtual Obj Dist $u = I_1 - L_2$:</span><span class="hud-val" id="hudU">12.0 cm</span></div>
+                <div class="hud-row"><span class="hud-label">Image Needle Pos $I_2$:</span><span class="hud-val" id="hudI2">72.0 cm</span></div>
+                <div class="hud-row"><span class="hud-label">Real Image Dist $v = I_2 - L_2$:</span><span class="hud-val" id="hudV">24.0 cm</span></div>
+                <div class="hud-row"><span class="hud-label">Parallax Status:</span><span class="hud-val" id="hudParallax" style="color:#10b981;">ZERO PARALLAX ✓</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Controls & Metrics -->
+        <div class="panel">
+          <div class="panel-header">
+            <span>⚙️ Optical Controls &amp; Focal Length Calculation</span>
+            <button class="btn btn-success" style="font-size:0.8rem; padding:0.25rem 0.6rem;" onclick="autoCoincide()">⚡ Auto Coincide</button>
+          </div>
+          <div class="panel-body">
+            
+            <div class="control-card">
+              <div class="control-card-title">
+                <span>1. Bench Upright Positions</span>
+                <span style="font-size:0.75rem; color:var(--text-secondary);">Bench 0 to 100 cm</span>
+              </div>
+              
+              <div class="control-group">
+                <div class="control-label-row">
+                  <span class="control-label">Concave Lens Upright $L_2$:</span>
+                  <span class="control-val" id="valL2">48.0 cm</span>
+                </div>
+                <input type="range" id="sliderL2" min="40" max="54" step="0.5" value="48" oninput="onL2Change(this.value)" />
+              </div>
+
+              <div class="control-group">
+                <div class="control-label-row">
+                  <span class="control-label">Image Needle Upright $I_2$:</span>
+                  <span class="control-val" id="valI2">72.0 cm</span>
+                </div>
+                <input type="range" id="sliderI2" min="50" max="95" step="0.5" value="72" oninput="onI2Change(this.value)" />
+                <div style="display:flex; justify-content:space-between; margin-top:0.2rem;">
+                  <button class="btn btn-outline" style="padding:0.2rem 0.5rem; font-size:0.78rem;" onclick="adjustI2(-0.5)">◀ -0.5 cm</button>
+                  <button class="btn btn-outline" style="padding:0.2rem 0.5rem; font-size:0.78rem;" onclick="adjustI2(0.5)">+0.5 cm ▶</button>
+                </div>
+              </div>
+
+              <div class="control-group">
+                <div class="control-label-row">
+                  <span class="control-label">Observer Eye Lateral Shift:</span>
+                  <span class="control-val" id="valEye">Center</span>
+                </div>
+                <input type="range" id="sliderEye" min="-25" max="25" step="1" value="0" oninput="onEyeChange(this.value)" />
+              </div>
+            </div>
+
+            <!-- Optical Calculations Box -->
+            <div class="output-box">
+              <div class="output-title"><span>📊</span> Concave Lens Results</div>
+              <div class="output-grid">
+                <div class="output-metric">
+                  <div class="metric-lbl">Virtual Object $u$ ($I_1 - L_2$)</div>
+                  <div class="metric-val" id="calcU">+12.00 cm</div>
+                </div>
+                <div class="output-metric">
+                  <div class="metric-lbl">Real Image $v$ ($I_2 - L_2$)</div>
+                  <div class="metric-val" id="calcV">+24.00 cm</div>
+                </div>
+                <div class="output-metric" style="grid-column: span 2; border-color: rgba(56,189,248,0.4);">
+                  <div class="metric-lbl">Focal Length $f = \frac{u \cdot v}{u - v}$</div>
+                  <div class="metric-val" id="calcF" style="color:var(--accent); font-size:1.35rem;">-24.00 cm</div>
+                </div>
+              </div>
+            </div>
+
+            <button class="btn btn-primary" onclick="recordObservation()" style="width:100%; padding:0.65rem;">
+              <span>📝</span> Record to Observation Table
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- TAB 2: Observation Table -->
+    <div class="tab-content" id="tab-table">
+      <div class="table-card">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <h2 style="font-size:1.15rem; color:#fff; display:flex; align-items:center; gap:0.5rem;">
+            <span>📋</span> Observation Table: Focal Length of Concave Lens
+          </h2>
+          <div style="display:flex; gap:0.5rem;">
+            <button class="btn btn-outline" onclick="exportCSV()"><span>💾</span> Export CSV</button>
+            <button class="btn btn-outline" onclick="clearTable()"><span>🗑️</span> Clear Table</button>
+          </div>
+        </div>
+
+        <div class="table-scroll">
+          <table class="obs-table">
+            <thead>
+              <tr>
+                <th>Obs #</th>
+                <th>$L_1$ Pos (cm)</th>
+                <th>$I_1$ Pos (cm)</th>
+                <th>$L_2$ Pos (cm)</th>
+                <th>$I_2$ Pos (cm)</th>
+                <th>$u = I_1 - L_2$ (cm)</th>
+                <th>$v = I_2 - L_2$ (cm)</th>
+                <th>$f = \frac{uv}{u-v}$ (cm)</th>
+                <th>Parallax Check</th>
+              </tr>
+            </thead>
+            <tbody id="obsTableBody">
+              <tr>
+                <td colspan="9" style="color:var(--text-secondary); padding:1rem;">No observations logged yet. Adjust needles and click "Record to Observation Table".</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="output-box" style="margin-top:0.5rem;">
+          <div class="output-title"><span>📈</span> Experimental Mean Result</div>
+          <div style="display:flex; justify-content:space-around; align-items:center; flex-wrap:wrap; gap:1rem;">
+            <div>
+              <span style="color:var(--text-secondary); font-size:0.9rem;">Mean Focal Length $f$: </span>
+              <span id="meanF" style="font-weight:700; color:var(--accent); font-size:1.3rem;">-- cm</span>
+            </div>
+            <div>
+              <span style="color:var(--text-secondary); font-size:0.9rem;">Lens Power $P = 100/f$: </span>
+              <span id="meanPower" style="font-weight:700; color:#fff; font-size:1.3rem;">-- D</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: Theory & Viva Voce -->
+    <div class="tab-content" id="tab-theory">
+      <div class="theory-wrap">
+        <div class="theory-section">
+          <div class="theory-heading"><span>🎯</span> Aim of the Experiment</div>
+          <p>To find the focal length of a concave lens, using an auxiliary convex lens.</p>
+        </div>
+
+        <div class="theory-section">
+          <div class="theory-heading"><span>📐</span> Working Formula &amp; Sign Convention</div>
+          <div class="formula-callout">
+            $$\frac{1}{f} = \frac{1}{v} - \frac{1}{u} \implies f = \frac{u \cdot v}{u - v}$$
+            <p style="margin-top:0.5rem; font-size:0.92rem; color:var(--text-secondary);">
+              Here, $I_1$ serves as a <em>virtual object</em> for the concave lens $L_2$. Since $I_1$ lies to the right of $L_2$, $u$ is positive (+). The diverging rays from $L_2$ form a real image at $I_2$, which also lies to the right of $L_2$, hence $v$ is positive (+). Since $v > u$, the denominator $(u - v) < 0$, yielding a negative focal length $f < 0$.
+            </p>
+          </div>
+        </div>
+
+        <div class="theory-section">
+          <div class="theory-heading"><span>🔬</span> Step-by-Step Procedure</div>
+          <ol style="margin-left:1.5rem; line-height:1.7; color:var(--text-primary); font-size:0.95rem;">
+            <li>Mount the auxiliary convex lens $L_1$ and object needle $O$ on an optical bench.</li>
+            <li>Locate the real inverted image $I_1$ by moving an image needle until parallax is removed. Note the position of $I_1$.</li>
+            <li>Place the given concave lens $L_2$ between $L_1$ and $I_1$. The image shifts farther away to $I_2$ due to divergence.</li>
+            <li>Move the image needle to the new position $I_2$ and remove parallax between the needle and the image.</li>
+            <li>Measure $u = I_1 - L_2$ and $v = I_2 - L_2$. Calculate $f = \frac{u \cdot v}{u - v}$. Repeat for 3-5 different positions of $L_2$.</li>
+          </ol>
+        </div>
+
+        <div class="theory-section">
+          <div class="theory-heading"><span>❓</span> Viva Voce Interactive Quiz</div>
+          <div class="quiz-container" id="quizContainer"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      <p>Physics Virtual Laboratory • Senior Secondary Practical Simulations</p>
+      <p style="margin-top:0.25rem;">Developed by <a href="https://github.com/mazhar-in" target="_blank" rel="noopener">Syed Mazhar Ali</a> • National Model Schools</p>
+    </footer>
+
+  </div>
+
+  <script>
+    // Audio synthesizer
+    let audioCtx = null;
+    let audioEnabled = true;
+
+    function playTone(freq, duration = 0.04, type = 'sine') {
+      if (!audioEnabled) return;
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.06, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch(e) {}
+    }
+
+    // Physical Constants
+    const F_CONVEX = 20.0;    // Auxiliary convex lens focal length (cm)
+    const POS_O = 20.0;       // Object needle at 20 cm
+    const POS_L1 = 50.0;      // Convex lens at 50 cm -> u_convex = 30 cm -> v_convex = 60 cm (Pos I1 = 110 cm relative to bench, but let's scale to 0-100 cm bench)
+    // Scale on bench:
+    // O = 10 cm, L1 = 30 cm (u1 = 20 cm) -> with f1 = 15 cm: 1/v = 1/15 - 1/20 = 1/60 -> v1 = 60 cm -> I1 = 90 cm.
+    // Let's use clean bench coordinates:
+    const BENCH_O = 10.0;
+    const BENCH_L1 = 30.0;
+    const BENCH_I1 = 60.0;    // Image without concave lens sits at 60 cm (u1 = 20cm, f1 = 12cm -> v1 = 30cm -> 30+30 = 60cm)
+    const ACTUAL_CONCAVE_F = -24.0; // True focal length of concave lens is -24.0 cm
+
+    // State Variables
+    let currentL2 = 48.0;      // Pos of concave lens (u = 60 - 48 = 12 cm)
+    let currentI2 = 72.0;      // Theoretical v = (12 * -24)/(12 - (-24)) = -288 / 36 -> lens formula: 1/v - 1/u = 1/f => 1/v = 1/f + 1/u = -1/24 + 1/12 = 1/24 => v = +24 cm. Pos I2 = 48 + 24 = 72 cm!
+    let eyeShift = 0;          // mm
+    let observations = [];
+
+    let canvas, ctx;
+
+    function showToast(message, type = 'success') {
+      let toast = document.getElementById('labToast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'labToast';
+        toast.style.cssText = 'position:fixed; bottom:24px; right:24px; z-index:99999; padding:0.65rem 1.1rem; border-radius:8px; font-size:0.9rem; font-weight:600; box-shadow:0 8px 24px rgba(0,0,0,0.4); display:flex; align-items:center; gap:0.5rem; transition:all 0.3s ease; pointer-events:none; opacity:0; transform:translateY(10px);';
+        document.body.appendChild(toast);
+      }
+      if (type === 'error') {
+        toast.style.background = 'linear-gradient(135deg, #ef4444 0%, #b91c1c 100%)';
+        toast.style.color = '#fff';
+        toast.style.border = '1px solid #f87171';
+      } else {
+        toast.style.background = 'linear-gradient(135deg, #10b981 0%, #047857 100%)';
+        toast.style.color = '#fff';
+        toast.style.border = '1px solid #34d399';
+      }
+      toast.innerHTML = (type === 'error' ? '⚠️ ' : '✓ ') + message;
+      toast.style.opacity = '1';
+      toast.style.transform = 'translateY(0)';
+      clearTimeout(toast._timer);
+      toast._timer = setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(10px)';
+      }, 2400);
+    }
+
+    function initKaTeX() {
+      if (window.renderMathInElement) {
+        renderMathInElement(document.body, {
+          delimiters: [
+            {left: '$$', right: '$$', display: true},
+            {left: '$', right: '$', display: false}
+          ],
+          throwOnError: false
+        });
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      canvas = document.getElementById('opticsCanvas');
+      ctx = canvas.getContext('2d');
+      resizeCanvas();
+      window.addEventListener('resize', resizeCanvas);
+
+      const tabs = document.querySelectorAll('.mode-tab');
+      tabs.forEach(tab => {
+        tab.addEventListener('click', (e) => {
+          e.preventDefault();
+          tabs.forEach(t => t.classList.remove('active'));
+          document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+          tab.classList.add('active');
+          const targetId = tab.dataset.tab;
+          document.getElementById(targetId).classList.add('active');
+          if (targetId === 'tab-sim') resizeCanvas();
+          if (window.renderMathInElement) initKaTeX();
+        });
+      });
+
+      document.getElementById('btnSoundToggle').addEventListener('click', () => {
+        audioEnabled = !audioEnabled;
+        document.getElementById('soundIcon').textContent = audioEnabled ? '🔊' : '🔇';
+      });
+
+      document.getElementById('btnFullscreenToggle').addEventListener('click', toggleFullscreen);
+      document.addEventListener('fullscreenchange', updateFullscreenState);
+      document.addEventListener('webkitfullscreenchange', updateFullscreenState);
+
+      buildQuiz();
+      updatePhysics();
+      setTimeout(initKaTeX, 300);
+    });
+
+    function updateFullscreenState() {
+      const isFS = !!(document.fullscreenElement || document.webkitFullscreenElement);
+      const wrapper = document.getElementById('appWrapper');
+      const btn = document.getElementById('btnFullscreenToggle');
+
+      if (isFS) {
+        document.body.classList.add('is-fullscreen');
+        if (wrapper) wrapper.classList.add('is-fullscreen');
+        if (btn) btn.innerHTML = '<span>⛶</span> Exit Fullscreen';
+      } else {
+        document.body.classList.remove('is-fullscreen');
+        if (wrapper) wrapper.classList.remove('is-fullscreen');
+        if (btn) btn.innerHTML = '<span>⛶</span> Fullscreen';
+      }
+
+      resizeCanvas();
+      setTimeout(resizeCanvas, 50);
+      setTimeout(resizeCanvas, 150);
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+        if (document.documentElement.requestFullscreen) {
+          document.documentElement.requestFullscreen().catch(() => {});
+        } else if (document.documentElement.webkitRequestFullscreen) {
+          document.documentElement.webkitRequestFullscreen();
+        }
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen().catch(() => {});
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+        }
+      }
+    }
+
+    function resizeCanvas() {
+      if (!canvas || !canvas.parentElement) return;
+      const rect = canvas.parentElement.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      const isFS = document.body.classList.contains('is-fullscreen') || !!(document.fullscreenElement || document.webkitFullscreenElement);
+
+      const w = rect.width;
+      const h = isFS ? Math.max(240, rect.height) : Math.max(380, rect.height || 380);
+
+      canvas.width = w * dpr;
+      canvas.height = h * dpr;
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.scale(dpr, dpr);
+      renderCanvas();
+    }
+
+    function onL2Change(val) {
+      currentL2 = parseFloat(val);
+      document.getElementById('valL2').textContent = currentL2.toFixed(1) + ' cm';
+      playTone(320 + currentL2 * 4, 0.015);
+      updatePhysics();
+    }
+
+    function onI2Change(val) {
+      currentI2 = parseFloat(val);
+      document.getElementById('valI2').textContent = currentI2.toFixed(1) + ' cm';
+      playTone(380 + currentI2 * 3, 0.015);
+      updatePhysics();
+    }
+
+    function adjustI2(delta) {
+      let nextI = Math.min(95, Math.max(50, currentI2 + delta));
+      document.getElementById('sliderI2').value = nextI;
+      onI2Change(nextI);
+    }
+
+    function onEyeChange(val) {
+      eyeShift = parseInt(val, 10);
+      const text = eyeShift === 0 ? 'Center' : (eyeShift > 0 ? `+${eyeShift} mm Right` : `${eyeShift} mm Left`);
+      document.getElementById('valEye').textContent = text;
+      renderCanvas();
+    }
+
+    function autoCoincide() {
+      const u = BENCH_I1 - currentL2;
+      // 1/v = 1/f + 1/u
+      const invV = (1 / ACTUAL_CONCAVE_F) + (1 / u);
+      const vReal = 1 / invV;
+      const posI2Real = currentL2 + vReal;
+      currentI2 = Math.round(posI2Real * 10) / 10;
+      document.getElementById('sliderI2').value = currentI2;
+      document.getElementById('valI2').textContent = currentI2.toFixed(1) + ' cm';
+      playTone(680, 0.1, 'triangle');
+      showToast(`Coincided image needle to I₂ = ${currentI2.toFixed(1)} cm (Zero Parallax)!`);
+      updatePhysics();
+    }
+
+    function resetBench() {
+      currentL2 = 48.0;
+      currentI2 = 72.0;
+      eyeShift = 0;
+      document.getElementById('sliderL2').value = 48.0;
+      document.getElementById('sliderI2').value = 72.0;
+      document.getElementById('sliderEye').value = 0;
+      document.getElementById('valL2').textContent = '48.0 cm';
+      document.getElementById('valI2').textContent = '72.0 cm';
+      document.getElementById('valEye').textContent = 'Center';
+      updatePhysics();
+    }
+
+    function updatePhysics() {
+      const u = BENCH_I1 - currentL2; // virtual object distance
+      const vMeas = currentI2 - currentL2; // measured image distance
+
+      // Theoretical v
+      const invVTh = (1 / ACTUAL_CONCAVE_F) + (1 / u);
+      const vTheoretical = 1 / invVTh;
+      const expectedI2 = currentL2 + vTheoretical;
+
+      // Experimental f
+      // 1/f = 1/v - 1/u => f = (u * v) / (u - v)
+      let fCalc = (u * vMeas) / (u - vMeas);
+
+      const parallaxDiff = Math.abs(currentI2 - expectedI2);
+      const isZeroParallax = parallaxDiff <= 0.4;
+
+      document.getElementById('hudL2').textContent = currentL2.toFixed(1) + ' cm';
+      document.getElementById('hudU').textContent = '+' + u.toFixed(1) + ' cm';
+      document.getElementById('hudI2').textContent = currentI2.toFixed(1) + ' cm';
+      document.getElementById('hudV').textContent = '+' + vMeas.toFixed(1) + ' cm';
+
+      const pElem = document.getElementById('hudParallax');
+      if (isZeroParallax) {
+        pElem.textContent = 'ZERO PARALLAX ✓';
+        pElem.style.color = '#10b981';
+      } else {
+        pElem.textContent = `ΔI₂ = ${parallaxDiff.toFixed(1)} cm`;
+        pElem.style.color = '#f59e0b';
+      }
+
+      document.getElementById('calcU').textContent = `+${u.toFixed(2)} cm`;
+      document.getElementById('calcV').textContent = `+${vMeas.toFixed(2)} cm`;
+      document.getElementById('calcF').textContent = `${fCalc.toFixed(2)} cm`;
+
+      renderCanvas();
+    }
+
+    function renderCanvas() {
+      if (!ctx || !canvas) return;
+      const w = canvas.width / (window.devicePixelRatio || 1);
+      const h = canvas.height / (window.devicePixelRatio || 1);
+
+      ctx.clearRect(0, 0, w, h);
+
+      const axisY = h * 0.52;
+      const benchStart = 40;
+      const benchEnd = w - 40;
+      const benchLen = benchEnd - benchStart;
+
+      // Coordinate converter: bench cm (0 to 100) -> canvas x
+      function benchToX(cm) {
+        return benchStart + (cm / 100) * benchLen;
+      }
+
+      // Draw Optical Bench Bed
+      ctx.fillStyle = '#1e293b';
+      ctx.fillRect(benchStart, axisY + 46, benchLen, 14);
+      ctx.fillStyle = '#334155';
+      ctx.fillRect(benchStart, axisY + 44, benchLen, 2);
+
+      // Metric Graduations
+      ctx.fillStyle = '#64748b';
+      ctx.font = '9px monospace';
+      ctx.textAlign = 'center';
+      for (let cm = 0; cm <= 100; cm += 10) {
+        const bx = benchToX(cm);
+        ctx.fillRect(bx, axisY + 44, 1, 8);
+        ctx.fillText(cm, bx, axisY + 68);
+      }
+
+      // Principal Optical Axis
+      ctx.strokeStyle = 'rgba(148, 163, 184, 0.35)';
+      ctx.lineWidth = 1;
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.moveTo(10, axisY);
+      ctx.lineTo(w - 10, axisY);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      const xO = benchToX(BENCH_O);
+      const xL1 = benchToX(BENCH_L1);
+      const xI1 = benchToX(BENCH_I1);
+      const xL2 = benchToX(currentL2);
+      const xI2 = benchToX(currentI2);
+
+      // 1. Auxiliary Convex Lens (L1 at 30 cm)
+      drawConvexLens(xL1, axisY, 70, '#38bdf8', 'Convex Lens L₁ (30 cm)');
+
+      // 2. Concave Lens (L2 at slider position)
+      drawConcaveLens(xL2, axisY, 66, '#a855f7', `Concave Lens L₂ (${currentL2.toFixed(1)} cm)`);
+
+      // 3. Object Needle (O at 10 cm)
+      drawNeedle(xO, axisY, 40, '#f59e0b', true, 'Object Needle O (10 cm)');
+
+      // 4. Ghost Virtual Image (I1 at 60 cm - where rays would have met)
+      drawDashedNeedle(xI1, axisY, 32, '#94a3b8', false, 'Virtual Obj I₁ (60 cm)');
+
+      // Calculate true image pos
+      const u = BENCH_I1 - currentL2;
+      const invVTh = (1 / ACTUAL_CONCAVE_F) + (1 / u);
+      const vTheoretical = 1 / invVTh;
+      const xRealI2 = benchToX(currentL2 + vTheoretical);
+
+      // 5. Real Inverted Image formed by combination at xRealI2
+      const apparentImageX = xRealI2 + (eyeShift * 1.8);
+      drawInvertedRealImage(apparentImageX, axisY, 34, '#38bdf8', 'Image I₂');
+
+      // 6. Physical Image Needle (I2)
+      const apparentNeedleX = xI2 - (eyeShift * 0.4);
+      drawNeedle(apparentNeedleX, axisY, 40, '#ef4444', false, `Image Needle I₂ (${currentI2.toFixed(1)} cm)`);
+
+      // 7. Ray Tracing
+      drawRayPaths(xO, xL1, xL2, xI1, xRealI2, axisY);
+
+      // 8. Parallax Guide
+      const parallaxDiff = Math.abs(currentI2 - (currentL2 + vTheoretical));
+      if (parallaxDiff > 0.4 && Math.abs(eyeShift) > 0) {
+        ctx.strokeStyle = '#f59e0b';
+        ctx.lineWidth = 1.5;
+        ctx.setLineDash([3, 3]);
+        ctx.beginPath();
+        ctx.moveTo(apparentNeedleX, axisY + 40);
+        ctx.lineTo(apparentImageX, axisY + 34);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillStyle = '#f59e0b';
+        ctx.font = '10px sans-serif';
+        ctx.fillText('Relative Parallax Shift', (apparentNeedleX + apparentImageX) / 2, axisY + 48);
+      }
+    }
+
+    function drawRayPaths(xO, xL1, xL2, xI1, xI2, axisY) {
+      const objTipY = axisY - 40;
+      const i1TipY = axisY + 32;
+      const i2TipY = axisY + 34;
+
+      ctx.lineWidth = 1.5;
+
+      // Incident ray from O to L1
+      ctx.strokeStyle = 'rgba(56, 189, 248, 0.75)';
+      ctx.beginPath();
+      ctx.moveTo(xO, objTipY);
+      ctx.lineTo(xL1, axisY - 24);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(xO, objTipY);
+      ctx.lineTo(xL1, axisY + 20);
+      ctx.stroke();
+
+      // Between L1 and L2 (converging towards I1)
+      const ray1AtL2Y = axisY - 24 + ((axisY + 32) - (axisY - 24)) * ((xL2 - xL1) / (xI1 - xL1));
+      const ray2AtL2Y = axisY + 20 + ((axisY + 32) - (axisY + 20)) * ((xL2 - xL1) / (xI1 - xL1));
+
+      ctx.strokeStyle = 'rgba(56, 189, 248, 0.75)';
+      ctx.beginPath();
+      ctx.moveTo(xL1, axisY - 24);
+      ctx.lineTo(xL2, ray1AtL2Y);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(xL1, axisY + 20);
+      ctx.lineTo(xL2, ray2AtL2Y);
+      ctx.stroke();
+
+      // Virtual extension towards I1 (dashed)
+      ctx.strokeStyle = 'rgba(148, 163, 184, 0.4)';
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.moveTo(xL2, ray1AtL2Y);
+      ctx.lineTo(xI1, i1TipY);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(xL2, ray2AtL2Y);
+      ctx.lineTo(xI1, i1TipY);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Diverged rays from L2 focusing to real image I2
+      ctx.strokeStyle = 'rgba(168, 85, 247, 0.85)';
+      ctx.beginPath();
+      ctx.moveTo(xL2, ray1AtL2Y);
+      ctx.lineTo(xI2, i2TipY);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(xL2, ray2AtL2Y);
+      ctx.lineTo(xI2, i2TipY);
+      ctx.stroke();
+    }
+
+    function drawConvexLens(x, y, height, color, label) {
+      ctx.save();
+      ctx.fillStyle = 'rgba(56, 189, 248, 0.18)';
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2.5;
+
+      ctx.beginPath();
+      ctx.moveTo(x, y - height / 2);
+      ctx.quadraticCurveTo(x + 10, y, x, y + height / 2);
+      ctx.quadraticCurveTo(x - 10, y, x, y - height / 2);
+      ctx.fill();
+      ctx.stroke();
+
+      // Lens stand
+      ctx.strokeStyle = '#475569';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(x, y + height / 2);
+      ctx.lineTo(x, y + 44);
+      ctx.stroke();
+
+      ctx.fillStyle = color;
+      ctx.font = '10px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(label, x, y - height / 2 - 8);
+      ctx.restore();
+    }
+
+    function drawConcaveLens(x, y, height, color, label) {
+      ctx.save();
+      ctx.fillStyle = 'rgba(168, 85, 247, 0.18)';
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2.5;
+
+      const halfW = 8;
+      ctx.beginPath();
+      ctx.moveTo(x - halfW, y - height / 2);
+      ctx.lineTo(x + halfW, y - height / 2);
+      ctx.quadraticCurveTo(x + 2, y, x + halfW, y + height / 2);
+      ctx.lineTo(x - halfW, y + height / 2);
+      ctx.quadraticCurveTo(x - 2, y, x - halfW, y - height / 2);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      // Lens stand
+      ctx.strokeStyle = '#475569';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(x, y + height / 2);
+      ctx.lineTo(x, y + 44);
+      ctx.stroke();
+
+      ctx.fillStyle = color;
+      ctx.font = '10px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(label, x, y - height / 2 - 8);
+      ctx.restore();
+    }
+
+    function drawNeedle(x, axisY, tipH, color, isUpright, label) {
+      ctx.save();
+      const tipY = isUpright ? (axisY - tipH) : (axisY + tipH);
+
+      // Upright mount
+      ctx.strokeStyle = '#64748b';
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.moveTo(x, axisY + 44);
+      ctx.lineTo(x, axisY + 12);
+      ctx.stroke();
+
+      // Needle pin
+      ctx.strokeStyle = color;
+      ctx.fillStyle = color;
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.moveTo(x, axisY + 12);
+      ctx.lineTo(x, tipY);
+      ctx.stroke();
+
+      // Sharp tip cone
+      ctx.beginPath();
+      ctx.moveTo(x - 3.5, tipY + (isUpright ? 7 : -7));
+      ctx.lineTo(x + 3.5, tipY + (isUpright ? 7 : -7));
+      ctx.lineTo(x, tipY);
+      ctx.fill();
+
+      ctx.fillStyle = color;
+      ctx.font = '10px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(label, x, isUpright ? (tipY - 8) : (tipY + 16));
+      ctx.restore();
+    }
+
+    function drawDashedNeedle(x, axisY, tipH, color, isUpright, label) {
+      ctx.save();
+      const tipY = isUpright ? (axisY - tipH) : (axisY + tipH);
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([3, 3]);
+      ctx.beginPath();
+      ctx.moveTo(x, axisY);
+      ctx.lineTo(x, tipY);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      ctx.fillStyle = color;
+      ctx.font = '9px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(label, x, tipY + 14);
+      ctx.restore();
+    }
+
+    function drawInvertedRealImage(x, axisY, tipH, color, label) {
+      ctx.save();
+      const tipY = axisY + tipH;
+      ctx.strokeStyle = color;
+      ctx.fillStyle = color;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(x, axisY);
+      ctx.lineTo(x, tipY);
+      ctx.stroke();
+
+      // Inverted tip
+      ctx.beginPath();
+      ctx.moveTo(x - 3.5, tipY - 6);
+      ctx.lineTo(x + 3.5, tipY - 6);
+      ctx.lineTo(x, tipY);
+      ctx.fill();
+
+      ctx.fillStyle = color;
+      ctx.font = '10px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(label, x, tipY + 14);
+      ctx.restore();
+    }
+
+    // Observation Table Recording (Async Toast)
+    function recordObservation() {
+      const u = BENCH_I1 - currentL2;
+      const vMeas = currentI2 - currentL2;
+      let fCalc = (u * vMeas) / (u - vMeas);
+
+      const invVTh = (1 / ACTUAL_CONCAVE_F) + (1 / u);
+      const vTheoretical = 1 / invVTh;
+      const expectedI2 = currentL2 + vTheoretical;
+      const isZeroParallax = Math.abs(currentI2 - expectedI2) <= 0.4;
+
+      const obs = {
+        sno: observations.length + 1,
+        l1: BENCH_L1.toFixed(1),
+        i1: BENCH_I1.toFixed(1),
+        l2: currentL2.toFixed(1),
+        i2: currentI2.toFixed(1),
+        u: u.toFixed(1),
+        v: vMeas.toFixed(1),
+        f: fCalc.toFixed(2),
+        status: isZeroParallax ? "Zero Parallax ✓" : "Parallax Present"
+      };
+
+      observations.push(obs);
+      renderTable();
+      playTone(850, 0.1, 'sine');
+      showToast(`Recorded Observation #${obs.sno}: u = ${obs.u} cm, v = ${obs.v} cm, f = ${obs.f} cm`);
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById('obsTableBody');
+      tbody.innerHTML = '';
+
+      if (observations.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="9" style="color:var(--text-secondary); padding:1rem;">No observations logged yet. Adjust needles and click "Record to Observation Table".</td></tr>';
+        document.getElementById('meanF').textContent = '-- cm';
+        document.getElementById('meanPower').textContent = '-- D';
+        return;
+      }
+
+      let sumF = 0;
+      observations.forEach(o => {
+        sumF += parseFloat(o.f);
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${o.sno}</td>
+          <td>${o.l1}</td>
+          <td>${o.i1}</td>
+          <td>${o.l2}</td>
+          <td>${o.i2}</td>
+          <td>+${o.u}</td>
+          <td>+${o.v}</td>
+          <td style="color:var(--accent); font-weight:700;">${o.f}</td>
+          <td style="color:${o.status.includes('✓') ? '#10b981' : '#f59e0b'}; font-weight:700;">${o.status}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      const avgF = (sumF / observations.length).toFixed(2);
+      const avgP = (100 / avgF).toFixed(2);
+      document.getElementById('meanF').textContent = `${avgF} cm`;
+      document.getElementById('meanPower').textContent = `${avgP} D`;
+    }
+
+    function clearTable() {
+      if (confirm('Clear all recorded observations?')) {
+        observations = [];
+        renderTable();
+      }
+    }
+
+    function exportCSV() {
+      if (observations.length === 0) {
+        showToast('No observation data to export!', 'error');
+        return;
+      }
+      let csv = "S.No.,L1 Pos (cm),I1 Pos (cm),L2 Pos (cm),I2 Pos (cm),u (cm),v (cm),f (cm),Parallax Status\n";
+      observations.forEach(o => {
+        csv += `${o.sno},${o.l1},${o.i1},${o.l2},${o.i2},${o.u},${o.v},${o.f},${o.status}\n`;
+      });
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `concave_lens_focal_length_${Date.now()}.csv`;
+      a.click();
+    }
+
+    // Quiz Questions
+    const quizData = [
+      {
+        q: "Why can the focal length of a concave lens NOT be found directly using a distant object?",
+        options: [
+          "Because a concave lens forms a virtual image which cannot be caught on a screen",
+          "Because a concave lens absorbs light rays completely",
+          "Because light rays cannot pass through a concave lens",
+          "Because a concave lens has an infinite focal length"
+        ],
+        answer: 0
+      },
+      {
+        q: "What role does the real image $I_1$ (formed by the convex lens) play for the concave lens?",
+        options: [
+          "It acts as a real light source",
+          "It acts as a virtual object lying behind the concave lens",
+          "It acts as a reflector",
+          "It acts as the final image"
+        ],
+        answer: 1
+      },
+      {
+        q: "Why must the focal length of the auxiliary convex lens be shorter than the concave lens's power?",
+        options: [
+          "To ensure the combination is overall converging and produces a real image",
+          "To make the combination diverging",
+          "To prevent dispersion of white light",
+          "To produce an erect virtual image"
+        ],
+        answer: 0
+      },
+      {
+        q: "In the lens formula $f = \\frac{u \\cdot v}{u - v}$ for this experiment, why is $f$ negative?",
+        options: [
+          "Because both $u$ and $v$ are negative",
+          "Because $u$ and $v$ are positive, but $v > u$, making $(u - v) < 0$",
+          "Because of chromatic aberration",
+          "Because the image is inverted"
+        ],
+        answer: 1
+      }
+    ];
+
+    function buildQuiz() {
+      const container = document.getElementById('quizContainer');
+      container.innerHTML = '';
+      quizData.forEach((item, qIdx) => {
+        const div = document.createElement('div');
+        div.className = 'quiz-item';
+        div.innerHTML = `
+          <div class="quiz-q">${qIdx + 1}. ${item.q}</div>
+          <div class="quiz-options">
+            ${item.options.map((opt, oIdx) => `
+              <div class="quiz-opt" onclick="checkAnswer(${qIdx}, ${oIdx}, this)">${opt}</div>
+            `).join('')}
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function checkAnswer(qIdx, selectedIdx, elem) {
+      const parent = elem.parentElement;
+      if (parent.dataset.answered) return;
+      parent.dataset.answered = "true";
+
+      const correctIdx = quizData[qIdx].answer;
+      const options = parent.querySelectorAll('.quiz-opt');
+
+      if (selectedIdx === correctIdx) {
+        elem.classList.add('correct');
+        playTone(587, 0.1, 'triangle');
+        showToast('Correct answer! Well done.', 'success');
+      } else {
+        elem.classList.add('wrong');
+        options[correctIdx].classList.add('correct');
+        playTone(220, 0.15, 'sawtooth');
+        showToast('Incorrect. The correct option is highlighted in green.', 'error');
+      }
+    }
+  </script>
+</body>
+</html>

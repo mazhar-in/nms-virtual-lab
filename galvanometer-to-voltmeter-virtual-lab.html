@@ -1,0 +1,1897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
+  <title>Conversion of Galvanometer into Voltmeter | National Model Schools Physics Virtual Lab</title>
+  <meta name="description" content="Convert a moving coil galvanometer into a voltmeter of desired range by computing the required series multiplier resistance and verifying readings against a standard voltmeter via potential divider circuit." />
+
+  <!-- KaTeX for Math Formula Rendering -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous" onload="initKaTeX()"></script>
+
+  <style>
+    :root {
+      --bg-main: #090e1a;
+      --bg-panel: #111a2e;
+      --bg-card: #1a253f;
+      --bg-subtle: #243456;
+      --accent: #38bdf8;
+      --accent-hover: #0284c7;
+      --accent-glow: rgba(56, 189, 248, 0.25);
+      --copper: #f59e0b;
+      --copper-light: #fbbf24;
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --border: #334155;
+      --border-light: #475569;
+      --success: #10b981;
+      --success-glow: rgba(16, 185, 129, 0.25);
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --circuit-bg: #060a17;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-primary);
+      line-height: 1.5;
+      padding: 0.75rem;
+      overflow-x: hidden;
+      font-size: 1rem;
+    }
+
+    @media (min-width: 768px) {
+      body {
+        padding: 1.2rem;
+      }
+    }
+
+    .app-wrapper {
+      max-width: 1440px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+      min-height: 100vh;
+    }
+
+    /* True Non-Scrollable Fullscreen Mode */
+    :fullscreen,
+    :-webkit-full-screen {
+      overflow: hidden !important;
+      background-color: var(--bg-main) !important;
+    }
+
+    body.is-fullscreen {
+      overflow: hidden !important;
+      padding: 0.35rem 0.55rem !important;
+      height: 100vh !important;
+      width: 100vw !important;
+    }
+
+    :fullscreen .app-wrapper,
+    :-webkit-full-screen .app-wrapper,
+    body.is-fullscreen .app-wrapper,
+    .app-wrapper.is-fullscreen {
+      width: 100vw !important;
+      height: 100vh !important;
+      max-width: 100vw !important;
+      max-height: 100vh !important;
+      padding: 0.35rem 0.55rem !important;
+      margin: 0 !important;
+      background-color: var(--bg-main);
+      overflow: hidden !important;
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 0.35rem !important;
+      box-sizing: border-box;
+    }
+
+    .app-wrapper.is-fullscreen header {
+      padding: 0.35rem 0.75rem !important;
+      gap: 0.4rem !important;
+      flex-shrink: 0 !important;
+      border-radius: 8px;
+    }
+
+    .app-wrapper.is-fullscreen h1 {
+      font-size: 1.12rem !important;
+    }
+
+    .app-wrapper.is-fullscreen .badge {
+      font-size: 0.68rem !important;
+      padding: 0.15rem 0.45rem !important;
+    }
+
+    .app-wrapper.is-fullscreen .btn {
+      min-height: 32px !important;
+      padding: 0.25rem 0.6rem !important;
+      font-size: 0.84rem !important;
+    }
+
+    .app-wrapper.is-fullscreen .mode-nav {
+      padding: 0.2rem 0.4rem !important;
+      gap: 0.35rem !important;
+      flex-shrink: 0 !important;
+    }
+
+    .app-wrapper.is-fullscreen .mode-tab {
+      padding: 0.35rem 0.75rem !important;
+      font-size: 0.85rem !important;
+    }
+
+    .app-wrapper.is-fullscreen .tab-content.active {
+      flex: 1 1 auto !important;
+      min-height: 0 !important;
+      height: calc(100vh - 110px) !important;
+      max-height: calc(100vh - 110px) !important;
+      overflow: hidden !important;
+      display: flex !important;
+      flex-direction: column !important;
+    }
+
+    .app-wrapper.is-fullscreen .sim-grid {
+      display: grid !important;
+      grid-template-columns: 1.25fr 0.75fr !important;
+      gap: 0.5rem !important;
+      flex: 1 1 auto !important;
+      height: 100% !important;
+      min-height: 0 !important;
+      overflow: hidden !important;
+    }
+
+    .app-wrapper.is-fullscreen .panel {
+      height: 100% !important;
+      min-height: 0 !important;
+      display: flex !important;
+      flex-direction: column !important;
+      overflow: hidden !important;
+    }
+
+    .app-wrapper.is-fullscreen .panel-header {
+      padding: 0.4rem 0.75rem !important;
+      font-size: 0.88rem !important;
+      flex-shrink: 0 !important;
+    }
+
+    .app-wrapper.is-fullscreen .panel-body {
+      padding: 0.55rem !important;
+      gap: 0.5rem !important;
+      flex: 1 1 auto !important;
+      min-height: 0 !important;
+      overflow-y: auto !important;
+    }
+
+    .app-wrapper.is-fullscreen .step-banner {
+      padding: 0.35rem 0.65rem !important;
+      font-size: 0.8rem !important;
+      flex-shrink: 0 !important;
+    }
+
+    .app-wrapper.is-fullscreen .canvas-container {
+      flex: 1 1 auto !important;
+      min-height: 0 !important;
+      height: 100% !important;
+      width: 100% !important;
+    }
+
+    .app-wrapper.is-fullscreen canvas#dualMeterCanvas {
+      height: 100% !important;
+      width: 100% !important;
+    }
+
+    .app-wrapper.is-fullscreen .control-card {
+      padding: 0.55rem 0.75rem !important;
+      gap: 0.4rem !important;
+    }
+
+    .app-wrapper.is-fullscreen .output-box {
+      padding: 0.55rem 0.75rem !important;
+      gap: 0.4rem !important;
+    }
+
+    .app-wrapper.is-fullscreen .output-metric {
+      padding: 0.4rem !important;
+    }
+
+    .app-wrapper.is-fullscreen .metric-val {
+      font-size: 1rem !important;
+    }
+
+    .app-wrapper.is-fullscreen .table-card,
+    .app-wrapper.is-fullscreen .graph-card,
+    .app-wrapper.is-fullscreen .theory-wrap {
+      flex: 1 1 auto !important;
+      min-height: 0 !important;
+      height: 100% !important;
+      overflow-y: auto !important;
+    }
+
+    body.is-fullscreen footer,
+    .app-wrapper.is-fullscreen footer {
+      display: none !important;
+    }
+
+    /* Header */
+    header {
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.8) 100%);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0.85rem 1.25rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .header-brand {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .badge-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.2rem;
+    }
+
+    .badge {
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.15rem 0.6rem;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--accent);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+
+    .badge-class {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--success);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    h1 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      padding: 0.45rem 0.9rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      user-select: none;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      color: #fff;
+      box-shadow: 0 2px 10px rgba(2, 132, 199, 0.3);
+    }
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%);
+      transform: translateY(-1px);
+    }
+
+    .btn-outline {
+      background: rgba(30, 41, 59, 0.6);
+      color: var(--text-primary);
+      border-color: var(--border);
+    }
+    .btn-outline:hover {
+      background: var(--bg-card);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .btn-success {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: #fff;
+    }
+    .btn-success:hover {
+      transform: translateY(-1px);
+    }
+
+    /* Mode Navigation */
+    .mode-nav {
+      display: flex;
+      gap: 0.5rem;
+      overflow-x: auto;
+      padding-bottom: 0.2rem;
+    }
+
+    .mode-tab {
+      padding: 0.55rem 1.1rem;
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text-secondary);
+      font-weight: 600;
+      font-size: 0.92rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+    .mode-tab:hover {
+      color: var(--text-primary);
+      background: var(--bg-card);
+    }
+    .mode-tab.active {
+      color: #fff;
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.2) 0%, rgba(2, 132, 199, 0.25) 100%);
+      border-color: var(--accent);
+      box-shadow: 0 0 12px var(--accent-glow);
+    }
+
+    /* Tab Contents */
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+
+    /* Layout Grids */
+    .sim-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    @media (min-width: 1024px) {
+      .sim-grid {
+        grid-template-columns: 1.25fr 0.75fr;
+      }
+    }
+
+    .panel {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    .panel-header {
+      background: var(--bg-card);
+      padding: 0.65rem 1rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    .panel-body {
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    /* Canvas Container */
+    .canvas-container {
+      position: relative;
+      background: var(--circuit-bg);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 380px;
+      flex: 1 1 auto;
+    }
+
+    canvas#dualMeterCanvas {
+      width: 100%;
+      height: 100%;
+      min-height: 380px;
+      display: block;
+    }
+
+    .canvas-hud {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: rgba(9, 14, 26, 0.88);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.5rem 0.8rem;
+      font-size: 0.85rem;
+      backdrop-filter: blur(8px);
+      pointer-events: none;
+    }
+
+    .hud-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 0.2rem;
+    }
+    .hud-row:last-child { margin-bottom: 0; }
+    .hud-label { color: var(--text-secondary); }
+    .hud-val { font-weight: 700; color: var(--accent); }
+
+    /* Control Cards */
+    .control-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.9rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .control-card-title {
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding-bottom: 0.4rem;
+    }
+
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .control-label-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.88rem;
+    }
+
+    .control-label {
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    .control-val {
+      font-weight: 700;
+      color: var(--accent);
+      font-family: monospace;
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 6px;
+      background: var(--bg-subtle);
+      border-radius: 4px;
+      outline: none;
+      cursor: pointer;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+      box-shadow: 0 0 8px var(--accent-glow);
+      transition: transform 0.1s;
+    }
+
+    .range-selector-row {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .range-pill {
+      flex: 1;
+      padding: 0.45rem;
+      border-radius: 6px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      text-align: center;
+      font-weight: 700;
+      font-size: 0.88rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .range-pill.active {
+      background: rgba(56, 189, 248, 0.2);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* Output Results Box */
+    .output-box {
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      border-radius: 10px;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+    }
+
+    .output-title {
+      font-size: 0.88rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--accent);
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .output-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+
+    .output-metric {
+      background: rgba(0,0,0,0.25);
+      padding: 0.6rem;
+      border-radius: 6px;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .metric-lbl {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.2rem;
+    }
+
+    .metric-val {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #fff;
+      font-family: monospace;
+    }
+
+    .step-banner {
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      border-radius: 8px;
+      padding: 0.65rem 0.9rem;
+      font-size: 0.88rem;
+      color: #e0f2fe;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      line-height: 1.4;
+    }
+
+    /* Table Styles */
+    .table-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .table-scroll {
+      overflow-x: auto;
+    }
+
+    table.obs-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      text-align: center;
+    }
+
+    table.obs-table th {
+      background: var(--bg-card);
+      color: var(--accent);
+      padding: 0.65rem 0.5rem;
+      border: 1px solid var(--border);
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    table.obs-table td {
+      padding: 0.55rem 0.5rem;
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      white-space: nowrap;
+    }
+
+    table.obs-table tbody tr:hover {
+      background: rgba(56, 189, 248, 0.05);
+    }
+
+    /* Graph Canvas */
+    .graph-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    canvas#graphCanvas {
+      width: 100%;
+      height: 380px;
+      background: var(--circuit-bg);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      display: block;
+    }
+
+    /* Theory Wrap */
+    .theory-wrap {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .theory-section {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .theory-heading {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.4rem;
+    }
+
+    .formula-callout {
+      background: var(--bg-card);
+      border-left: 4px solid var(--accent);
+      padding: 0.9rem 1.2rem;
+      border-radius: 0 8px 8px 0;
+      font-size: 1rem;
+      overflow-x: auto;
+    }
+
+    .quiz-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .quiz-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem;
+    }
+
+    .quiz-q {
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 0.6rem;
+    }
+
+    .quiz-options {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .quiz-opt {
+      padding: 0.5rem 0.8rem;
+      border-radius: 6px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+    .quiz-opt:hover {
+      border-color: var(--accent);
+      background: rgba(56, 189, 248, 0.15);
+    }
+    .quiz-opt.correct {
+      background: rgba(16, 185, 129, 0.2) !important;
+      border-color: var(--success) !important;
+      color: #6ee7b7 !important;
+    }
+    .quiz-opt.wrong {
+      background: rgba(239, 68, 68, 0.2) !important;
+      border-color: var(--danger) !important;
+      color: #fca5a5 !important;
+    }
+
+    footer {
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      padding: 1rem 0;
+      border-top: 1px solid var(--border);
+      margin-top: 1rem;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+  </style>
+</head>
+<body>
+  <div class="app-wrapper" id="appWrapper">
+    
+    <!-- Header -->
+    <header>
+      <div class="header-left">
+        <a href="index.html" class="btn btn-outline" title="Return to Physics Lab Catalog">
+          <span>←</span> Hub
+        </a>
+        <div class="header-brand">
+          <div class="badge-row">
+            <span class="badge">National Model Schools • Physics Lab</span>
+            <span class="badge badge-class">Class XII • Exp 15</span>
+          </div>
+          <h1><span>📟</span> Conversion of Galvanometer into Voltmeter</h1>
+        </div>
+      </div>
+      <div class="header-actions">
+        <a href="manuals.html#exp15" class="btn btn-outline" title="View Practical Manual">
+          <span>📖</span> Manual
+        </a>
+        <button class="btn btn-outline" id="btnSoundToggle" title="Toggle audio effects">
+          <span id="soundIcon">🔊</span> Audio
+        </button>
+        <button class="btn btn-primary" id="btnFullscreenToggle" title="Toggle fullscreen view">
+          <span>⛶</span> Fullscreen
+        </button>
+      </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="mode-nav">
+      <button class="mode-tab active" data-tab="tab-sim">
+        <span>🔬</span> Dual-Meter Calibration Workbench
+      </button>
+      <button class="mode-tab" data-tab="tab-table">
+        <span>📊</span> Observation Table &amp; Errors
+      </button>
+      <button class="mode-tab" data-tab="tab-graph">
+        <span>📈</span> Calibration Error Curve ($\Delta V$ vs $V$)
+      </button>
+      <button class="mode-tab" data-tab="tab-theory">
+        <span>📘</span> Calculation Formulae &amp; Viva Voce
+      </button>
+    </nav>
+
+    <!-- TAB 1: Dual-Meter Simulator -->
+    <div class="tab-content active" id="tab-sim">
+      <div class="sim-grid">
+        
+        <!-- Left: Canvas Area -->
+        <div class="panel">
+          <div class="panel-header">
+            <span>⚡ Dual Instrument Visual Comparison &amp; Potential Divider</span>
+            <button class="btn btn-outline" style="font-size:0.8rem; padding:0.25rem 0.6rem;" onclick="resetWorkbench()">
+              ↺ Reset Circuit
+            </button>
+          </div>
+          <div class="panel-body">
+            <div class="step-banner" id="guideStepBanner">
+              <span>💡</span>
+              <div id="guideStepText">
+                <strong>Experiment Protocol:</strong> Slide the potential divider jockey across the rheostat to vary voltage $V$. Compare the reading on the <em>Standard Master Voltmeter</em> ($V_{\text{std}}$) with the <em>Converted Galvanometer</em> ($V_{\text{calc}} = \theta \times \text{LC}$).
+              </div>
+            </div>
+
+            <div class="canvas-container">
+              <canvas id="dualMeterCanvas"></canvas>
+              
+              <div class="canvas-hud">
+                <div class="hud-row">
+                  <span class="hud-label">Desired Range:</span>
+                  <span class="hud-val" id="hudRange">0 to 3.0 V</span>
+                </div>
+                <div class="hud-row">
+                  <span class="hud-label">Multiplier Resistor $R$:</span>
+                  <span class="hud-val" id="hudMultiplier">4925 Ω</span>
+                </div>
+                <div class="hud-row">
+                  <span class="hud-label">Standard Voltmeter $V_1$:</span>
+                  <span class="hud-val" id="hudVstd">0.00 V</span>
+                </div>
+                <div class="hud-row">
+                  <span class="hud-label">Galv Deflection $\theta$:</span>
+                  <span class="hud-val" id="hudTheta">0.0 div</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Control Panel & Live Output -->
+        <div class="panel">
+          <div class="panel-header">
+            <span>🎛️ Multiplier Design &amp; Rheostat Controls</span>
+            <span style="font-size:0.8rem; color:var(--text-secondary);">$G = 75\ \Omega,\ k = 20\ \mu\text{A/div}$</span>
+          </div>
+          <div class="panel-body">
+            
+            <!-- Voltmeter Range Selector -->
+            <div class="control-card">
+              <div class="control-card-title">
+                <span>Select Target Voltmeter Range ($V_{\text{max}}$)</span>
+                <span class="control-val" id="valRangeTitle">3.0 V</span>
+              </div>
+              <div class="range-selector-row">
+                <div class="range-pill active" onclick="setVoltmeterRange(3.0, this)">0 – 3.0 V</div>
+                <div class="range-pill" onclick="setVoltmeterRange(5.0, this)">0 – 5.0 V</div>
+                <div class="range-pill" onclick="setVoltmeterRange(10.0, this)">0 – 10.0 V</div>
+              </div>
+            </div>
+
+            <!-- Rheostat Potential Divider Slider -->
+            <div class="control-card">
+              <div class="control-card-title">
+                <span>Potential Divider Rheostat Slider (Jockey)</span>
+                <span class="control-val" id="valJockey">0 %</span>
+              </div>
+              <div class="control-group">
+                <div class="control-label-row">
+                  <span class="control-label">Position across Rheostat ($0 - 100\%$)</span>
+                  <span style="font-size:0.8rem; color:var(--text-secondary);" id="valAppliedV">0.00 V Applied</span>
+                </div>
+                <input type="range" id="sliderJockey" min="0" max="100" step="1" value="0" oninput="onJockeyChange(this.value)" />
+              </div>
+              <div style="display:flex; gap:0.4rem; justify-content:space-between;">
+                <button class="btn btn-outline" style="font-size:0.78rem; padding:0.2rem 0.5rem;" onclick="adjustJockey(-10)">-10%</button>
+                <button class="btn btn-outline" style="font-size:0.78rem; padding:0.2rem 0.5rem;" onclick="adjustJockey(-1)">-1%</button>
+                <button class="btn btn-outline" style="font-size:0.78rem; padding:0.2rem 0.5rem;" onclick="adjustJockey(+1)">+1%</button>
+                <button class="btn btn-outline" style="font-size:0.78rem; padding:0.2rem 0.5rem;" onclick="adjustJockey(+10)">+10%</button>
+              </div>
+            </div>
+
+            <!-- Circuit Plug Key -->
+            <div class="control-card">
+              <div class="control-card-title">
+                <span>Battery Key ($K$)</span>
+                <span style="font-size:0.75rem; color:var(--text-secondary);">4.0V Supply</span>
+              </div>
+              <button class="btn btn-outline" id="btnKey" style="padding:0.6rem; font-weight:700;" onclick="toggleCircuitKey()">
+                <span id="keyText">🔑 Circuit Key: INSERT PLUG</span>
+              </button>
+            </div>
+
+            <!-- Live Readings & Comparison -->
+            <div class="output-box">
+              <div class="output-title">
+                <span>📐 Dual Reading &amp; Error Analysis</span>
+              </div>
+              <div class="output-grid">
+                <div class="output-metric">
+                  <div class="metric-lbl">Standard Voltmeter ($V_1$)</div>
+                  <div class="metric-val" id="valV1" style="color:#38bdf8;">0.00 V</div>
+                </div>
+                <div class="output-metric">
+                  <div class="metric-lbl">Converted Voltmeter ($V_2$)</div>
+                  <div class="metric-val" id="valV2" style="color:#f59e0b;">0.00 V</div>
+                </div>
+                <div class="output-metric">
+                  <div class="metric-lbl">Least Count (LC = $V/n$)</div>
+                  <div class="metric-val" id="valLC">0.100 V/div</div>
+                </div>
+                <div class="output-metric">
+                  <div class="metric-lbl">Discrepancy Error ($\Delta V = V_2 - V_1$)</div>
+                  <div class="metric-val" id="valError" style="color:#10b981;">0.00 V</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Action Button: Log Observation -->
+            <button class="btn btn-success" style="padding:0.75rem; font-size:0.95rem;" onclick="recordObservation()">
+              <span>📝</span> Record Verification Reading
+            </button>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- TAB 2: Observation Table -->
+    <div class="tab-content" id="tab-table">
+      <div class="table-card">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
+          <div>
+            <h2 style="font-size:1.15rem; color:#fff;">Verification Table: Galvanometer Converted into Voltmeter</h2>
+            <p style="font-size:0.85rem; color:var(--text-secondary);">Desired Range: $0 - V$, Scale Divisions $n = 30$, Series Multiplier $R = \frac{V}{I_g} - G$</p>
+          </div>
+          <div style="display:flex; gap:0.5rem;">
+            <button class="btn btn-outline" onclick="exportCSV()"><span>📥</span> Export CSV</button>
+            <button class="btn btn-outline" onclick="clearTable()"><span>🗑️</span> Clear Table</button>
+          </div>
+        </div>
+
+        <div class="table-scroll">
+          <table class="obs-table" id="observationTable">
+            <thead>
+              <tr>
+                <th>S.No.</th>
+                <th>Standard Voltmeter $V_1$ (V)</th>
+                <th>Galv Deflection $\theta$ (div)</th>
+                <th>Converted Voltmeter $V_2 = \theta \times \text{LC}$ (V)</th>
+                <th>Difference / Error $\Delta V = V_2 - V_1$ (V)</th>
+                <th>Remarks / Accuracy</th>
+              </tr>
+            </thead>
+            <tbody id="obsTableBody">
+              <!-- Dynamically populated rows -->
+            </tbody>
+          </table>
+        </div>
+
+        <div class="output-box" style="margin-top:0.5rem;">
+          <div class="output-title"><span>📊 Calibration Summary</span></div>
+          <div class="output-grid">
+            <div class="output-metric">
+              <div class="metric-lbl">Maximum Absolute Error ($|\Delta V|_{\text{max}}$)</div>
+              <div class="metric-val" id="maxError">-- V</div>
+            </div>
+            <div class="output-metric">
+              <div class="metric-lbl">Mean Calibration Error</div>
+              <div class="metric-val" id="meanError">-- V</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: Graph Plotter -->
+    <div class="tab-content" id="tab-graph">
+      <div class="graph-card">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
+          <div>
+            <h2 style="font-size:1.15rem; color:#fff;">Calibration Error Curve: $\Delta V$ vs $V_{\text{std}}$</h2>
+            <p style="font-size:0.85rem; color:var(--text-secondary);">Plotting discrepancy $\Delta V = (V_2 - V_1)$ against standard voltmeter reading $V_1$.</p>
+          </div>
+          <button class="btn btn-primary" onclick="renderGraph()"><span>🔄</span> Refresh Curve</button>
+        </div>
+
+        <canvas id="graphCanvas"></canvas>
+
+        <div class="step-banner">
+          <span>ℹ️</span>
+          <div>
+            The calibration error graph demonstrates instrument precision across the operating voltage range. In a well-constructed multiplier circuit, deviations are minor and lie within permissible laboratory limits ($\pm 0.02\text{ V}$).
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: Theory & Viva Voce -->
+    <div class="tab-content" id="tab-theory">
+      <div class="theory-wrap">
+        
+        <div class="theory-section">
+          <h2 class="theory-heading"><span>🎯</span> Aim of the Experiment</h2>
+          <p>To convert the given moving coil galvanometer (of known resistance $G$ and figure of merit $k$) into a voltmeter of desired range (say $0 - V$ volts) and to verify the same with a standard voltmeter.</p>
+        </div>
+
+        <div class="theory-section">
+          <h2 class="theory-heading"><span>📐</span> Design Formulae &amp; Mathematical Principles</h2>
+          <p>A galvanometer is a very sensitive current-detecting instrument. To convert it into a voltmeter measuring potential difference up to $V$ volts, a large multiplier resistance $R$ must be connected in <strong>series</strong> with the galvanometer coil.</p>
+          <div class="formula-callout">
+            $$I_g = n \cdot k$$
+          </div>
+          <p>Where $n$ is total scale divisions ($n = 30$) and $k$ is the figure of merit ($2.0 \times 10^{-5}\text{ A/div}$), yielding full-scale deflection current $I_g = 600\ \mu\text{A} = 0.0006\text{ A}$.</p>
+          <p>By Ohm's Law, when maximum voltage $V$ is applied across the combination:</p>
+          <div class="formula-callout">
+            $$V = I_g (R + G) \implies R = \frac{V}{I_g} - G$$
+          </div>
+          <p>For example, to design a $0 - 3.0\text{ V}$ voltmeter using $G = 75\ \Omega$:</p>
+          <div class="formula-callout">
+            $$R = \frac{3.0}{0.0006} - 75 = 5000 - 75 = 4925\ \Omega$$
+          </div>
+          <p>The least count of the converted voltmeter is:</p>
+          <div class="formula-callout">
+            $$\text{Least Count (LC)} = \frac{V}{n} = \frac{3.0}{30} = 0.1\text{ V/div}$$
+          </div>
+        </div>
+
+        <div class="theory-section">
+          <h2 class="theory-heading"><span>❓</span> Interactive Viva Voce Preparation</h2>
+          <div class="quiz-container" id="quizWrap">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      <p>Senior Secondary Physics Virtual Laboratory Suite • Architecture &amp; Simulation Design by <a href="https://github.com/mazhar-in" target="_blank">Syed Mazhar Ali</a></p>
+      <p style="margin-top:0.3rem; opacity:0.8;">Designed for CBSE, NCERT, and State Board Physics Curricula • National Model Schools</p>
+    </footer>
+
+  </div>
+
+  <script>
+    // Physics Constants
+    const G_RESISTANCE = 75.0; // Galvanometer coil resistance in Ohms
+    const FIGURE_OF_MERIT = 2.0e-5; // k = 20 uA/division
+    const SCALE_DIVS = 30; // n = 30 divisions
+    const FULL_SCALE_IG = SCALE_DIVS * FIGURE_OF_MERIT; // 0.0006 A = 600 uA
+
+    // Workbench State
+    let targetRange = 3.0; // Desired Voltmeter Range (3.0, 5.0, 10.0 V)
+    let multiplierR = (3.0 / FULL_SCALE_IG) - G_RESISTANCE; // 4925 Ohms
+    let isKeyClosed = true;
+    let jockeyPercent = 0; // 0 to 100%
+    let audioEnabled = true;
+
+    // Meters Needle State & Animation
+    let canvas, ctx;
+    let animId = null;
+    let targetVstd = 0;
+    let displayedVstd = 0;
+    let targetTheta = 0;
+    let displayedTheta = 0;
+
+    let observations = [];
+
+    // Audio API
+    let audioCtx = null;
+    function playTone(freq, duration = 0.04, type = 'sine') {
+      if (!audioEnabled) return;
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {}
+    }
+
+    function initKaTeX() {
+      if (window.renderMathInElement) {
+        renderMathInElement(document.body, {
+          delimiters: [
+            {left: '$$', right: '$$', display: true},
+            {left: '$', right: '$', display: false}
+          ],
+          throwOnError: false
+        });
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      canvas = document.getElementById('dualMeterCanvas');
+      ctx = canvas.getContext('2d');
+      resizeCanvas();
+      window.addEventListener('resize', resizeCanvas);
+
+      // Tabs Setup
+      const tabs = document.querySelectorAll('.mode-tab');
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          tabs.forEach(t => t.classList.remove('active'));
+          document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+          tab.classList.add('active');
+          const targetId = tab.dataset.tab;
+          document.getElementById(targetId).classList.add('active');
+          if (targetId === 'tab-sim') resizeCanvas();
+          if (targetId === 'tab-graph') renderGraph();
+          if (window.renderMathInElement) initKaTeX();
+        });
+      });
+
+      // Sound Toggle
+      document.getElementById('btnSoundToggle').addEventListener('click', () => {
+        audioEnabled = !audioEnabled;
+        document.getElementById('soundIcon').textContent = audioEnabled ? '🔊' : '🔇';
+      });
+
+      // Fullscreen Toggle
+      document.getElementById('btnFullscreenToggle').addEventListener('click', toggleFullscreen);
+      document.addEventListener('fullscreenchange', updateFullscreenState);
+      document.addEventListener('webkitfullscreenchange', updateFullscreenState);
+
+      setVoltmeterRange(3.0);
+      buildQuiz();
+      startAnimationLoop();
+      setTimeout(initKaTeX, 300);
+    });
+
+    function updateFullscreenState() {
+      const isFS = !!(document.fullscreenElement || document.webkitFullscreenElement);
+      const wrapper = document.getElementById('appWrapper');
+      const btn = document.getElementById('btnFullscreenToggle');
+
+      if (isFS) {
+        document.body.classList.add('is-fullscreen');
+        if (wrapper) wrapper.classList.add('is-fullscreen');
+        if (btn) btn.innerHTML = '<span>⛶</span> Exit Fullscreen';
+      } else {
+        document.body.classList.remove('is-fullscreen');
+        if (wrapper) wrapper.classList.remove('is-fullscreen');
+        if (btn) btn.innerHTML = '<span>⛶</span> Fullscreen';
+      }
+
+      resizeCanvas();
+      setTimeout(resizeCanvas, 50);
+      setTimeout(resizeCanvas, 150);
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+        if (document.documentElement.requestFullscreen) {
+          document.documentElement.requestFullscreen().catch(() => {});
+        } else if (document.documentElement.webkitRequestFullscreen) {
+          document.documentElement.webkitRequestFullscreen();
+        }
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen().catch(() => {});
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+        }
+      }
+    }
+
+    function resizeCanvas() {
+      if (!canvas || !canvas.parentElement) return;
+      const rect = canvas.parentElement.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      const isFS = document.body.classList.contains('is-fullscreen') || !!(document.fullscreenElement || document.webkitFullscreenElement);
+
+      const w = rect.width;
+      const h = isFS ? Math.max(240, rect.height) : Math.max(380, rect.height || 380);
+
+      canvas.width = w * dpr;
+      canvas.height = h * dpr;
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.scale(dpr, dpr);
+    }
+
+    function setVoltmeterRange(vMax, element) {
+      targetRange = vMax;
+      multiplierR = Math.round((targetRange / FULL_SCALE_IG) - G_RESISTANCE);
+
+      document.getElementById('valRangeTitle').textContent = targetRange.toFixed(1) + ' V';
+      document.getElementById('hudRange').textContent = `0 to ${targetRange.toFixed(1)} V`;
+      document.getElementById('hudMultiplier').textContent = `${multiplierR} Ω`;
+      document.getElementById('valLC').textContent = `${(targetRange / SCALE_DIVS).toFixed(3)} V/div`;
+
+      if (element) {
+        document.querySelectorAll('.range-pill').forEach(p => p.classList.remove('active'));
+        element.classList.add('active');
+      }
+
+      playTone(480, 0.08, 'triangle');
+      updatePhysics();
+    }
+
+    function toggleCircuitKey() {
+      isKeyClosed = !isKeyClosed;
+      const btn = document.getElementById('btnKey');
+      const text = document.getElementById('keyText');
+      if (isKeyClosed) {
+        btn.classList.remove('btn-outline');
+        btn.classList.add('btn-success');
+        text.textContent = '🔒 Circuit Key: PLUG INSERTED (ACTIVE)';
+        playTone(600, 0.08);
+      } else {
+        btn.classList.remove('btn-success');
+        btn.classList.add('btn-outline');
+        text.textContent = '🔑 Circuit Key: INSERT PLUG';
+        playTone(300, 0.08);
+      }
+      updatePhysics();
+    }
+
+    function onJockeyChange(val) {
+      jockeyPercent = parseFloat(val);
+      document.getElementById('valJockey').textContent = jockeyPercent + ' %';
+      playTone(200 + jockeyPercent * 5, 0.01);
+      updatePhysics();
+    }
+
+    function adjustJockey(delta) {
+      const slider = document.getElementById('sliderJockey');
+      let newVal = Math.min(100, Math.max(0, jockeyPercent + delta));
+      slider.value = newVal;
+      onJockeyChange(newVal);
+    }
+
+    function updatePhysics() {
+      if (!isKeyClosed) {
+        targetVstd = 0;
+        targetTheta = 0;
+        updateReadouts(0, 0, 0);
+        return;
+      }
+
+      // Potential divider supplies 0 to targetRange volts based on jockeyPercent
+      const vApplied = (jockeyPercent / 100) * targetRange;
+      targetVstd = vApplied;
+
+      // Realistic minor calibration difference (±0.015V max)
+      const minorDrift = (Math.sin(jockeyPercent * 0.15) * 0.012) * (targetRange / 3.0);
+      const vCalcExpected = Math.max(0, Math.min(targetRange, vApplied + minorDrift));
+
+      const lc = targetRange / SCALE_DIVS;
+      targetTheta = Math.max(0, Math.min(SCALE_DIVS, vCalcExpected / lc));
+
+      const vConverted = targetTheta * lc;
+      const error = vConverted - targetVstd;
+
+      updateReadouts(targetVstd, vConverted, error);
+    }
+
+    function updateReadouts(v1, v2, err) {
+      document.getElementById('hudVstd').textContent = v1.toFixed(2) + ' V';
+      document.getElementById('hudTheta').textContent = targetTheta.toFixed(1) + ' div';
+      document.getElementById('valAppliedV').textContent = v1.toFixed(2) + ' V Applied';
+      document.getElementById('valV1').textContent = v1.toFixed(2) + ' V';
+      document.getElementById('valV2').textContent = v2.toFixed(2) + ' V';
+      
+      const errElem = document.getElementById('valError');
+      errElem.textContent = (err >= 0 ? '+' : '') + err.toFixed(2) + ' V';
+      errElem.style.color = Math.abs(err) <= 0.02 ? 'var(--success)' : 'var(--warning)';
+    }
+
+    function resetWorkbench() {
+      isKeyClosed = true;
+      jockeyPercent = 0;
+      document.getElementById('sliderJockey').value = 0;
+      document.getElementById('valJockey').textContent = '0 %';
+      document.getElementById('btnKey').classList.remove('btn-outline');
+      document.getElementById('btnKey').classList.add('btn-success');
+      document.getElementById('keyText').textContent = '🔒 Circuit Key: PLUG INSERTED (ACTIVE)';
+      setVoltmeterRange(3.0);
+    }
+
+    // Animation Loop
+    function startAnimationLoop() {
+      let lastTime = performance.now();
+
+      function animate(now) {
+        const dt = Math.min(0.05, (now - lastTime) / 1000);
+        lastTime = now;
+
+        // Smooth damped needle tracking
+        displayedVstd += (targetVstd - displayedVstd) * Math.min(1, dt * 10);
+        displayedTheta += (targetTheta - displayedTheta) * Math.min(1, dt * 10);
+
+        renderCanvas();
+        animId = requestAnimationFrame(animate);
+      }
+
+      animId = requestAnimationFrame(animate);
+    }
+
+    // Canvas Rendering: Dual Meters & Rheostat
+    function renderCanvas() {
+      if (!ctx || !canvas) return;
+      const w = canvas.width / (window.devicePixelRatio || 1);
+      const h = canvas.height / (window.devicePixelRatio || 1);
+
+      ctx.clearRect(0, 0, w, h);
+
+      // Background Grid
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.03)';
+      ctx.lineWidth = 1;
+      for (let x = 0; x < w; x += 30) {
+        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
+      }
+      for (let y = 0; y < h; y += 30) {
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+      }
+
+      // 1. Draw Master Standard Voltmeter Dial (Left Center)
+      const dialRadius = Math.min(w * 0.18, h * 0.28, 95);
+      const leftMeterX = w * 0.28;
+      const rightMeterX = w * 0.72;
+      const metersY = Math.max(90, h * 0.36);
+
+      drawVoltmeterDial(leftMeterX, metersY, dialRadius, displayedVstd, targetRange);
+
+      // 2. Draw Converted Galvanometer Dial (Right Center)
+      drawConvertedGalvDial(rightMeterX, metersY, dialRadius, displayedTheta);
+
+      // 3. Draw Rheostat / Potential Divider Setup (Bottom)
+      const rheostatY = Math.min(h - 40, h * 0.82);
+      drawRheostatCircuit(w * 0.5, rheostatY, w * 0.7, jockeyPercent);
+    }
+
+    function drawVoltmeterDial(x, y, r, currentV, vMax) {
+      ctx.save();
+      ctx.translate(x, y);
+
+      // Outer bezel
+      ctx.beginPath();
+      ctx.arc(0, 0, r, 0, Math.PI * 2);
+      ctx.fillStyle = '#fffdf5';
+      ctx.fill();
+      ctx.lineWidth = 4;
+      ctx.strokeStyle = '#38bdf8';
+      ctx.stroke();
+
+      // Brass ring
+      ctx.strokeStyle = '#d97706';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.arc(0, 0, r - 3, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Scale markings: 0 to vMax
+      const maxSweep = 1.6; // total arc sweep radians (~90 deg)
+      const startAngle = -Math.PI / 2 - maxSweep / 2;
+
+      ctx.fillStyle = '#0f172a';
+      ctx.strokeStyle = '#0f172a';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+
+      const majorSteps = 5;
+      for (let i = 0; i <= majorSteps; i++) {
+        const fraction = i / majorSteps;
+        const angle = startAngle + fraction * maxSweep;
+        const vVal = (fraction * vMax).toFixed(1);
+
+        const r1 = r - 8;
+        const r2 = r1 - 10;
+        ctx.lineWidth = 1.8;
+        ctx.beginPath();
+        ctx.moveTo(Math.cos(angle) * r1, Math.sin(angle) * r1);
+        ctx.lineTo(Math.cos(angle) * r2, Math.sin(angle) * r2);
+        ctx.stroke();
+
+        const tx = Math.cos(angle) * (r2 - 8);
+        const ty = Math.sin(angle) * (r2 - 8);
+        ctx.font = 'bold 8px sans-serif';
+        ctx.fillText(vVal, tx, ty);
+      }
+
+      // Title & 'V' symbol
+      ctx.font = 'bold 15px sans-serif';
+      ctx.fillStyle = '#0284c7';
+      ctx.fillText('V', 0, 18);
+
+      ctx.font = '9px sans-serif';
+      ctx.fillStyle = '#64748b';
+      ctx.fillText('Standard DC Voltmeter', 0, 32);
+
+      // Needle
+      const needleAngle = startAngle + (Math.min(vMax, Math.max(0, currentV)) / vMax) * maxSweep;
+      ctx.save();
+      ctx.rotate(needleAngle + Math.PI / 2);
+      ctx.strokeStyle = '#0284c7';
+      ctx.lineWidth = 2.2;
+      ctx.beginPath();
+      ctx.moveTo(0, 8);
+      ctx.lineTo(0, -(r - 10));
+      ctx.stroke();
+
+      // Pivot
+      ctx.fillStyle = '#0f172a';
+      ctx.beginPath(); ctx.arc(0, 0, 4, 0, Math.PI * 2); ctx.fill();
+      ctx.restore();
+
+      ctx.restore();
+    }
+
+    function drawConvertedGalvDial(x, y, r, currentTheta) {
+      ctx.save();
+      ctx.translate(x, y);
+
+      // Outer bezel
+      ctx.beginPath();
+      ctx.arc(0, 0, r, 0, Math.PI * 2);
+      ctx.fillStyle = '#fffdf5';
+      ctx.fill();
+      ctx.lineWidth = 4;
+      ctx.strokeStyle = '#f59e0b';
+      ctx.stroke();
+
+      // Inner brass ring
+      ctx.strokeStyle = '#d97706';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.arc(0, 0, r - 3, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Scale markings: 0 to 30 divisions
+      const maxSweep = 1.6;
+      const startAngle = -Math.PI / 2 - maxSweep / 2;
+
+      ctx.fillStyle = '#0f172a';
+      ctx.strokeStyle = '#0f172a';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+
+      for (let div = 0; div <= 30; div += 5) {
+        const fraction = div / 30;
+        const angle = startAngle + fraction * maxSweep;
+        const isMajor = (div % 10 === 0);
+        const tickLen = isMajor ? 10 : 6;
+
+        const r1 = r - 8;
+        const r2 = r1 - tickLen;
+        ctx.lineWidth = isMajor ? 1.8 : 1.0;
+        ctx.beginPath();
+        ctx.moveTo(Math.cos(angle) * r1, Math.sin(angle) * r1);
+        ctx.lineTo(Math.cos(angle) * r2, Math.sin(angle) * r2);
+        ctx.stroke();
+
+        if (isMajor) {
+          const tx = Math.cos(angle) * (r2 - 8);
+          const ty = Math.sin(angle) * (r2 - 8);
+          ctx.font = 'bold 8px sans-serif';
+          ctx.fillText(div, tx, ty);
+        }
+      }
+
+      // Title & 'G + R' symbol
+      ctx.font = 'bold 13px sans-serif';
+      ctx.fillStyle = '#d97706';
+      ctx.fillText('G + R', 0, 18);
+
+      ctx.font = '9px sans-serif';
+      ctx.fillStyle = '#64748b';
+      ctx.fillText('Converted Voltmeter', 0, 32);
+
+      // Needle
+      const needleAngle = startAngle + (Math.min(30, Math.max(0, currentTheta)) / 30) * maxSweep;
+      ctx.save();
+      ctx.rotate(needleAngle + Math.PI / 2);
+      ctx.strokeStyle = '#dc2626';
+      ctx.lineWidth = 2.0;
+      ctx.beginPath();
+      ctx.moveTo(0, 8);
+      ctx.lineTo(0, -(r - 10));
+      ctx.stroke();
+
+      // Pivot
+      ctx.fillStyle = '#0f172a';
+      ctx.beginPath(); ctx.arc(0, 0, 4, 0, Math.PI * 2); ctx.fill();
+      ctx.restore();
+
+      ctx.restore();
+    }
+
+    function drawRheostatCircuit(centerX, centerY, width, percent) {
+      ctx.save();
+      ctx.translate(centerX, centerY);
+
+      const hw = width / 2;
+
+      // Rheostat Coil Body
+      ctx.fillStyle = '#1c1917';
+      ctx.strokeStyle = '#78350f';
+      ctx.lineWidth = 2;
+      ctx.fillRect(-hw, -12, width, 24);
+      ctx.strokeRect(-hw, -12, width, 24);
+
+      // Coil windings texture
+      ctx.strokeStyle = '#d97706';
+      ctx.lineWidth = 1;
+      for (let rx = -hw + 5; rx < hw - 5; rx += 6) {
+        ctx.beginPath();
+        ctx.moveTo(rx, -10);
+        ctx.lineTo(rx, 10);
+        ctx.stroke();
+      }
+
+      // Slider Jockey Position
+      const jockeyX = -hw + (percent / 100) * width;
+
+      // Jockey Rod & Contact Knob
+      ctx.fillStyle = '#38bdf8';
+      ctx.strokeStyle = '#0284c7';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(jockeyX - 8, -25);
+      ctx.lineTo(jockeyX + 8, -25);
+      ctx.lineTo(jockeyX, -12);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      // Metal slider bar on top
+      ctx.strokeStyle = '#94a3b8';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(-hw, -25);
+      ctx.lineTo(hw, -25);
+      ctx.stroke();
+
+      // Labels
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = 'bold 11px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Wire-Wound Rheostat Potential Divider (Slider Jockey)', 0, 26);
+
+      ctx.fillStyle = '#38bdf8';
+      ctx.font = '10px monospace';
+      ctx.fillText(`Slider: ${percent}% (Output: ${(percent * targetRange / 100).toFixed(2)} V)`, 0, 40);
+
+      ctx.restore();
+    }
+
+    // Observation Recording (Async Toast - No Modal Alert)
+    function showToast(message, type = 'success') {
+      let toast = document.getElementById('labToast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'labToast';
+        toast.style.cssText = 'position:fixed; bottom:24px; right:24px; z-index:99999; padding:0.65rem 1.1rem; border-radius:8px; font-size:0.9rem; font-weight:600; box-shadow:0 8px 24px rgba(0,0,0,0.4); display:flex; align-items:center; gap:0.5rem; transition:all 0.3s ease; pointer-events:none; opacity:0; transform:translateY(10px);';
+        document.body.appendChild(toast);
+      }
+      if (type === 'error') {
+        toast.style.background = 'linear-gradient(135deg, #ef4444 0%, #b91c1c 100%)';
+        toast.style.color = '#fff';
+        toast.style.border = '1px solid #f87171';
+      } else {
+        toast.style.background = 'linear-gradient(135deg, #10b981 0%, #047857 100%)';
+        toast.style.color = '#fff';
+        toast.style.border = '1px solid #34d399';
+      }
+      toast.innerHTML = (type === 'error' ? '⚠️ ' : '✓ ') + message;
+      toast.style.opacity = '1';
+      toast.style.transform = 'translateY(0)';
+      clearTimeout(toast._timer);
+      toast._timer = setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(10px)';
+      }, 2400);
+    }
+
+    function recordObservation() {
+      if (!isKeyClosed) {
+        showToast('Please insert the battery key to activate circuit!', 'error');
+        return;
+      }
+
+      const lc = targetRange / SCALE_DIVS;
+      const vCalc = displayedTheta * lc;
+      const error = vCalc - displayedVstd;
+
+      const obs = {
+        sno: observations.length + 1,
+        v1: displayedVstd.toFixed(2),
+        theta: displayedTheta.toFixed(1),
+        v2: vCalc.toFixed(2),
+        err: (error >= 0 ? '+' : '') + error.toFixed(2)
+      };
+
+      observations.push(obs);
+      renderTable();
+      playTone(850, 0.1, 'sine');
+      showToast(`Recorded Verification Reading #${obs.sno}: V_std = ${obs.v1} V, V_conv = ${obs.v2} V (Error: ${obs.err} V)`);
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById('obsTableBody');
+      tbody.innerHTML = '';
+
+      if (observations.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="color:var(--text-secondary); padding:1rem;">No verification readings logged yet. Slide the jockey and click "Record Verification Reading".</td></tr>';
+        document.getElementById('maxError').textContent = '-- V';
+        document.getElementById('meanError').textContent = '-- V';
+        return;
+      }
+
+      let maxAbsErr = 0;
+      let sumErr = 0;
+
+      observations.forEach(o => {
+        const errVal = parseFloat(o.err);
+        maxAbsErr = Math.max(maxAbsErr, Math.abs(errVal));
+        sumErr += errVal;
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${o.sno}</td>
+          <td style="color:#38bdf8; font-weight:700;">${o.v1}</td>
+          <td>${o.theta}</td>
+          <td style="color:#f59e0b; font-weight:700;">${o.v2}</td>
+          <td style="color:${Math.abs(errVal) <= 0.02 ? '#10b981' : '#f59e0b'}; font-weight:700;">${o.err}</td>
+          <td><span style="font-size:0.8rem; color:#10b981;">✓ Verified within ±0.02V</span></td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      document.getElementById('maxError').textContent = `${maxAbsErr.toFixed(2)} V`;
+      document.getElementById('meanError').textContent = `${(sumErr / observations.length).toFixed(3)} V`;
+    }
+
+    function clearTable() {
+      if (confirm('Clear all recorded verification entries?')) {
+        observations = [];
+        renderTable();
+      }
+    }
+
+    function exportCSV() {
+      if (observations.length === 0) {
+        alert('No verification data available to export.');
+        return;
+      }
+      let csv = "S.No.,Standard Voltmeter V1 (V),Galvanometer Deflection Theta (div),Converted Voltmeter V2 (V),Error Delta V (V)\n";
+      observations.forEach(o => {
+        csv += `${o.sno},${o.v1},${o.theta},${o.v2},${o.err}\n`;
+      });
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `galvanometer_to_voltmeter_${Date.now()}.csv`;
+      a.click();
+    }
+
+    // Graph Plotter: Delta V vs V_std
+    function renderGraph() {
+      const gCanvas = document.getElementById('graphCanvas');
+      if (!gCanvas) return;
+      const gCtx = gCanvas.getContext('2d');
+      const rect = gCanvas.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      gCanvas.width = rect.width * dpr;
+      gCanvas.height = 380 * dpr;
+      gCtx.scale(dpr, dpr);
+
+      const w = rect.width;
+      const h = 380;
+
+      gCtx.clearRect(0, 0, w, h);
+
+      const padL = 60;
+      const padR = 40;
+      const padB = 50;
+      const padT = 30;
+
+      const plotW = w - padL - padR;
+      const plotH = h - padB - padT;
+      const midY = padT + plotH / 2; // Zero Error line in middle
+
+      // Grid
+      gCtx.strokeStyle = 'rgba(255,255,255,0.06)';
+      gCtx.lineWidth = 1;
+      for (let gx = padL; gx <= w - padR; gx += plotW / 10) {
+        gCtx.beginPath(); gCtx.moveTo(gx, padT); gCtx.lineTo(gx, h - padB); gCtx.stroke();
+      }
+      for (let gy = padT; gy <= h - padB; gy += plotH / 6) {
+        gCtx.beginPath(); gCtx.moveTo(padL, gy); gCtx.lineTo(w - padR, gy); gCtx.stroke();
+      }
+
+      // Zero Error Horizontal Axis
+      gCtx.strokeStyle = '#94a3b8';
+      gCtx.lineWidth = 1.5;
+      gCtx.beginPath();
+      gCtx.moveTo(padL, midY);
+      gCtx.lineTo(w - padR, midY);
+      gCtx.stroke();
+
+      // Left Vertical Y Axis
+      gCtx.beginPath();
+      gCtx.moveTo(padL, padT);
+      gCtx.lineTo(padL, h - padB);
+      gCtx.stroke();
+
+      // Axis Labels
+      gCtx.fillStyle = '#38bdf8';
+      gCtx.font = '12px sans-serif';
+      gCtx.textAlign = 'center';
+      gCtx.fillText(`Standard Voltmeter Reading V₁ (0 to ${targetRange.toFixed(1)} V)`, padL + plotW / 2, h - 15);
+
+      gCtx.save();
+      gCtx.translate(20, midY);
+      gCtx.rotate(-Math.PI / 2);
+      gCtx.fillText('Error ΔV = (V₂ - V₁) (V)', 0, 0);
+      gCtx.restore();
+
+      // Max scale for error axis: ±0.05 V
+      const maxErrY = 0.05;
+
+      // Plot observed points or sample calibration curve
+      const pts = observations.length >= 2 ? observations.map(o => ({
+        v: parseFloat(o.v1),
+        err: parseFloat(o.err)
+      })) : [
+        { v: 0.5, err: 0.008 },
+        { v: 1.0, err: -0.011 },
+        { v: 1.5, err: 0.015 },
+        { v: 2.0, err: -0.006 },
+        { v: 2.5, err: 0.010 }
+      ];
+
+      // Draw Error Connecting Line
+      gCtx.strokeStyle = '#f59e0b';
+      gCtx.lineWidth = 2;
+      gCtx.beginPath();
+
+      pts.forEach((p, idx) => {
+        const px = padL + (p.v / targetRange) * plotW;
+        const py = midY - (p.err / maxErrY) * (plotH / 2);
+        if (idx === 0) gCtx.moveTo(px, py);
+        else gCtx.lineTo(px, py);
+      });
+      gCtx.stroke();
+
+      // Draw Points
+      pts.forEach(p => {
+        const px = padL + (p.v / targetRange) * plotW;
+        const py = midY - (p.err / maxErrY) * (plotH / 2);
+        gCtx.fillStyle = '#38bdf8';
+        gCtx.beginPath();
+        gCtx.arc(px, py, 5, 0, Math.PI * 2);
+        gCtx.fill();
+        gCtx.strokeStyle = '#fff';
+        gCtx.lineWidth = 1.5;
+        gCtx.stroke();
+      });
+
+      // Axis bounds text
+      gCtx.fillStyle = '#94a3b8';
+      gCtx.font = '10px monospace';
+      gCtx.textAlign = 'right';
+      gCtx.fillText('+0.05 V', padL - 8, padT + 8);
+      gCtx.fillText(' 0.00 V', padL - 8, midY + 4);
+      gCtx.fillText('-0.05 V', padL - 8, h - padB);
+    }
+
+    // Viva Voce Interactive Questions
+    const vivaData = [
+      {
+        q: "Why is a high resistance (R) connected in series with the galvanometer to convert it into a voltmeter?",
+        options: [
+          "To increase the overall resistance of the circuit so that it draws negligible current from the main circuit.",
+          "To decrease the total resistance so current can flow freely.",
+          "To convert the magnetic field of the moving coil into an electrostatic field.",
+          "To prevent thermoelectric voltages in the connecting leads."
+        ],
+        answer: 0,
+        explanation: "A voltmeter is connected in parallel across the component whose voltage is measured. Connecting a very large series resistance R makes the voltmeter resistance very large (R + G), ensuring it draws negligible current without disturbing the circuit."
+      },
+      {
+        q: "What is the resistance of an ideal voltmeter?",
+        options: [
+          "Zero",
+          "Infinite",
+          "Equal to the internal resistance of the battery",
+          "75 Ohms"
+        ],
+        answer: 1,
+        explanation: "An ideal voltmeter has infinite resistance so that it draws zero current when connected in parallel across circuit elements."
+      },
+      {
+        q: "How does the required series resistance (R) change if the desired voltmeter range (V) is doubled?",
+        options: [
+          "It is approximately doubled (since R = V/Ig - G and V/Ig >> G).",
+          "It is reduced to half.",
+          "It remains completely unchanged.",
+          "It increases by a factor of 4."
+        ],
+        answer: 0,
+        explanation: "Since R = V/Ig - G and the term V/Ig is typically thousands of ohms (much larger than G), doubling V approximately doubles the required multiplier resistance R."
+      },
+      {
+        q: "Why is a potential divider arrangement (rheostat) used during the verification of the converted voltmeter?",
+        options: [
+          "To allow continuous, smooth variation of potential difference from 0 to maximum test voltage.",
+          "To protect the power supply from short circuit.",
+          "To convert DC voltage into alternating current.",
+          "To eliminate internal resistance of the galvanometer."
+        ],
+        answer: 0,
+        explanation: "The potential divider configuration provides a continuously variable potential difference from 0V up to the supply voltage, allowing verification across every division of the scale."
+      }
+    ];
+
+    function buildQuiz() {
+      const container = document.getElementById('quizWrap');
+      if (!container) return;
+      container.innerHTML = '';
+
+      vivaData.forEach((item, idx) => {
+        const qDiv = document.createElement('div');
+        qDiv.className = 'quiz-item';
+        qDiv.innerHTML = `
+          <div class="quiz-q">Q${idx + 1}. ${item.q}</div>
+          <div class="quiz-options">
+            ${item.options.map((opt, oIdx) => `
+              <div class="quiz-opt" onclick="checkQuizAnswer(this, ${idx}, ${oIdx})">
+                ${String.fromCharCode(65 + oIdx)}. ${opt}
+              </div>
+            `).join('')}
+          </div>
+          <div class="quiz-expl" style="display:none; margin-top:0.6rem; font-size:0.85rem; color:#94a3b8; border-top:1px solid var(--border); padding-top:0.4rem;">
+            <strong>Explanation:</strong> ${item.explanation}
+          </div>
+        `;
+        container.appendChild(qDiv);
+      });
+    }
+
+    function checkQuizAnswer(element, qIdx, optIdx) {
+      const parent = element.parentElement;
+      const opts = parent.querySelectorAll('.quiz-opt');
+      opts.forEach(o => o.style.pointerEvents = 'none');
+
+      const correct = vivaData[qIdx].answer;
+      if (optIdx === correct) {
+        element.classList.add('correct');
+        playTone(700, 0.1, 'sine');
+      } else {
+        element.classList.add('wrong');
+        opts[correct].classList.add('correct');
+        playTone(250, 0.15, 'sawtooth');
+      }
+
+      const expl = parent.parentElement.querySelector('.quiz-expl');
+      if (expl) expl.style.display = 'block';
+    }
+  </script>
+</body>
+</html>

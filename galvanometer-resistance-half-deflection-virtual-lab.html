@@ -1,0 +1,2011 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
+  <title>Galvanometer Resistance &amp; Figure of Merit | National Model Schools Physics Virtual Lab</title>
+  <meta name="description" content="Determine the resistance of a moving coil galvanometer by half-deflection method and find its figure of merit using an interactive circuit simulator with KaTeX equations and live graphing." />
+
+  <!-- KaTeX for Math Formula Rendering -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous" onload="initKaTeX()"></script>
+
+  <style>
+    :root {
+      --bg-main: #0a0f1d;
+      --bg-panel: #131b2e;
+      --bg-card: #1c2742;
+      --bg-subtle: #253356;
+      --accent: #38bdf8;
+      --accent-hover: #0284c7;
+      --accent-glow: rgba(56, 189, 248, 0.25);
+      --copper: #f59e0b;
+      --copper-light: #fbbf24;
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --border: #334155;
+      --border-light: #475569;
+      --success: #10b981;
+      --success-glow: rgba(16, 185, 129, 0.25);
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --galv-dial: #fffdf5;
+      --circuit-bg: #070d1e;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-primary);
+      line-height: 1.5;
+      padding: 0.75rem;
+      overflow-x: hidden;
+      font-size: 1rem;
+    }
+
+    @media (min-width: 768px) {
+      body {
+        padding: 1.2rem;
+      }
+    }
+
+    .app-wrapper {
+      max-width: 1440px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+      min-height: 100vh;
+    }
+
+    /* True Non-Scrollable Fullscreen Mode */
+    :fullscreen,
+    :-webkit-full-screen {
+      overflow: hidden !important;
+      background-color: var(--bg-main) !important;
+    }
+
+    body.is-fullscreen {
+      overflow: hidden !important;
+      padding: 0.35rem 0.55rem !important;
+      height: 100vh !important;
+      width: 100vw !important;
+    }
+
+    :fullscreen .app-wrapper,
+    :-webkit-full-screen .app-wrapper,
+    body.is-fullscreen .app-wrapper,
+    .app-wrapper.is-fullscreen {
+      width: 100vw !important;
+      height: 100vh !important;
+      max-width: 100vw !important;
+      max-height: 100vh !important;
+      padding: 0.35rem 0.55rem !important;
+      margin: 0 !important;
+      background-color: var(--bg-main);
+      overflow: hidden !important;
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 0.35rem !important;
+      box-sizing: border-box;
+    }
+
+    .app-wrapper.is-fullscreen header {
+      padding: 0.35rem 0.75rem !important;
+      gap: 0.4rem !important;
+      flex-shrink: 0 !important;
+      border-radius: 8px;
+    }
+
+    .app-wrapper.is-fullscreen h1 {
+      font-size: 1.12rem !important;
+    }
+
+    .app-wrapper.is-fullscreen .badge {
+      font-size: 0.68rem !important;
+      padding: 0.15rem 0.45rem !important;
+    }
+
+    .app-wrapper.is-fullscreen .btn {
+      min-height: 32px !important;
+      padding: 0.25rem 0.6rem !important;
+      font-size: 0.84rem !important;
+    }
+
+    .app-wrapper.is-fullscreen .mode-nav {
+      padding: 0.2rem 0.4rem !important;
+      gap: 0.35rem !important;
+      flex-shrink: 0 !important;
+    }
+
+    .app-wrapper.is-fullscreen .mode-tab {
+      padding: 0.35rem 0.75rem !important;
+      font-size: 0.85rem !important;
+    }
+
+    .app-wrapper.is-fullscreen .tab-content.active {
+      flex: 1 1 auto !important;
+      min-height: 0 !important;
+      height: calc(100vh - 110px) !important;
+      max-height: calc(100vh - 110px) !important;
+      overflow: hidden !important;
+      display: flex !important;
+      flex-direction: column !important;
+    }
+
+    .app-wrapper.is-fullscreen .sim-grid {
+      display: grid !important;
+      grid-template-columns: 1.25fr 0.75fr !important;
+      gap: 0.5rem !important;
+      flex: 1 1 auto !important;
+      height: 100% !important;
+      min-height: 0 !important;
+      overflow: hidden !important;
+    }
+
+    .app-wrapper.is-fullscreen .panel {
+      height: 100% !important;
+      min-height: 0 !important;
+      display: flex !important;
+      flex-direction: column !important;
+      overflow: hidden !important;
+    }
+
+    .app-wrapper.is-fullscreen .panel-header {
+      padding: 0.4rem 0.75rem !important;
+      font-size: 0.88rem !important;
+      flex-shrink: 0 !important;
+    }
+
+    .app-wrapper.is-fullscreen .panel-body {
+      padding: 0.55rem !important;
+      gap: 0.5rem !important;
+      flex: 1 1 auto !important;
+      min-height: 0 !important;
+      overflow-y: auto !important;
+    }
+
+    .app-wrapper.is-fullscreen .step-banner {
+      padding: 0.35rem 0.65rem !important;
+      font-size: 0.8rem !important;
+      flex-shrink: 0 !important;
+    }
+
+    .app-wrapper.is-fullscreen .canvas-container {
+      flex: 1 1 auto !important;
+      min-height: 0 !important;
+      height: 100% !important;
+      width: 100% !important;
+    }
+
+    .app-wrapper.is-fullscreen canvas#circuitCanvas {
+      height: 100% !important;
+      width: 100% !important;
+    }
+
+    .app-wrapper.is-fullscreen .control-card {
+      padding: 0.55rem 0.75rem !important;
+      gap: 0.4rem !important;
+    }
+
+    .app-wrapper.is-fullscreen .output-box {
+      padding: 0.55rem 0.75rem !important;
+      gap: 0.4rem !important;
+    }
+
+    .app-wrapper.is-fullscreen .output-metric {
+      padding: 0.4rem !important;
+    }
+
+    .app-wrapper.is-fullscreen .metric-val {
+      font-size: 1rem !important;
+    }
+
+    .app-wrapper.is-fullscreen .table-card,
+    .app-wrapper.is-fullscreen .graph-card,
+    .app-wrapper.is-fullscreen .theory-wrap {
+      flex: 1 1 auto !important;
+      min-height: 0 !important;
+      height: 100% !important;
+      overflow-y: auto !important;
+    }
+
+    body.is-fullscreen footer,
+    .app-wrapper.is-fullscreen footer {
+      display: none !important;
+    }
+
+    /* Header */
+    header {
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.8) 100%);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0.85rem 1.25rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .header-brand {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .badge-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.2rem;
+    }
+
+    .badge {
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.15rem 0.6rem;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--accent);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+
+    .badge-class {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--success);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    h1 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      padding: 0.45rem 0.9rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      user-select: none;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      color: #fff;
+      box-shadow: 0 2px 10px rgba(2, 132, 199, 0.3);
+    }
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%);
+      transform: translateY(-1px);
+    }
+
+    .btn-outline {
+      background: rgba(30, 41, 59, 0.6);
+      color: var(--text-primary);
+      border-color: var(--border);
+    }
+    .btn-outline:hover {
+      background: var(--bg-card);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .btn-success {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: #fff;
+    }
+    .btn-success:hover {
+      transform: translateY(-1px);
+    }
+
+    /* Mode Nav */
+    .mode-nav {
+      display: flex;
+      gap: 0.5rem;
+      overflow-x: auto;
+      padding-bottom: 0.2rem;
+    }
+
+    .mode-tab {
+      padding: 0.55rem 1.1rem;
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text-secondary);
+      font-weight: 600;
+      font-size: 0.92rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+    .mode-tab:hover {
+      color: var(--text-primary);
+      background: var(--bg-card);
+    }
+    .mode-tab.active {
+      color: #fff;
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.2) 0%, rgba(2, 132, 199, 0.25) 100%);
+      border-color: var(--accent);
+      box-shadow: 0 0 12px var(--accent-glow);
+    }
+
+    /* Tab views */
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+
+    /* Simulation Layout */
+    .sim-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    @media (min-width: 1024px) {
+      .sim-grid {
+        grid-template-columns: 1.25fr 0.75fr;
+      }
+    }
+
+    /* Panel styling */
+    .panel {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    .panel-header {
+      background: var(--bg-card);
+      padding: 0.65rem 1rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    .panel-body {
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    /* Canvas Area */
+    .canvas-container {
+      position: relative;
+      background: var(--circuit-bg);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 380px;
+      flex: 1 1 auto;
+    }
+
+    canvas#circuitCanvas {
+      width: 100%;
+      height: 100%;
+      min-height: 380px;
+      display: block;
+      cursor: pointer;
+    }
+
+    .canvas-hud {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: rgba(11, 19, 41, 0.85);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.5rem 0.8rem;
+      font-size: 0.85rem;
+      backdrop-filter: blur(8px);
+      pointer-events: none;
+    }
+
+    .hud-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 0.2rem;
+    }
+    .hud-row:last-child { margin-bottom: 0; }
+    .hud-label { color: var(--text-secondary); }
+    .hud-val { font-weight: 700; color: var(--accent); }
+
+    /* Controls Panel */
+    .control-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.9rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .control-card-title {
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding-bottom: 0.4rem;
+    }
+
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .control-label-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.88rem;
+    }
+
+    .control-label {
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    .control-val {
+      font-weight: 700;
+      color: var(--accent);
+      font-family: monospace;
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 6px;
+      background: var(--bg-subtle);
+      border-radius: 4px;
+      outline: none;
+      cursor: pointer;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+      box-shadow: 0 0 8px var(--accent-glow);
+      transition: transform 0.1s;
+    }
+    input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.15);
+    }
+
+    .key-switch-box {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.65rem;
+    }
+
+    .key-btn {
+      padding: 0.65rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--bg-subtle);
+      color: var(--text-primary);
+      font-weight: 700;
+      font-size: 0.88rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.3rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .key-btn.closed {
+      background: rgba(16, 185, 129, 0.2);
+      border-color: var(--success);
+      color: #6ee7b7;
+      box-shadow: 0 0 10px var(--success-glow);
+    }
+
+    .key-state-indicator {
+      font-size: 0.75rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 12px;
+      background: rgba(0,0,0,0.3);
+    }
+
+    /* Live Output Box */
+    .output-box {
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      border-radius: 10px;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+    }
+
+    .output-title {
+      font-size: 0.88rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--accent);
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .output-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+
+    .output-metric {
+      background: rgba(0,0,0,0.25);
+      padding: 0.6rem;
+      border-radius: 6px;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .metric-lbl {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.2rem;
+    }
+
+    .metric-val {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #fff;
+      font-family: monospace;
+    }
+
+    /* Step Banner */
+    .step-banner {
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      border-radius: 8px;
+      padding: 0.65rem 0.9rem;
+      font-size: 0.88rem;
+      color: #fde68a;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      line-height: 1.4;
+    }
+
+    /* Table Styling */
+    .table-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .table-scroll {
+      overflow-x: auto;
+    }
+
+    table.obs-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      text-align: center;
+    }
+
+    table.obs-table th {
+      background: var(--bg-card);
+      color: var(--accent);
+      padding: 0.65rem 0.5rem;
+      border: 1px solid var(--border);
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    table.obs-table td {
+      padding: 0.55rem 0.5rem;
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      white-space: nowrap;
+    }
+
+    table.obs-table tbody tr:hover {
+      background: rgba(56, 189, 248, 0.05);
+    }
+
+    /* Graph Canvas */
+    .graph-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    canvas#graphCanvas {
+      width: 100%;
+      height: 380px;
+      background: var(--circuit-bg);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      display: block;
+    }
+
+    /* Academic Theory Section */
+    .theory-wrap {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .theory-section {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .theory-heading {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.4rem;
+    }
+
+    .formula-callout {
+      background: var(--bg-card);
+      border-left: 4px solid var(--accent);
+      padding: 0.9rem 1.2rem;
+      border-radius: 0 8px 8px 0;
+      font-size: 1rem;
+      overflow-x: auto;
+    }
+
+    .quiz-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .quiz-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem;
+    }
+
+    .quiz-q {
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 0.6rem;
+    }
+
+    .quiz-options {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .quiz-opt {
+      padding: 0.5rem 0.8rem;
+      border-radius: 6px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+    .quiz-opt:hover {
+      border-color: var(--accent);
+      background: rgba(56, 189, 248, 0.15);
+    }
+    .quiz-opt.correct {
+      background: rgba(16, 185, 129, 0.2) !important;
+      border-color: var(--success) !important;
+      color: #6ee7b7 !important;
+    }
+    .quiz-opt.wrong {
+      background: rgba(239, 68, 68, 0.2) !important;
+      border-color: var(--danger) !important;
+      color: #fca5a5 !important;
+    }
+
+    footer {
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      padding: 1rem 0;
+      border-top: 1px solid var(--border);
+      margin-top: 1rem;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+  </style>
+</head>
+<body>
+  <div class="app-wrapper" id="appWrapper">
+    
+    <!-- Header -->
+    <header>
+      <div class="header-left">
+        <a href="index.html" class="btn btn-outline" title="Return to Physics Lab Catalog">
+          <span>←</span> Hub
+        </a>
+        <div class="header-brand">
+          <div class="badge-row">
+            <span class="badge">National Model Schools • Physics Lab</span>
+            <span class="badge badge-class">Class XII • Exp 14</span>
+          </div>
+          <h1><span>🧲</span> Galvanometer Resistance &amp; Figure of Merit</h1>
+        </div>
+      </div>
+      <div class="header-actions">
+        <a href="manuals.html#exp14" class="btn btn-outline" title="View Practical Manual">
+          <span>📖</span> Manual
+        </a>
+        <button class="btn btn-outline" id="btnSoundToggle" title="Toggle audio effects">
+          <span id="soundIcon">🔊</span> Audio
+        </button>
+        <button class="btn btn-primary" id="btnFullscreenToggle" title="Toggle fullscreen view">
+          <span>⛶</span> Fullscreen
+        </button>
+      </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="mode-nav">
+      <button class="mode-tab active" data-tab="tab-sim">
+        <span>🔬</span> Interactive Lab Simulator
+      </button>
+      <button class="mode-tab" data-tab="tab-table">
+        <span>📊</span> Observation Table &amp; Calculations
+      </button>
+      <button class="mode-tab" data-tab="tab-graph">
+        <span>📈</span> $1/\theta$ vs $R$ Graph Plotter
+      </button>
+      <button class="mode-tab" data-tab="tab-theory">
+        <span>📘</span> Theory, Circuit &amp; Viva Voce
+      </button>
+    </nav>
+
+    <!-- TAB 1: Simulator -->
+    <div class="tab-content active" id="tab-sim">
+      <div class="sim-grid">
+        
+        <!-- Left: Canvas Area -->
+        <div class="panel">
+          <div class="panel-header">
+            <span>⚡ Interactive Half-Deflection Circuit Schematic</span>
+            <button class="btn btn-outline" style="font-size:0.8rem; padding:0.25rem 0.6rem;" onclick="resetCircuit()">
+              ↺ Reset Circuit
+            </button>
+          </div>
+          <div class="panel-body">
+            <div class="step-banner" id="guideStepBanner">
+              <span>💡</span>
+              <div id="guideStepText">
+                <strong>Step 1:</strong> Insert Key $K_1$ (keep $K_2$ open). Adjust series resistance $R$ until the galvanometer indicates an even deflection $\theta$ (e.g. 26 to 30 divisions).
+              </div>
+            </div>
+
+            <div class="canvas-container">
+              <canvas id="circuitCanvas"></canvas>
+              
+              <div class="canvas-hud">
+                <div class="hud-row">
+                  <span class="hud-label">Key $K_1$:</span>
+                  <span class="hud-val" id="hudK1">OPEN</span>
+                </div>
+                <div class="hud-row">
+                  <span class="hud-label">Key $K_2$ (Shunt):</span>
+                  <span class="hud-val" id="hudK2">OPEN</span>
+                </div>
+                <div class="hud-row">
+                  <span class="hud-label">Galv Deflection $\theta$:</span>
+                  <span class="hud-val" id="hudTheta">0.0 div</span>
+                </div>
+                <div class="hud-row">
+                  <span class="hud-label">Galv Current $I_g$:</span>
+                  <span class="hud-val" id="hudCurrent">0.0 μA</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Control Panel & Live Output -->
+        <div class="panel">
+          <div class="panel-header">
+            <span>🎛️ Laboratory Circuit Controls</span>
+            <span style="font-size:0.8rem; color:var(--text-secondary);">$E = 2.00\text{ V}$</span>
+          </div>
+          <div class="panel-body">
+            
+            <!-- Keys Switch Box -->
+            <div class="control-card">
+              <div class="control-card-title">
+                <span>Plug Keys ($K_1$ &amp; $K_2$)</span>
+                <span style="font-size:0.75rem; color:var(--text-secondary);">Click to Insert/Remove</span>
+              </div>
+              <div class="key-switch-box">
+                <button class="key-btn" id="btnKey1" onclick="toggleKey1()">
+                  <span>Key $K_1$ (Main Circuit)</span>
+                  <span class="key-state-indicator" id="k1Badge">PLUG REMOVED</span>
+                </button>
+                <button class="key-btn" id="btnKey2" onclick="toggleKey2()">
+                  <span>Key $K_2$ (Shunt Key)</span>
+                  <span class="key-state-indicator" id="k2Badge">PLUG REMOVED</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- High Resistance Box R -->
+            <div class="control-card">
+              <div class="control-card-title">
+                <span>High Resistance Box ($R$)</span>
+                <span class="control-val" id="valR">4500 Ω</span>
+              </div>
+              <div class="control-group">
+                <div class="control-label-row">
+                  <span class="control-label">Range: 1000 Ω to 10,000 Ω</span>
+                  <span style="font-size:0.8rem; color:var(--text-secondary);">Series Resistor</span>
+                </div>
+                <input type="range" id="sliderR" min="1000" max="10000" step="50" value="4500" oninput="onRChange(this.value)" />
+              </div>
+              <div style="display:flex; gap:0.4rem; justify-content:space-between;">
+                <button class="btn btn-outline" style="font-size:0.78rem; padding:0.2rem 0.5rem;" onclick="adjustR(-500)">-500 Ω</button>
+                <button class="btn btn-outline" style="font-size:0.78rem; padding:0.2rem 0.5rem;" onclick="adjustR(-50)">-50 Ω</button>
+                <button class="btn btn-outline" style="font-size:0.78rem; padding:0.2rem 0.5rem;" onclick="adjustR(+50)">+50 Ω</button>
+                <button class="btn btn-outline" style="font-size:0.78rem; padding:0.2rem 0.5rem;" onclick="adjustR(+500)">+500 Ω</button>
+              </div>
+            </div>
+
+            <!-- Shunt Resistance Box S -->
+            <div class="control-card">
+              <div class="control-card-title">
+                <span>Shunt Resistance Box ($S$)</span>
+                <span class="control-val" id="valS">75 Ω</span>
+              </div>
+              <div class="control-group">
+                <div class="control-label-row">
+                  <span class="control-label">Range: 5 Ω to 250 Ω</span>
+                  <span style="font-size:0.8rem; color:var(--text-secondary);">Parallel Shunt</span>
+                </div>
+                <input type="range" id="sliderS" min="5" max="250" step="1" value="75" oninput="onSChange(this.value)" />
+              </div>
+              <div style="display:flex; gap:0.4rem; justify-content:space-between;">
+                <button class="btn btn-outline" style="font-size:0.78rem; padding:0.2rem 0.5rem;" onclick="adjustS(-5)">-5 Ω</button>
+                <button class="btn btn-outline" style="font-size:0.78rem; padding:0.2rem 0.5rem;" onclick="adjustS(-1)">-1 Ω</button>
+                <button class="btn btn-outline" style="font-size:0.78rem; padding:0.2rem 0.5rem;" onclick="adjustS(+1)">+1 Ω</button>
+                <button class="btn btn-outline" style="font-size:0.78rem; padding:0.2rem 0.5rem;" onclick="adjustS(+5)">+5 Ω</button>
+              </div>
+            </div>
+
+            <!-- Live Physical Calculations -->
+            <div class="output-box">
+              <div class="output-title">
+                <span>📐 Computed Physical Constants</span>
+              </div>
+              <div class="output-grid">
+                <div class="output-metric">
+                  <div class="metric-lbl">Galvanometer Resistance $G$</div>
+                  <div class="metric-val" id="calcG">-- Ω</div>
+                </div>
+                <div class="output-metric">
+                  <div class="metric-lbl">Figure of Merit $k$</div>
+                  <div class="metric-val" id="calcK">-- A/div</div>
+                </div>
+                <div class="output-metric">
+                  <div class="metric-lbl">Current Sensitivity $S_i$</div>
+                  <div class="metric-val" id="calcSi">-- div/μA</div>
+                </div>
+                <div class="output-metric">
+                  <div class="metric-lbl">Full-Scale Deflection $I_g$</div>
+                  <div class="metric-val" id="calcIg">-- μA</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Action Button: Log Observation -->
+            <button class="btn btn-success" style="padding:0.75rem; font-size:0.95rem;" onclick="recordObservation()">
+              <span>📝</span> Record to Observation Table
+            </button>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- TAB 2: Observation Table -->
+    <div class="tab-content" id="tab-table">
+      <div class="table-card">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
+          <div>
+            <h2 style="font-size:1.15rem; color:#fff;">Table of Observations: Half-Deflection Method</h2>
+            <p style="font-size:0.85rem; color:var(--text-secondary);">EMF of Accumulator / DC Supply $E = 2.00\text{ V}$, Scale Divisions $n = 30$</p>
+          </div>
+          <div style="display:flex; gap:0.5rem;">
+            <button class="btn btn-outline" onclick="exportCSV()"><span>📥</span> Export CSV</button>
+            <button class="btn btn-outline" onclick="clearTable()"><span>🗑️</span> Clear Table</button>
+          </div>
+        </div>
+
+        <div class="table-scroll">
+          <table class="obs-table" id="observationTable">
+            <thead>
+              <tr>
+                <th>S.No.</th>
+                <th>EMF $E$ (V)</th>
+                <th>High Res $R$ (Ω)</th>
+                <th>Initial Defl $\theta$ (div)</th>
+                <th>Shunt $S$ (Ω)</th>
+                <th>Half Defl $\theta/2$ (div)</th>
+                <th>Galv Res $G = \frac{R \cdot S}{R - S}$ (Ω)</th>
+                <th>Figure of Merit $k = \frac{E}{(R+G)\theta}$ (A/div)</th>
+              </tr>
+            </thead>
+            <tbody id="obsTableBody">
+              <!-- Dynamically logged rows -->
+            </tbody>
+          </table>
+        </div>
+
+        <div class="output-box" style="margin-top:0.5rem;">
+          <div class="output-title"><span>📊 Experimental Mean Results</span></div>
+          <div class="output-grid">
+            <div class="output-metric">
+              <div class="metric-lbl">Mean Galvanometer Resistance ($G$)</div>
+              <div class="metric-val" id="meanG">-- Ω</div>
+            </div>
+            <div class="output-metric">
+              <div class="metric-lbl">Mean Figure of Merit ($k$)</div>
+              <div class="metric-val" id="meanK">-- A/div</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: Graph Plotter -->
+    <div class="tab-content" id="tab-graph">
+      <div class="graph-card">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
+          <div>
+            <h2 style="font-size:1.15rem; color:#fff;">Graph Analysis: $1/\theta$ vs $R$</h2>
+            <p style="font-size:0.85rem; color:var(--text-secondary);">Equation: $\frac{1}{\theta} = \frac{k}{E} R + \frac{k G}{E}$. Slope $= \frac{k}{E}$, Intercept on negative $R$-axis $= -G$.</p>
+          </div>
+          <button class="btn btn-primary" onclick="renderGraph()"><span>🔄</span> Refresh Plot</button>
+        </div>
+
+        <canvas id="graphCanvas"></canvas>
+
+        <div class="step-banner" style="background:rgba(56,189,248,0.1); border-color:rgba(56,189,248,0.3); color:#e0f2fe;">
+          <span>ℹ️</span>
+          <div>
+            Record at least 3 distinct pairs of $(R, \theta)$ with $K_2$ open to draw the linear regression curve. The negative intercept on the horizontal resistance axis gives the internal resistance $G$ of the galvanometer!
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: Theory & Viva Voce -->
+    <div class="tab-content" id="tab-theory">
+      <div class="theory-wrap">
+        
+        <div class="theory-section">
+          <h2 class="theory-heading"><span>🎯</span> Aim of the Practical</h2>
+          <p>To determine the resistance of a moving coil galvanometer by half-deflection method and to find its figure of merit ($k$).</p>
+        </div>
+
+        <div class="theory-section">
+          <h2 class="theory-heading"><span>📐</span> Governing Mathematical Theory</h2>
+          <p>When high resistance $R$ is connected in series with the galvanometer of resistance $G$ across an EMF source $E$, with key $K_1$ closed and $K_2$ open:</p>
+          <div class="formula-callout">
+            $$I = \frac{E}{R + G} = k \cdot \theta \implies \theta = \frac{E}{k(R + G)}$$
+          </div>
+          <p>When shunt resistance $S$ is connected in parallel with the galvanometer by closing key $K_2$, the effective parallel resistance becomes $G_p = \frac{G S}{G + S}$. The total current is $I' = \frac{E}{R + \frac{GS}{G+S}}$, and the current dividing into the galvanometer branch is:</p>
+          <div class="formula-callout">
+            $$I_g = I' \cdot \frac{S}{G + S} = \frac{E \cdot S}{R(G + S) + GS} = k \cdot \theta'$$
+          </div>
+          <p>By adjusting the shunt resistance $S$ such that $\theta' = \frac{\theta}{2}$, we obtain:</p>
+          <div class="formula-callout">
+            $$G = \frac{R \cdot S}{R - S}$$
+          </div>
+          <p>Since $R \gg S$, $R - S \approx R$, hence $G \approx S$. The <strong>figure of merit</strong> $k$ (current required to produce unit division deflection) is calculated as:</p>
+          <div class="formula-callout">
+            $$k = \frac{E}{(R + G)\theta} \quad \text{(A/div)}$$
+          </div>
+        </div>
+
+        <div class="theory-section">
+          <h2 class="theory-heading"><span>❓</span> Interactive Viva Voce Preparation</h2>
+          <div class="quiz-container" id="quizWrap">
+            <!-- Dynamically generated interactive quiz -->
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      <p>Senior Secondary Physics Virtual Laboratory Suite • Architecture &amp; Simulation Design by <a href="https://github.com/mazhar-in" target="_blank">Syed Mazhar Ali</a></p>
+      <p style="margin-top:0.3rem; opacity:0.8;">Designed for CBSE, NCERT, and State Board Physics Curricula • National Model Schools</p>
+    </footer>
+
+  </div>
+
+  <script>
+    // Physics Simulation Constants
+    const ACTUAL_G = 75.0; // Galvanometer internal resistance (Ohms)
+    const ACTUAL_K = 2.0e-5; // Figure of merit (20 uA/division)
+    const EMF_E = 2.0; // DC Cell EMF (Volts)
+    const TOTAL_DIVS = 30; // Scale 0 to 30 divisions
+
+    // Circuit State
+    let isK1Closed = false;
+    let isK2Closed = false;
+    let currentR = 4500;
+    let currentS = 75;
+    let audioEnabled = true;
+
+    // Canvas & Animation
+    let canvas, ctx;
+    let animId = null;
+    let displayedTheta = 0;
+    let targetTheta = 0;
+    let needleVelocity = 0;
+
+    // Observations
+    let observations = [];
+
+    // Web Audio API Context
+    let audioCtx = null;
+    function playTone(freq, duration = 0.05, type = 'sine') {
+      if (!audioEnabled) return;
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {}
+    }
+
+    function initKaTeX() {
+      if (window.renderMathInElement) {
+        renderMathInElement(document.body, {
+          delimiters: [
+            {left: '$$', right: '$$', display: true},
+            {left: '$', right: '$', display: false}
+          ],
+          throwOnError: false
+        });
+      }
+    }
+
+    // Initialize DOM
+    window.addEventListener('DOMContentLoaded', () => {
+      canvas = document.getElementById('circuitCanvas');
+      ctx = canvas.getContext('2d');
+      resizeCanvas();
+      window.addEventListener('resize', resizeCanvas);
+
+      // Tabs Setup
+      const tabs = document.querySelectorAll('.mode-tab');
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+          tabs.forEach(t => t.classList.remove('active'));
+          document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+          tab.classList.add('active');
+          const targetId = tab.dataset.tab;
+          document.getElementById(targetId).classList.add('active');
+          if (targetId === 'tab-sim') resizeCanvas();
+          if (targetId === 'tab-graph') renderGraph();
+          if (window.renderMathInElement) initKaTeX();
+        });
+      });
+
+      // Sound Toggle
+      document.getElementById('btnSoundToggle').addEventListener('click', () => {
+        audioEnabled = !audioEnabled;
+        document.getElementById('soundIcon').textContent = audioEnabled ? '🔊' : '🔇';
+      });
+
+      // Fullscreen Toggle
+      document.getElementById('btnFullscreenToggle').addEventListener('click', toggleFullscreen);
+      document.addEventListener('fullscreenchange', updateFullscreenState);
+      document.addEventListener('webkitfullscreenchange', updateFullscreenState);
+
+      buildQuiz();
+      updatePhysics();
+      startAnimationLoop();
+      setTimeout(initKaTeX, 300);
+    });
+
+    function updateFullscreenState() {
+      const isFS = !!(document.fullscreenElement || document.webkitFullscreenElement);
+      const wrapper = document.getElementById('appWrapper');
+      const btn = document.getElementById('btnFullscreenToggle');
+
+      if (isFS) {
+        document.body.classList.add('is-fullscreen');
+        if (wrapper) wrapper.classList.add('is-fullscreen');
+        if (btn) btn.innerHTML = '<span>⛶</span> Exit Fullscreen';
+      } else {
+        document.body.classList.remove('is-fullscreen');
+        if (wrapper) wrapper.classList.remove('is-fullscreen');
+        if (btn) btn.innerHTML = '<span>⛶</span> Fullscreen';
+      }
+
+      resizeCanvas();
+      setTimeout(resizeCanvas, 50);
+      setTimeout(resizeCanvas, 150);
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+        if (document.documentElement.requestFullscreen) {
+          document.documentElement.requestFullscreen().catch(() => {});
+        } else if (document.documentElement.webkitRequestFullscreen) {
+          document.documentElement.webkitRequestFullscreen();
+        }
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen().catch(() => {});
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+        }
+      }
+    }
+
+    function resizeCanvas() {
+      if (!canvas || !canvas.parentElement) return;
+      const rect = canvas.parentElement.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      const isFS = document.body.classList.contains('is-fullscreen') || !!(document.fullscreenElement || document.webkitFullscreenElement);
+
+      const w = rect.width;
+      const h = isFS ? Math.max(240, rect.height) : Math.max(380, rect.height || 380);
+
+      canvas.width = w * dpr;
+      canvas.height = h * dpr;
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.scale(dpr, dpr);
+    }
+
+    // Physics Engine Calculation
+    function updatePhysics() {
+      if (!isK1Closed) {
+        targetTheta = 0;
+        updateHUD(0, 0);
+        updateGuide();
+        return;
+      }
+
+      let ig = 0;
+      if (!isK2Closed) {
+        // Only K1 closed: Series circuit with R and G
+        const totalResistance = currentR + ACTUAL_G;
+        ig = EMF_E / totalResistance;
+      } else {
+        // Both K1 and K2 closed: G is shunted by S
+        const gp = (ACTUAL_G * currentS) / (ACTUAL_G + currentS);
+        const totalCircuitR = currentR + gp;
+        const totalI = EMF_E / totalCircuitR;
+        ig = totalI * (currentS / (ACTUAL_G + currentS));
+      }
+
+      // Deflection theta = I_g / k
+      targetTheta = Math.min(TOTAL_DIVS, Math.max(0, ig / ACTUAL_K));
+      updateHUD(targetTheta, ig);
+      updateGuide();
+    }
+
+    function updateHUD(theta, ig) {
+      document.getElementById('hudK1').textContent = isK1Closed ? 'CLOSED' : 'OPEN';
+      document.getElementById('hudK1').style.color = isK1Closed ? 'var(--success)' : 'var(--danger)';
+      document.getElementById('hudK2').textContent = isK2Closed ? 'CLOSED' : 'OPEN';
+      document.getElementById('hudK2').style.color = isK2Closed ? 'var(--success)' : 'var(--danger)';
+      document.getElementById('hudTheta').textContent = theta.toFixed(1) + ' div';
+      document.getElementById('hudCurrent').textContent = (ig * 1e6).toFixed(1) + ' μA';
+
+      // Computed outputs
+      if (isK1Closed && isK2Closed && currentR > currentS) {
+        const computedG = (currentR * currentS) / (currentR - currentS);
+        const computedK = EMF_E / ((currentR + computedG) * (theta * 2));
+        const computedSi = (1 / computedK) * 1e-6; // div / uA
+        const computedIg = TOTAL_DIVS * computedK * 1e6; // uA
+
+        document.getElementById('calcG').textContent = computedG.toFixed(1) + ' Ω';
+        document.getElementById('calcK').textContent = computedK.toExponential(3) + ' A/div';
+        document.getElementById('calcSi').textContent = computedSi.toFixed(2) + ' div/μA';
+        document.getElementById('calcIg').textContent = computedIg.toFixed(1) + ' μA';
+      } else if (isK1Closed && !isK2Closed && theta > 0) {
+        const approxK = EMF_E / ((currentR + ACTUAL_G) * theta);
+        document.getElementById('calcG').textContent = '(Insert K₂)';
+        document.getElementById('calcK').textContent = approxK.toExponential(3) + ' A/div';
+        document.getElementById('calcSi').textContent = (1 / (approxK * 1e6)).toFixed(2) + ' div/μA';
+        document.getElementById('calcIg').textContent = (TOTAL_DIVS * approxK * 1e6).toFixed(1) + ' μA';
+      } else {
+        document.getElementById('calcG').textContent = '-- Ω';
+        document.getElementById('calcK').textContent = '-- A/div';
+        document.getElementById('calcSi').textContent = '-- div/μA';
+        document.getElementById('calcIg').textContent = '-- μA';
+      }
+    }
+
+    function updateGuide() {
+      const banner = document.getElementById('guideStepText');
+      if (!isK1Closed) {
+        banner.innerHTML = '<strong>Step 1:</strong> Click <em>Key K₁</em> to complete the primary circuit and introduce series resistance $R$.';
+      } else if (!isK2Closed) {
+        banner.innerHTML = `<strong>Step 2:</strong> Main circuit active ($\theta = ${targetTheta.toFixed(1)}$ div). Adjust $R$ slider to obtain a neat even deflection (e.g. 26 to 30 divisions), then click <em>Key K₂</em> to insert the shunt resistance box.`;
+      } else {
+        banner.innerHTML = `<strong>Step 3 (Half-Deflection):</strong> Shunt $S$ active! Adjust slider $S$ until the galvanometer deflection drops to exactly half of initial deflection ($\theta/2$). Currently $\theta' = ${targetTheta.toFixed(1)}$ div. Once verified, click <em>Record to Observation Table</em>.`;
+      }
+      if (window.renderMathInElement) renderMathInElement(document.getElementById('guideStepBanner'));
+    }
+
+    // Key Toggles
+    function toggleKey1() {
+      isK1Closed = !isK1Closed;
+      document.getElementById('btnKey1').classList.toggle('closed', isK1Closed);
+      document.getElementById('k1Badge').textContent = isK1Closed ? 'PLUG INSERTED' : 'PLUG REMOVED';
+      playTone(isK1Closed ? 600 : 350, 0.08, 'triangle');
+      updatePhysics();
+    }
+
+    function toggleKey2() {
+      isK2Closed = !isK2Closed;
+      document.getElementById('btnKey2').classList.toggle('closed', isK2Closed);
+      document.getElementById('k2Badge').textContent = isK2Closed ? 'PLUG INSERTED' : 'PLUG REMOVED';
+      playTone(isK2Closed ? 750 : 400, 0.08, 'triangle');
+      updatePhysics();
+    }
+
+    function onRChange(val) {
+      currentR = parseInt(val, 10);
+      document.getElementById('valR').textContent = currentR + ' Ω';
+      playTone(300 + currentR * 0.05, 0.02);
+      updatePhysics();
+    }
+
+    function adjustR(delta) {
+      const slider = document.getElementById('sliderR');
+      let newVal = Math.min(10000, Math.max(1000, currentR + delta));
+      slider.value = newVal;
+      onRChange(newVal);
+    }
+
+    function onSChange(val) {
+      currentS = parseInt(val, 10);
+      document.getElementById('valS').textContent = currentS + ' Ω';
+      playTone(500 + currentS * 2, 0.02);
+      updatePhysics();
+    }
+
+    function adjustS(delta) {
+      const slider = document.getElementById('sliderS');
+      let newVal = Math.min(250, Math.max(5, currentS + delta));
+      slider.value = newVal;
+      onSChange(newVal);
+    }
+
+    function resetCircuit() {
+      isK1Closed = false;
+      isK2Closed = false;
+      currentR = 4500;
+      currentS = 75;
+      document.getElementById('btnKey1').classList.remove('closed');
+      document.getElementById('btnKey2').classList.remove('closed');
+      document.getElementById('k1Badge').textContent = 'PLUG REMOVED';
+      document.getElementById('k2Badge').textContent = 'PLUG REMOVED';
+      document.getElementById('sliderR').value = 4500;
+      document.getElementById('sliderS').value = 75;
+      document.getElementById('valR').textContent = '4500 Ω';
+      document.getElementById('valS').textContent = '75 Ω';
+      playTone(250, 0.1);
+      updatePhysics();
+    }
+
+    // Animation Loop: Needle Damping Physics
+    function startAnimationLoop() {
+      let lastTime = performance.now();
+
+      function animate(now) {
+        const dt = Math.min(0.05, (now - lastTime) / 1000);
+        lastTime = now;
+
+        // Damped harmonic motion toward targetTheta
+        const springK = 80;
+        const damping = 12;
+        const displacement = targetTheta - displayedTheta;
+        const springForce = displacement * springK;
+        const dampingForce = -needleVelocity * damping;
+        const acceleration = springForce + dampingForce;
+
+        needleVelocity += acceleration * dt;
+        displayedTheta += needleVelocity * dt;
+
+        renderCanvas();
+        animId = requestAnimationFrame(animate);
+      }
+
+      animId = requestAnimationFrame(animate);
+    }
+
+    // Canvas Circuit Schematic Rendering
+    function renderCanvas() {
+      if (!ctx || !canvas) return;
+      const w = canvas.width / (window.devicePixelRatio || 1);
+      const h = canvas.height / (window.devicePixelRatio || 1);
+
+      ctx.clearRect(0, 0, w, h);
+
+      // Background subtle grid
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.03)';
+      ctx.lineWidth = 1;
+      for (let x = 0; x < w; x += 30) {
+        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
+      }
+      for (let y = 0; y < h; y += 30) {
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+      }
+
+      // Proportional Circuit Dimensions
+      const leftX = Math.max(50, w * 0.1);
+      const rightX = Math.min(w - 50, w * 0.9);
+      const topY = Math.max(45, h * 0.17);
+      const midY = h * 0.51;
+      const botY = Math.min(h - 35, h * 0.85);
+      const dialRadius = Math.min(65, Math.max(42, h * 0.15));
+
+      // 1. Draw Wires
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = isK1Closed ? '#38bdf8' : '#475569';
+
+      // Outer Loop Wires
+      ctx.beginPath();
+      ctx.moveTo(leftX, midY); // from Battery
+      ctx.lineTo(leftX, topY);
+      ctx.lineTo(w * 0.35, topY); // to R
+      ctx.moveTo(w * 0.55, topY); // from R
+      ctx.lineTo(rightX, topY);
+      ctx.lineTo(rightX, midY); // down to Galv branch
+      ctx.stroke();
+
+      // Bottom Return Wire (through Key K1)
+      ctx.beginPath();
+      ctx.moveTo(rightX, midY + 50);
+      ctx.lineTo(rightX, botY);
+      ctx.lineTo(w * 0.55, botY); // to K1
+      ctx.moveTo(w * 0.45, botY); // from K1
+      ctx.lineTo(leftX, botY);
+      ctx.lineTo(leftX, midY + 40); // to Battery -
+      ctx.stroke();
+
+      // Shunt Loop Wires (across Galvanometer)
+      ctx.strokeStyle = (isK1Closed && isK2Closed) ? '#10b981' : '#475569';
+      ctx.beginPath();
+      ctx.moveTo(w * 0.65, topY);
+      ctx.lineTo(w * 0.65, midY - 20);
+      ctx.lineTo(w * 0.70, midY - 20); // to S
+      ctx.moveTo(w * 0.82, midY - 20); // from S
+      ctx.lineTo(w * 0.88, midY - 20);
+      ctx.lineTo(w * 0.88, botY);
+      ctx.stroke();
+
+      // 2. Battery (Left)
+      drawBattery(leftX, midY + 15, '2.0V DC');
+
+      // 3. High Resistance Box R (Top Center)
+      drawResistanceBox(w * 0.45, topY, `${currentR} Ω`, 'High Resistance (R)');
+
+      // 4. Moving Coil Galvanometer (Right Center)
+      drawGalvanometerDial(rightX - 35, midY + 20, dialRadius, displayedTheta);
+
+      // 5. Key K1 (Bottom Center)
+      drawPlugKey(w * 0.5, botY, isK1Closed, 'Key K₁');
+
+      // 6. Shunt Resistance Box S & Key K2
+      drawResistanceBox(w * 0.76, midY - 20, `${currentS} Ω`, 'Shunt (S)', 45);
+      drawPlugKey(w * 0.88, midY + 50, isK2Closed, 'Key K₂', true);
+
+      // Current Flow Animation Dots
+      if (isK1Closed) {
+        drawCurrentParticles(now => {});
+      }
+    }
+
+    function drawBattery(x, y, label) {
+      ctx.save();
+      ctx.fillStyle = '#f8fafc';
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 2;
+
+      // Long positive plate
+      ctx.beginPath();
+      ctx.moveTo(x - 25, y - 20);
+      ctx.lineTo(x + 25, y - 20);
+      ctx.stroke();
+
+      // Short thick negative plate
+      ctx.lineWidth = 5;
+      ctx.strokeStyle = '#94a3b8';
+      ctx.beginPath();
+      ctx.moveTo(x - 14, y + 15);
+      ctx.lineTo(x + 14, y + 15);
+      ctx.stroke();
+
+      // Labels
+      ctx.fillStyle = '#38bdf8';
+      ctx.font = 'bold 12px monospace';
+      ctx.fillText('+  Accumulator', x + 32, y - 16);
+      ctx.fillStyle = '#94a3b8';
+      ctx.fillText(`-  (${label})`, x + 32, y + 18);
+      ctx.restore();
+    }
+
+    function drawResistanceBox(x, y, valStr, nameStr, width = 75) {
+      ctx.save();
+      ctx.translate(x, y);
+
+      // Box body
+      ctx.fillStyle = '#271b11';
+      ctx.strokeStyle = '#d97706';
+      ctx.lineWidth = 2;
+      ctx.fillRect(-width, -22, width * 2, 44);
+      ctx.strokeRect(-width, -22, width * 2, 44);
+
+      // Brass terminal knobs
+      ctx.fillStyle = '#fbbf24';
+      ctx.beginPath(); ctx.arc(-width + 12, 0, 7, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(width - 12, 0, 7, 0, Math.PI * 2); ctx.fill();
+
+      // Text label
+      ctx.fillStyle = '#fff';
+      ctx.font = 'bold 12px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(valStr, 0, -5);
+
+      ctx.fillStyle = '#fbbf24';
+      ctx.font = '10px sans-serif';
+      ctx.fillText(nameStr, 0, 10);
+      ctx.restore();
+    }
+
+    function drawPlugKey(x, y, isClosed, label, vertical = false) {
+      ctx.save();
+      ctx.translate(x, y);
+
+      // Brass blocks
+      ctx.fillStyle = '#d97706';
+      if (!vertical) {
+        ctx.fillRect(-22, -10, 16, 20);
+        ctx.fillRect(6, -10, 16, 20);
+      } else {
+        ctx.fillRect(-10, -22, 20, 16);
+        ctx.fillRect(-10, 6, 20, 16);
+      }
+
+      // Plug inserted
+      if (isClosed) {
+        ctx.fillStyle = '#10b981';
+        ctx.beginPath();
+        ctx.arc(0, 0, 8, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      } else {
+        ctx.fillStyle = '#0f172a';
+        ctx.beginPath();
+        ctx.arc(0, 0, 6, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = '#ef4444';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      }
+
+      // Key Name
+      ctx.fillStyle = isClosed ? '#6ee7b7' : '#fca5a5';
+      ctx.font = 'bold 11px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(label, 0, vertical ? 35 : 24);
+      ctx.restore();
+    }
+
+    function drawGalvanometerDial(x, y, radius, currentDivs) {
+      ctx.save();
+      ctx.translate(x, y);
+
+      // Instrument Enclosure
+      ctx.beginPath();
+      ctx.arc(0, 0, radius, 0, Math.PI * 2);
+      ctx.fillStyle = '#fffdf5';
+      ctx.fill();
+      ctx.lineWidth = 4;
+      ctx.strokeStyle = '#334155';
+      ctx.stroke();
+
+      // Inner brass ring
+      ctx.strokeStyle = '#d97706';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.arc(0, 0, radius - 3, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Zero-center scale markings (-30 to +30)
+      const maxAngle = 0.72; // ~41 degrees deflection
+      ctx.fillStyle = '#0f172a';
+      ctx.strokeStyle = '#0f172a';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+
+      for (let d = -30; d <= 30; d += 5) {
+        const angle = (d / 30) * maxAngle - Math.PI / 2;
+        const isMajor = (d % 10 === 0);
+        const tickLen = isMajor ? 9 : 5;
+        const r1 = radius - 8;
+        const r2 = r1 - tickLen;
+
+        const x1 = Math.cos(angle) * r1;
+        const y1 = Math.sin(angle) * r1;
+        const x2 = Math.cos(angle) * r2;
+        const y2 = Math.sin(angle) * r2;
+
+        ctx.lineWidth = isMajor ? 1.5 : 0.8;
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
+
+        if (isMajor) {
+          const tx = Math.cos(angle) * (r2 - 7);
+          const ty = Math.sin(angle) * (r2 - 7);
+          ctx.font = '7px sans-serif';
+          ctx.fillText(Math.abs(d), tx, ty);
+        }
+      }
+
+      // 'G' symbol
+      ctx.font = 'bold 12px serif';
+      ctx.fillStyle = '#dc2626';
+      ctx.fillText('G', 0, 16);
+
+      // Needle
+      const needleAngle = (currentDivs / 30) * maxAngle - Math.PI / 2;
+      ctx.save();
+      ctx.rotate(needleAngle + Math.PI / 2);
+
+      ctx.strokeStyle = '#dc2626';
+      ctx.lineWidth = 1.8;
+      ctx.beginPath();
+      ctx.moveTo(0, 8);
+      ctx.lineTo(0, -(radius - 12));
+      ctx.stroke();
+
+      // Center pivot
+      ctx.fillStyle = '#0f172a';
+      ctx.beginPath();
+      ctx.arc(0, 0, 4, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+
+      // Outer Label
+      ctx.fillStyle = '#38bdf8';
+      ctx.font = 'bold 11px sans-serif';
+      ctx.fillText('Galvanometer (G)', 0, radius + 16);
+
+      ctx.restore();
+    }
+
+    function drawCurrentParticles() {
+      // Subtle pulse dot on active wire
+      const time = performance.now() * 0.003;
+      const offset = (time % 1);
+      ctx.fillStyle = '#38bdf8';
+      ctx.shadowColor = '#38bdf8';
+      ctx.shadowBlur = 8;
+      ctx.beginPath();
+      ctx.arc(150 + offset * 100, 70, 3, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.shadowBlur = 0;
+    }
+
+    // Observation Table Recording (Async Toast - No Modal Alert)
+    function showToast(message, type = 'success') {
+      let toast = document.getElementById('labToast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'labToast';
+        toast.style.cssText = 'position:fixed; bottom:24px; right:24px; z-index:99999; padding:0.65rem 1.1rem; border-radius:8px; font-size:0.9rem; font-weight:600; box-shadow:0 8px 24px rgba(0,0,0,0.4); display:flex; align-items:center; gap:0.5rem; transition:all 0.3s ease; pointer-events:none; opacity:0; transform:translateY(10px);';
+        document.body.appendChild(toast);
+      }
+      if (type === 'error') {
+        toast.style.background = 'linear-gradient(135deg, #ef4444 0%, #b91c1c 100%)';
+        toast.style.color = '#fff';
+        toast.style.border = '1px solid #f87171';
+      } else {
+        toast.style.background = 'linear-gradient(135deg, #10b981 0%, #047857 100%)';
+        toast.style.color = '#fff';
+        toast.style.border = '1px solid #34d399';
+      }
+      toast.innerHTML = (type === 'error' ? '⚠️ ' : '✓ ') + message;
+      toast.style.opacity = '1';
+      toast.style.transform = 'translateY(0)';
+      clearTimeout(toast._timer);
+      toast._timer = setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(10px)';
+      }, 2400);
+    }
+
+    function recordObservation() {
+      if (!isK1Closed) {
+        showToast('Please insert Key K₁ first to activate circuit!', 'error');
+        return;
+      }
+
+      const rowInitialTheta = (isK1Closed && !isK2Closed) ? targetTheta : (targetTheta * 2);
+      const rowHalfTheta = targetTheta;
+      const sVal = isK2Closed ? currentS : ACTUAL_G;
+      const gCalc = (currentR * sVal) / (currentR - sVal);
+      const kCalc = EMF_E / ((currentR + gCalc) * rowInitialTheta);
+
+      const obs = {
+        sno: observations.length + 1,
+        emf: EMF_E.toFixed(2),
+        r: currentR,
+        theta: rowInitialTheta.toFixed(1),
+        s: sVal,
+        halfTheta: rowHalfTheta.toFixed(1),
+        g: gCalc.toFixed(1),
+        k: kCalc.toExponential(3)
+      };
+
+      observations.push(obs);
+      renderTable();
+      playTone(880, 0.12, 'sine');
+      showToast(`Recorded Observation #${obs.sno}: G = ${obs.g} Ω, k = ${obs.k} A/div`);
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById('obsTableBody');
+      tbody.innerHTML = '';
+
+      if (observations.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" style="color:var(--text-secondary); padding:1rem;">No observations recorded yet. Conduct experiment and click "Record to Observation Table".</td></tr>';
+        document.getElementById('meanG').textContent = '-- Ω';
+        document.getElementById('meanK').textContent = '-- A/div';
+        return;
+      }
+
+      let sumG = 0;
+      let sumK = 0;
+
+      observations.forEach(o => {
+        sumG += parseFloat(o.g);
+        sumK += parseFloat(o.k);
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${o.sno}</td>
+          <td>${o.emf}</td>
+          <td>${o.r}</td>
+          <td>${o.theta}</td>
+          <td>${o.s}</td>
+          <td>${o.halfTheta}</td>
+          <td style="color:var(--accent); font-weight:700;">${o.g}</td>
+          <td style="color:#6ee7b7; font-weight:700;">${o.k}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      const avgG = (sumG / observations.length).toFixed(1);
+      const avgK = (sumK / observations.length).toExponential(3);
+      document.getElementById('meanG').textContent = `${avgG} Ω`;
+      document.getElementById('meanK').textContent = `${avgK} A/div`;
+    }
+
+    function clearTable() {
+      if (confirm('Clear all logged laboratory observations?')) {
+        observations = [];
+        renderTable();
+      }
+    }
+
+    function exportCSV() {
+      if (observations.length === 0) {
+        alert('No observation data available to export.');
+        return;
+      }
+      let csv = "S.No.,EMF E (V),High Resistance R (Ohm),Initial Theta (div),Shunt Resistance S (Ohm),Half Deflection Theta/2 (div),Galvanometer Resistance G (Ohm),Figure of Merit k (A/div)\n";
+      observations.forEach(o => {
+        csv += `${o.sno},${o.emf},${o.r},${o.theta},${o.s},${o.halfTheta},${o.g},${o.k}\n`;
+      });
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `galvanometer_half_deflection_${Date.now()}.csv`;
+      a.click();
+    }
+
+    // Graph Plotter: 1/theta vs R
+    function renderGraph() {
+      const gCanvas = document.getElementById('graphCanvas');
+      if (!gCanvas) return;
+      const gCtx = gCanvas.getContext('2d');
+      const rect = gCanvas.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      gCanvas.width = rect.width * dpr;
+      gCanvas.height = 380 * dpr;
+      gCtx.scale(dpr, dpr);
+
+      const w = rect.width;
+      const h = 380;
+
+      gCtx.clearRect(0, 0, w, h);
+
+      // Axes margins
+      const padL = 60;
+      const padR = 40;
+      const padB = 50;
+      const padT = 30;
+
+      const plotW = w - padL - padR;
+      const plotH = h - padB - padT;
+
+      // Draw Grid
+      gCtx.strokeStyle = 'rgba(255,255,255,0.06)';
+      gCtx.lineWidth = 1;
+      for (let gx = padL; gx <= w - padR; gx += plotW / 10) {
+        gCtx.beginPath(); gCtx.moveTo(gx, padT); gCtx.lineTo(gx, h - padB); gCtx.stroke();
+      }
+      for (let gy = padT; gy <= h - padB; gy += plotH / 6) {
+        gCtx.beginPath(); gCtx.moveTo(padL, gy); gCtx.lineTo(w - padR, gy); gCtx.stroke();
+      }
+
+      // Draw Main Axes
+      gCtx.strokeStyle = '#94a3b8';
+      gCtx.lineWidth = 2;
+      gCtx.beginPath();
+      // Y axis
+      gCtx.moveTo(padL, padT);
+      gCtx.lineTo(padL, h - padB);
+      // X axis
+      gCtx.lineTo(w - padR, h - padB);
+      gCtx.stroke();
+
+      // Axis Labels
+      gCtx.fillStyle = '#38bdf8';
+      gCtx.font = '12px sans-serif';
+      gCtx.textAlign = 'center';
+      gCtx.fillText('Series Resistance R (Ω)', padL + plotW / 2, h - 15);
+
+      gCtx.save();
+      gCtx.translate(20, padT + plotH / 2);
+      gCtx.rotate(-Math.PI / 2);
+      gCtx.fillText('1 / θ (div⁻¹)', 0, 0);
+      gCtx.restore();
+
+      // Theoretical or observed data points
+      const pts = observations.length >= 2 ? observations.map(o => ({
+        r: parseFloat(o.r),
+        invTheta: 1 / parseFloat(o.theta)
+      })) : [
+        { r: 2000, invTheta: (ACTUAL_K * (2000 + ACTUAL_G)) / EMF_E },
+        { r: 4000, invTheta: (ACTUAL_K * (4000 + ACTUAL_G)) / EMF_E },
+        { r: 6000, invTheta: (ACTUAL_K * (6000 + ACTUAL_G)) / EMF_E },
+        { r: 8000, invTheta: (ACTUAL_K * (8000 + ACTUAL_G)) / EMF_E }
+      ];
+
+      const maxR = 10000;
+      const maxInvTheta = 0.12;
+
+      // Draw Straight Fit Line
+      gCtx.strokeStyle = '#10b981';
+      gCtx.lineWidth = 2.5;
+      gCtx.beginPath();
+      const x0 = padL + (0 / maxR) * plotW;
+      const y0 = (h - padB) - (((ACTUAL_K * ACTUAL_G) / EMF_E) / maxInvTheta) * plotH;
+      const xEnd = padL + (maxR / maxR) * plotW;
+      const yEnd = (h - padB) - (((ACTUAL_K * (maxR + ACTUAL_G)) / EMF_E) / maxInvTheta) * plotH;
+
+      gCtx.moveTo(x0, y0);
+      gCtx.lineTo(xEnd, yEnd);
+      gCtx.stroke();
+
+      // Plot Points
+      pts.forEach(p => {
+        const px = padL + (p.r / maxR) * plotW;
+        const py = (h - padB) - (p.invTheta / maxInvTheta) * plotH;
+
+        gCtx.fillStyle = '#f59e0b';
+        gCtx.beginPath();
+        gCtx.arc(px, py, 5, 0, Math.PI * 2);
+        gCtx.fill();
+        gCtx.strokeStyle = '#fff';
+        gCtx.lineWidth = 1.5;
+        gCtx.stroke();
+      });
+
+      // Graph Annotations
+      gCtx.fillStyle = '#fff';
+      gCtx.font = 'bold 11px monospace';
+      gCtx.textAlign = 'left';
+      gCtx.fillText('Slope = k / E', padL + 20, padT + 30);
+      gCtx.fillText('Intercept on (-R) axis = G = 75 Ω', padL + 20, padT + 50);
+    }
+
+    // Viva Voce Interactive Module
+    const vivaData = [
+      {
+        q: "What is the principle behind the half-deflection method?",
+        options: [
+          "When a shunt resistance equal to galvanometer resistance is connected, deflection reduces to half.",
+          "When galvanometer current is doubled, deflection is halved.",
+          "Potential difference across series resistor drops to zero.",
+          "Galvanometer coil experiences maximum damping force."
+        ],
+        answer: 0,
+        explanation: "Since R >> S, the total circuit current remains almost constant when S is connected. For the galvanometer deflection to become half (θ/2), the shunt S must draw half the current, meaning S = G."
+      },
+      {
+        q: "What is meant by the figure of merit (k) of a galvanometer?",
+        options: [
+          "Maximum current the coil can carry without burning",
+          "Current required to produce a deflection of one scale division",
+          "Voltage sensitivity divided by total divisions",
+          "Resistance of the suspension phosphor-bronze strip"
+        ],
+        answer: 1,
+        explanation: "The figure of merit k is defined as k = I / θ, i.e., the electric current required to produce unit angular deflection of one division."
+      },
+      {
+        q: "Why is a high resistance (R) used in the primary series circuit?",
+        options: [
+          "To keep the galvanometer current safe and maintain almost constant total current when shunted",
+          "To increase the sensitivity of the galvanometer to infinite value",
+          "To eliminate thermoelectric currents in connecting leads",
+          "To convert the galvanometer directly into an ammeter"
+        ],
+        answer: 0,
+        explanation: "High resistance R (several thousand ohms) limits the current so the pointer does not shoot beyond 30 divisions, and ensures R >> S so that introducing S does not significantly alter the primary current."
+      },
+      {
+        q: "What is the relationship between figure of merit (k) and current sensitivity (Si)?",
+        options: [
+          "Si = k²",
+          "Si = 1 / k",
+          "Si = k × n",
+          "Si = E / k"
+        ],
+        answer: 1,
+        explanation: "Current sensitivity Si is deflection per unit current (θ / I), which is exactly the reciprocal of figure of merit (1 / k)."
+      }
+    ];
+
+    function buildQuiz() {
+      const container = document.getElementById('quizWrap');
+      if (!container) return;
+      container.innerHTML = '';
+
+      vivaData.forEach((item, idx) => {
+        const qDiv = document.createElement('div');
+        qDiv.className = 'quiz-item';
+        qDiv.innerHTML = `
+          <div class="quiz-q">Q${idx + 1}. ${item.q}</div>
+          <div class="quiz-options">
+            ${item.options.map((opt, oIdx) => `
+              <div class="quiz-opt" onclick="checkQuizAnswer(this, ${idx}, ${oIdx})">
+                ${String.fromCharCode(65 + oIdx)}. ${opt}
+              </div>
+            `).join('')}
+          </div>
+          <div class="quiz-expl" style="display:none; margin-top:0.6rem; font-size:0.85rem; color:#94a3b8; border-top:1px solid var(--border); padding-top:0.4rem;">
+            <strong>Explanation:</strong> ${item.explanation}
+          </div>
+        `;
+        container.appendChild(qDiv);
+      });
+    }
+
+    function checkQuizAnswer(element, qIdx, optIdx) {
+      const parent = element.parentElement;
+      const opts = parent.querySelectorAll('.quiz-opt');
+      opts.forEach(o => o.style.pointerEvents = 'none');
+
+      const correct = vivaData[qIdx].answer;
+      if (optIdx === correct) {
+        element.classList.add('correct');
+        playTone(700, 0.1, 'sine');
+      } else {
+        element.classList.add('wrong');
+        opts[correct].classList.add('correct');
+        playTone(250, 0.15, 'sawtooth');
+      }
+
+      const expl = parent.parentElement.querySelector('.quiz-expl');
+      if (expl) expl.style.display = 'block';
+    }
+  </script>
+</body>
+</html>

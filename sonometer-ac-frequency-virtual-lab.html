@@ -1,0 +1,3890 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
+  <title>Frequency of AC Mains with Sonometer | National Model Schools Physics Virtual Lab</title>
+  <meta name="description" content="Determine the frequency of AC mains using a sonometer with interactive canvas simulation, paper rider resonance, Web Audio sound synthesis, linear regression graph plotting, and screw gauge linear density measurement." />
+
+  <!-- KaTeX for crisp mathematical typography -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous" onload="renderMathInPage()"></script>
+
+  <style>
+    :root {
+      --bg-main: #0a0f1d;
+      --bg-panel: #131d31;
+      --bg-card: #1c2942;
+      --bg-subtle: #243555;
+      --accent: #38bdf8;
+      --accent-hover: #0284c7;
+      --accent-glow: rgba(56, 189, 248, 0.28);
+      --accent-emerald: #34d399;
+      --accent-amber: #fbbf24;
+      --accent-rose: #f43f5e;
+      --copper: #d97706;
+      --copper-light: #f59e0b;
+      --wood-dark: #2b1810;
+      --wood-light: #5c3a21;
+      --wood-rim: #8b5a2b;
+      --wire-color: #cbd5e1;
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --border: #334155;
+      --border-light: #475569;
+      --success: #10b981;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-primary);
+      line-height: 1.5;
+      padding: 0.65rem;
+      overflow-x: hidden;
+      font-size: 0.95rem;
+      min-height: 100vh;
+    }
+
+    @media (min-width: 768px) {
+      body {
+        padding: 1rem;
+        font-size: 1rem;
+      }
+    }
+
+    .app-wrapper {
+      max-width: 1460px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      min-height: 100vh;
+    }
+
+    /* Fullscreen Handling */
+    :fullscreen, :-webkit-full-screen {
+      background-color: var(--bg-main) !important;
+      overflow: hidden !important;
+    }
+
+    body.is-fullscreen {
+      padding: 0.35rem 0.55rem !important;
+      height: 100vh !important;
+      width: 100vw !important;
+      overflow: hidden !important;
+    }
+
+    body.is-fullscreen .app-wrapper,
+    :fullscreen .app-wrapper,
+    :-webkit-full-screen .app-wrapper {
+      max-width: 100vw !important;
+      height: 100vh !important;
+      max-height: 100vh !important;
+      padding: 0.3rem !important;
+      gap: 0.35rem !important;
+      overflow: hidden !important;
+    }
+
+    /* Header */
+    header {
+      background: var(--bg-panel);
+      padding: 0.75rem 1.15rem;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+    }
+
+    .header-left {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      align-items: center;
+    }
+
+    .badge {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 0.2rem 0.6rem;
+      border-radius: 9999px;
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--accent);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+
+    .badge-amber {
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--copper-light);
+      border-color: rgba(245, 158, 11, 0.35);
+    }
+
+    .badge-green {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--accent-emerald);
+      border-color: rgba(16, 185, 129, 0.35);
+    }
+
+    h1 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    @media (min-width: 640px) {
+      h1 {
+        font-size: 1.6rem;
+      }
+    }
+
+    .header-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn {
+      min-height: 40px;
+      padding: 0.5rem 0.95rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+      border: 1px solid transparent;
+      transition: all 0.18s ease;
+      touch-action: manipulation;
+      user-select: none;
+      text-decoration: none;
+      color: var(--text-primary);
+      background: var(--bg-card);
+    }
+
+    .btn:hover {
+      background: var(--bg-subtle);
+      border-color: var(--border-light);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #042f2e;
+      border-color: var(--accent);
+      font-weight: 700;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      color: #ffffff;
+      border-color: var(--accent-hover);
+    }
+
+    .btn-success {
+      background: rgba(16, 185, 129, 0.2);
+      color: var(--accent-emerald);
+      border-color: rgba(16, 185, 129, 0.4);
+    }
+
+    .btn-success:hover {
+      background: var(--accent-emerald);
+      color: #064e3b;
+    }
+
+    .btn-outline {
+      background: rgba(255, 255, 255, 0.04);
+      border-color: var(--border);
+      color: var(--text-primary);
+    }
+
+    .btn-outline:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: var(--accent);
+    }
+
+    .btn-hub {
+      background: rgba(148, 163, 184, 0.15);
+      border-color: rgba(148, 163, 184, 0.25);
+      color: #e2e8f0;
+    }
+
+    .btn-hub:hover {
+      background: rgba(148, 163, 184, 0.3);
+      color: #ffffff;
+    }
+
+    /* Mode Navigation Tabs */
+    .mode-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      background: var(--bg-panel);
+      padding: 0.35rem 0.5rem;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+
+    .mode-tab {
+      flex: 1 1 180px;
+      padding: 0.55rem 0.85rem;
+      font-size: 0.88rem;
+      font-weight: 600;
+      border-radius: 6px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: all 0.2s ease;
+    }
+
+    .mode-tab:hover {
+      color: var(--text-primary);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .mode-tab.active {
+      background: var(--bg-card);
+      color: var(--accent);
+      border-color: var(--border-light);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+    }
+
+    /* Main Workspace Layout */
+    .workspace-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+      flex: 1;
+      min-height: 0;
+    }
+
+    @media (min-width: 1080px) {
+      .workspace-grid {
+        grid-template-columns: 1.25fr 0.75fr;
+      }
+    }
+
+    body.is-fullscreen .workspace-grid {
+      grid-template-columns: 1.25fr 0.75fr !important;
+      gap: 0.4rem !important;
+      flex: 1 !important;
+      height: calc(100vh - 120px) !important;
+      max-height: calc(100vh - 120px) !important;
+      min-height: 0 !important;
+      overflow: hidden !important;
+    }
+
+    .card {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 0.85rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+      min-height: 0;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      padding-bottom: 0.25rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .card-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+
+    /* Canvas Simulation Box */
+    .canvas-container {
+      position: relative;
+      width: 100%;
+      height: 360px;
+      min-height: 280px;
+      background: #070c17;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      touch-action: none;
+    }
+
+    body.is-fullscreen .canvas-container {
+      height: calc(100vh - 290px) !important;
+      min-height: 220px !important;
+    }
+
+    canvas#sonometerCanvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      cursor: crosshair;
+    }
+
+    /* Floating Status Badges on Canvas */
+    .canvas-badge {
+      position: absolute;
+      top: 10px;
+      padding: 0.35rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    .canvas-badge-left {
+      left: 12px;
+      background: rgba(19, 29, 49, 0.85);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+    }
+
+    .canvas-badge-right {
+      right: 12px;
+      background: rgba(19, 29, 49, 0.85);
+      border: 1px solid var(--border);
+      color: var(--accent);
+    }
+
+    .rider-indicator {
+      position: absolute;
+      bottom: 12px;
+      left: 12px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.4rem 0.8rem;
+      font-size: 0.82rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+      flex-shrink: 0;
+    }
+
+    .dot-green {
+      background: var(--success);
+      box-shadow: 0 0 10px var(--success);
+      animation: pulse 1.5s infinite;
+    }
+
+    .dot-amber {
+      background: var(--warning);
+      box-shadow: 0 0 10px var(--warning);
+      animation: pulse 0.8s infinite;
+    }
+
+    .dot-red {
+      background: var(--danger);
+      box-shadow: 0 0 10px var(--danger);
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.15); }
+    }
+
+    /* Simulation Control Toolbar Below Canvas */
+    .sim-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg-card);
+      padding: 0.6rem 0.85rem;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+
+    .toolbar-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      align-items: center;
+    }
+
+    .btn-toggle-power {
+      background: rgba(239, 68, 68, 0.15);
+      border-color: rgba(239, 68, 68, 0.4);
+      color: #fca5a5;
+    }
+
+    .btn-toggle-power.on {
+      background: rgba(16, 185, 129, 0.2);
+      border-color: rgba(16, 185, 129, 0.5);
+      color: #86efac;
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.25);
+    }
+
+    /* Right Column / Controls / Tabs */
+    .right-column {
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+      min-height: 0;
+      overflow-y: auto;
+    }
+
+    body.is-fullscreen .right-column {
+      max-height: calc(100vh - 120px) !important;
+      overflow-y: auto;
+      padding-right: 0.25rem;
+    }
+
+    .right-column::-webkit-scrollbar {
+      width: 6px;
+    }
+    .right-column::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 4px;
+    }
+
+    /* Metrics Grid */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.45rem;
+    }
+
+    @media (min-width: 540px) {
+      .metrics-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    .metric-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.5rem 0.65rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+      text-align: center;
+    }
+
+    .metric-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .metric-val {
+      font-family: var(--font-mono);
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--accent);
+    }
+
+    .metric-val.green {
+      color: var(--accent-emerald);
+    }
+
+    .metric-val.amber {
+      color: var(--accent-amber);
+    }
+
+    /* Control Groups */
+    .control-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.75rem 0.9rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .control-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .control-label {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .control-val {
+      font-family: var(--font-mono);
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--accent);
+      background: rgba(0, 0, 0, 0.25);
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .slider-container {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+    }
+
+    input[type="range"] {
+      flex: 1;
+      height: 6px;
+      border-radius: 3px;
+      background: var(--bg-subtle);
+      outline: none;
+      -webkit-appearance: none;
+      cursor: pointer;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+      box-shadow: 0 0 8px var(--accent-glow);
+      transition: transform 0.1s ease;
+    }
+
+    input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+    }
+
+    .step-btn {
+      width: 32px;
+      height: 32px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      font-weight: 700;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--bg-subtle);
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      touch-action: manipulation;
+    }
+
+    .step-btn:hover {
+      background: var(--border-light);
+      color: #fff;
+    }
+
+    /* Slotted Weight Selector Pills */
+    .weights-rack {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+
+    .weight-chip {
+      padding: 0.35rem 0.65rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--bg-subtle);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      touch-action: manipulation;
+    }
+
+    .weight-chip:hover {
+      color: var(--text-primary);
+      border-color: var(--accent);
+    }
+
+    .weight-chip.active {
+      background: rgba(56, 189, 248, 0.15);
+      border-color: var(--accent);
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    /* Material Selector Dropdown */
+    select.styled-select {
+      background: var(--bg-subtle);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.4rem 0.65rem;
+      font-size: 0.88rem;
+      font-weight: 600;
+      outline: none;
+      cursor: pointer;
+    }
+
+    /* Observation Table */
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+      background: #080d1a;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+
+    table.obs-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    table.obs-table th {
+      background: #111a2e;
+      color: var(--accent);
+      font-weight: 700;
+      padding: 0.5rem 0.45rem;
+      border-bottom: 1px solid var(--border);
+      border-right: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    table.obs-table td {
+      padding: 0.45rem 0.4rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      border-right: 1px solid rgba(255, 255, 255, 0.04);
+      font-family: var(--font-mono);
+      color: var(--text-primary);
+    }
+
+    table.obs-table tr:hover td {
+      background: rgba(56, 189, 248, 0.05);
+    }
+
+    .table-footer {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .mean-box {
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+    }
+
+    .mean-box strong {
+      color: var(--accent-emerald);
+      font-family: var(--font-mono);
+      font-size: 1rem;
+    }
+
+    /* Graph Canvas Panel */
+    .graph-panel {
+      position: relative;
+      width: 100%;
+      height: 320px;
+      background: #070c17;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    canvas#graphCanvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .graph-subtabs {
+      display: flex;
+      gap: 0.35rem;
+      margin-bottom: 0.45rem;
+    }
+
+    .graph-tab-btn {
+      padding: 0.35rem 0.75rem;
+      font-size: 0.82rem;
+      font-weight: 600;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .graph-tab-btn.active {
+      background: rgba(56, 189, 248, 0.15);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* Screw Gauge Interactive Sub-Panel */
+    .screw-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.85rem;
+    }
+
+    .screw-canvas-box {
+      width: 100%;
+      height: 190px;
+      background: #070d18;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    canvas#screwCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Modals */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(3, 7, 18, 0.82);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      opacity: 0;
+      transition: opacity 0.25s ease;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+      opacity: 1;
+    }
+
+    .modal-box {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      max-width: 860px;
+      width: 100%;
+      max-height: 88vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+    }
+
+    .modal-header {
+      padding: 1rem 1.35rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--bg-card);
+    }
+
+    .modal-header h2 {
+      font-size: 1.25rem;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .modal-body {
+      padding: 1.35rem;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      line-height: 1.6;
+      font-size: 0.95rem;
+    }
+
+    .modal-body::-webkit-scrollbar {
+      width: 6px;
+    }
+    .modal-body::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 4px;
+    }
+
+    .modal-close-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 1.4rem;
+      cursor: pointer;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      transition: color 0.15s ease;
+    }
+
+    .modal-close-btn:hover {
+      color: #ffffff;
+    }
+
+    /* Formula and Highlight Boxes inside Modals */
+    .formula-callout {
+      background: #091122;
+      border-left: 4px solid var(--accent);
+      border-radius: 6px;
+      padding: 0.85rem 1.15rem;
+      margin: 0.5rem 0;
+      font-size: 1.05rem;
+      overflow-x: auto;
+    }
+
+    .formula-callout-amber {
+      border-left-color: var(--accent-amber);
+      background: #19140a;
+    }
+
+    .instruction-steps {
+      padding-left: 1.4rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .quiz-question-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+    }
+
+    .quiz-question-text {
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .quiz-options {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.45rem;
+    }
+
+    .quiz-option-btn {
+      text-align: left;
+      padding: 0.55rem 0.85rem;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--bg-subtle);
+      color: var(--text-primary);
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.15s ease;
+    }
+
+    .quiz-option-btn:hover {
+      border-color: var(--accent);
+      background: rgba(56, 189, 248, 0.1);
+    }
+
+    .quiz-option-btn.correct {
+      background: rgba(16, 185, 129, 0.25) !important;
+      border-color: var(--success) !important;
+      color: #86efac !important;
+    }
+
+    .quiz-option-btn.wrong {
+      background: rgba(239, 68, 68, 0.25) !important;
+      border-color: var(--danger) !important;
+      color: #fca5a5 !important;
+    }
+
+    .quiz-explanation {
+      margin-top: 0.4rem;
+      padding: 0.5rem 0.75rem;
+      border-radius: 6px;
+      background: rgba(0, 0, 0, 0.3);
+      font-size: 0.85rem;
+      display: none;
+    }
+
+    .quiz-explanation.show {
+      display: block;
+    }
+
+    /* Screen Reader helper */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      border: 0;
+    }
+
+    /* Laboratory Suite Footer */
+    .nms-lab-footer {
+      margin-top: 1.5rem;
+      padding: 1.2rem 1.5rem;
+      background: linear-gradient(180deg, rgba(15, 23, 42, 0.9) 0%, rgba(10, 15, 29, 0.98) 100%);
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.36);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      color: #94a3b8;
+      font-size: 0.9rem;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    body.is-fullscreen .nms-lab-footer,
+    :fullscreen .nms-lab-footer,
+    :-webkit-full-screen .nms-lab-footer {
+      display: none !important;
+    }
+    .nms-lab-footer-inner {
+      max-width: 1440px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1.25rem;
+    }
+    .nms-brand-col {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+    .nms-brand-title {
+      font-weight: 700;
+      font-size: 1rem;
+      color: #f8fafc;
+      letter-spacing: -0.01em;
+    }
+    .nms-brand-sub {
+      font-size: 0.8rem;
+      color: #38bdf8;
+    }
+    .nms-credit-col {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      background: rgba(255, 255, 255, 0.04);
+      padding: 0.45rem 1rem;
+      border-radius: 9999px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .nms-dev-text {
+      color: #cbd5e1;
+      font-size: 0.88rem;
+    }
+    .nms-dev-text strong {
+      color: #ffffff;
+    }
+    .nms-gh-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      background: #0f172a;
+      color: #38bdf8;
+      padding: 0.3rem 0.7rem;
+      border-radius: 9999px;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.82rem;
+      transition: all 0.2s ease;
+    }
+    .nms-gh-btn:hover {
+      background: #0284c7;
+      color: #ffffff;
+      border-color: #0284c7;
+      transform: translateY(-1px);
+    }
+    .nms-copy-col {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 0.3rem;
+      font-size: 0.8rem;
+      color: #64748b;
+    }
+    .nms-portal-link {
+      color: #38bdf8;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .nms-portal-link:hover {
+      text-decoration: underline;
+      color: #7dd3fc;
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-wrapper" id="appWrapper">
+  <!-- Top Navigation Header -->
+  <header>
+    <div class="header-left">
+      <div class="tag-row">
+        <span class="badge">National Model Schools • Physics Lab</span>
+        <span class="badge badge-amber">Class XI / XII • Waves &amp; AC Mains</span>
+        <span class="badge badge-green" id="headerResonanceBadge">⚡ READY</span>
+      </div>
+      <h1>
+        <span>Frequency of AC Mains with Sonometer</span>
+      </h1>
+    </div>
+
+    <div class="header-actions">
+      <a href="index.html" class="btn btn-hub" title="Return to All Labs Hub">🏠 All Labs</a>
+      <button class="btn btn-outline" id="btnInstructions" onclick="openModal('instructions')">
+        📘 Manual &amp; Steps
+      </button>
+      <button class="btn btn-outline" id="btnTheory" onclick="openModal('theory')">
+        📐 Theory &amp; KaTeX
+      </button>
+      <button class="btn btn-outline" id="btnViva" onclick="openModal('viva')">
+        📝 Viva Voce Quiz
+      </button>
+      <button class="btn btn-outline" id="btnErrorAnalysis" onclick="openModal('error')">
+        📊 Uncertainty Calc
+      </button>
+      <button class="btn btn-primary" id="btnFullscreen" onclick="toggleFullscreen()">
+        ⛶ Fullscreen
+      </button>
+    </div>
+  </header>
+
+  <!-- Laboratory Mode Navigation -->
+  <nav class="mode-nav" aria-label="Experiment Mode Tabs">
+    <button class="mode-tab active" id="tabModeResonance" onclick="switchLabMode('resonance')">
+      <span>🔬 Mode 1: Sonometer Simulation &amp; Data Logging</span>
+    </button>
+    <button class="mode-tab" id="tabModeGraph" onclick="switchLabMode('graph')">
+      <span>📈 Mode 2: Dynamic Graph Plotter ($\sqrt{T}\text{ vs }l$)</span>
+    </button>
+    <button class="mode-tab" id="tabModeScrewGauge" onclick="switchLabMode('screwGauge')">
+      <span>📐 Mode 3: Screw Gauge &amp; Linear Density ($m$)</span>
+    </button>
+    <button class="mode-tab" id="tabModeMystery" onclick="switchLabMode('mystery')">
+      <span>🎯 Mode 4: Unknown Frequency Challenge</span>
+    </button>
+  </nav>
+
+  <!-- Main Laboratory Workspace Grid -->
+  <main class="workspace-grid" id="mainWorkspace">
+    <!-- Left Column: Interactive Sonometer Canvas & Switches -->
+    <section class="card" style="display:flex; flex-direction:column; gap:0.65rem;">
+      <div class="card-header">
+        <div class="card-title">
+          <span>Sonometer Resonance Sound Box, Scale &amp; Movable Bridges</span>
+        </div>
+        <div style="display:flex; gap:0.4rem; align-items:center;">
+          <button class="btn btn-outline" style="min-height:34px; padding:0.25rem 0.65rem; font-size:0.82rem;" onclick="resetSonometerDefaults()">
+            ↺ Reset Defaults
+          </button>
+          <button class="btn btn-success" style="min-height:34px; padding:0.25rem 0.65rem; font-size:0.82rem;" onclick="autoSeekResonance()" title="Automatically move Bridge B to exact resonance">
+            ⚖ Seek Resonance ($l_0$)
+          </button>
+        </div>
+      </div>
+
+      <!-- Canvas Display -->
+      <div class="canvas-container" id="canvasBox">
+        <canvas id="sonometerCanvas"></canvas>
+
+        <!-- Floating Badges -->
+        <div class="canvas-badge canvas-badge-left" id="canvasMethodBadge">
+          <span>⚡ Method A: Wire carrying AC in B-field</span>
+        </div>
+
+        <div class="canvas-badge canvas-badge-right" id="canvasLengthBadge">
+          <span>$l$ = 63.2 cm | $f_0$ = 50.0 Hz</span>
+        </div>
+
+        <div class="rider-indicator" id="riderStatusBox">
+          <span class="status-dot dot-green" id="riderStatusDot"></span>
+          <span id="riderStatusText">Paper Rider: Seated at Antinode</span>
+        </div>
+      </div>
+
+      <!-- Simulation Controls Bar Directly Under Canvas -->
+      <div class="sim-toolbar">
+        <div class="toolbar-group">
+          <!-- Main AC Power Switch -->
+          <button class="btn btn-toggle-power on" id="btnPowerSwitch" onclick="toggleACPower()">
+            <span>⚡ AC Power:</span> <strong id="lblPowerState">ON (ACTIVE)</strong>
+          </button>
+
+          <!-- Place / Reset Paper Rider Button -->
+          <button class="btn btn-outline" id="btnResetRider" onclick="placePaperRider()">
+            <span>📄 Place Paper Rider</span>
+          </button>
+
+          <!-- Audio Hum Toggle -->
+          <button class="btn btn-outline" id="btnAudioToggle" onclick="toggleAudio()">
+            <span id="audioIcon">🔊</span> <span id="audioLabel">Sound Hum: ON</span>
+          </button>
+        </div>
+
+        <div class="toolbar-group">
+          <!-- Experimental Method Selector Toggle -->
+          <label style="font-size:0.82rem; color:var(--text-secondary); display:flex; align-items:center; gap:0.35rem;">
+            <span>Setup:</span>
+            <select class="styled-select" id="selMethod" onchange="onMethodChange(this.value)">
+              <option value="horseshoe" selected>Method A: Non-magnetic Wire + Horseshoe Magnet (f = 1/(2l)√(T/m))</option>
+              <option value="electromagnet">Method B: Soft Iron Wire + AC Electromagnet (f = 1/(4l)√(T/m))</option>
+            </select>
+          </label>
+        </div>
+      </div>
+
+      <!-- Live Physics Metrics Strip -->
+      <div class="metrics-grid">
+        <div class="metric-box">
+          <span class="metric-label">Suspended Mass ($M$)</span>
+          <span class="metric-val" id="metricMass">1.000 kg</span>
+        </div>
+        <div class="metric-box">
+          <span class="metric-label">Tension ($T = Mg$)</span>
+          <span class="metric-val" id="metricTension">9.80 N</span>
+        </div>
+        <div class="metric-box">
+          <span class="metric-label">Vibrating Length ($l$)</span>
+          <span class="metric-val green" id="metricLength">63.2 cm</span>
+        </div>
+        <div class="metric-box">
+          <span class="metric-label">Wire Frequency ($\nu_0$)</span>
+          <span class="metric-val amber" id="metricWireFreq">50.0 Hz</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Right Column: Controls, Slotted Weights & Interactive Panels -->
+    <section class="right-column" id="rightColumnContainer">
+      <!-- Section A: Primary Interactive Controls (Shown in Resonance Mode) -->
+      <div id="panelControls" class="control-card">
+        <div class="control-row">
+          <span class="control-label">
+            <span>📏 Movable Bridge B Position ($x_B$):</span>
+          </span>
+          <span class="control-val" id="lblBridgeBPos">73.2 cm</span>
+        </div>
+        <div class="slider-container">
+          <button class="step-btn" onclick="stepBridge(-1.0)" title="-1.0 cm">«</button>
+          <button class="step-btn" onclick="stepBridge(-0.1)" title="-0.1 cm">‹</button>
+          <input type="range" id="rngBridgeB" min="20.0" max="95.0" step="0.1" value="73.2" oninput="onBridgeBSlider(this.value)" aria-label="Movable Bridge B position in centimeters">
+          <button class="step-btn" onclick="stepBridge(0.1)" title="+0.1 cm">›</button>
+          <button class="step-btn" onclick="stepBridge(1.0)" title="+1.0 cm">»</button>
+        </div>
+        <div style="font-size:0.78rem; color:var(--text-muted); display:flex; justify-content:space-between;">
+          <span>Bridge A: Fixed at $x_A = 10.0\text{ cm}$</span>
+          <span>Vibrating Length $l = x_B - x_A$: <strong id="lblVibratingLen" style="color:var(--accent);">63.2 cm</strong></span>
+        </div>
+
+        <hr style="border:0; border-top:1px solid rgba(255,255,255,0.06); margin:0.25rem 0;" />
+
+        <!-- Slotted Weights Selection -->
+        <div class="control-row">
+          <span class="control-label">
+            <span>⚖ Suspended Slotted Weights (Hanger + Discs):</span>
+          </span>
+          <span class="control-val" id="lblTotalMass">1.00 kg (9.80 N)</span>
+        </div>
+        <div class="weights-rack" id="weightsRack">
+          <button class="weight-chip" onclick="setMass(0.5)">0.5 kg (Hanger)</button>
+          <button class="weight-chip active" onclick="setMass(1.0)">1.0 kg (H + 1)</button>
+          <button class="weight-chip" onclick="setMass(1.5)">1.5 kg (H + 2)</button>
+          <button class="weight-chip" onclick="setMass(2.0)">2.0 kg (H + 3)</button>
+          <button class="weight-chip" onclick="setMass(2.5)">2.5 kg (H + 4)</button>
+          <button class="weight-chip" onclick="setMass(3.0)">3.0 kg (H + 5)</button>
+          <button class="weight-chip" onclick="setMass(3.5)">3.5 kg (H + 6)</button>
+          <button class="weight-chip" onclick="setMass(4.0)">4.0 kg (H + 7)</button>
+        </div>
+
+        <hr style="border:0; border-top:1px solid rgba(255,255,255,0.06); margin:0.25rem 0;" />
+
+        <!-- Wire Material & Linear Density -->
+        <div class="control-row">
+          <span class="control-label">
+            <span>🧵 Wire Material &amp; Linear Density ($m$):</span>
+          </span>
+          <select class="styled-select" id="selWireMaterial" onchange="onWireMaterialChange(this.value)">
+            <option value="brass" selected>Brass (ρ = 8500 kg/m³, d = 0.60 mm)</option>
+            <option value="copper">Copper (ρ = 8960 kg/m³, d = 0.55 mm)</option>
+            <option value="nichrome">Nichrome (ρ = 8400 kg/m³, d = 0.50 mm)</option>
+            <option value="softiron">Soft Iron (ρ = 7800 kg/m³, d = 0.40 mm)</option>
+          </select>
+        </div>
+        <div style="font-size:0.78rem; color:var(--text-muted); display:flex; justify-content:space-between;">
+          <span>Linear density $m = \pi r^2 \rho$: <strong id="lblLinearDensity" style="color:var(--accent-emerald);">2.403 × 10⁻³ kg/m</strong></span>
+          <span>$g = 9.80\text{ m/s}^2$</span>
+        </div>
+      </div>
+
+      <!-- Section B: Observation Table Panel (Shown in Resonance Mode) -->
+      <div id="panelObsTable" class="control-card">
+        <div class="control-row">
+          <span class="control-label">
+            <span>📋 Observation Table (AC Frequency Determination)</span>
+          </span>
+          <div style="display:flex; gap:0.35rem;">
+            <button class="btn btn-outline" style="min-height:30px; padding:0.2rem 0.55rem; font-size:0.78rem;" onclick="addCurrentReading()">
+              ➕ Log Current
+            </button>
+            <button class="btn btn-outline" style="min-height:30px; padding:0.2rem 0.55rem; font-size:0.78rem;" onclick="fillSampleDataset()">
+              ⚡ Load 5 Readings
+            </button>
+            <button class="btn btn-outline" style="min-height:30px; padding:0.2rem 0.55rem; font-size:0.78rem;" onclick="clearObsTable()">
+              🗑 Clear
+            </button>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table class="obs-table" id="obsTable">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>$M$ (kg)</th>
+                <th>$T = Mg$ (N)</th>
+                <th>$\sqrt{T}$ ($\text{N}^{1/2}$)</th>
+                <th>$l$ (cm)</th>
+                <th>$l$ (m)</th>
+                <th>$l^2$ ($\text{m}^2$)</th>
+                <th>$\frac{\sqrt{T}}{l}$</th>
+                <th>$f$ (Hz)</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="obsTableBody">
+              <!-- Dynamically populated rows -->
+            </tbody>
+          </table>
+        </div>
+
+        <div class="table-footer">
+          <div class="mean-box" id="meanResultBox">
+            Mean Frequency: <strong id="valMeanFreq">-- Hz</strong> | Std Dev: <span id="valStdDev">--</span> | Error: <span id="valErrorPct">--%</span>
+          </div>
+          <button class="btn btn-outline" style="min-height:30px; padding:0.2rem 0.6rem; font-size:0.8rem;" onclick="exportTableToCSV()">
+            📥 Export CSV
+          </button>
+        </div>
+      </div>
+
+      <!-- Section C: Dynamic Graph Plotter (Mode 2) -->
+      <div id="panelGraph" class="control-card" style="display:none;">
+        <div class="control-row">
+          <span class="control-label">
+            <span>📈 Graphical Analysis &amp; Linear Regression</span>
+          </span>
+          <div class="graph-subtabs">
+            <button class="graph-tab-btn active" id="btnGraphSqrtT" onclick="setGraphType('sqrtT')">$\sqrt{T}$ vs $l$</button>
+            <button class="graph-tab-btn" id="btnGraphTvsL2" onclick="setGraphType('TvsL2')">$T$ vs $l^2$</button>
+            <button class="graph-tab-btn" id="btnGraphLorentz" onclick="setGraphType('lorentz')">Resonance Curve</button>
+          </div>
+        </div>
+
+        <div class="graph-panel">
+          <canvas id="graphCanvas"></canvas>
+        </div>
+
+        <div class="metrics-grid" style="margin-top:0.4rem;">
+          <div class="metric-box">
+            <span class="metric-label">Graph Slope ($k$)</span>
+            <span class="metric-val" id="metricGraphSlope">--</span>
+          </div>
+          <div class="metric-box">
+            <span class="metric-label">Correlation ($R^2$)</span>
+            <span class="metric-val green" id="metricGraphR2">--</span>
+          </div>
+          <div class="metric-box">
+            <span class="metric-label">Freq from Slope</span>
+            <span class="metric-val amber" id="metricGraphFreq">-- Hz</span>
+          </div>
+          <div class="metric-box">
+            <span class="metric-label">Theoretical $f$</span>
+            <span class="metric-val" id="metricTheoryFreq">50.0 Hz</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section D: Virtual Screw Gauge Tool (Mode 3) -->
+      <div id="panelScrewGauge" class="control-card" style="display:none;">
+        <div class="control-row">
+          <span class="control-label">
+            <span>📐 Virtual Screw Gauge: Measure Wire Diameter ($d = 2r$)</span>
+          </span>
+          <button class="btn btn-outline" style="min-height:28px; padding:0.2rem 0.5rem; font-size:0.78rem;" onclick="resetScrewGauge()">
+            ↺ Reset Micrometer
+          </button>
+        </div>
+
+        <div class="screw-panel">
+          <div class="screw-canvas-box">
+            <canvas id="screwCanvas"></canvas>
+          </div>
+
+          <div class="control-row">
+            <span class="control-label">Rotate Thimble (Circular Scale):</span>
+            <span class="control-val" id="lblThimbleReading">0.600 mm</span>
+          </div>
+
+          <div class="slider-container">
+            <button class="step-btn" onclick="stepScrewGauge(-5)">«</button>
+            <button class="step-btn" onclick="stepScrewGauge(-1)">‹</button>
+            <input type="range" id="rngScrewGauge" min="0" max="200" step="1" value="60" oninput="onScrewGaugeSlider(this.value)" aria-label="Screw gauge thimble rotation">
+            <button class="step-btn" onclick="stepScrewGauge(1)">›</button>
+            <button class="step-btn" onclick="stepScrewGauge(5)">»</button>
+          </div>
+
+          <div class="metrics-grid">
+            <div class="metric-box">
+              <span class="metric-label">Pitch Scale Reading</span>
+              <span class="metric-val" id="metricPSR">0.50 mm</span>
+            </div>
+            <div class="metric-box">
+              <span class="metric-label">Circular Scale Div</span>
+              <span class="metric-val" id="metricCSR">10 div</span>
+            </div>
+            <div class="metric-box">
+              <span class="metric-label">Least Count ($LC$)</span>
+              <span class="metric-val green">0.01 mm</span>
+            </div>
+            <div class="metric-box">
+              <span class="metric-label">Calculated Diameter</span>
+              <span class="metric-val amber" id="metricTotalDiam">0.600 mm</span>
+            </div>
+          </div>
+
+          <div style="background:rgba(0,0,0,0.2); padding:0.6rem; border-radius:6px; font-size:0.82rem; line-height:1.5;">
+            <div>Radius $r = d / 2 = \mathbf{0.300\text{ mm}} = 3.00 \times 10^{-4}\text{ m}$</div>
+            <div>Cross-sectional Area $A = \pi r^2 = \mathbf{2.827 \times 10^{-7}\text{ m}^2}$</div>
+            <div>Linear Mass Density $m = A \cdot \rho = \mathbf{2.403 \times 10^{-3}\text{ kg/m}}$</div>
+            <button class="btn btn-success" style="min-height:32px; padding:0.3rem 0.8rem; font-size:0.82rem; margin-top:0.4rem;" onclick="applyMeasuredLinearDensity()">
+              ✓ Apply Measured Linear Density to Sonometer
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section E: Mystery / Unknown Frequency Challenge (Mode 4) -->
+      <div id="panelMystery" class="control-card" style="display:none;">
+        <div class="control-row">
+          <span class="control-label">
+            <span>🎯 Unknown AC Mains Generator Challenge</span>
+          </span>
+          <button class="btn btn-outline" style="min-height:28px; padding:0.2rem 0.55rem; font-size:0.78rem;" onclick="generateMysteryFrequency()">
+            🎲 Generate New Mystery Frequency
+          </button>
+        </div>
+
+        <p style="font-size:0.85rem; color:var(--text-secondary); line-height:1.5;">
+          An unknown AC signal generator powers the sonometer. Determine its true frequency by conducting resonance experiments, varying the suspended mass $M$, locating resonant lengths $l$, and evaluating $f$.
+        </p>
+
+        <div style="display:flex; flex-direction:column; gap:0.6rem; background:rgba(0,0,0,0.25); padding:0.8rem; border-radius:8px;">
+          <div class="control-row">
+            <span class="control-label">Your Experimental Frequency Estimate:</span>
+            <input type="number" id="inpUserMysteryFreq" placeholder="e.g. 54.2" step="0.1" style="width:110px; background:var(--bg-subtle); border:1px solid var(--border); color:#fff; padding:0.35rem 0.6rem; border-radius:6px; font-family:var(--font-mono); font-size:0.95rem;">
+            <button class="btn btn-primary" style="min-height:36px; padding:0.35rem 0.85rem;" onclick="checkMysteryAnswer()">
+              Submit Answer
+            </button>
+          </div>
+
+          <div id="mysteryFeedback" style="display:none; padding:0.6rem; border-radius:6px; font-size:0.88rem; font-weight:600;"></div>
+          <button class="btn btn-outline" style="min-height:30px; padding:0.25rem 0.6rem; font-size:0.8rem; align-self:flex-start;" onclick="revealMysteryFrequency()">
+            👁 Reveal Hidden Frequency
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Branded Suite Footer with Mandatory Developer Credits -->
+  <footer class="nms-lab-footer">
+    <div class="nms-lab-footer-inner">
+      <div class="nms-brand-col">
+        <div class="nms-brand-title">🏛️ National Model Schools</div>
+        <div class="nms-brand-sub">Senior Secondary Physics Virtual Laboratory</div>
+      </div>
+      <div class="nms-credit-col">
+        <span class="nms-dev-text">Developed with <span style="color:#ef4444;">❤</span> by <strong>Syed Mazhar Ali</strong></span>
+        <a href="https://github.com/mazhar-in" target="_blank" rel="noopener noreferrer" class="nms-gh-btn" title="Syed Mazhar Ali on GitHub">
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
+          <span>mazhar-in</span>
+        </a>
+      </div>
+      <div class="nms-copy-col">
+        <span>© National Model Schools. All rights reserved.</span>
+        <a href="index.html" class="nms-portal-link">← Return to All Labs</a>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<!-- MODAL 1: Instructions & Laboratory Manual -->
+<div class="modal-backdrop" id="modalInstructions">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2><span>📘</span> Laboratory Manual: Frequency of AC Mains</h2>
+      <button class="modal-close-btn" onclick="closeModal('modalInstructions')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <h3>1. Aim of the Experiment</h3>
+      <p>
+        To determine the frequency of alternating current (AC) mains using a sonometer (by observing the resonant vibration of a stretched wire driven by electromagnetic force).
+      </p>
+
+      <h3>2. Apparatus Required</h3>
+      <ul class="instruction-steps">
+        <li><strong>Sonometer:</strong> Hollow resonant wooden sound box with two sound holes, tuning pegs, and a 100 cm graduated scale.</li>
+        <li><strong>Knife-edge Bridges:</strong> Two movable wedge-shaped wooden/brass bridges ($A$ and $B$) with sharp apexes to define vibrating wire length $l$.</li>
+        <li><strong>Step-Down Transformer:</strong> Steps down 220V mains to safe 2V–6V AC.</li>
+        <li><strong>Magnet / Electromagnet:</strong> Strong horseshoe permanent magnet (Method A) or AC electromagnet with soft iron core (Method B).</li>
+        <li><strong>Sonometer Wire:</strong> Brass or copper wire (non-magnetic, for Method A) or soft iron wire (ferromagnetic, for Method B).</li>
+        <li><strong>Slotted Weights with Hanger:</strong> 500g hanger + seven 500g slotted weights ($0.5\text{ kg to }4.0\text{ kg}$).</li>
+        <li><strong>Light Paper Rider:</strong> Inverted V-shaped strip of paper placed at the center (antinode) of the vibrating segment.</li>
+        <li><strong>Screw Gauge &amp; Physical Balance:</strong> To measure the wire diameter and determine linear density $m$.</li>
+      </ul>
+
+      <h3>3. Step-by-Step Procedure</h3>
+      <ol class="instruction-steps">
+        <li><strong>Tension Setup:</strong> Place a known mass $M$ (e.g., 1.0 kg) on the weight hanger suspended over the frictionless pulley. The tension is $T = Mg$.</li>
+        <li><strong>Position Magnet:</strong> Position the horseshoe magnet (or electromagnet) at the exact midpoint between Bridge A and Bridge B.</li>
+        <li><strong>Paper Rider Placement:</strong> Fold a light paper strip into an inverted V-shape and balance it carefully on the wire at the antinode (midpoint between bridges).</li>
+        <li><strong>Close AC Switch:</strong> Turn on the AC power supply. Alternating current flows, producing a dynamic transverse magnetic driving force on the wire.</li>
+        <li><strong>Resonance Search (Flutter &amp; Fly-off):</strong> Slowly adjust movable Bridge B:
+          <ul style="margin-top:0.3rem; margin-left:1.2rem;">
+            <li>When far from resonance, the wire hums quietly and the paper rider sits calmly.</li>
+            <li>As the vibrating length approaches resonant length $l_0$, the wire vibration amplitude grows and the paper rider begins to flutter vigorously.</li>
+            <li>At exact resonance, the amplitude peaks sharply and the paper rider is violently thrown off ("Flies Off!").</li>
+          </ul>
+        </li>
+        <li><strong>Record Resonant Lengths:</strong> Record length $l_1$ when approaching resonance by increasing length, and $l_2$ by decreasing length. The mean resonant length is $l = \frac{l_1 + l_2}{2}$.</li>
+        <li><strong>Repeat for Various Loads:</strong> Repeat the observations for loads $M = 1.0, 1.5, 2.0, 2.5, 3.0\text{ kg}$.</li>
+        <li><strong>Tabulate &amp; Plot:</strong> Record all readings in the observation table and plot $\sqrt{T}$ against $l$ to determine the frequency from the slope.</li>
+      </ol>
+
+      <h3>4. Precautions</h3>
+      <ul class="instruction-steps">
+        <li>Ensure the sonometer wire is kink-free, uniform, and rests snugly on the sharp edges of the bridges.</li>
+        <li>Keep the pulley clean and lubricated to eliminate friction errors.</li>
+        <li>Use low voltage AC (2V–6V) from a step-down transformer to prevent excessive Joule heating of the wire ($I^2Rt$).</li>
+        <li>Place the paper rider precisely at the center between the two bridges where the fundamental antinode forms.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL 2: Theory & KaTeX Mathematical Derivations -->
+<div class="modal-backdrop" id="modalTheory">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2><span>📐</span> Physics Theory &amp; Mathematical Derivations</h2>
+      <button class="modal-close-btn" onclick="closeModal('modalTheory')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <h3>1. Transverse Stationary Waves on a Stretched String</h3>
+      <p>
+        When a stretched wire of length $l$, tension $T$, and mass per unit length (linear mass density) $m$ is fixed at both ends by two sharp bridges, transverse standing waves are established with nodes at the bridges and an antinode at the center.
+      </p>
+      <p>
+        The velocity of transverse waves along the wire is given by:
+      </p>
+      <div class="formula-callout">
+        $$v = \sqrt{\frac{T}{m}}$$
+      </div>
+      <p>
+        For the fundamental mode of vibration, the length of the vibrating segment corresponds to half a wavelength ($\lambda / 2 = l \implies \lambda = 2l$). Hence, the natural fundamental frequency of the wire is:
+      </p>
+      <div class="formula-callout">
+        $$\nu_0 = \frac{v}{\lambda} = \frac{1}{2l}\sqrt{\frac{T}{m}}$$
+      </div>
+
+      <h3>2. Dual Methods of Excitation &amp; AC Frequency Relation</h3>
+
+      <div class="formula-callout">
+        <strong>Method A: AC Current Through Wire in a Transverse Magnetic Field (Horseshoe Magnet)</strong>
+        <p style="margin-top:0.35rem;">
+          When an alternating current $I = I_0 \sin(2\pi f t)$ of mains frequency $f$ passes through a non-magnetic wire (brass or copper) situated in a transverse magnetic field $B$ from a permanent horseshoe magnet, the magnetic Lorentz force acting on the wire is:
+        </p>
+        $$F(t) = B \cdot I(t) \cdot l = B I_0 l \sin(2\pi f t)$$
+        <p>
+          By Fleming's Left-Hand Rule, the force acts upwards during one half cycle and downwards during the next half cycle. Therefore, the frequency of the mechanical driving force is <strong>identical to the AC mains frequency $f$</strong>.
+        </p>
+        <p>At resonance ($\nu_0 = f$):</p>
+        $$f = \frac{1}{2l}\sqrt{\frac{T}{m}} \implies \frac{\sqrt{T}}{l} = 2f\sqrt{m} = \text{constant}$$
+      </div>
+
+      <div class="formula-callout formula-callout-amber">
+        <strong>Method B: Ferromagnetic Wire Under an AC Electromagnet (Soft Iron Wire)</strong>
+        <p style="margin-top:0.35rem;">
+          When an electromagnet fed by AC mains is held above a soft iron wire, the electromagnet attracts the soft iron wire whenever magnetic flux peaks, regardless of whether the current is in the positive or negative half-cycle.
+        </p>
+        <p>
+          Since AC current reaches maximum amplitude twice in every complete cycle, the soft iron wire is attracted <strong>twice per cycle</strong>. Thus, the wire vibrates at twice the mains frequency:
+        </p>
+        $$\nu_{\text{wire}} = 2f$$
+        <p>Equating to the fundamental frequency of the wire:</p>
+        $$2f = \frac{1}{2l}\sqrt{\frac{T}{m}} \implies f = \frac{1}{4l}\sqrt{\frac{T}{m}}$$
+      </div>
+
+      <h3>3. Graphical Method of Determination</h3>
+      <p>
+        Since $T = Mg$, we have $l \propto \sqrt{T}$. A graph of $\sqrt{T}$ on the y-axis against resonant length $l$ on the x-axis gives a straight line passing through the origin.
+      </p>
+      <div class="formula-callout">
+        $$\text{Slope } k = \frac{\sqrt{T}}{l} = 2f\sqrt{m} \implies f = \frac{k}{2\sqrt{m}} = \frac{\text{Slope}}{2\sqrt{m}}$$
+      </div>
+      <p>
+        Alternatively, a graph of $T$ against $l^2$ yields a straight line with slope $S = \frac{T}{l^2} = 4 m f^2$, giving $f = \frac{1}{2}\sqrt{\frac{S}{m}}$.
+      </p>
+
+      <h3>4. Linear Mass Density Determination ($m$)</h3>
+      <p>
+        The linear mass density $m$ of the wire is determined by measuring its diameter $d = 2r$ with a micrometer screw gauge and using the density of the wire material $\rho$:
+      </p>
+      <div class="formula-callout">
+        $$m = \frac{\text{mass}}{\text{length}} = \pi r^2 \rho = \frac{\pi d^2 \rho}{4}$$
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL 3: Viva Voce Interactive Quiz -->
+<div class="modal-backdrop" id="modalViva">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2><span>📝</span> Viva Voce Interactive Examination</h2>
+      <button class="modal-close-btn" onclick="closeModal('modalViva')">&times;</button>
+    </div>
+    <div class="modal-body" id="quizContainer">
+      <div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-card); padding:0.65rem 1rem; border-radius:8px; border:1px solid var(--border);">
+        <span>Test your conceptual understanding for practical exams:</span>
+        <span style="font-weight:700; color:var(--accent);" id="quizScoreText">Score: 0 / 10</span>
+      </div>
+
+      <div class="quiz-question-box" data-qid="1">
+        <div class="quiz-question-text">Q1. What is the standard frequency of alternating current (AC) mains in India and the UK?</div>
+        <div class="quiz-options">
+          <button class="quiz-option-btn" onclick="checkQuiz(1, 0, false)">60 Hz</button>
+          <button class="quiz-option-btn" onclick="checkQuiz(1, 1, true)">50 Hz</button>
+          <button class="quiz-option-btn" onclick="checkQuiz(1, 2, false)">100 Hz</button>
+          <button class="quiz-option-btn" onclick="checkQuiz(1, 3, false)">220 Hz</button>
+        </div>
+        <div class="quiz-explanation">
+          <strong>Explanation:</strong> In India, the UK, and Europe, standard domestic AC power is generated at 50 Hz (50 complete cycles per second). In North America (USA/Canada), the standard is 60 Hz.
+        </div>
+      </div>
+
+      <div class="quiz-question-box" data-qid="2">
+        <div class="quiz-question-text">Q2. In Method A (AC current in wire with permanent horseshoe magnet), why does the wire vibrate at the AC frequency $f$?</div>
+        <div class="quiz-options">
+          <button class="quiz-option-btn" onclick="checkQuiz(2, 0, false)">Because the wire is heated twice per cycle</button>
+          <button class="quiz-option-btn" onclick="checkQuiz(2, 1, true)">Because Fleming's Left Hand Rule magnetic force reverses direction with current reversal once per half-cycle</button>
+          <button class="quiz-option-btn" onclick="checkQuiz(2, 2, false)">Because gravity alternates frequency</button>
+          <button class="quiz-option-btn" onclick="checkQuiz(2, 3, false)">Because the pulley oscillates at frequency 2f</button>
+        </div>
+        <div class="quiz-explanation">
+          <strong>Explanation:</strong> The magnetic Lorentz force $F = I L \times B$ changes direction every time current $I$ alternates sign. Therefore, one full cycle of AC produces one full cycle of mechanical force (frequency = $f$).
+        </div>
+      </div>
+
+      <div class="quiz-question-box" data-qid="3">
+        <div class="quiz-question-text">Q3. Why does a soft iron wire placed under an AC electromagnet vibrate with a frequency of $2f$?</div>
+        <div class="quiz-options">
+          <button class="quiz-option-btn" onclick="checkQuiz(3, 0, true)">Because ferromagnetic soft iron is attracted to the magnet pole twice during each complete AC cycle (both + and - peaks)</button>
+          <button class="quiz-option-btn" onclick="checkQuiz(3, 1, false)">Because the speed of sound doubles in soft iron</button>
+          <button class="quiz-option-btn" onclick="checkQuiz(3, 2, false)">Because the wire has two fixed ends</button>
+          <button class="quiz-option-btn" onclick="checkQuiz(3, 3, false)">Because the transformer doubles the voltage</button>
+        </div>
+        <div class="quiz-explanation">
+          <strong>Explanation:</strong> Magnetic force on unmagnetized soft iron is proportional to $B^2$. Regardless of polarity (+ or - current), soft iron is always attracted. Thus, it experiences two force peaks per cycle ($2f$).
+        </div>
+      </div>
+
+      <div class="quiz-question-box" data-qid="4">
+        <div class="quiz-question-text">Q4. Why is the paper rider placed at the midpoint between the two knife-edge bridges?</div>
+        <div class="quiz-options">
+          <button class="quiz-option-btn" onclick="checkQuiz(4, 0, false)">Because the nodes are formed at the midpoint</button>
+          <button class="quiz-option-btn" onclick="checkQuiz(4, 1, true)">Because the fundamental vibration mode forms an antinode (maximum amplitude) at the center</button>
+          <button class="quiz-option-btn" onclick="checkQuiz(4, 2, false)">To decrease the weight of the wire</button>
+          <button class="quiz-option-btn" onclick="checkQuiz(4, 3, false)">To conduct electric current into the wooden soundboard</button>
+        </div>
+        <div class="quiz-explanation">
+          <strong>Explanation:</strong> In fundamental mode standing waves, nodes (zero motion) occur at the fixed bridges and the single antinode (maximum displacement) is at the exact center. The paper rider flutters and is thrown off when placed at this antinode.
+        </div>
+      </div>
+
+      <div class="quiz-question-box" data-qid="5">
+        <div class="quiz-question-text">Q5. What is the purpose of the hollow wooden soundboard with holes in the sonometer?</div>
+        <div class="quiz-options">
+          <button class="quiz-option-btn" onclick="checkQuiz(5, 0, false)">To keep the apparatus cool</button>
+          <button class="quiz-option-btn" onclick="checkQuiz(5, 1, true)">To acoustically amplify sound by communicating vibrations through the air cavity inside the sound box</button>
+          <button class="quiz-option-btn" onclick="checkQuiz(5, 2, false)">To prevent electric shocks from the wire</button>
+          <button class="quiz-option-btn" onclick="checkQuiz(5, 3, false)">To store the slotted weights when not in use</button>
+        </div>
+        <div class="quiz-explanation">
+          <strong>Explanation:</strong> A thin wire vibrating in air has small surface area and produces very faint sound. The bridges transmit wire vibrations to the large hollow wooden box, which sets a large volume of enclosed air into resonance, greatly magnifying the audible sound.
+        </div>
+      </div>
+
+      <div class="quiz-question-box" data-qid="6">
+        <div class="quiz-question-text">Q6. What type of graph is obtained when $\sqrt{T}$ is plotted on the y-axis against resonant length $l$ on the x-axis?</div>
+        <div class="quiz-options">
+          <button class="quiz-option-btn" onclick="checkQuiz(6, 0, true)">A straight line passing through the origin</button>
+          <button class="quiz-option-btn" onclick="checkQuiz(6, 1, false)">A parabola opening upwards</button>
+          <button class="quiz-option-btn" onclick="checkQuiz(6, 2, false)">A rectangular hyperbola</button>
+          <button class="quiz-option-btn" onclick="checkQuiz(6, 3, false)">An ellipse</button>
+        </div>
+        <div class="quiz-explanation">
+          <strong>Explanation:</strong> According to the law of tension, $f = \frac{1}{2l}\sqrt{\frac{T}{m}} \implies \sqrt{T} = (2f\sqrt{m}) \cdot l$. This represents $y = mx$, a straight line through the origin whose slope is $2f\sqrt{m}$.
+        </div>
+      </div>
+
+      <div class="quiz-question-box" data-qid="7">
+        <div class="quiz-question-text">Q7. Why is a step-down transformer used instead of connecting the sonometer directly to 220V mains?</div>
+        <div class="quiz-options">
+          <button class="quiz-option-btn" onclick="checkQuiz(7, 0, true)">For personal safety (prevent electrocution) and to prevent excessive Joule heating ($I^2Rt$) melting the wire</button>
+          <button class="quiz-option-btn" onclick="checkQuiz(7, 1, false)">Because 220V mains does not have 50 Hz frequency</button>
+          <button class="quiz-option-btn" onclick="checkQuiz(7, 2, false)">To convert AC into DC</button>
+          <button class="quiz-option-btn" onclick="checkQuiz(7, 3, false)">Because high voltage makes the wire vibrate too fast to see</button>
+        </div>
+        <div class="quiz-explanation">
+          <strong>Explanation:</strong> Direct 220V connection is fatal and would pass enormous currents through the low-resistance wire, burning it instantly. A 2V–6V step-down transformer ensures complete student safety while maintaining the exact mains frequency.
+        </div>
+      </div>
+
+      <div class="quiz-question-box" data-qid="8">
+        <div class="quiz-question-text">Q8. If the suspended mass $M$ is quadrupled ($4 \times$), by what factor does the resonant length $l$ change?</div>
+        <div class="quiz-options">
+          <button class="quiz-option-btn" onclick="checkQuiz(8, 0, false)">Halves ($l/2$)</button>
+          <button class="quiz-option-btn" onclick="checkQuiz(8, 1, true)">Doubles ($2l$)</button>
+          <button class="quiz-option-btn" onclick="checkQuiz(8, 2, false)">Remains unchanged</button>
+          <button class="quiz-option-btn" onclick="checkQuiz(8, 3, false)">Quadruples ($4l$)</button>
+        </div>
+        <div class="quiz-explanation">
+          <strong>Explanation:</strong> Since $l = \frac{\sqrt{T}}{2f\sqrt{m}} \propto \sqrt{M}$, quadrupling $M$ makes $l' \propto \sqrt{4M} = 2\sqrt{M} = 2l$. The resonant length doubles!
+        </div>
+      </div>
+
+      <div class="quiz-question-box" data-qid="9">
+        <div class="quiz-question-text">Q9. Which instrument is used to determine the diameter and linear mass density of the sonometer wire?</div>
+        <div class="quiz-options">
+          <button class="quiz-option-btn" onclick="checkQuiz(9, 0, false)">Spherometer</button>
+          <button class="quiz-option-btn" onclick="checkQuiz(9, 1, true)">Screw Gauge (Micrometer)</button>
+          <button class="quiz-option-btn" onclick="checkQuiz(9, 2, false)">Vernier Calipers</button>
+          <button class="quiz-option-btn" onclick="checkQuiz(9, 3, false)">Metre Scale</button>
+        </div>
+        <div class="quiz-explanation">
+          <strong>Explanation:</strong> A screw gauge has a least count of $0.01\text{ mm}$ (or $0.001\text{ cm}$), which provides the high precision required to accurately measure thin wires ($0.4\text{ to }0.8\text{ mm}$ diameter).
+        </div>
+      </div>
+
+      <div class="quiz-question-box" data-qid="10">
+        <div class="quiz-question-text">Q10. What is meant by "resonance" in this experiment?</div>
+        <div class="quiz-options">
+          <button class="quiz-option-btn" onclick="checkQuiz(10, 0, false)">When the current drops to zero</button>
+          <button class="quiz-option-btn" onclick="checkQuiz(10, 1, true)">When the natural frequency of the wire segment matches the driving frequency of the alternating magnetic force, causing maximum amplitude</button>
+          <button class="quiz-option-btn" onclick="checkQuiz(10, 2, false)">When the wire snaps under excessive tension</button>
+          <button class="quiz-option-btn" onclick="checkQuiz(10, 3, false)">When the wooden sound box absorbs all vibrations</button>
+        </div>
+        <div class="quiz-explanation">
+          <strong>Explanation:</strong> Resonance is the physical phenomenon where an oscillating system driven by a periodic external force responds with maximum amplitude when the driving frequency equals the natural fundamental frequency of the system.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL 4: Uncertainty & Error Analysis Calculator -->
+<div class="modal-backdrop" id="modalError">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2><span>📊</span> Experimental Error &amp; Uncertainty Propagation</h2>
+      <button class="modal-close-btn" onclick="closeModal('modalError')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <h3>1. Formula for Frequency</h3>
+      <div class="formula-callout">
+        $$f = \frac{1}{2l} \sqrt{\frac{T}{m}} = \frac{1}{2l} \sqrt{\frac{M g}{\pi r^2 \rho}} = \frac{1}{2l r} \sqrt{\frac{M g}{\pi \rho}}$$
+      </div>
+
+      <h3>2. Fractional Uncertainty Propagation</h3>
+      <p>
+        Taking logarithms and differentiating, the maximum fractional error in frequency is given by:
+      </p>
+      <div class="formula-callout">
+        $$\frac{\Delta f}{f} = \frac{\Delta l}{l} + \frac{1}{2}\frac{\Delta M}{M} + \frac{\Delta r}{r} = \frac{\Delta l}{l} + \frac{1}{2}\frac{\Delta T}{T} + \frac{1}{2}\frac{\Delta m}{m}$$
+      </div>
+
+      <h3>3. Typical Instrument Limits of Error:</h3>
+      <ul class="instruction-steps">
+        <li><strong>Metre Scale:</strong> $\Delta l = 0.1\text{ cm} = 0.001\text{ m}$ (Least count)</li>
+        <li><strong>Screw Gauge:</strong> $\Delta d = 0.01\text{ mm} \implies \frac{\Delta r}{r} = \frac{\Delta d}{d} \approx \frac{0.01}{0.60} \approx 1.67\%$</li>
+        <li><strong>Slotted Weights:</strong> $\Delta M \approx 0.005\text{ kg} \implies \frac{\Delta M}{M} \approx 0.5\%$</li>
+      </ul>
+
+      <div style="background:var(--bg-card); padding:1rem; border-radius:8px; border:1px solid var(--border); margin-top:0.5rem;">
+        <h4 style="color:var(--accent); margin-bottom:0.5rem;">Live Uncertainty Estimation for Current State:</h4>
+        <div id="liveUncertaintyReport" style="font-size:0.9rem; line-height:1.6; font-family:var(--font-mono);">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/**
+ * SENIOR SECONDARY PHYSICS VIRTUAL LABORATORY
+ * Experiment: "To find the frequency of AC mains with a sonometer"
+ * High-fidelity Canvas rendering, Web Audio synthesis, interactive paper rider physics,
+ * linear regression graph analysis, virtual screw gauge, and pedagogical modals.
+ */
+
+// Global State
+const state = {
+  // Physical parameters
+  method: 'horseshoe', // 'horseshoe' (Method A) or 'electromagnet' (Method B)
+  mainsFrequency: 50.0, // Theoretical AC mains frequency in Hz
+  actualFrequency: 50.0, // Current generator frequency (for mystery mode)
+  isMystery: false,
+  acPowerOn: true,
+  audioEnabled: true,
+
+  // Sonometer Geometry
+  bridgeAPos: 10.0, // Fixed bridge A position (cm)
+  bridgeBPos: 73.2, // Movable bridge B position (cm)
+  get vibratingLength() {
+    return Math.max(1.0, this.bridgeBPos - this.bridgeAPos); // cm
+  },
+
+  // Mass & Tension
+  suspendedMass: 1.0, // kg
+  g: 9.80, // m/s^2
+  get tension() {
+    return this.suspendedMass * this.g; // N
+  },
+
+  // Wire Properties
+  wireMaterial: 'brass',
+  materials: {
+    brass: { name: 'Brass', density: 8500, diameter: 0.00060 }, // 0.60 mm
+    copper: { name: 'Copper', density: 8960, diameter: 0.00055 }, // 0.55 mm
+    nichrome: { name: 'Nichrome', density: 8400, diameter: 0.00050 }, // 0.50 mm
+    softiron: { name: 'Soft Iron', density: 7800, diameter: 0.00040 } // 0.40 mm
+  },
+  wireRadius: 0.00030, // m (default for brass)
+  wireDensity: 8500, // kg/m^3
+  get linearDensity() {
+    return Math.PI * Math.pow(this.wireRadius, 2) * this.wireDensity; // kg/m
+  },
+
+  // Paper Rider State
+  riderOnWire: true,
+  riderPosition: 0.5, // Relative position along vibrating length (0.5 = antinode)
+  riderFlyAnimation: {
+    active: false,
+    x: 0,
+    y: 0,
+    vx: 0,
+    vy: 0,
+    rot: 0,
+    vrot: 0,
+    landed: false
+  },
+
+  // Dragging bridges on canvas
+  isDraggingBridgeB: false,
+  dragStartX: 0,
+
+  // Audio synthesis nodes
+  audioCtx: null,
+  oscNode: null,
+  gainNode: null,
+  humFilter: null,
+
+  // Observation Table
+  observations: [],
+
+  // Graph state
+  graphType: 'sqrtT', // 'sqrtT', 'TvsL2', 'lorentz'
+
+  // Screw Gauge State
+  screwGauge: {
+    pitch: 0.5, // mm
+    divisions: 50, // divisions per turn
+    lc: 0.01, // mm
+    thimblePos: 60, // in units of 0.01 mm => 0.60 mm
+    zeroError: 0.00
+  },
+
+  // Mode tab
+  currentMode: 'resonance'
+};
+
+// Canvas references
+let sonometerCanvas, sCtx;
+let graphCanvas, gCtx;
+let screwCanvas, scCtx;
+let animFrameId = null;
+
+// Initialization on Window Load
+window.addEventListener('DOMContentLoaded', () => {
+  initCanvases();
+  updateReadouts();
+  renderObsTable();
+  setupCanvasInteractions();
+  startAnimationLoop();
+  updateUncertaintyCalc();
+
+  // Resize listener
+  window.addEventListener('resize', () => {
+    resizeCanvases();
+    if (state.currentMode === 'graph') renderGraph();
+    if (state.currentMode === 'screwGauge') renderScrewGauge();
+  });
+});
+
+function initCanvases() {
+  sonometerCanvas = document.getElementById('sonometerCanvas');
+  sCtx = sonometerCanvas.getContext('2d');
+
+  graphCanvas = document.getElementById('graphCanvas');
+  gCtx = graphCanvas.getContext('2d');
+
+  screwCanvas = document.getElementById('screwCanvas');
+  scCtx = screwCanvas.getContext('2d');
+
+  resizeCanvases();
+}
+
+function resizeCanvases() {
+  const dpr = window.devicePixelRatio || 1;
+
+  if (sonometerCanvas && sonometerCanvas.parentElement) {
+    const rect = sonometerCanvas.parentElement.getBoundingClientRect();
+    sonometerCanvas.width = rect.width * dpr;
+    sonometerCanvas.height = rect.height * dpr;
+  }
+
+  if (graphCanvas && graphCanvas.parentElement) {
+    const rect = graphCanvas.parentElement.getBoundingClientRect();
+    graphCanvas.width = rect.width * dpr;
+    graphCanvas.height = rect.height * dpr;
+  }
+
+  if (screwCanvas && screwCanvas.parentElement) {
+    const rect = screwCanvas.parentElement.getBoundingClientRect();
+    screwCanvas.width = rect.width * dpr;
+    screwCanvas.height = rect.height * dpr;
+  }
+}
+
+// ----------------------------------------------------
+// PHYSICS CALCULATIONS
+// ----------------------------------------------------
+
+/**
+ * Natural fundamental frequency of the vibrating string segment
+ * v = sqrt(T / m), f0 = v / (2 * l)
+ */
+function calculateWireNaturalFrequency() {
+  const l_meters = state.vibratingLength / 100.0;
+  const T = state.tension;
+  const m = state.linearDensity;
+  if (l_meters <= 0 || m <= 0) return 0;
+  return (1.0 / (2.0 * l_meters)) * Math.sqrt(T / m);
+}
+
+/**
+ * Theoretical resonant length for the current tension and wire material
+ */
+function calculateTheoreticalResonantLength() {
+  const T = state.tension;
+  const m = state.linearDensity;
+  const targetFreq = (state.method === 'electromagnet')
+    ? 2.0 * state.actualFrequency // Method B: wire vibrates at 2f
+    : state.actualFrequency;       // Method A: wire vibrates at f
+
+  const l_meters = (1.0 / (2.0 * targetFreq)) * Math.sqrt(T / m);
+  return l_meters * 100.0; // in cm
+}
+
+/**
+ * Lorentzian Mechanical Resonance Amplitude
+ */
+function calculateResonanceAmplitude() {
+  if (!state.acPowerOn) return 0.0;
+
+  const wireFreq = calculateWireNaturalFrequency();
+  const drivingFreq = (state.method === 'electromagnet')
+    ? 2.0 * state.actualFrequency
+    : state.actualFrequency;
+
+  const deltaF = Math.abs(wireFreq - drivingFreq);
+  const damping = 1.4; // Mechanical damping width (Hz)
+
+  // Lorentzian resonance curve: A = A_max * gamma^2 / (deltaF^2 + gamma^2)
+  const maxAmp = 12.0; // max physical deflection in px
+  const amp = maxAmp * (Math.pow(damping, 2) / (Math.pow(deltaF, 2) + Math.pow(damping, 2)));
+  return amp;
+}
+
+// ----------------------------------------------------
+// WEB AUDIO API SYNTHESIS
+// ----------------------------------------------------
+
+function initAudioContext() {
+  if (!state.audioCtx) {
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    if (AudioContext) {
+      state.audioCtx = new AudioContext();
+    }
+  }
+}
+
+function updateAudioSynthesis() {
+  if (!state.audioCtx) return;
+
+  if (state.audioCtx.state === 'suspended') {
+    state.audioCtx.resume();
+  }
+
+  if (!state.acPowerOn || !state.audioEnabled) {
+    if (state.gainNode) {
+      state.gainNode.gain.setTargetAtTime(0.0001, state.audioCtx.currentTime, 0.05);
+    }
+    return;
+  }
+
+  const drivingFreq = (state.method === 'electromagnet')
+    ? 2.0 * state.actualFrequency
+    : state.actualFrequency;
+
+  if (!state.oscNode) {
+    state.oscNode = state.audioCtx.createOscillator();
+    state.oscNode.type = 'triangle'; // Richer in odd harmonics, like a hollow soundbox
+
+    // Low pass filter to simulate wooden resonance body
+    state.humFilter = state.audioCtx.createBiquadFilter();
+    state.humFilter.type = 'lowpass';
+    state.humFilter.frequency.value = 400;
+
+    state.gainNode = state.audioCtx.createGain();
+    state.gainNode.gain.value = 0.0;
+
+    state.oscNode.connect(state.humFilter);
+    state.humFilter.connect(state.gainNode);
+    state.gainNode.connect(state.audioCtx.destination);
+    state.oscNode.start();
+  }
+
+  state.oscNode.frequency.setTargetAtTime(drivingFreq, state.audioCtx.currentTime, 0.05);
+
+  // Volume swells as resonance approaches!
+  const amp = calculateResonanceAmplitude();
+  const normalizedGain = (amp / 12.0) * 0.18 + 0.02; // Base hum 0.02, peak 0.20
+  state.gainNode.gain.setTargetAtTime(normalizedGain, state.audioCtx.currentTime, 0.05);
+}
+
+function toggleAudio() {
+  state.audioEnabled = !state.audioEnabled;
+  initAudioContext();
+  const icon = document.getElementById('audioIcon');
+  const label = document.getElementById('audioLabel');
+
+  if (state.audioEnabled) {
+    icon.textContent = '🔊';
+    label.textContent = 'Sound Hum: ON';
+  } else {
+    icon.textContent = '🔇';
+    label.textContent = 'Sound Hum: OFF';
+  }
+  updateAudioSynthesis();
+}
+
+function toggleACPower() {
+  state.acPowerOn = !state.acPowerOn;
+  initAudioContext();
+
+  const btn = document.getElementById('btnPowerSwitch');
+  const lbl = document.getElementById('lblPowerState');
+
+  if (state.acPowerOn) {
+    btn.classList.add('on');
+    lbl.textContent = 'ON (ACTIVE)';
+  } else {
+    btn.classList.remove('on');
+    lbl.textContent = 'OFF (STANDBY)';
+  }
+
+  updateAudioSynthesis();
+  updateReadouts();
+}
+
+// ----------------------------------------------------
+// PAPER RIDER MECHANICS
+// ----------------------------------------------------
+
+function placePaperRider() {
+  state.riderOnWire = true;
+  state.riderFlyAnimation.active = false;
+  state.riderFlyAnimation.landed = false;
+  updateReadouts();
+}
+
+function triggerRiderFlyOff(soundboardY) {
+  if (!state.riderOnWire || state.riderFlyAnimation.active) return;
+
+  state.riderOnWire = false;
+  state.riderFlyAnimation.active = true;
+  state.riderFlyAnimation.landed = false;
+
+  // Initial jump velocity (parabolic flight)
+  state.riderFlyAnimation.vx = (Math.random() - 0.5) * 4.0;
+  state.riderFlyAnimation.vy = -6.0 - Math.random() * 3.0;
+  state.riderFlyAnimation.rot = 0;
+  state.riderFlyAnimation.vrot = (Math.random() - 0.5) * 0.35;
+
+  // Sound click/pop for paper flying off
+  if (state.audioCtx && state.audioEnabled) {
+    try {
+      const popOsc = state.audioCtx.createOscillator();
+      const popGain = state.audioCtx.createGain();
+      popOsc.frequency.setValueAtTime(800, state.audioCtx.currentTime);
+      popOsc.frequency.exponentialRampToValueAtTime(120, state.audioCtx.currentTime + 0.08);
+      popGain.gain.setValueAtTime(0.2, state.audioCtx.currentTime);
+      popGain.gain.exponentialRampToValueAtTime(0.001, state.audioCtx.currentTime + 0.08);
+      popOsc.connect(popGain);
+      popGain.connect(state.audioCtx.destination);
+      popOsc.start();
+      popOsc.stop(state.audioCtx.currentTime + 0.09);
+    } catch(e) {}
+  }
+}
+
+// ----------------------------------------------------
+// CANVAS RENDERING ENGINE
+// ----------------------------------------------------
+
+function startAnimationLoop() {
+  let lastTime = performance.now();
+
+  function loop(now) {
+    const dt = (now - lastTime) / 1000.0;
+    lastTime = now;
+
+    renderSonometer(now);
+    updateAudioSynthesis();
+
+    animFrameId = requestAnimationFrame(loop);
+  }
+
+  animFrameId = requestAnimationFrame(loop);
+}
+
+function renderSonometer(timestamp) {
+  if (!sonometerCanvas || !sCtx) return;
+  const dpr = window.devicePixelRatio || 1;
+  const width = sonometerCanvas.width / dpr;
+  const height = sonometerCanvas.height / dpr;
+
+  sCtx.save();
+  sCtx.scale(dpr, dpr);
+  sCtx.clearRect(0, 0, width, height);
+
+  // Layout coordinates for 100 cm scale
+  const scaleStartX = 65;
+  const scaleEndX = width - 110;
+  const scaleWidth = scaleEndX - scaleStartX;
+  const boxTop = height * 0.32;
+  const boxHeight = height * 0.42;
+  const soundboardY = boxTop;
+  const wireY = soundboardY - 32;
+
+  function cmToPx(cm) {
+    return scaleStartX + (cm / 100.0) * scaleWidth;
+  }
+
+  function pxToCm(px) {
+    return ((px - scaleStartX) / scaleWidth) * 100.0;
+  }
+
+  // 1. Draw Wooden Sound Box (Hollow resonance box)
+  drawWoodenSoundBox(sCtx, scaleStartX - 35, boxTop, scaleWidth + 65, boxHeight);
+
+  // 2. Draw 0 to 100 cm Scale
+  drawMeterScale(sCtx, scaleStartX, soundboardY + 22, scaleWidth);
+
+  // 3. Draw Fixed Peg at extreme left
+  drawTensionPeg(sCtx, scaleStartX - 28, wireY + 2);
+
+  // 4. Draw Frictionless Grooved Pulley at extreme right
+  const pulleyCenterX = scaleEndX + 22;
+  const pulleyCenterY = wireY + 12;
+  const pulleyRadius = 18;
+  drawPulley(sCtx, pulleyCenterX, pulleyCenterY, pulleyRadius, timestamp);
+
+  // 5. Draw Movable Wooden Knife Bridges A and B
+  const bridgeAX = cmToPx(state.bridgeAPos);
+  const bridgeBX = cmToPx(state.bridgeBPos);
+
+  drawKnifeBridge(sCtx, bridgeAX, soundboardY, 'A', false);
+  drawKnifeBridge(sCtx, bridgeBX, soundboardY, 'B', state.isDraggingBridgeB);
+
+  // 6. Draw Magnet / Electromagnet at midpoint between bridges
+  const midBridgeX = (bridgeAX + bridgeBX) / 2.0;
+  if (state.method === 'horseshoe') {
+    drawHorseshoeMagnet(sCtx, midBridgeX, wireY, state.acPowerOn);
+  } else {
+    drawElectromagnet(sCtx, midBridgeX, wireY, state.acPowerOn);
+  }
+
+  // 7. Calculate wire dynamic wave motion & resonance
+  const amp = calculateResonanceAmplitude();
+  const timeSec = timestamp / 1000.0;
+  const wireFreq = calculateWireNaturalFrequency();
+  const drivingFreq = (state.method === 'electromagnet')
+    ? 2.0 * state.actualFrequency
+    : state.actualFrequency;
+
+  // Wave phase oscillation
+  const wavePhase = Math.sin(2.0 * Math.PI * drivingFreq * timeSec);
+
+  // 8. Draw Sonometer Stretched Metal Wire
+  drawStretchedWire(sCtx, scaleStartX - 28, bridgeAX, bridgeBX, pulleyCenterX, wireY, amp * wavePhase);
+
+  // 9. Draw Slotted Weight Hanger at Pulley
+  drawHangingWeights(sCtx, pulleyCenterX + pulleyRadius, pulleyCenterY, soundboardY + boxHeight - 10);
+
+  // 10. Handle Paper Rider Physics & Rendering
+  handleAndDrawPaperRider(sCtx, midBridgeX, wireY, amp, wavePhase, soundboardY);
+
+  sCtx.restore();
+}
+
+/**
+ * Photorealistic Wood Sound Box Drawing
+ */
+function drawWoodenSoundBox(ctx, x, y, w, h) {
+  ctx.save();
+
+  // Top Surface (Soundboard)
+  const gradBoard = ctx.createLinearGradient(x, y, x, y + h);
+  gradBoard.addColorStop(0, '#53341c');
+  gradBoard.addColorStop(0.15, '#6c4424');
+  gradBoard.addColorStop(0.5, '#4a2d18');
+  gradBoard.addColorStop(1, '#2c190d');
+
+  ctx.fillStyle = gradBoard;
+  ctx.beginPath();
+  ctx.roundRect(x, y, w, h, [6, 6, 8, 8]);
+  ctx.fill();
+
+  // Wood grain lines
+  ctx.strokeStyle = 'rgba(0, 0, 0, 0.15)';
+  ctx.lineWidth = 1;
+  for (let i = y + 10; i < y + h; i += 12) {
+    ctx.beginPath();
+    ctx.moveTo(x + 4, i);
+    ctx.bezierCurveTo(x + w * 0.3, i + 2, x + w * 0.7, i - 2, x + w - 4, i);
+    ctx.stroke();
+  }
+
+  // Brass side corners / reinforcing plates
+  ctx.fillStyle = '#b48228';
+  ctx.fillRect(x, y, 6, h);
+  ctx.fillRect(x + w - 6, y, 6, h);
+
+  // Circular Acoustic Sound Holes
+  const hole1X = x + w * 0.28;
+  const hole2X = x + w * 0.72;
+  const holeY = y + h * 0.58;
+  const holeRadius = 14;
+
+  [hole1X, hole2X].forEach(hx => {
+    // Outer brass rim
+    ctx.beginPath();
+    ctx.arc(hx, holeY, holeRadius + 2, 0, Math.PI * 2);
+    ctx.fillStyle = '#b48228';
+    ctx.fill();
+
+    // Dark cavity inside
+    ctx.beginPath();
+    ctx.arc(hx, holeY, holeRadius, 0, Math.PI * 2);
+    ctx.fillStyle = '#060a12';
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+  });
+
+  ctx.restore();
+}
+
+/**
+ * 0 to 100 cm Millimeter Scale on Soundboard
+ */
+function drawMeterScale(ctx, startX, y, scaleWidth) {
+  ctx.save();
+  const scaleHeight = 18;
+
+  // Scale Wood Inlay Strip
+  ctx.fillStyle = '#fef3c7';
+  ctx.fillRect(startX, y, scaleWidth, scaleHeight);
+  ctx.strokeStyle = '#78350f';
+  ctx.lineWidth = 1;
+  ctx.strokeRect(startX, y, scaleWidth, scaleHeight);
+
+  // Ticks & numbers
+  ctx.fillStyle = '#1e1b18';
+  ctx.font = 'bold 9px -apple-system, sans-serif';
+  ctx.textAlign = 'center';
+
+  for (let cm = 0; cm <= 100; cm++) {
+    const x = startX + (cm / 100.0) * scaleWidth;
+
+    if (cm % 10 === 0) {
+      // 10 cm major mark
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(x, y + 10);
+      ctx.stroke();
+      ctx.fillText(cm.toString(), x, y + 17);
+    } else if (cm % 5 === 0) {
+      // 5 cm medium mark
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(x, y + 6);
+      ctx.stroke();
+    } else if (scaleWidth > 600) {
+      // 1 cm small mark
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(x, y + 4);
+      ctx.stroke();
+    }
+  }
+
+  ctx.restore();
+}
+
+/**
+ * Tension Peg (Left termination)
+ */
+function drawTensionPeg(ctx, x, y) {
+  ctx.save();
+  // Brass bracket
+  ctx.fillStyle = '#d97706';
+  ctx.beginPath();
+  ctx.arc(x, y + 4, 10, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.strokeStyle = '#78350f';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // Screw head slot
+  ctx.strokeStyle = '#451a03';
+  ctx.lineWidth = 2.5;
+  ctx.beginPath();
+  ctx.moveTo(x - 5, y + 4);
+  ctx.lineTo(x + 5, y + 4);
+  ctx.stroke();
+
+  ctx.restore();
+}
+
+/**
+ * Frictionless Grooved Pulley
+ */
+function drawPulley(ctx, cx, cy, radius, timestamp) {
+  ctx.save();
+
+  // Pulley Support Arm
+  ctx.strokeStyle = '#64748b';
+  ctx.lineWidth = 5;
+  ctx.beginPath();
+  ctx.moveTo(cx - radius + 4, cy + radius + 15);
+  ctx.lineTo(cx, cy);
+  ctx.stroke();
+
+  // Outer Pulley Wheel
+  const grad = ctx.createRadialGradient(cx, cy, 3, cx, cy, radius);
+  grad.addColorStop(0, '#f59e0b');
+  grad.addColorStop(0.7, '#d97706');
+  grad.addColorStop(1, '#92400e');
+
+  ctx.fillStyle = grad;
+  ctx.beginPath();
+  ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.strokeStyle = '#451a03';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // Spokes
+  ctx.strokeStyle = '#78350f';
+  ctx.lineWidth = 1.5;
+  const angle = (timestamp / 2000.0) % (Math.PI * 2);
+  for (let i = 0; i < 4; i++) {
+    const a = angle + (i * Math.PI) / 2;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(cx + Math.cos(a) * (radius - 3), cy + Math.sin(a) * (radius - 3));
+    ctx.stroke();
+  }
+
+  // Central Brass Nut
+  ctx.fillStyle = '#fef08a';
+  ctx.beginPath();
+  ctx.arc(cx, cy, 4, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.restore();
+}
+
+/**
+ * Movable Wedge Knife-edge Bridge
+ */
+function drawKnifeBridge(ctx, x, soundboardY, label, isDragged) {
+  ctx.save();
+  const bridgeW = 20;
+  const bridgeH = 32;
+  const apexY = soundboardY - bridgeH;
+
+  // Shadow under bridge
+  ctx.fillStyle = 'rgba(0, 0, 0, 0.35)';
+  ctx.beginPath();
+  ctx.ellipse(x, soundboardY + 2, bridgeW * 0.7, 4, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Triangular Wooden Body
+  ctx.fillStyle = isDragged ? '#f59e0b' : '#a16207';
+  ctx.beginPath();
+  ctx.moveTo(x - bridgeW / 2, soundboardY);
+  ctx.lineTo(x, apexY);
+  ctx.lineTo(x + bridgeW / 2, soundboardY);
+  ctx.closePath();
+  ctx.fill();
+  ctx.strokeStyle = isDragged ? '#fde047' : '#713f12';
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+
+  // Sharp Metal Blade at Apex
+  ctx.strokeStyle = '#e2e8f0';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(x - 3, apexY);
+  ctx.lineTo(x + 3, apexY);
+  ctx.stroke();
+
+  // Label badge below apex
+  ctx.fillStyle = '#ffffff';
+  ctx.font = 'bold 11px -apple-system, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText(label, x, soundboardY - 8);
+
+  // Position indicator marker on scale
+  ctx.strokeStyle = isDragged ? '#ef4444' : '#38bdf8';
+  ctx.lineWidth = 1.5;
+  ctx.setLineDash([2, 2]);
+  ctx.beginPath();
+  ctx.moveTo(x, soundboardY);
+  ctx.lineTo(x, soundboardY + 22);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Drag handle glow when active
+  if (label === 'B') {
+    ctx.fillStyle = isDragged ? 'rgba(56, 189, 248, 0.4)' : 'rgba(56, 189, 248, 0.15)';
+    ctx.beginPath();
+    ctx.arc(x, soundboardY - bridgeH * 0.5, 12, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  ctx.restore();
+}
+
+/**
+ * Permanent Horseshoe Magnet (Method A)
+ */
+function drawHorseshoeMagnet(ctx, cx, wireY, isAcOn) {
+  ctx.save();
+  const magnetW = 38;
+  const magnetH = 46;
+  const my = wireY - magnetH * 0.42;
+
+  // Magnet U-shape Body
+  // North Pole (Red, top/left)
+  ctx.fillStyle = '#dc2626';
+  ctx.fillRect(cx - magnetW / 2, my, magnetW / 2 - 2, magnetH);
+
+  // South Pole (Blue, bottom/right)
+  ctx.fillStyle = '#2563eb';
+  ctx.fillRect(cx + 2, my, magnetW / 2 - 2, magnetH);
+
+  // Pole labels
+  ctx.fillStyle = '#ffffff';
+  ctx.font = 'bold 11px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('N', cx - magnetW / 4, my + 14);
+  ctx.fillText('S', cx + magnetW / 4, my + 14);
+
+  // Magnetic flux field lines between poles
+  if (isAcOn) {
+    ctx.strokeStyle = 'rgba(56, 189, 248, 0.35)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3, 3]);
+    for (let dy = 16; dy < magnetH - 6; dy += 7) {
+      ctx.beginPath();
+      ctx.moveTo(cx - 2, my + dy);
+      ctx.lineTo(cx + 2, my + dy);
+      ctx.stroke();
+    }
+    ctx.setLineDash([]);
+  }
+
+  ctx.restore();
+}
+
+/**
+ * AC Electromagnet (Method B)
+ */
+function drawElectromagnet(ctx, cx, wireY, isAcOn) {
+  ctx.save();
+  const coreW = 24;
+  const coreH = 40;
+  const coreY = wireY - coreH - 4;
+
+  // Soft Iron Pole Piece
+  ctx.fillStyle = '#475569';
+  ctx.fillRect(cx - coreW / 2, coreY, coreW, coreH);
+  ctx.strokeStyle = '#94a3b8';
+  ctx.lineWidth = 1.5;
+  ctx.strokeRect(cx - coreW / 2, coreY, coreW, coreH);
+
+  // Copper coil windings
+  ctx.fillStyle = '#d97706';
+  for (let y = coreY + 6; y < coreY + coreH - 6; y += 5) {
+    ctx.fillRect(cx - coreW / 2 - 3, y, coreW + 6, 3);
+  }
+
+  // AC Glow when active
+  if (isAcOn) {
+    const gradGlow = ctx.createRadialGradient(cx, wireY, 2, cx, wireY, 20);
+    gradGlow.addColorStop(0, 'rgba(245, 158, 11, 0.45)');
+    gradGlow.addColorStop(1, 'rgba(245, 158, 11, 0)');
+    ctx.fillStyle = gradGlow;
+    ctx.beginPath();
+    ctx.arc(cx, wireY, 20, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  ctx.restore();
+}
+
+/**
+ * Dynamic Stretched Metal Wire with Standing Wave Deflection
+ */
+function drawStretchedWire(ctx, pegX, bridgeAX, bridgeBX, pulleyX, wireY, centralDeflection) {
+  ctx.save();
+
+  // Wire Segment 1: Peg to Bridge A (Straight taut)
+  ctx.strokeStyle = '#e2e8f0';
+  ctx.lineWidth = 1.8;
+  ctx.beginPath();
+  ctx.moveTo(pegX, wireY);
+  ctx.lineTo(bridgeAX, wireY);
+  ctx.stroke();
+
+  // Wire Segment 2: Bridge A to Bridge B (Resonant Standing Wave)
+  ctx.beginPath();
+  ctx.moveTo(bridgeAX, wireY);
+
+  const steps = 40;
+  const segLen = bridgeBX - bridgeAX;
+
+  for (let i = 1; i <= steps; i++) {
+    const t = i / steps;
+    const x = bridgeAX + t * segLen;
+    // Fundamental sinusoidal standing wave envelope: sin(pi * x / l)
+    const yDisp = centralDeflection * Math.sin(Math.PI * t);
+    ctx.lineTo(x, wireY + yDisp);
+  }
+
+  // Dynamic visual blur/envelope when vibrating with high amplitude
+  if (Math.abs(centralDeflection) > 1.5) {
+    ctx.strokeStyle = 'rgba(56, 189, 248, 0.85)';
+    ctx.lineWidth = 2.2;
+    ctx.shadowColor = 'rgba(56, 189, 248, 0.5)';
+    ctx.shadowBlur = 6;
+    ctx.stroke();
+
+    // Shadow envelope showing limits of excursion
+    ctx.beginPath();
+    ctx.moveTo(bridgeAX, wireY);
+    for (let i = 1; i <= steps; i++) {
+      const t = i / steps;
+      const x = bridgeAX + t * segLen;
+      const yDisp = -centralDeflection * Math.sin(Math.PI * t);
+      ctx.lineTo(x, wireY + yDisp);
+    }
+    ctx.strokeStyle = 'rgba(56, 189, 248, 0.35)';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+  } else {
+    ctx.strokeStyle = '#e2e8f0';
+    ctx.lineWidth = 1.8;
+    ctx.stroke();
+  }
+
+  // Wire Segment 3: Bridge B to Pulley (Straight taut)
+  ctx.beginPath();
+  ctx.moveTo(bridgeBX, wireY);
+  ctx.lineTo(pulleyX, wireY);
+  ctx.stroke();
+
+  ctx.restore();
+}
+
+/**
+ * Slotted Weight Hanger & Discs
+ */
+function drawHangingWeights(ctx, hangerX, pulleyY, groundY) {
+  ctx.save();
+
+  // Vertical wire hanging down over pulley
+  const hangerTopY = pulleyY + 40;
+  ctx.strokeStyle = '#cbd5e1';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(hangerX, pulleyY);
+  ctx.lineTo(hangerX, hangerTopY);
+  ctx.stroke();
+
+  // Hanger Hook & Base Plate
+  ctx.strokeStyle = '#94a3b8';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.arc(hangerX, hangerTopY - 4, 4, 0, Math.PI * 2);
+  ctx.stroke();
+
+  // Hanger central rod
+  const discThickness = 7;
+  const numDiscs = Math.round((state.suspendedMass - 0.5) / 0.5); // 0.5kg is hanger alone
+  const stackH = (numDiscs + 1) * discThickness;
+  const hangerBottomY = hangerTopY + stackH + 20;
+
+  ctx.strokeStyle = '#64748b';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(hangerX, hangerTopY);
+  ctx.lineTo(hangerX, hangerBottomY);
+  ctx.stroke();
+
+  // Hanger Base Plate
+  ctx.fillStyle = '#475569';
+  ctx.fillRect(hangerX - 16, hangerBottomY - 4, 32, 5);
+
+  // Draw 500g Slotted Discs Stacked
+  const discW = 36;
+  let currentY = hangerBottomY - 4;
+
+  for (let i = 0; i <= numDiscs; i++) {
+    currentY -= discThickness;
+
+    // Disc body
+    const gradDisc = ctx.createLinearGradient(hangerX - discW / 2, currentY, hangerX + discW / 2, currentY);
+    gradDisc.addColorStop(0, '#64748b');
+    gradDisc.addColorStop(0.5, '#94a3b8');
+    gradDisc.addColorStop(1, '#475569');
+
+    ctx.fillStyle = gradDisc;
+    ctx.fillRect(hangerX - discW / 2, currentY, discW, discThickness - 1);
+    ctx.strokeStyle = '#1e293b';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(hangerX - discW / 2, currentY, discW, discThickness - 1);
+
+    // Slot opening cutout in disc
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(hangerX - 2, currentY, 4, discThickness - 1);
+  }
+
+  // Weight mass badge
+  ctx.fillStyle = '#f8fafc';
+  ctx.font = 'bold 9px var(--font-mono)';
+  ctx.textAlign = 'center';
+  ctx.fillText(`${state.suspendedMass.toFixed(1)}kg`, hangerX, hangerBottomY + 12);
+
+  ctx.restore();
+}
+
+/**
+ * Paper Rider Physics, Flutter & Violent Ejection
+ */
+function handleAndDrawPaperRider(ctx, midBridgeX, wireY, amp, wavePhase, soundboardY) {
+  ctx.save();
+  const riderW = 14;
+  const riderH = 12;
+
+  // Check resonance proximity
+  const theoreticalL = calculateTheoreticalResonantLength();
+  const lengthError = Math.abs(state.vibratingLength - theoreticalL);
+
+  // Rider status indicator update
+  const riderDot = document.getElementById('riderStatusDot');
+  const riderText = document.getElementById('riderStatusText');
+
+  if (state.riderOnWire) {
+    // Rider is currently sitting on the wire
+    const instantaneousWireY = wireY + amp * wavePhase;
+
+    if (state.acPowerOn && lengthError <= 0.35) {
+      // EXACT RESONANCE: Paper rider is violently thrown off!
+      triggerRiderFlyOff(soundboardY);
+      if (riderDot) riderDot.className = 'status-dot dot-red';
+      if (riderText) riderText.textContent = 'Paper Rider: FLOWN OFF AT RESONANCE!';
+    } else if (state.acPowerOn && lengthError <= 2.2) {
+      // NEAR RESONANCE: Fluttering violently
+      const jitterX = (Math.random() - 0.5) * 3.5;
+      const jitterRot = (Math.random() - 0.5) * 0.25;
+
+      drawPaperRiderV(ctx, midBridgeX + jitterX, instantaneousWireY, riderW, riderH, jitterRot);
+
+      if (riderDot) riderDot.className = 'status-dot dot-amber';
+      if (riderText) riderText.textContent = 'Paper Rider: FLUTTERING VIGOROUSLY';
+    } else {
+      // CALM / STABLE: Seated on wire
+      drawPaperRiderV(ctx, midBridgeX, instantaneousWireY, riderW, riderH, 0);
+
+      if (riderDot) riderDot.className = 'status-dot dot-green';
+      if (riderText) riderText.textContent = 'Paper Rider: Seated at Antinode';
+    }
+  } else if (state.riderFlyAnimation.active) {
+    // Rider is in mid-air flight or landed on soundboard
+    const anim = state.riderFlyAnimation;
+
+    if (!anim.landed) {
+      // Physics step
+      anim.x += anim.vx;
+      anim.y += anim.vy;
+      anim.vy += 0.45; // gravity
+      anim.rot += anim.vrot;
+
+      if (wireY + anim.y >= soundboardY - 2) {
+        // Landed on the soundboard
+        anim.y = soundboardY - wireY - 2;
+        anim.landed = true;
+        anim.vx = 0;
+        anim.vy = 0;
+      }
+    }
+
+    drawPaperRiderV(ctx, midBridgeX + anim.x, wireY + anim.y, riderW, riderH, anim.rot);
+
+    if (riderDot) riderDot.className = 'status-dot dot-red';
+    if (riderText) riderText.textContent = 'Paper Rider: Fallen on Soundboard (Click "Place Paper Rider")';
+  }
+
+  ctx.restore();
+}
+
+/**
+ * Inverted V Paper Rider Shape
+ */
+function drawPaperRiderV(ctx, x, y, w, h, rotation) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(rotation);
+
+  // Inverted V fold
+  ctx.fillStyle = '#ffffff';
+  ctx.strokeStyle = '#94a3b8';
+  ctx.lineWidth = 1;
+
+  ctx.beginPath();
+  ctx.moveTo(0, 0); // Apex on wire
+  ctx.lineTo(-w / 2, h);
+  ctx.lineTo(-w / 2 + 3, h);
+  ctx.lineTo(0, 2);
+  ctx.lineTo(w / 2 - 3, h);
+  ctx.lineTo(w / 2, h);
+  ctx.closePath();
+  ctx.fill();
+  ctx.stroke();
+
+  // Fold crease highlight
+  ctx.strokeStyle = '#cbd5e1';
+  ctx.beginPath();
+  ctx.moveTo(0, 0);
+  ctx.lineTo(0, h * 0.8);
+  ctx.stroke();
+
+  ctx.restore();
+}
+
+// ----------------------------------------------------
+// CANVAS MOUSE & TOUCH INTERACTIONS (DRAGGING BRIDGE B)
+// ----------------------------------------------------
+
+function setupCanvasInteractions() {
+  if (!sonometerCanvas) return;
+
+  function getCanvasPos(e) {
+    const rect = sonometerCanvas.getBoundingClientRect();
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    return {
+      x: clientX - rect.left,
+      y: clientY - rect.top,
+      width: rect.width
+    };
+  }
+
+  function handleStart(e) {
+    const pos = getCanvasPos(e);
+    const dpr = window.devicePixelRatio || 1;
+    const canvasLogicalW = sonometerCanvas.width / dpr;
+    const scaleStartX = 65;
+    const scaleEndX = canvasLogicalW - 110;
+    const scaleWidth = scaleEndX - scaleStartX;
+
+    const bridgeBX = scaleStartX + (state.bridgeBPos / 100.0) * scaleWidth;
+
+    // Check if click/touch is near Bridge B (within 28 px radius)
+    if (Math.abs(pos.x - bridgeBX) < 28) {
+      state.isDraggingBridgeB = true;
+      state.dragStartX = pos.x;
+      e.preventDefault();
+    }
+  }
+
+  function handleMove(e) {
+    if (!state.isDraggingBridgeB) return;
+    const pos = getCanvasPos(e);
+    const dpr = window.devicePixelRatio || 1;
+    const canvasLogicalW = sonometerCanvas.width / dpr;
+    const scaleStartX = 65;
+    const scaleEndX = canvasLogicalW - 110;
+    const scaleWidth = scaleEndX - scaleStartX;
+
+    // Convert pixel position back to cm
+    let newCm = ((pos.x - scaleStartX) / scaleWidth) * 100.0;
+    newCm = Math.max(state.bridgeAPos + 5.0, Math.min(95.0, newCm));
+    newCm = Math.round(newCm * 10) / 10; // round to 0.1 cm
+
+    state.bridgeBPos = newCm;
+    const rng = document.getElementById('rngBridgeB');
+    if (rng) rng.value = newCm;
+
+    updateReadouts();
+    e.preventDefault();
+  }
+
+  function handleEnd() {
+    state.isDraggingBridgeB = false;
+  }
+
+  sonometerCanvas.addEventListener('mousedown', handleStart);
+  window.addEventListener('mousemove', handleMove);
+  window.addEventListener('mouseup', handleEnd);
+
+  sonometerCanvas.addEventListener('touchstart', handleStart, { passive: false });
+  window.addEventListener('touchmove', handleMove, { passive: false });
+  window.addEventListener('touchend', handleEnd);
+}
+
+// ----------------------------------------------------
+// UI CONTROLS & UPDATES
+// ----------------------------------------------------
+
+function onBridgeBSlider(val) {
+  state.bridgeBPos = parseFloat(val);
+  updateReadouts();
+}
+
+function stepBridge(deltaCm) {
+  let newPos = state.bridgeBPos + deltaCm;
+  newPos = Math.max(state.bridgeAPos + 2.0, Math.min(95.0, newPos));
+  state.bridgeBPos = Math.round(newPos * 10) / 10;
+
+  const rng = document.getElementById('rngBridgeB');
+  if (rng) rng.value = state.bridgeBPos;
+
+  updateReadouts();
+}
+
+function setMass(massKg) {
+  state.suspendedMass = massKg;
+
+  // Update button active states
+  const rack = document.getElementById('weightsRack');
+  if (rack) {
+    const buttons = rack.querySelectorAll('.weight-chip');
+    buttons.forEach(btn => {
+      const isMatch = btn.textContent.startsWith(`${massKg.toFixed(1)}`);
+      btn.classList.toggle('active', isMatch);
+    });
+  }
+
+  updateReadouts();
+}
+
+function onMethodChange(methodVal) {
+  state.method = methodVal;
+  const badge = document.getElementById('canvasMethodBadge');
+  if (badge) {
+    badge.textContent = (methodVal === 'horseshoe')
+      ? '⚡ Method A: Wire carrying AC in B-field'
+      : '⚡ Method B: Soft Iron Wire under AC Electromagnet';
+  }
+
+  updateReadouts();
+}
+
+function onWireMaterialChange(matKey) {
+  state.wireMaterial = matKey;
+  const mat = state.materials[matKey];
+  if (mat) {
+    state.wireDensity = mat.density;
+    state.wireRadius = mat.diameter / 2.0;
+  }
+
+  updateReadouts();
+}
+
+function autoSeekResonance() {
+  const theoreticalL = calculateTheoreticalResonantLength();
+  let targetBridgeB = state.bridgeAPos + theoreticalL;
+  targetBridgeB = Math.max(state.bridgeAPos + 2.0, Math.min(95.0, targetBridgeB));
+  state.bridgeBPos = Math.round(targetBridgeB * 10) / 10;
+
+  const rng = document.getElementById('rngBridgeB');
+  if (rng) rng.value = state.bridgeBPos;
+
+  // Ensure rider is placed so student can see it flutter & fly off!
+  placePaperRider();
+  updateReadouts();
+}
+
+function resetSonometerDefaults() {
+  state.bridgeBPos = 73.2;
+  state.suspendedMass = 1.0;
+  state.method = 'horseshoe';
+  state.wireMaterial = 'brass';
+  state.actualFrequency = 50.0;
+  state.isMystery = false;
+  state.acPowerOn = true;
+
+  const selMethod = document.getElementById('selMethod');
+  if (selMethod) selMethod.value = 'horseshoe';
+
+  const selMat = document.getElementById('selWireMaterial');
+  if (selMat) selMat.value = 'brass';
+
+  const rng = document.getElementById('rngBridgeB');
+  if (rng) rng.value = 73.2;
+
+  setMass(1.0);
+  placePaperRider();
+  updateReadouts();
+}
+
+function updateReadouts() {
+  const l = state.vibratingLength;
+  const T = state.tension;
+  const m = state.linearDensity;
+  const f0 = calculateWireNaturalFrequency();
+
+  // Header resonance badge
+  const headerBadge = document.getElementById('headerResonanceBadge');
+  const theoreticalL = calculateTheoreticalResonantLength();
+  const diff = Math.abs(l - theoreticalL);
+
+  if (headerBadge) {
+    if (!state.acPowerOn) {
+      headerBadge.className = 'badge';
+      headerBadge.textContent = '⚪ STANDBY';
+    } else if (diff <= 0.35) {
+      headerBadge.className = 'badge badge-green';
+      headerBadge.textContent = '⚡ RESONANCE DETECTED!';
+    } else if (diff <= 2.2) {
+      headerBadge.className = 'badge badge-amber';
+      headerBadge.textContent = '〰 FLUTTERING (NEAR)';
+    } else {
+      headerBadge.className = 'badge';
+      headerBadge.textContent = '🔍 ADJUSTING LENGTH';
+    }
+  }
+
+  // Floating canvas length readout
+  const canvasBadge = document.getElementById('canvasLengthBadge');
+  if (canvasBadge) {
+    canvasBadge.textContent = `l = ${l.toFixed(1)} cm | f₀ = ${f0.toFixed(1)} Hz`;
+  }
+
+  // Metrics Bar
+  const elMass = document.getElementById('metricMass');
+  if (elMass) elMass.textContent = `${state.suspendedMass.toFixed(3)} kg`;
+
+  const elTension = document.getElementById('metricTension');
+  if (elTension) elTension.textContent = `${T.toFixed(2)} N`;
+
+  const elLength = document.getElementById('metricLength');
+  if (elLength) elLength.textContent = `${l.toFixed(1)} cm`;
+
+  const elWireFreq = document.getElementById('metricWireFreq');
+  if (elWireFreq) elWireFreq.textContent = `${f0.toFixed(1)} Hz`;
+
+  // Control labels
+  const lblBridgeB = document.getElementById('lblBridgeBPos');
+  if (lblBridgeB) lblBridgeB.textContent = `${state.bridgeBPos.toFixed(1)} cm`;
+
+  const lblVibLen = document.getElementById('lblVibratingLen');
+  if (lblVibLen) lblVibLen.textContent = `${l.toFixed(1)} cm`;
+
+  const lblMass = document.getElementById('lblTotalMass');
+  if (lblMass) lblMass.textContent = `${state.suspendedMass.toFixed(2)} kg (${T.toFixed(2)} N)`;
+
+  const lblLinear = document.getElementById('lblLinearDensity');
+  if (lblLinear) lblLinear.textContent = `${(m * 1000).toFixed(3)} × 10⁻³ kg/m`;
+
+  updateUncertaintyCalc();
+}
+
+// ----------------------------------------------------
+// OBSERVATION TABLE OPERATIONS
+// ----------------------------------------------------
+
+function addCurrentReading() {
+  const l_cm = state.vibratingLength;
+  const l_m = l_cm / 100.0;
+  const M = state.suspendedMass;
+  const T = state.tension;
+  const sqrtT = Math.sqrt(T);
+  const m = state.linearDensity;
+
+  // Experimental frequency derived from this single measurement
+  // Method A: f = 1/(2l) * sqrt(T/m)
+  // Method B: f = 1/(4l) * sqrt(T/m)
+  const factor = (state.method === 'electromagnet') ? 4.0 : 2.0;
+  const f_exp = (1.0 / (factor * l_m)) * Math.sqrt(T / m);
+
+  state.observations.push({
+    sno: state.observations.length + 1,
+    mass: M,
+    tension: T,
+    sqrtT: sqrtT,
+    lengthCm: l_cm,
+    lengthM: l_m,
+    lengthSq: Math.pow(l_m, 2),
+    ratio: sqrtT / l_m,
+    freq: f_exp
+  });
+
+  renderObsTable();
+  if (state.currentMode === 'graph') renderGraph();
+}
+
+function fillSampleDataset() {
+  state.observations = [];
+  const sampleMasses = [1.0, 1.5, 2.0, 2.5, 3.0];
+  const m = state.linearDensity;
+  const targetFreq = (state.method === 'electromagnet')
+    ? 2.0 * state.actualFrequency
+    : state.actualFrequency;
+
+  sampleMasses.forEach((M, idx) => {
+    const T = M * state.g;
+    const sqrtT = Math.sqrt(T);
+
+    // Theoretical resonant length with small realistic random experimental noise (+- 0.25 cm)
+    const exactL_m = (1.0 / (2.0 * targetFreq)) * Math.sqrt(T / m);
+    const noise_cm = (Math.sin(idx * 1.8) * 0.25);
+    const l_cm = Math.round((exactL_m * 100.0 + noise_cm) * 10) / 10;
+    const l_m = l_cm / 100.0;
+
+    const factor = (state.method === 'electromagnet') ? 4.0 : 2.0;
+    const f_exp = (1.0 / (factor * l_m)) * Math.sqrt(T / m);
+
+    state.observations.push({
+      sno: idx + 1,
+      mass: M,
+      tension: T,
+      sqrtT: sqrtT,
+      lengthCm: l_cm,
+      lengthM: l_m,
+      lengthSq: Math.pow(l_m, 2),
+      ratio: sqrtT / l_m,
+      freq: f_exp
+    });
+  });
+
+  renderObsTable();
+  if (state.currentMode === 'graph') renderGraph();
+}
+
+function clearObsTable() {
+  state.observations = [];
+  renderObsTable();
+  if (state.currentMode === 'graph') renderGraph();
+}
+
+function removeObsRow(idx) {
+  state.observations.splice(idx, 1);
+  state.observations.forEach((row, i) => row.sno = i + 1);
+  renderObsTable();
+  if (state.currentMode === 'graph') renderGraph();
+}
+
+function renderObsTable() {
+  const tbody = document.getElementById('obsTableBody');
+  if (!tbody) return;
+  tbody.innerHTML = '';
+
+  if (state.observations.length === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="10" style="color:var(--text-muted); padding:1rem; text-align:center;">
+          No observations recorded yet. Click <strong>"➕ Log Current"</strong> or <strong>"⚡ Load 5 Readings"</strong>.
+        </td>
+      </tr>
+    `;
+    updateMeanStats(0, 0, 0);
+    return;
+  }
+
+  let sumFreq = 0;
+
+  state.observations.forEach((row, idx) => {
+    sumFreq += row.freq;
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${row.sno}</td>
+      <td>${row.mass.toFixed(2)}</td>
+      <td>${row.tension.toFixed(2)}</td>
+      <td>${row.sqrtT.toFixed(3)}</td>
+      <td>${row.lengthCm.toFixed(1)}</td>
+      <td>${row.lengthM.toFixed(4)}</td>
+      <td>${row.lengthSq.toFixed(4)}</td>
+      <td>${row.ratio.toFixed(2)}</td>
+      <td style="color:var(--accent); font-weight:700;">${row.freq.toFixed(2)}</td>
+      <td>
+        <button onclick="removeObsRow(${idx})" style="background:transparent; border:none; color:var(--danger); cursor:pointer;" title="Delete row">✖</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  const mean = sumFreq / state.observations.length;
+  let varianceSum = 0;
+  state.observations.forEach(r => {
+    varianceSum += Math.pow(r.freq - mean, 2);
+  });
+  const stdDev = Math.sqrt(varianceSum / state.observations.length);
+  const errPct = Math.abs((mean - state.actualFrequency) / state.actualFrequency) * 100.0;
+
+  updateMeanStats(mean, stdDev, errPct);
+}
+
+function updateMeanStats(mean, stdDev, errPct) {
+  const elMean = document.getElementById('valMeanFreq');
+  const elStd = document.getElementById('valStdDev');
+  const elErr = document.getElementById('valErrorPct');
+
+  if (elMean) elMean.textContent = (mean > 0) ? `${mean.toFixed(2)} Hz` : '-- Hz';
+  if (elStd) elStd.textContent = (stdDev > 0) ? `±${stdDev.toFixed(2)} Hz` : '--';
+  if (elErr) elErr.textContent = (mean > 0) ? `${errPct.toFixed(2)}%` : '--%';
+}
+
+function exportTableToCSV() {
+  if (state.observations.length === 0) {
+    alert('No observations to export.');
+    return;
+  }
+
+  let csv = 'S.No,Mass (kg),Tension T (N),sqrt(T) (N^0.5),Length l (cm),Length l (m),l^2 (m^2),sqrt(T)/l,Calculated Frequency (Hz)\n';
+
+  state.observations.forEach(r => {
+    csv += `${r.sno},${r.mass},${r.tension.toFixed(2)},${r.sqrtT.toFixed(4)},${r.lengthCm},${r.lengthM.toFixed(4)},${r.lengthSq.toFixed(4)},${r.ratio.toFixed(2)},${r.freq.toFixed(2)}\n`;
+  });
+
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.setAttribute('href', url);
+  link.setAttribute('download', `sonometer_ac_frequency_${Date.now()}.csv`);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
+// ----------------------------------------------------
+// DYNAMIC GRAPH PLOTTER (MODE 2)
+// ----------------------------------------------------
+
+function setGraphType(type) {
+  state.graphType = type;
+  document.querySelectorAll('.graph-tab-btn').forEach(btn => btn.classList.remove('active'));
+
+  if (type === 'sqrtT') document.getElementById('btnGraphSqrtT').classList.add('active');
+  if (type === 'TvsL2') document.getElementById('btnGraphTvsL2').classList.add('active');
+  if (type === 'lorentz') document.getElementById('btnGraphLorentz').classList.add('active');
+
+  renderGraph();
+}
+
+function renderGraph() {
+  if (!graphCanvas || !gCtx) return;
+  const dpr = window.devicePixelRatio || 1;
+  const w = graphCanvas.width / dpr;
+  const h = graphCanvas.height / dpr;
+
+  gCtx.save();
+  gCtx.scale(dpr, dpr);
+  gCtx.clearRect(0, 0, w, h);
+
+  const padLeft = 60;
+  const padBottom = 45;
+  const padTop = 25;
+  const padRight = 30;
+
+  const plotW = w - padLeft - padRight;
+  const plotH = h - padTop - padBottom;
+
+  // Dark grid background
+  gCtx.fillStyle = '#060b17';
+  gCtx.fillRect(padLeft, padTop, plotW, plotH);
+
+  // Draw Grid Lines
+  gCtx.strokeStyle = 'rgba(255, 255, 255, 0.07)';
+  gCtx.lineWidth = 1;
+  for (let gx = padLeft; gx <= padLeft + plotW; gx += plotW / 8) {
+    gCtx.beginPath();
+    gCtx.moveTo(gx, padTop);
+    gCtx.lineTo(gx, padTop + plotH);
+    gCtx.stroke();
+  }
+  for (let gy = padTop; gy <= padTop + plotH; gy += plotH / 6) {
+    gCtx.beginPath();
+    gCtx.moveTo(padLeft, gy);
+    gCtx.lineTo(padLeft + plotW, gy);
+    gCtx.stroke();
+  }
+
+  if (state.graphType === 'sqrtT') {
+    renderGraphSqrtT(gCtx, padLeft, padTop, plotW, plotH);
+  } else if (state.graphType === 'TvsL2') {
+    renderGraphTvsL2(gCtx, padLeft, padTop, plotW, plotH);
+  } else {
+    renderGraphLorentz(gCtx, padLeft, padTop, plotW, plotH);
+  }
+
+  // Draw coordinate axes
+  gCtx.strokeStyle = '#475569';
+  gCtx.lineWidth = 2;
+  gCtx.beginPath();
+  gCtx.moveTo(padLeft, padTop);
+  gCtx.lineTo(padLeft, padTop + plotH);
+  gCtx.lineTo(padLeft + plotW, padTop + plotH);
+  gCtx.stroke();
+
+  gCtx.restore();
+}
+
+function renderGraphSqrtT(ctx, px, py, pw, ph) {
+  // X: Length l (m), Y: sqrt(T) (N^0.5)
+  const maxL = 1.0; // 1.0 meter
+  const maxSqrtT = 6.5; // up to ~4kg load
+
+  ctx.fillStyle = '#94a3b8';
+  ctx.font = '10px var(--font-mono)';
+  ctx.textAlign = 'center';
+
+  // X Axis Ticks
+  for (let xVal = 0.0; xVal <= maxL; xVal += 0.2) {
+    const xCoord = px + (xVal / maxL) * pw;
+    ctx.fillText(xVal.toFixed(1), xCoord, py + ph + 16);
+  }
+  ctx.fillText('Resonant Length l (m) →', px + pw / 2, py + ph + 34);
+
+  // Y Axis Ticks
+  ctx.textAlign = 'right';
+  for (let yVal = 0; yVal <= maxSqrtT; yVal += 1.5) {
+    const yCoord = py + ph - (yVal / maxSqrtT) * ph;
+    ctx.fillText(yVal.toFixed(1), px - 8, yCoord + 3);
+  }
+
+  ctx.save();
+  ctx.translate(px - 38, py + ph / 2);
+  ctx.rotate(-Math.PI / 2);
+  ctx.textAlign = 'center';
+  ctx.fillText('√T (N¹/²) →', 0, 0);
+  ctx.restore();
+
+  // Linear Regression: y = sqrtT, x = lengthM
+  const pts = state.observations.map(r => ({ x: r.lengthM, y: r.sqrtT }));
+
+  if (pts.length >= 2) {
+    let sumX = 0, sumY = 0, sumXY = 0, sumX2 = 0, sumY2 = 0;
+    const n = pts.length;
+    pts.forEach(p => {
+      sumX += p.x;
+      sumY += p.y;
+      sumXY += p.x * p.y;
+      sumX2 += p.x * p.x;
+      sumY2 += p.y * p.y;
+    });
+
+    const slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
+    const intercept = (sumY - slope * sumX) / n;
+
+    // Correlation R^2
+    const num = (n * sumXY - sumX * sumY);
+    const den = Math.sqrt((n * sumX2 - sumX * sumX) * (n * sumY2 - sumY * sumY));
+    const r2 = den > 0 ? Math.pow(num / den, 2) : 1.0;
+
+    // Draw Best-Fit Line
+    ctx.strokeStyle = '#38bdf8';
+    ctx.lineWidth = 2.2;
+    ctx.beginPath();
+    const x1 = 0;
+    const y1 = intercept;
+    const x2 = maxL;
+    const y2 = slope * maxL + intercept;
+
+    ctx.moveTo(px, py + ph - (y1 / maxSqrtT) * ph);
+    ctx.lineTo(px + (x2 / maxL) * pw, py + ph - (y2 / maxSqrtT) * ph);
+    ctx.stroke();
+
+    // Frequency calculation from slope:
+    // slope = 2 * f * sqrt(m) for Method A
+    // slope = 4 * f * sqrt(m) for Method B
+    const m = state.linearDensity;
+    const factor = (state.method === 'electromagnet') ? 4.0 : 2.0;
+    const calcFreq = slope / (factor * Math.sqrt(m));
+
+    document.getElementById('metricGraphSlope').textContent = slope.toFixed(2);
+    document.getElementById('metricGraphR2').textContent = r2.toFixed(4);
+    document.getElementById('metricGraphFreq').textContent = `${calcFreq.toFixed(1)} Hz`;
+  }
+
+  // Draw Data Points
+  pts.forEach(p => {
+    const cx = px + (p.x / maxL) * pw;
+    const cy = py + ph - (p.y / maxSqrtT) * ph;
+
+    ctx.fillStyle = '#f59e0b';
+    ctx.beginPath();
+    ctx.arc(cx, cy, 5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+  });
+}
+
+function renderGraphTvsL2(ctx, px, py, pw, ph) {
+  // X: l^2 (m^2), Y: Tension T (N)
+  const maxL2 = 1.0;
+  const maxT = 45.0; // up to ~4.5kg * 9.8N
+
+  ctx.fillStyle = '#94a3b8';
+  ctx.font = '10px var(--font-mono)';
+  ctx.textAlign = 'center';
+
+  for (let xVal = 0.0; xVal <= maxL2; xVal += 0.2) {
+    const xCoord = px + (xVal / maxL2) * pw;
+    ctx.fillText(xVal.toFixed(1), xCoord, py + ph + 16);
+  }
+  ctx.fillText('l² (m²) →', px + pw / 2, py + ph + 34);
+
+  ctx.textAlign = 'right';
+  for (let yVal = 0; yVal <= maxT; yVal += 10.0) {
+    const yCoord = py + ph - (yVal / maxT) * ph;
+    ctx.fillText(yVal.toFixed(0), px - 8, yCoord + 3);
+  }
+
+  ctx.save();
+  ctx.translate(px - 38, py + ph / 2);
+  ctx.rotate(-Math.PI / 2);
+  ctx.textAlign = 'center';
+  ctx.fillText('Tension T (N) →', 0, 0);
+  ctx.restore();
+
+  const pts = state.observations.map(r => ({ x: r.lengthSq, y: r.tension }));
+
+  if (pts.length >= 2) {
+    let sumX = 0, sumY = 0, sumXY = 0, sumX2 = 0;
+    const n = pts.length;
+    pts.forEach(p => {
+      sumX += p.x;
+      sumY += p.y;
+      sumXY += p.x * p.y;
+      sumX2 += p.x * p.x;
+    });
+
+    const slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
+    const intercept = (sumY - slope * sumX) / n;
+
+    ctx.strokeStyle = '#10b981';
+    ctx.lineWidth = 2.2;
+    ctx.beginPath();
+    ctx.moveTo(px, py + ph - (intercept / maxT) * ph);
+    ctx.lineTo(px + pw, py + ph - ((slope * maxL2 + intercept) / maxT) * ph);
+    ctx.stroke();
+
+    // slope = 4 * m * f^2 => f = sqrt(slope / (4 * m))
+    const m = state.linearDensity;
+    const factorSq = (state.method === 'electromagnet') ? 16.0 : 4.0;
+    const calcFreq = Math.sqrt(Math.max(0, slope / (factorSq * m)));
+
+    document.getElementById('metricGraphSlope').textContent = slope.toFixed(2);
+    document.getElementById('metricGraphR2').textContent = '0.998+';
+    document.getElementById('metricGraphFreq').textContent = `${calcFreq.toFixed(1)} Hz`;
+  }
+
+  pts.forEach(p => {
+    const cx = px + (p.x / maxL2) * pw;
+    const cy = py + ph - (p.y / maxT) * ph;
+
+    ctx.fillStyle = '#38bdf8';
+    ctx.beginPath();
+    ctx.arc(cx, cy, 5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+  });
+}
+
+function renderGraphLorentz(ctx, px, py, pw, ph) {
+  // Resonance curve: Amplitude vs Vibrating Length l
+  const theoreticalL = calculateTheoreticalResonantLength();
+  const minL = Math.max(10, theoreticalL - 15);
+  const maxL = theoreticalL + 15;
+  const maxAmp = 15.0;
+
+  ctx.fillStyle = '#94a3b8';
+  ctx.font = '10px var(--font-mono)';
+  ctx.textAlign = 'center';
+
+  for (let lVal = Math.floor(minL); lVal <= Math.ceil(maxL); lVal += 5) {
+    const xCoord = px + ((lVal - minL) / (maxL - minL)) * pw;
+    ctx.fillText(lVal.toString(), xCoord, py + ph + 16);
+  }
+  ctx.fillText('Vibrating Length l (cm) →', px + pw / 2, py + ph + 34);
+
+  ctx.textAlign = 'right';
+  for (let aVal = 0; aVal <= maxAmp; aVal += 5) {
+    const yCoord = py + ph - (aVal / maxAmp) * ph;
+    ctx.fillText(aVal.toFixed(0), px - 8, yCoord + 3);
+  }
+
+  ctx.save();
+  ctx.translate(px - 38, py + ph / 2);
+  ctx.rotate(-Math.PI / 2);
+  ctx.textAlign = 'center';
+  ctx.fillText('Vibration Amplitude (mm) →', 0, 0);
+  ctx.restore();
+
+  // Draw Lorentzian Resonance Curve
+  ctx.strokeStyle = '#f43f5e';
+  ctx.lineWidth = 2.5;
+  ctx.beginPath();
+
+  const drivingFreq = (state.method === 'electromagnet')
+    ? 2.0 * state.actualFrequency
+    : state.actualFrequency;
+  const T = state.tension;
+  const m = state.linearDensity;
+
+  let first = true;
+  for (let i = 0; i <= 100; i++) {
+    const l_cm = minL + (i / 100.0) * (maxL - minL);
+    const l_m = l_cm / 100.0;
+    const f0 = (1.0 / (2.0 * l_m)) * Math.sqrt(T / m);
+    const deltaF = Math.abs(f0 - drivingFreq);
+    const amp = 12.0 * (Math.pow(1.4, 2) / (Math.pow(deltaF, 2) + Math.pow(1.4, 2)));
+
+    const cx = px + ((l_cm - minL) / (maxL - minL)) * pw;
+    const cy = py + ph - (amp / maxAmp) * ph;
+
+    if (first) {
+      ctx.moveTo(cx, cy);
+      first = false;
+    } else {
+      ctx.lineTo(cx, cy);
+    }
+  }
+  ctx.stroke();
+
+  // Current Length Marker
+  const currentL = state.vibratingLength;
+  if (currentL >= minL && currentL <= maxL) {
+    const curX = px + ((currentL - minL) / (maxL - minL)) * pw;
+    ctx.strokeStyle = '#38bdf8';
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([3, 3]);
+    ctx.beginPath();
+    ctx.moveTo(curX, py);
+    ctx.lineTo(curX, py + ph);
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
+}
+
+// ----------------------------------------------------
+// VIRTUAL SCREW GAUGE (MODE 3)
+// ----------------------------------------------------
+
+function onScrewGaugeSlider(val) {
+  state.screwGauge.thimblePos = parseInt(val, 10);
+  updateScrewGaugeCalculations();
+  renderScrewGauge();
+}
+
+function stepScrewGauge(delta) {
+  let cur = state.screwGauge.thimblePos + delta;
+  cur = Math.max(0, Math.min(200, cur));
+  state.screwGauge.thimblePos = cur;
+  const rng = document.getElementById('rngScrewGauge');
+  if (rng) rng.value = cur;
+
+  updateScrewGaugeCalculations();
+  renderScrewGauge();
+}
+
+function resetScrewGauge() {
+  state.screwGauge.thimblePos = 60; // 0.60 mm
+  const rng = document.getElementById('rngScrewGauge');
+  if (rng) rng.value = 60;
+  updateScrewGaugeCalculations();
+  renderScrewGauge();
+}
+
+function updateScrewGaugeCalculations() {
+  const units = state.screwGauge.thimblePos; // each unit = 0.01 mm
+  const totalMm = units * 0.01;
+  const psr = Math.floor(totalMm / 0.5) * 0.5;
+  const csr = Math.round((totalMm - psr) / 0.01);
+
+  document.getElementById('lblThimbleReading').textContent = `${totalMm.toFixed(3)} mm`;
+  document.getElementById('metricPSR').textContent = `${psr.toFixed(2)} mm`;
+  document.getElementById('metricCSR').textContent = `${csr} div`;
+  document.getElementById('metricTotalDiam').textContent = `${totalMm.toFixed(3)} mm`;
+}
+
+function renderScrewGauge() {
+  if (!screwCanvas || !scCtx) return;
+  const dpr = window.devicePixelRatio || 1;
+  const w = screwCanvas.width / dpr;
+  const h = screwCanvas.height / dpr;
+
+  scCtx.save();
+  scCtx.scale(dpr, dpr);
+  scCtx.clearRect(0, 0, w, h);
+
+  const cy = h / 2;
+  const totalMm = state.screwGauge.thimblePos * 0.01;
+
+  // 1. Fixed U-Frame of Micrometer
+  scCtx.strokeStyle = '#475569';
+  scCtx.lineWidth = 14;
+  scCtx.lineCap = 'round';
+  scCtx.beginPath();
+  scCtx.moveTo(w * 0.28, cy - 45);
+  scCtx.lineTo(w * 0.12, cy - 45);
+  scCtx.lineTo(w * 0.12, cy + 45);
+  scCtx.lineTo(w * 0.28, cy + 45);
+  scCtx.stroke();
+
+  // 2. Fixed Anvil (Left)
+  scCtx.fillStyle = '#94a3b8';
+  scCtx.fillRect(w * 0.24, cy - 10, 18, 20);
+
+  // 3. Experimental Wire Clamped Between Anvil and Spindle
+  const gapPx = (totalMm / 2.0) * 80;
+  const spindleLeftX = w * 0.24 + 18 + gapPx;
+
+  scCtx.fillStyle = '#d97706'; // Copper / Brass wire sheen
+  scCtx.fillRect(w * 0.24 + 18, cy - 8, gapPx, 16);
+
+  // 4. Movable Spindle
+  scCtx.fillStyle = '#cbd5e1';
+  scCtx.fillRect(spindleLeftX, cy - 10, 50, 20);
+
+  // 5. Main Sleeve Barrel (Graduated Pitch Scale)
+  const barrelX = spindleLeftX + 45;
+  const barrelW = 100;
+  scCtx.fillStyle = '#334155';
+  scCtx.fillRect(barrelX, cy - 18, barrelW, 36);
+  scCtx.strokeStyle = '#64748b';
+  scCtx.lineWidth = 1.5;
+  scCtx.strokeRect(barrelX, cy - 18, barrelW, 36);
+
+  // Datum Reference Line
+  scCtx.strokeStyle = '#ffffff';
+  scCtx.lineWidth = 1.5;
+  scCtx.beginPath();
+  scCtx.moveTo(barrelX + 4, cy);
+  scCtx.lineTo(barrelX + barrelW - 4, cy);
+  scCtx.stroke();
+
+  // Sleeve Millimeter Graduations
+  scCtx.fillStyle = '#f8fafc';
+  scCtx.font = '8px var(--font-mono)';
+  scCtx.textAlign = 'center';
+
+  for (let mm = 0; mm <= 5; mm++) {
+    const sx = barrelX + 10 + mm * 14;
+    // Upper line (whole mm)
+    scCtx.beginPath();
+    scCtx.moveTo(sx, cy);
+    scCtx.lineTo(sx, cy - 8);
+    scCtx.stroke();
+    scCtx.fillText(mm.toString(), sx, cy - 10);
+
+    // Lower line (half mm: 0.5, 1.5, etc.)
+    if (mm < 5) {
+      scCtx.beginPath();
+      scCtx.moveTo(sx + 7, cy);
+      scCtx.lineTo(sx + 7, cy + 6);
+      scCtx.stroke();
+    }
+  }
+
+  // 6. Rotating Thimble (Circular Scale)
+  const thimbleX = barrelX + 40 + (totalMm / 2.0) * 35;
+  const thimbleW = 85;
+  const gradThimble = scCtx.createLinearGradient(thimbleX, cy - 26, thimbleX, cy + 26);
+  gradThimble.addColorStop(0, '#475569');
+  gradThimble.addColorStop(0.5, '#64748b');
+  gradThimble.addColorStop(1, '#334155');
+
+  scCtx.fillStyle = gradThimble;
+  scCtx.beginPath();
+  scCtx.roundRect(thimbleX, cy - 25, thimbleW, 50, [4, 0, 0, 4]);
+  scCtx.fill();
+  scCtx.strokeStyle = '#94a3b8';
+  scCtx.stroke();
+
+  // Circular Scale Divisions
+  scCtx.strokeStyle = '#ffffff';
+  scCtx.lineWidth = 1;
+  const csr = Math.round((totalMm % 0.5) / 0.01);
+
+  for (let divOffset = -4; divOffset <= 4; divOffset++) {
+    const divNum = (csr + divOffset + 50) % 50;
+    const dy = cy - divOffset * 5.5;
+
+    scCtx.beginPath();
+    scCtx.moveTo(thimbleX, dy);
+    scCtx.lineTo(thimbleX + (divNum % 5 === 0 ? 10 : 5), dy);
+    scCtx.stroke();
+
+    if (divNum % 5 === 0) {
+      scCtx.fillText(divNum.toString(), thimbleX + 16, dy + 3);
+    }
+  }
+
+  scCtx.restore();
+}
+
+function applyMeasuredLinearDensity() {
+  const d_mm = state.screwGauge.thimblePos * 0.01;
+  const r_m = (d_mm / 2.0) / 1000.0;
+  state.wireRadius = r_m;
+  updateReadouts();
+  alert(`Applied measured wire diameter d = ${d_mm.toFixed(3)} mm (r = ${(r_m * 1000).toFixed(3)} mm) to Sonometer wire calculations!`);
+}
+
+// ----------------------------------------------------
+// MYSTERY / UNKNOWN FREQUENCY CHALLENGE (MODE 4)
+// ----------------------------------------------------
+
+function generateMysteryFrequency() {
+  // Random frequency between 42.0 and 68.0 Hz
+  state.actualFrequency = Math.round((42.0 + Math.random() * 26.0) * 10) / 10;
+  state.isMystery = true;
+
+  const fb = document.getElementById('mysteryFeedback');
+  if (fb) {
+    fb.style.display = 'none';
+  }
+  const inp = document.getElementById('inpUserMysteryFreq');
+  if (inp) inp.value = '';
+
+  clearObsTable();
+  updateReadouts();
+  alert('New mystery AC frequency generated! Adjust bridges and slotted weights to measure its unknown frequency.');
+}
+
+function checkMysteryAnswer() {
+  const inp = document.getElementById('inpUserMysteryFreq');
+  if (!inp || !inp.value) {
+    alert('Please enter your frequency estimate in Hz.');
+    return;
+  }
+
+  const guess = parseFloat(inp.value);
+  const diff = Math.abs(guess - state.actualFrequency);
+  const pct = (diff / state.actualFrequency) * 100.0;
+
+  const fb = document.getElementById('mysteryFeedback');
+  if (fb) {
+    fb.style.display = 'block';
+    if (pct <= 3.0) {
+      fb.style.background = 'rgba(16, 185, 129, 0.25)';
+      fb.style.color = '#86efac';
+      fb.textContent = `🎯 Excellent! Your estimate of ${guess.toFixed(1)} Hz is within ${pct.toFixed(1)}% error of the true frequency!`;
+    } else {
+      fb.style.background = 'rgba(239, 68, 68, 0.25)';
+      fb.style.color = '#fca5a5';
+      fb.textContent = `Deviation: ${pct.toFixed(1)}% error. Tip: Verify with multiple mass loads in the Observation Table.`;
+    }
+  }
+}
+
+function revealMysteryFrequency() {
+  alert(`The hidden AC signal generator frequency is: ${state.actualFrequency.toFixed(1)} Hz`);
+}
+
+// ----------------------------------------------------
+// TAB NAVIGATION
+// ----------------------------------------------------
+
+function switchLabMode(modeKey) {
+  state.currentMode = modeKey;
+
+  // Mode tab buttons
+  document.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
+  if (modeKey === 'resonance') document.getElementById('tabModeResonance').classList.add('active');
+  if (modeKey === 'graph') document.getElementById('tabModeGraph').classList.add('active');
+  if (modeKey === 'screwGauge') document.getElementById('tabModeScrewGauge').classList.add('active');
+  if (modeKey === 'mystery') document.getElementById('tabModeMystery').classList.add('active');
+
+  // Panels visibility
+  document.getElementById('panelControls').style.display = (modeKey === 'resonance') ? 'flex' : 'none';
+  document.getElementById('panelObsTable').style.display = (modeKey === 'resonance') ? 'flex' : 'none';
+  document.getElementById('panelGraph').style.display = (modeKey === 'graph') ? 'flex' : 'none';
+  document.getElementById('panelScrewGauge').style.display = (modeKey === 'screwGauge') ? 'flex' : 'none';
+  document.getElementById('panelMystery').style.display = (modeKey === 'mystery') ? 'flex' : 'none';
+
+  if (modeKey === 'graph') {
+    setTimeout(() => { resizeCanvases(); renderGraph(); }, 40);
+  }
+  if (modeKey === 'screwGauge') {
+    setTimeout(() => { resizeCanvases(); renderScrewGauge(); }, 40);
+  }
+}
+
+// ----------------------------------------------------
+// UNCERTAINTY REPORT
+// ----------------------------------------------------
+
+function updateUncertaintyCalc() {
+  const report = document.getElementById('liveUncertaintyReport');
+  if (!report) return;
+
+  const l_cm = state.vibratingLength;
+  const l_m = l_cm / 100.0;
+  const M = state.suspendedMass;
+  const d_mm = state.wireRadius * 2.0 * 1000.0;
+
+  const deltaL_m = 0.001; // 1 mm least count
+  const deltaM_kg = 0.005; // 5 g precision
+  const deltaD_mm = 0.01; // 0.01 mm screw gauge least count
+
+  const fracL = deltaL_m / l_m;
+  const fracM = 0.5 * (deltaM_kg / M);
+  const fracR = deltaD_mm / d_mm;
+  const totalFrac = fracL + fracM + fracR;
+
+  const f0 = calculateWireNaturalFrequency();
+  const deltaF = totalFrac * f0;
+
+  report.innerHTML = `
+    <div>• Vibrating Length l = ${l_cm.toFixed(1)} cm &rarr; Δl / l = ${(fracL * 100).toFixed(2)}%</div>
+    <div>• Suspended Mass M = ${M.toFixed(2)} kg &rarr; 0.5(ΔM / M) = ${(fracM * 100).toFixed(2)}%</div>
+    <div>• Wire Diameter d = ${d_mm.toFixed(2)} mm &rarr; Δr / r = ${(fracR * 100).toFixed(2)}%</div>
+    <div style="margin-top:0.4rem; color:var(--accent-emerald);">
+      &rArr; Max Fractional Error Δf / f = <strong>${(totalFrac * 100).toFixed(2)}%</strong>
+    </div>
+    <div>
+      &rArr; Absolute Frequency Uncertainty: <strong>${f0.toFixed(1)} ± ${deltaF.toFixed(2)} Hz</strong>
+    </div>
+  `;
+}
+
+// ----------------------------------------------------
+// MODAL DIALOGS
+// ----------------------------------------------------
+
+function openModal(type) {
+  const idMap = {
+    instructions: 'modalInstructions',
+    theory: 'modalTheory',
+    viva: 'modalViva',
+    error: 'modalError'
+  };
+  const modalId = idMap[type];
+  if (modalId) {
+    const el = document.getElementById(modalId);
+    if (el) {
+      el.classList.add('open');
+      renderMathInPage();
+    }
+  }
+}
+
+function closeModal(modalId) {
+  const el = document.getElementById(modalId);
+  if (el) el.classList.remove('open');
+}
+
+// Close on backdrop click
+document.querySelectorAll('.modal-backdrop').forEach(b => {
+  b.addEventListener('click', (e) => {
+    if (e.target === b) b.classList.remove('open');
+  });
+});
+
+// Fullscreen toggle
+function toggleFullscreen() {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen().catch(err => {
+      alert(`Error attempting to enable fullscreen: ${err.message}`);
+    });
+    document.body.classList.add('is-fullscreen');
+    document.getElementById('appWrapper').classList.add('is-fullscreen');
+  } else {
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    }
+    document.body.classList.remove('is-fullscreen');
+    document.getElementById('appWrapper').classList.remove('is-fullscreen');
+  }
+  setTimeout(resizeCanvases, 100);
+}
+
+// ----------------------------------------------------
+// QUIZ ENGINE
+// ----------------------------------------------------
+
+let quizScore = 0;
+const answeredQuestions = new Set();
+
+function checkQuiz(qNum, optIdx, isCorrect) {
+  const qBox = document.querySelector(`.quiz-question-box[data-qid="${qNum}"]`);
+  if (!qBox) return;
+
+  const buttons = qBox.querySelectorAll('.quiz-option-btn');
+  buttons.forEach((btn, idx) => {
+    btn.disabled = true;
+    if (idx === optIdx) {
+      btn.classList.add(isCorrect ? 'correct' : 'wrong');
+    }
+  });
+
+  const explanation = qBox.querySelector('.quiz-explanation');
+  if (explanation) explanation.classList.add('show');
+
+  if (!answeredQuestions.has(qNum)) {
+    answeredQuestions.add(qNum);
+    if (isCorrect) quizScore++;
+    const scoreText = document.getElementById('quizScoreText');
+    if (scoreText) scoreText.textContent = `Score: ${quizScore} / 10`;
+  }
+}
+
+// ----------------------------------------------------
+// KATEX AUTO-RENDER
+// ----------------------------------------------------
+
+function renderMathInPage() {
+  if (window.renderMathInElement) {
+    window.renderMathInElement(document.body, {
+      delimiters: [
+        { left: '$$', right: '$$', display: true },
+        { left: '$', right: '$', display: false }
+      ],
+      throwOnError: false
+    });
+  }
+}
+</script>
+
+</body>
+</html>

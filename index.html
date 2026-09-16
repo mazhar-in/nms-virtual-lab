@@ -406,6 +406,8 @@
     .cat-mech { background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); }
     .cat-dyn { background: rgba(129, 140, 248, 0.15); color: #a5b4fc; border: 1px solid rgba(129, 140, 248, 0.3); }
     .cat-elec { background: rgba(251, 191, 36, 0.15); color: #fcd34d; border: 1px solid rgba(251, 191, 36, 0.3); }
+    .cat-optics { background: rgba(52, 211, 153, 0.15); color: #34d399; border: 1px solid rgba(52, 211, 153, 0.3); }
+    .cat-semi { background: rgba(244, 114, 182, 0.15); color: #f472b6; border: 1px solid rgba(244, 114, 182, 0.3); }
 
     /* Lab Cards Grid */
     .labs-grid {
@@ -804,7 +806,7 @@
       <!-- Quick Metrics Ribbon -->
       <div class="stats-ribbon">
         <div class="stat-box">
-          <div class="stat-number">12</div>
+          <div class="stat-number">24</div>
           <div class="stat-label">Virtual Labs</div>
         </div>
         <div class="stat-box">
@@ -845,22 +847,28 @@
 
       <div class="filter-chips-row" id="filterChipsRow">
         <button class="filter-chip active" data-filter="all">
-          All Experiments <span class="filter-count">12</span>
+          All Experiments <span class="filter-count">24</span>
         </button>
         <button class="filter-chip" data-filter="class11">
-          Class XI <span class="filter-count">9</span>
+          Class XI <span class="filter-count">10</span>
         </button>
         <button class="filter-chip" data-filter="class12">
-          Class XII <span class="filter-count">3</span>
+          Class XII <span class="filter-count">14</span>
         </button>
         <button class="filter-chip" data-filter="mechanics">
-          Mechanics & Measurements <span class="filter-count">5</span>
+          Mechanics <span class="filter-count">5</span>
         </button>
         <button class="filter-chip" data-filter="dynamics">
-          Dynamics & Oscillations <span class="filter-count">4</span>
+          Dynamics <span class="filter-count">5</span>
         </button>
         <button class="filter-chip" data-filter="electricity">
-          Electricity & Circuits <span class="filter-count">3</span>
+          Electricity <span class="filter-count">5</span>
+        </button>
+        <button class="filter-chip" data-filter="optics">
+          Ray Optics <span class="filter-count">8</span>
+        </button>
+        <button class="filter-chip" data-filter="semiconductor">
+          Semiconductors <span class="filter-count">1</span>
         </button>
       </div>
     </section>
@@ -1030,7 +1038,7 @@
         <h2 class="category-heading">
           <span>🔄</span> Dynamics, Forces & Oscillations
         </h2>
-        <span class="category-badge cat-dyn">4 Experiments</span>
+        <span class="category-badge cat-dyn">5 Experiments</span>
       </div>
 
       <div class="labs-grid">
@@ -1149,6 +1157,35 @@
             <a href="inclined-plane-roller-virtual-lab.html" target="_blank" class="btn-card-pop" title="Open in New Tab">↗</a>
           </div>
         </div>
+
+        <!-- 10. Sonometer: Frequency of AC Mains -->
+        <div class="lab-card" data-tags="sonometer ac mains frequency resonance alternating current waves standing waves paper rider horseshoe magnet electromagnet class11 class12 dynamics sound" data-class="class11" data-cat="dynamics">
+          <div class="card-top">
+            <div class="card-meta-row">
+              <span class="class-badge">CLASS XI / XII</span>
+              <span class="status-pill"><span class="status-dot"></span> Interactive Simulator</span>
+            </div>
+            <div class="card-title-group">
+              <div class="exp-icon">🎻</div>
+              <div>
+                <h3 class="exp-title">Sonometer: Frequency of AC Mains</h3>
+              </div>
+            </div>
+            <p class="exp-desc">
+              Determine the frequency of alternating current (50 Hz / 60 Hz) using a stretched sonometer wire. Observe mechanical resonance, paper rider flutter & ejection, real-time Web Audio hum, and live √T vs l regression analysis.
+            </p>
+            <div class="formula-tag"><span class="lbl">Formula:</span> $f = \frac{1}{2l}\sqrt{\frac{T}{m}}$</div>
+          </div>
+          <div class="card-actions">
+            <a href="sonometer-ac-frequency-virtual-lab.html" class="btn-launch">
+              <span>🚀 Launch Lab</span>
+            </a>
+            <a href="manuals.html#exp13" class="btn-card-manual" title="View Practical Lab Manual">
+              <span>📖</span> Manual
+            </a>
+            <a href="sonometer-ac-frequency-virtual-lab.html" target="_blank" class="btn-card-pop" title="Open in New Tab">↗</a>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -1158,7 +1195,7 @@
         <h2 class="category-heading">
           <span>⚡</span> Current Electricity & Circuit Laboratories
         </h2>
-        <span class="category-badge cat-elec">3 Experiments</span>
+        <span class="category-badge cat-elec">5 Experiments</span>
       </div>
 
       <div class="labs-grid">
@@ -1246,6 +1283,349 @@
               <span>📖</span> Manual
             </a>
             <a href="wheatstone-bridge-virtual-lab.html" target="_blank" class="btn-card-pop" title="Open in New Tab">↗</a>
+          </div>
+        </div>
+
+        <!-- 14. Galvanometer Resistance & Figure of Merit -->
+        <div class="lab-card" data-tags="galvanometer resistance half deflection method figure of merit sensitivity shunt high resistance moving coil class12 electricity current" data-class="class12" data-cat="electricity">
+          <div class="card-top">
+            <div class="card-meta-row">
+              <span class="class-badge">CLASS XII</span>
+              <span class="status-pill"><span class="status-dot"></span> Interactive Simulator</span>
+            </div>
+            <div class="card-title-group">
+              <div class="exp-icon">🧲</div>
+              <div>
+                <h3 class="exp-title">Galvanometer: Resistance &amp; Figure of Merit</h3>
+              </div>
+            </div>
+            <p class="exp-desc">
+              Determine the resistance of a moving coil galvanometer by half-deflection shunt method and compute its figure of merit, current sensitivity, and full-scale deflection current with linear regression analysis.
+            </p>
+            <div class="formula-tag"><span class="lbl">Formula:</span> $G = \frac{R \cdot S}{R - S}, \quad k = \frac{E}{(R + G)\theta}$</div>
+          </div>
+          <div class="card-actions">
+            <a href="galvanometer-resistance-half-deflection-virtual-lab.html" class="btn-launch">
+              <span>🚀 Launch Lab</span>
+            </a>
+            <a href="manuals.html#exp14" class="btn-card-manual" title="View Practical Lab Manual">
+              <span>📖</span> Manual
+            </a>
+            <a href="galvanometer-resistance-half-deflection-virtual-lab.html" target="_blank" class="btn-card-pop" title="Open in New Tab">↗</a>
+          </div>
+        </div>
+
+        <!-- 15. Galvanometer to Voltmeter -->
+        <div class="lab-card" data-tags="galvanometer conversion voltmeter multiplier resistance potential divider rheostat verification calibration error class12 electricity" data-class="class12" data-cat="electricity">
+          <div class="card-top">
+            <div class="card-meta-row">
+              <span class="class-badge">CLASS XII</span>
+              <span class="status-pill"><span class="status-dot"></span> Interactive Simulator</span>
+            </div>
+            <div class="card-title-group">
+              <div class="exp-icon">📟</div>
+              <div>
+                <h3 class="exp-title">Galvanometer: Conversion to Voltmeter</h3>
+              </div>
+            </div>
+            <p class="exp-desc">
+              Calculate and connect a high-value series multiplier resistance to convert a moving coil galvanometer into a desired range voltmeter ($0-3\text{V}$, $0-5\text{V}$, $0-10\text{V}$), verified via potential divider circuit.
+            </p>
+            <div class="formula-tag"><span class="lbl">Formula:</span> $R = \frac{V}{I_g} - G, \quad \Delta V = V_{\text{calc}} - V_{\text{std}}$</div>
+          </div>
+          <div class="card-actions">
+            <a href="galvanometer-to-voltmeter-virtual-lab.html" class="btn-launch">
+              <span>🚀 Launch Lab</span>
+            </a>
+            <a href="manuals.html#exp15" class="btn-card-manual" title="View Practical Lab Manual">
+              <span>📖</span> Manual
+            </a>
+            <a href="galvanometer-to-voltmeter-virtual-lab.html" target="_blank" class="btn-card-pop" title="Open in New Tab">↗</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 4: Ray Optics & Optical Instruments -->
+    <div class="category-block" data-category="optics">
+      <div class="category-title-bar">
+        <h2 class="category-heading">
+          <span>🔍</span> Ray Optics & Optical Instruments
+        </h2>
+        <span class="category-badge cat-optics">8 Experiments</span>
+      </div>
+
+      <div class="labs-grid">
+        <!-- 16. Concave Mirror -->
+        <div class="lab-card" data-tags="concave mirror focal length u-v method optical bench parallax ray tracing class12 optics" data-class="class12" data-cat="optics">
+          <div class="card-top">
+            <div class="card-meta-row">
+              <span class="class-badge">CLASS XII</span>
+              <span class="status-pill"><span class="status-dot"></span> Interactive Simulator</span>
+            </div>
+            <div class="card-title-group">
+              <div class="exp-icon">🪞</div>
+              <div>
+                <h3 class="exp-title">Concave Mirror: Focal Length (u–v Method)</h3>
+              </div>
+            </div>
+            <p class="exp-desc">
+              Determine the focal length of a concave mirror on an optical bench by measuring $v$ for different values of $u$ with parallax removal and interactive $u-v$ curve plotting.
+            </p>
+            <div class="formula-tag"><span class="lbl">Formula:</span> $\frac{1}{f} = \frac{1}{v} + \frac{1}{u} \implies f = \frac{uv}{u+v}$</div>
+          </div>
+          <div class="card-actions">
+            <a href="concave-mirror-focal-length-virtual-lab.html" class="btn-launch">
+              <span>🚀 Launch Lab</span>
+            </a>
+            <a href="manuals.html#exp16" class="btn-card-manual" title="View Practical Lab Manual">
+              <span>📖</span> Manual
+            </a>
+            <a href="concave-mirror-focal-length-virtual-lab.html" target="_blank" class="btn-card-pop" title="Open in New Tab">↗</a>
+          </div>
+        </div>
+
+        <!-- 17. Convex Mirror -->
+        <div class="lab-card" data-tags="convex mirror focal length convex lens auxiliary lens optical bench virtual object class12 optics" data-class="class12" data-cat="optics">
+          <div class="card-top">
+            <div class="card-meta-row">
+              <span class="class-badge">CLASS XII</span>
+              <span class="status-pill"><span class="status-dot"></span> Interactive Simulator</span>
+            </div>
+            <div class="card-title-group">
+              <div class="exp-icon">🔍</div>
+              <div>
+                <h3 class="exp-title">Convex Mirror: Focal Length (Auxiliary Lens)</h3>
+              </div>
+            </div>
+            <p class="exp-desc">
+              Find the focal length of a convex mirror using an auxiliary convex lens to create a virtual object, removing parallax by re-tracing normal reflection rays.
+            </p>
+            <div class="formula-tag"><span class="lbl">Formula:</span> $R = I - M, \quad f = \frac{R}{2}$</div>
+          </div>
+          <div class="card-actions">
+            <a href="convex-mirror-focal-length-virtual-lab.html" class="btn-launch">
+              <span>🚀 Launch Lab</span>
+            </a>
+            <a href="manuals.html#exp17" class="btn-card-manual" title="View Practical Lab Manual">
+              <span>📖</span> Manual
+            </a>
+            <a href="convex-mirror-focal-length-virtual-lab.html" target="_blank" class="btn-card-pop" title="Open in New Tab">↗</a>
+          </div>
+        </div>
+
+        <!-- 18. Convex Lens -->
+        <div class="lab-card" data-tags="convex lens focal length u-v graphs 1/u-1/v optical bench magnification real inverted image class12 optics" data-class="class12" data-cat="optics">
+          <div class="card-top">
+            <div class="card-meta-row">
+              <span class="class-badge">CLASS XII</span>
+              <span class="status-pill"><span class="status-dot"></span> Interactive Simulator</span>
+            </div>
+            <div class="card-title-group">
+              <div class="exp-icon">🔬</div>
+              <div>
+                <h3 class="exp-title">Convex Lens: Focal Length (u–v Graphs)</h3>
+              </div>
+            </div>
+            <p class="exp-desc">
+              Determine the focal length and optical power of a convex lens by plotting $u-v$ and $1/u-1/v$ characteristic graphs with dynamic zero parallax verification.
+            </p>
+            <div class="formula-tag"><span class="lbl">Formula:</span> $\frac{1}{f} = \frac{1}{v} - \frac{1}{u}, \quad P = \frac{100}{f}\text{ D}$</div>
+          </div>
+          <div class="card-actions">
+            <a href="convex-lens-focal-length-virtual-lab.html" class="btn-launch">
+              <span>🚀 Launch Lab</span>
+            </a>
+            <a href="manuals.html#exp18" class="btn-card-manual" title="View Practical Lab Manual">
+              <span>📖</span> Manual
+            </a>
+            <a href="convex-lens-focal-length-virtual-lab.html" target="_blank" class="btn-card-pop" title="Open in New Tab">↗</a>
+          </div>
+        </div>
+
+        <!-- 19. Concave Lens -->
+        <div class="lab-card" data-tags="concave lens focal length auxiliary convex lens combination virtual object divergence class12 optics" data-class="class12" data-cat="optics">
+          <div class="card-top">
+            <div class="card-meta-row">
+              <span class="class-badge">CLASS XII</span>
+              <span class="status-pill"><span class="status-dot"></span> Interactive Simulator</span>
+            </div>
+            <div class="card-title-group">
+              <div class="exp-icon">👓</div>
+              <div>
+                <h3 class="exp-title">Concave Lens: Focal Length (Auxiliary Lens)</h3>
+              </div>
+            </div>
+            <p class="exp-desc">
+              Measure the focal length of a diverging concave lens using an auxiliary convex lens to establish a virtual object and real shifted image on an optical bench.
+            </p>
+            <div class="formula-tag"><span class="lbl">Formula:</span> $\frac{1}{f} = \frac{1}{v} - \frac{1}{u} \implies f = \frac{uv}{u-v}$</div>
+          </div>
+          <div class="card-actions">
+            <a href="concave-lens-focal-length-virtual-lab.html" class="btn-launch">
+              <span>🚀 Launch Lab</span>
+            </a>
+            <a href="manuals.html#exp19" class="btn-card-manual" title="View Practical Lab Manual">
+              <span>📖</span> Manual
+            </a>
+            <a href="concave-lens-focal-length-virtual-lab.html" target="_blank" class="btn-card-pop" title="Open in New Tab">↗</a>
+          </div>
+        </div>
+
+        <!-- 20. Prism Minimum Deviation -->
+        <div class="lab-card" data-tags="prism minimum deviation i-delta graph refractive index snell law angle of deviation class12 optics" data-class="class12" data-cat="optics">
+          <div class="card-top">
+            <div class="card-meta-row">
+              <span class="class-badge">CLASS XII</span>
+              <span class="status-pill"><span class="status-dot"></span> Interactive Simulator</span>
+            </div>
+            <div class="card-title-group">
+              <div class="exp-icon">📐</div>
+              <div>
+                <h3 class="exp-title">Prism: Minimum Deviation (i–δ Graph)</h3>
+              </div>
+            </div>
+            <p class="exp-desc">
+              Trace refraction of light through an equilateral glass prism, measure deviation angle $\delta$ across angles of incidence $i$, and calculate refractive index $\mu$ from $D_m$.
+            </p>
+            <div class="formula-tag"><span class="lbl">Formula:</span> $\mu = \frac{\sin((A+D_m)/2)}{\sin(A/2)}$</div>
+          </div>
+          <div class="card-actions">
+            <a href="prism-minimum-deviation-virtual-lab.html" class="btn-launch">
+              <span>🚀 Launch Lab</span>
+            </a>
+            <a href="manuals.html#exp20" class="btn-card-manual" title="View Practical Lab Manual">
+              <span>📖</span> Manual
+            </a>
+            <a href="prism-minimum-deviation-virtual-lab.html" target="_blank" class="btn-card-pop" title="Open in New Tab">↗</a>
+          </div>
+        </div>
+
+        <!-- 21. Travelling Microscope -->
+        <div class="lab-card" data-tags="travelling microscope glass slab refractive index real depth apparent depth vernier scale class12 optics" data-class="class12" data-cat="optics">
+          <div class="card-top">
+            <div class="card-meta-row">
+              <span class="class-badge">CLASS XII</span>
+              <span class="status-pill"><span class="status-dot"></span> Interactive Simulator</span>
+            </div>
+            <div class="card-title-group">
+              <div class="exp-icon">🔬</div>
+              <div>
+                <h3 class="exp-title">Travelling Microscope: Glass Slab Refractive Index</h3>
+              </div>
+            </div>
+            <p class="exp-desc">
+              Focus on paper ink mark, apparent mark through glass slab, and lycopodium dust using a vertical travelling microscope with $0.001\text{ cm}$ vernier loupe.
+            </p>
+            <div class="formula-tag"><span class="lbl">Formula:</span> $\mu = \frac{\text{Real Depth}}{\text{Apparent Depth}} = \frac{R_3 - R_1}{R_3 - R_2}$</div>
+          </div>
+          <div class="card-actions">
+            <a href="travelling-microscope-glass-slab-virtual-lab.html" class="btn-launch">
+              <span>🚀 Launch Lab</span>
+            </a>
+            <a href="manuals.html#exp21" class="btn-card-manual" title="View Practical Lab Manual">
+              <span>📖</span> Manual
+            </a>
+            <a href="travelling-microscope-glass-slab-virtual-lab.html" target="_blank" class="btn-card-pop" title="Open in New Tab">↗</a>
+          </div>
+        </div>
+
+        <!-- 22. Liquid Lens -->
+        <div class="lab-card" data-tags="liquid lens refractive index convex lens plane mirror liquid drop water glycerine class12 optics" data-class="class12" data-cat="optics">
+          <div class="card-top">
+            <div class="card-meta-row">
+              <span class="class-badge">CLASS XII</span>
+              <span class="status-pill"><span class="status-dot"></span> Interactive Simulator</span>
+            </div>
+            <div class="card-title-group">
+              <div class="exp-icon">💧</div>
+              <div>
+                <h3 class="exp-title">Liquid Refractive Index (Liquid Lens Method)</h3>
+              </div>
+            </div>
+            <p class="exp-desc">
+              Determine the refractive index of water, glycerine, or castor oil by creating a plano-concave liquid lens between a convex lens and plane mirror.
+            </p>
+            <div class="formula-tag"><span class="lbl">Formula:</span> $\frac{1}{f_2} = \frac{1}{F} - \frac{1}{f_1}, \quad \mu = 1 - \frac{R}{f_2}$</div>
+          </div>
+          <div class="card-actions">
+            <a href="refractive-index-liquid-lens-virtual-lab.html" class="btn-launch">
+              <span>🚀 Launch Lab</span>
+            </a>
+            <a href="manuals.html#exp22" class="btn-card-manual" title="View Practical Lab Manual">
+              <span>📖</span> Manual
+            </a>
+            <a href="refractive-index-liquid-lens-virtual-lab.html" target="_blank" class="btn-card-pop" title="Open in New Tab">↗</a>
+          </div>
+        </div>
+
+        <!-- 23. Liquid Concave Mirror -->
+        <div class="lab-card" data-tags="concave mirror plane mirror liquid refractive index center of curvature parallax class12 optics" data-class="class12" data-cat="optics">
+          <div class="card-top">
+            <div class="card-meta-row">
+              <span class="class-badge">CLASS XII</span>
+              <span class="status-pill"><span class="status-dot"></span> Interactive Simulator</span>
+            </div>
+            <div class="card-title-group">
+              <div class="exp-icon">🪞</div>
+              <div>
+                <h3 class="exp-title">Liquid Refractive Index (Concave &amp; Plane Mirror)</h3>
+              </div>
+            </div>
+            <p class="exp-desc">
+              Find liquid refractive index using a concave mirror and plane mirror strip by measuring real curvature $h_1$, liquid surface $h_0$, and apparent curvature $h_2$ with zero parallax.
+            </p>
+            <div class="formula-tag"><span class="lbl">Formula:</span> $\mu = \frac{h_1 - h_0}{h_2 - h_0} \approx \frac{h_1}{h_2}$</div>
+          </div>
+          <div class="card-actions">
+            <a href="refractive-index-liquid-concave-mirror-virtual-lab.html" class="btn-launch">
+              <span>🚀 Launch Lab</span>
+            </a>
+            <a href="manuals.html#exp23" class="btn-card-manual" title="View Practical Lab Manual">
+              <span>📖</span> Manual
+            </a>
+            <a href="refractive-index-liquid-concave-mirror-virtual-lab.html" target="_blank" class="btn-card-pop" title="Open in New Tab">↗</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 5: Semiconductor Electronics -->
+    <div class="category-block" data-category="semiconductor">
+      <div class="category-title-bar">
+        <h2 class="category-heading">
+          <span>⚡</span> Semiconductor Electronics & Diodes
+        </h2>
+        <span class="category-badge cat-semi">1 Experiment</span>
+      </div>
+
+      <div class="labs-grid">
+        <!-- 24. P-N Junction Diode -->
+        <div class="lab-card" data-tags="pn junction diode forward bias reverse bias iv characteristics knee voltage breakdown class12 semiconductor" data-class="class12" data-cat="semiconductor">
+          <div class="card-top">
+            <div class="card-meta-row">
+              <span class="class-badge">CLASS XII</span>
+              <span class="status-pill"><span class="status-dot"></span> Interactive Simulator</span>
+            </div>
+            <div class="card-title-group">
+              <div class="exp-icon">⚡</div>
+              <div>
+                <h3 class="exp-title">P-N Junction Diode: I–V Characteristics</h3>
+              </div>
+            </div>
+            <p class="exp-desc">
+              Draw the 4-quadrant $I-V$ curve of silicon and germanium diodes in forward bias ($mA$) and reverse bias ($\mu A$) with microscopic animated depletion layer dynamics.
+            </p>
+            <div class="formula-tag"><span class="lbl">Formula:</span> $r_d = \frac{\Delta V}{\Delta I}, \quad V_k \approx 0.7\text{ V (Si)}, \quad 0.3\text{ V (Ge)}$</div>
+          </div>
+          <div class="card-actions">
+            <a href="pn-junction-diode-virtual-lab.html" class="btn-launch">
+              <span>🚀 Launch Lab</span>
+            </a>
+            <a href="manuals.html#exp24" class="btn-card-manual" title="View Practical Lab Manual">
+              <span>📖</span> Manual
+            </a>
+            <a href="pn-junction-diode-virtual-lab.html" target="_blank" class="btn-card-pop" title="Open in New Tab">↗</a>
           </div>
         </div>
       </div>
@@ -1415,6 +1795,10 @@
             } else if (currentFilter === 'dynamics' && cardCat === 'dynamics') {
               passesFilter = true;
             } else if (currentFilter === 'electricity' && cardCat === 'electricity') {
+              passesFilter = true;
+            } else if (currentFilter === 'optics' && cardCat === 'optics') {
+              passesFilter = true;
+            } else if (currentFilter === 'semiconductor' && cardCat === 'semiconductor') {
               passesFilter = true;
             }
 

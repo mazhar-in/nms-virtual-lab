@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
+  <title>Refractive Index of Liquid (Liquid Lens Method) | National Model Schools Physics Virtual Lab</title>
+  <meta name="description" content="Determine refractive index of a liquid using a convex lens, plane mirror, and liquid lens combination with parallax removal and ray tracing." />
+
+  <!-- KaTeX for Formula Rendering -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" crossorigin="anonymous" onload="initKaTeX()"></script>
+
+  <style>
+    :root {
+      --bg-main: #090e1a;
+      --bg-panel: #111a2e;
+      --bg-card: #1a253f;
+      --bg-subtle: #243456;
+      --accent: #38bdf8;
+      --accent-hover: #0284c7;
+      --accent-glow: rgba(56, 189, 248, 0.25);
+      --copper: #f59e0b;
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --border: #334155;
+      --border-light: #475569;
+      --success: #10b981;
+      --danger: #ef4444;
+      --circuit-bg: #060a17;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+      background-color: var(--bg-main); color: var(--text-primary); line-height: 1.5; padding: 0.75rem; overflow-x: hidden; font-size: 1rem;
+    }
+    @media (min-width: 768px) { body { padding: 1.2rem; } }
+
+    .app-wrapper { max-width: 1440px; margin: 0 auto; display: flex; flex-direction: column; gap: 0.85rem; min-height: 100vh; }
+
+    /* Non-Scrollable Fullscreen Mode */
+    :fullscreen, :-webkit-full-screen { overflow: hidden !important; background-color: var(--bg-main) !important; }
+    body.is-fullscreen { overflow: hidden !important; padding: 0.35rem 0.55rem !important; height: 100vh !important; width: 100vw !important; }
+
+    :fullscreen .app-wrapper, :-webkit-full-screen .app-wrapper, body.is-fullscreen .app-wrapper, .app-wrapper.is-fullscreen {
+      width: 100vw !important; height: 100vh !important; max-width: 100vw !important; max-height: 100vh !important;
+      padding: 0.35rem 0.55rem !important; margin: 0 !important; background-color: var(--bg-main); overflow: hidden !important;
+      display: flex !important; flex-direction: column !important; gap: 0.35rem !important; box-sizing: border-box;
+    }
+
+    .app-wrapper.is-fullscreen header { padding: 0.35rem 0.75rem !important; gap: 0.4rem !important; flex-shrink: 0 !important; border-radius: 8px; }
+    .app-wrapper.is-fullscreen h1 { font-size: 1.12rem !important; }
+    .app-wrapper.is-fullscreen .badge { font-size: 0.68rem !important; padding: 0.15rem 0.45rem !important; }
+    .app-wrapper.is-fullscreen .btn { min-height: 32px !important; padding: 0.25rem 0.6rem !important; font-size: 0.84rem !important; }
+    .app-wrapper.is-fullscreen .mode-nav { padding: 0.2rem 0.4rem !important; gap: 0.35rem !important; flex-shrink: 0 !important; }
+    .app-wrapper.is-fullscreen .mode-tab { padding: 0.35rem 0.75rem !important; font-size: 0.85rem !important; }
+
+    .app-wrapper.is-fullscreen .tab-content.active {
+      flex: 1 1 auto !important; min-height: 0 !important; height: calc(100vh - 110px) !important; max-height: calc(100vh - 110px) !important;
+      overflow: hidden !important; display: flex !important; flex-direction: column !important;
+    }
+
+    .app-wrapper.is-fullscreen .sim-grid {
+      display: grid !important; grid-template-columns: 1.25fr 0.75fr !important; gap: 0.5rem !important;
+      flex: 1 1 auto !important; height: 100% !important; min-height: 0 !important; overflow: hidden !important;
+    }
+
+    .app-wrapper.is-fullscreen .panel { height: 100% !important; min-height: 0 !important; display: flex !important; flex-direction: column !important; overflow: hidden !important; }
+    .app-wrapper.is-fullscreen .panel-header { padding: 0.4rem 0.75rem !important; font-size: 0.88rem !important; flex-shrink: 0 !important; }
+    .app-wrapper.is-fullscreen .panel-body { padding: 0.55rem !important; gap: 0.5rem !important; flex: 1 1 auto !important; min-height: 0 !important; overflow-y: auto !important; }
+    .app-wrapper.is-fullscreen .step-banner { padding: 0.35rem 0.65rem !important; font-size: 0.8rem !important; flex-shrink: 0 !important; }
+    .app-wrapper.is-fullscreen .canvas-container { flex: 1 1 auto !important; min-height: 0 !important; height: 100% !important; width: 100% !important; }
+    .app-wrapper.is-fullscreen canvas#liquidCanvas { height: 100% !important; width: 100% !important; }
+    .app-wrapper.is-fullscreen .control-card { padding: 0.55rem 0.75rem !important; gap: 0.4rem !important; }
+    .app-wrapper.is-fullscreen .output-box { padding: 0.55rem 0.75rem !important; gap: 0.4rem !important; }
+    .app-wrapper.is-fullscreen .output-metric { padding: 0.4rem !important; }
+    .app-wrapper.is-fullscreen .metric-val { font-size: 1rem !important; }
+
+    .app-wrapper.is-fullscreen .table-card, .app-wrapper.is-fullscreen .theory-wrap {
+      flex: 1 1 auto !important; min-height: 0 !important; height: 100% !important; overflow-y: auto !important;
+    }
+
+    body.is-fullscreen footer, .app-wrapper.is-fullscreen footer { display: none !important; }
+
+    /* Normal Header */
+    header {
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.8) 100%);
+      backdrop-filter: blur(12px); border: 1px solid var(--border); border-radius: 12px;
+      padding: 0.85rem 1.25rem; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 0.75rem; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+    .header-left { display: flex; align-items: center; gap: 1rem; }
+    .header-brand { display: flex; flex-direction: column; }
+    .badge-row { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.2rem; }
+    .badge {
+      font-size: 0.75rem; font-weight: 700; padding: 0.15rem 0.6rem; border-radius: 20px;
+      text-transform: uppercase; letter-spacing: 0.5px;
+      background: rgba(56, 189, 248, 0.15); color: var(--accent); border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+    .badge-class { background: rgba(16, 185, 129, 0.15); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.3); }
+    h1 { font-size: 1.35rem; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 0.5rem; }
+    .header-actions { display: flex; align-items: center; gap: 0.6rem; }
+
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
+      padding: 0.45rem 0.9rem; font-size: 0.9rem; font-weight: 600; border-radius: 8px;
+      border: 1px solid transparent; cursor: pointer; transition: all 0.2s ease; text-decoration: none; user-select: none;
+    }
+    .btn-primary { background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); color: #fff; }
+    .btn-primary:hover { transform: translateY(-1px); }
+    .btn-outline { background: rgba(30, 41, 59, 0.6); color: var(--text-primary); border-color: var(--border); }
+    .btn-outline:hover { background: var(--bg-card); border-color: var(--accent); color: var(--accent); }
+    .btn-success { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: #fff; }
+
+    .mode-nav { display: flex; gap: 0.5rem; overflow-x: auto; padding-bottom: 0.2rem; }
+    .mode-tab {
+      padding: 0.55rem 1.1rem; background: var(--bg-panel); border: 1px solid var(--border);
+      border-radius: 8px; color: var(--text-secondary); font-weight: 600; font-size: 0.92rem;
+      cursor: pointer; display: flex; align-items: center; gap: 0.5rem; white-space: nowrap; transition: all 0.2s;
+    }
+    .mode-tab:hover { color: var(--text-primary); background: var(--bg-card); }
+    .mode-tab.active {
+      color: #fff; background: linear-gradient(135deg, rgba(56, 189, 248, 0.2) 0%, rgba(2, 132, 199, 0.25) 100%);
+      border-color: var(--accent); box-shadow: 0 0 12px var(--accent-glow);
+    }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    .sim-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+    @media (min-width: 1024px) { .sim-grid { grid-template-columns: 1.25fr 0.75fr; } }
+
+    .panel { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25); }
+    .panel-header { background: var(--bg-card); padding: 0.65rem 1rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; font-weight: 700; font-size: 0.95rem; }
+    .panel-body { padding: 1rem; display: flex; flex-direction: column; gap: 1rem; }
+
+    .canvas-container {
+      position: relative; background: var(--circuit-bg); border-radius: 8px; border: 1px solid var(--border);
+      overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      min-height: 400px; flex: 1 1 auto;
+    }
+    canvas#liquidCanvas { width: 100%; height: 100%; min-height: 400px; display: block; }
+
+    .canvas-hud {
+      position: absolute; top: 10px; left: 10px; background: rgba(9, 14, 26, 0.9);
+      border: 1px solid var(--border); border-radius: 8px; padding: 0.5rem 0.8rem; font-size: 0.85rem;
+      backdrop-filter: blur(8px); pointer-events: none;
+    }
+    .hud-row { display: flex; justify-content: space-between; gap: 1rem; margin-bottom: 0.2rem; }
+    .hud-row:last-child { margin-bottom: 0; }
+    .hud-label { color: var(--text-secondary); }
+    .hud-val { font-weight: 700; color: var(--accent); }
+
+    .control-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 0.9rem; display: flex; flex-direction: column; gap: 0.75rem; }
+    .control-card-title { font-size: 0.92rem; font-weight: 700; color: #fff; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 0.4rem; }
+    .control-group { display: flex; flex-direction: column; gap: 0.35rem; }
+    .control-label-row { display: flex; justify-content: space-between; font-size: 0.88rem; }
+    .control-label { color: var(--text-secondary); font-weight: 600; }
+    .control-val { font-weight: 700; color: var(--accent); font-family: monospace; }
+
+    input[type="range"] { -webkit-appearance: none; width: 100%; height: 6px; background: var(--bg-subtle); border-radius: 4px; outline: none; cursor: pointer; }
+    input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: var(--accent); cursor: pointer; box-shadow: 0 0 8px var(--accent-glow); }
+
+    .output-box { background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 10px; padding: 1rem; display: flex; flex-direction: column; gap: 0.65rem; }
+    .output-title { font-size: 0.88rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--accent); font-weight: 700; display: flex; align-items: center; gap: 0.4rem; }
+    .output-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+    .output-metric { background: rgba(0,0,0,0.25); padding: 0.6rem; border-radius: 6px; border: 1px solid rgba(255,255,255,0.06); }
+    .metric-lbl { font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 0.2rem; }
+    .metric-val { font-size: 1.15rem; font-weight: 700; color: #fff; font-family: monospace; }
+
+    .step-banner { background: rgba(56, 189, 248, 0.12); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 8px; padding: 0.65rem 0.9rem; font-size: 0.88rem; color: #e0f2fe; display: flex; align-items: flex-start; gap: 0.5rem; line-height: 1.4; }
+
+    .table-card, .theory-wrap { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; display: flex; flex-direction: column; gap: 1rem; }
+    .table-scroll { overflow-x: auto; }
+    table.obs-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; text-align: center; }
+    table.obs-table th { background: var(--bg-card); color: var(--accent); padding: 0.65rem 0.5rem; border: 1px solid var(--border); font-weight: 700; white-space: nowrap; }
+    table.obs-table td { padding: 0.55rem 0.5rem; border: 1px solid var(--border); color: var(--text-primary); white-space: nowrap; }
+    table.obs-table tbody tr:hover { background: rgba(56, 189, 248, 0.05); }
+
+    .theory-section { display: flex; flex-direction: column; gap: 0.6rem; }
+    .theory-heading { font-size: 1.15rem; font-weight: 700; color: var(--accent); display: flex; align-items: center; gap: 0.5rem; border-bottom: 1px solid var(--border); padding-bottom: 0.4rem; }
+    .formula-callout { background: var(--bg-card); border-left: 4px solid var(--accent); padding: 0.9rem 1.2rem; border-radius: 0 8px 8px 0; font-size: 1rem; overflow-x: auto; }
+
+    .quiz-container { display: flex; flex-direction: column; gap: 1rem; }
+    .quiz-item { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 1rem; }
+    .quiz-q { font-weight: 700; color: #fff; margin-bottom: 0.6rem; }
+    .quiz-options { display: flex; flex-direction: column; gap: 0.4rem; }
+    .quiz-opt { padding: 0.5rem 0.8rem; border-radius: 6px; background: var(--bg-subtle); border: 1px solid var(--border); cursor: pointer; font-size: 0.9rem; transition: all 0.2s; }
+    .quiz-opt:hover { border-color: var(--accent); background: rgba(56, 189, 248, 0.15); }
+    .quiz-opt.correct { background: rgba(16, 185, 129, 0.2) !important; border-color: var(--success) !important; color: #6ee7b7 !important; }
+    .quiz-opt.wrong { background: rgba(239, 68, 68, 0.2) !important; border-color: var(--danger) !important; color: #fca5a5 !important; }
+
+    footer { text-align: center; color: var(--text-secondary); font-size: 0.85rem; padding: 1rem 0; border-top: 1px solid var(--border); margin-top: 1rem; }
+    footer a { color: var(--accent); text-decoration: none; }
+  </style>
+</head>
+<body>
+  <div class="app-wrapper" id="appWrapper">
+    
+    <!-- Header -->
+    <header>
+      <div class="header-left">
+        <a href="index.html" class="btn btn-outline" title="Return to Physics Lab Catalog"><span>←</span> Hub</a>
+        <div class="header-brand">
+          <div class="badge-row">
+            <span class="badge">National Model Schools • Physics Lab</span>
+            <span class="badge badge-class">Class XII • Exp 22</span>
+          </div>
+          <h1><span>💧</span> Refractive Index of Liquid (Liquid Lens Method)</h1>
+        </div>
+      </div>
+      <div class="header-actions">
+        <a href="manuals.html#exp22" class="btn btn-outline" title="View Practical Manual"><span>📖</span> Manual</a>
+        <button class="btn btn-outline" id="btnSoundToggle" title="Toggle audio effects"><span id="soundIcon">🔊</span> Audio</button>
+        <button class="btn btn-primary" id="btnFullscreenToggle" title="Toggle fullscreen view"><span>⛶</span> Fullscreen</button>
+      </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="mode-nav">
+      <button class="mode-tab active" data-tab="tab-sim"><span>🔬</span> Liquid Lens Simulator</button>
+      <button class="mode-tab" data-tab="tab-table"><span>📊</span> Observation Table &amp; Results</button>
+      <button class="mode-tab" data-tab="tab-theory"><span>📘</span> Theory, Formulas &amp; Viva</button>
+    </nav>
+
+    <!-- TAB 1: Simulator -->
+    <div class="tab-content active" id="tab-sim">
+      <div class="sim-grid">
+        
+        <!-- Left: Canvas Area -->
+        <div class="panel">
+          <div class="panel-header">
+            <span>📐 Vertical Stand: Convex Lens, Plane Mirror &amp; Plano-Concave Liquid Lens</span>
+            <div style="display:flex; gap:0.4rem;">
+              <button class="btn btn-outline" style="font-size:0.8rem; padding:0.25rem 0.6rem;" onclick="resetSetup()">↺ Reset</button>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="step-banner" id="guideStepBanner">
+              <span>💡</span>
+              <div id="guideStepText">
+                <strong>Step 1 (Dry Lens):</strong> Move needle vertically until its inverted reflection coincides with its tip $\rightarrow$ Focal length $f_1$.<br>
+                <strong>Step 2 (With Liquid):</strong> Toggle Liquid ON. The liquid drop forms a plano-concave lens. Refocus needle $\rightarrow$ Combination focal length $F$.
+              </div>
+            </div>
+
+            <div class="canvas-container">
+              <canvas id="liquidCanvas"></canvas>
+              
+              <div class="canvas-hud">
+                <div class="hud-row"><span class="hud-label">Liquid Status:</span><span class="hud-val" id="hudLiquid">No Liquid (Dry Lens f₁)</span></div>
+                <div class="hud-row"><span class="hud-label">Needle Height ($h$):</span><span class="hud-val" id="hudH">20.0 cm</span></div>
+                <div class="hud-row"><span class="hud-label">True Focus:</span><span class="hud-val" id="hudFocusVal">20.0 cm</span></div>
+                <div class="hud-row"><span class="hud-label">Parallax Status:</span><span class="hud-val" id="hudParallax" style="color:#10b981;">ZERO PARALLAX ✓</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Controls & Calculations -->
+        <div class="panel">
+          <div class="panel-header">
+            <span>⚙️ Stand Height &amp; Liquid Controls</span>
+            <button class="btn btn-success" style="font-size:0.8rem; padding:0.25rem 0.6rem;" onclick="autoCoincide()">⚡ Auto Coincide</button>
+          </div>
+          <div class="panel-body">
+            
+            <div class="control-card">
+              <div class="control-card-title">
+                <span>1. Liquid Layer &amp; Medium</span>
+              </div>
+              <div style="display:flex; gap:0.5rem; align-items:center;">
+                <button class="btn btn-primary" id="btnToggleLiquid" onclick="toggleLiquidLayer()" style="flex:1;">
+                  <span>💧</span> Add Liquid Drop
+                </button>
+                <select id="selectLiquid" onchange="onLiquidChange(this.value)" style="flex:1.2; background:var(--bg-subtle); color:var(--text-primary); border:1px solid var(--border); border-radius:6px; padding:0.45rem; font-size:0.88rem; outline:none;">
+                  <option value="1.333">Water (μ = 1.333)</option>
+                  <option value="1.472">Glycerine (μ = 1.472)</option>
+                  <option value="1.480">Castor Oil (μ = 1.480)</option>
+                  <option value="1.470">Turpentine Oil (μ = 1.470)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="control-card">
+              <div class="control-card-title">
+                <span>2. Needle Height ($h$)</span>
+                <span style="font-size:0.75rem; color:var(--text-secondary);">Range: 15 to 45 cm</span>
+              </div>
+              
+              <div class="control-group">
+                <div class="control-label-row">
+                  <span class="control-label">Vertical Pointer Height ($h$):</span>
+                  <span class="control-val" id="valH">20.0 cm</span>
+                </div>
+                <input type="range" id="sliderH" min="15.0" max="45.0" step="0.2" value="20.0" oninput="onHChange(this.value)" />
+                <div style="display:flex; justify-content:space-between; margin-top:0.2rem;">
+                  <button class="btn btn-outline" style="padding:0.2rem 0.5rem; font-size:0.78rem;" onclick="adjustH(-0.2)">◀ -0.2 cm</button>
+                  <button class="btn btn-outline" style="padding:0.2rem 0.5rem; font-size:0.78rem;" onclick="adjustH(0.2)">+0.2 cm ▶</button>
+                </div>
+              </div>
+
+              <div class="control-group">
+                <div class="control-label-row">
+                  <span class="control-label">Observer Eye Lateral Shift:</span>
+                  <span class="control-val" id="valEye">Center</span>
+                </div>
+                <input type="range" id="sliderEye" min="-25" max="25" step="1" value="0" oninput="onEyeChange(this.value)" />
+              </div>
+            </div>
+
+            <!-- Optical Calculations Box -->
+            <div class="output-box">
+              <div class="output-title"><span>📊</span> Focal Length &amp; Liquid Refractive Index</div>
+              <div class="output-grid">
+                <div class="output-metric">
+                  <div class="metric-lbl">Dry Lens Focal Length ($f_1$)</div>
+                  <div class="metric-val" id="dispF1">20.0 cm</div>
+                </div>
+                <div class="output-metric">
+                  <div class="metric-lbl">Combination Focal Length ($F$)</div>
+                  <div class="metric-val" id="dispF">-- cm</div>
+                </div>
+                <div class="output-metric">
+                  <div class="metric-lbl">Liquid Lens Focal Length ($f_2$)</div>
+                  <div class="metric-val" id="dispF2">-- cm</div>
+                </div>
+                <div class="output-metric">
+                  <div class="metric-lbl">Liquid Refractive Index ($\mu$)</div>
+                  <div class="metric-val" id="dispMu" style="color:var(--accent); font-size:1.35rem;">--</div>
+                </div>
+              </div>
+            </div>
+
+            <button class="btn btn-primary" onclick="recordObservation()" style="width:100%; padding:0.65rem;">
+              <span>📝</span> Record to Observation Table
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- TAB 2: Observation Table -->
+    <div class="tab-content" id="tab-table">
+      <div class="table-card">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <h2 style="font-size:1.15rem; color:#fff; display:flex; align-items:center; gap:0.5rem;">
+            <span>📋</span> Observation Table: Refractive Index of Liquid
+          </h2>
+          <div style="display:flex; gap:0.5rem;">
+            <button class="btn btn-outline" onclick="populateStandardObservations()"><span>⚡</span> Populate Standard Set</button>
+            <button class="btn btn-outline" onclick="exportCSV()"><span>💾</span> Export CSV</button>
+            <button class="btn btn-outline" onclick="clearTable()"><span>🗑️</span> Clear Table</button>
+          </div>
+        </div>
+
+        <div class="table-scroll">
+          <table class="obs-table">
+            <thead>
+              <tr>
+                <th>Obs #</th>
+                <th>Liquid Tested</th>
+                <th>Dry Lens $f_1$ (cm)</th>
+                <th>Combination $F$ (cm)</th>
+                <th>Liquid Lens $f_2 = \frac{f_1 F}{f_1 - F}$ (cm)</th>
+                <th>Radius of Curvature $R$ (cm)</th>
+                <th>Refractive Index $\mu = 1 - \frac{R}{f_2}$</th>
+              </tr>
+            </thead>
+            <tbody id="obsTableBody">
+              <tr>
+                <td colspan="7" style="color:var(--text-secondary); padding:1rem;">No observations logged yet. Find $f_1$ and $F$, then click "Record to Observation Table".</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="output-box" style="margin-top:0.5rem;">
+          <div class="output-title"><span>📈</span> Experimental Mean Result</div>
+          <div style="display:flex; justify-content:space-around; align-items:center; flex-wrap:wrap; gap:1rem;">
+            <div>
+              <span style="color:var(--text-secondary); font-size:0.9rem;">Tested Liquid: </span>
+              <span id="meanLiquidName" style="font-weight:700; color:var(--text-primary); font-size:1.3rem;">Water</span>
+            </div>
+            <div>
+              <span style="color:var(--text-secondary); font-size:0.9rem;">Mean Refractive Index $\mu$: </span>
+              <span id="meanMuVal" style="font-weight:700; color:#10b981; font-size:1.3rem;">--</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: Theory & Viva Voce -->
+    <div class="tab-content" id="tab-theory">
+      <div class="theory-wrap">
+        <div class="theory-section">
+          <div class="theory-heading"><span>🎯</span> Aim of the Experiment</div>
+          <p>To find the refractive index of a liquid using a convex lens and a plane mirror.</p>
+        </div>
+
+        <div class="theory-section">
+          <div class="theory-heading"><span>📐</span> Working Formulas</div>
+          <div class="formula-callout">
+            $$\frac{1}{F} = \frac{1}{f_1} + \frac{1}{f_2} \implies \frac{1}{f_2} = \frac{1}{F} - \frac{1}{f_1} \implies f_2 = \frac{f_1 \cdot F}{f_1 - F}$$
+            $$\text{Plano-concave lens formula: } \quad \frac{1}{f_2} = (\mu - 1)\left(-\frac{1}{R}\right) \implies \mu = 1 - \frac{R}{f_2} = 1 + \frac{R}{|f_2|}$$
+            <p style="margin-top:0.5rem; font-size:0.92rem; color:var(--text-secondary);">
+              where $f_1$ is the focal length of the convex lens, $F$ is the focal length of the lens-liquid combination, $f_2$ is the focal length of the plano-concave liquid lens, and $R$ is the radius of curvature of the lower face of the convex lens.
+            </p>
+          </div>
+        </div>
+
+        <div class="theory-section">
+          <div class="theory-heading"><span>🔬</span> Why Coincidence Occurs at Focus</div>
+          <p style="font-size:0.95rem; line-height:1.6; color:var(--text-primary);">
+            When the object needle is at the principal focus of the lens system, the rays refracted by the lens become parallel. These parallel rays strike the horizontal plane mirror normally and are reflected back along their original paths. Refracting through the lens again, they converge to form an inverted real image right at the position of the needle tip without parallax.
+          </p>
+        </div>
+
+        <div class="theory-section">
+          <div class="theory-heading"><span>❓</span> Viva Voce Interactive Quiz</div>
+          <div class="quiz-container" id="quizContainer"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      <p>Physics Virtual Laboratory • Senior Secondary Practical Simulations</p>
+      <p style="margin-top:0.25rem;">Developed by <a href="https://github.com/mazhar-in" target="_blank" rel="noopener">Syed Mazhar Ali</a> • National Model Schools</p>
+    </footer>
+
+  </div>
+
+  <script>
+    // Audio synthesizer
+    let audioCtx = null;
+    let audioEnabled = true;
+
+    function playTone(freq, duration = 0.04, type = 'sine') {
+      if (!audioEnabled) return;
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.06, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch(e) {}
+    }
+
+    // Physical Constants
+    const ACTUAL_F1 = 20.0;    // Focal length of dry convex lens (cm)
+    const ACTUAL_R = 20.0;     // Radius of curvature of convex lens face (cm)
+    let selectedLiquidMu = 1.333; // Default water
+    let selectedLiquidName = 'Water';
+    let hasLiquid = false;     // False = dry lens (f1), True = combination (F)
+
+    // State Variables
+    let currentH = 20.0;       // Needle height in cm
+    let eyeShift = 0;          // mm
+    let observations = [];
+
+    let canvas, ctx;
+
+    function showToast(message, type = 'success') {
+      let toast = document.getElementById('labToast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'labToast';
+        toast.style.cssText = 'position:fixed; bottom:24px; right:24px; z-index:99999; padding:0.65rem 1.1rem; border-radius:8px; font-size:0.9rem; font-weight:600; box-shadow:0 8px 24px rgba(0,0,0,0.4); display:flex; align-items:center; gap:0.5rem; transition:all 0.3s ease; pointer-events:none; opacity:0; transform:translateY(10px);';
+        document.body.appendChild(toast);
+      }
+      if (type === 'error') {
+        toast.style.background = 'linear-gradient(135deg, #ef4444 0%, #b91c1c 100%)';
+        toast.style.color = '#fff';
+        toast.style.border = '1px solid #f87171';
+      } else {
+        toast.style.background = 'linear-gradient(135deg, #10b981 0%, #047857 100%)';
+        toast.style.color = '#fff';
+        toast.style.border = '1px solid #34d399';
+      }
+      toast.innerHTML = (type === 'error' ? '⚠️ ' : '✓ ') + message;
+      toast.style.opacity = '1';
+      toast.style.transform = 'translateY(0)';
+      clearTimeout(toast._timer);
+      toast._timer = setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(10px)';
+      }, 2400);
+    }
+
+    function initKaTeX() {
+      if (window.renderMathInElement) {
+        renderMathInElement(document.body, {
+          delimiters: [
+            {left: '$$', right: '$$', display: true},
+            {left: '$', right: '$', display: false}
+          ],
+          throwOnError: false
+        });
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      canvas = document.getElementById('liquidCanvas');
+      ctx = canvas.getContext('2d');
+      resizeCanvas();
+      window.addEventListener('resize', resizeCanvas);
+
+      const tabs = document.querySelectorAll('.mode-tab');
+      tabs.forEach(tab => {
+        tab.addEventListener('click', (e) => {
+          e.preventDefault();
+          tabs.forEach(t => t.classList.remove('active'));
+          document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+          tab.classList.add('active');
+          const targetId = tab.dataset.tab;
+          document.getElementById(targetId).classList.add('active');
+          if (targetId === 'tab-sim') resizeCanvas();
+          if (window.renderMathInElement) initKaTeX();
+        });
+      });
+
+      document.getElementById('btnSoundToggle').addEventListener('click', () => {
+        audioEnabled = !audioEnabled;
+        document.getElementById('soundIcon').textContent = audioEnabled ? '🔊' : '🔇';
+      });
+
+      document.getElementById('btnFullscreenToggle').addEventListener('click', toggleFullscreen);
+      document.addEventListener('fullscreenchange', updateFullscreenState);
+      document.addEventListener('webkitfullscreenchange', updateFullscreenState);
+
+      buildQuiz();
+      updatePhysics();
+      setTimeout(initKaTeX, 300);
+    });
+
+    function updateFullscreenState() {
+      const isFS = !!(document.fullscreenElement || document.webkitFullscreenElement);
+      const wrapper = document.getElementById('appWrapper');
+      const btn = document.getElementById('btnFullscreenToggle');
+
+      if (isFS) {
+        document.body.classList.add('is-fullscreen');
+        if (wrapper) wrapper.classList.add('is-fullscreen');
+        if (btn) btn.innerHTML = '<span>⛶</span> Exit Fullscreen';
+      } else {
+        document.body.classList.remove('is-fullscreen');
+        if (wrapper) wrapper.classList.remove('is-fullscreen');
+        if (btn) btn.innerHTML = '<span>⛶</span> Fullscreen';
+      }
+
+      resizeCanvas();
+      setTimeout(resizeCanvas, 50);
+      setTimeout(resizeCanvas, 150);
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+        if (document.documentElement.requestFullscreen) {
+          document.documentElement.requestFullscreen().catch(() => {});
+        } else if (document.documentElement.webkitRequestFullscreen) {
+          document.documentElement.webkitRequestFullscreen();
+        }
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen().catch(() => {});
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+        }
+      }
+    }
+
+    function resizeCanvas() {
+      if (!canvas || !canvas.parentElement) return;
+      const rect = canvas.parentElement.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      const isFS = document.body.classList.contains('is-fullscreen') || !!(document.fullscreenElement || document.webkitFullscreenElement);
+
+      const w = rect.width;
+      const h = isFS ? Math.max(260, rect.height) : Math.max(400, rect.height || 400);
+
+      canvas.width = w * dpr;
+      canvas.height = h * dpr;
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.scale(dpr, dpr);
+      renderCanvas();
+    }
+
+    function getTrueFocus() {
+      if (!hasLiquid) {
+        return ACTUAL_F1; // 20.0 cm
+      }
+      // 1/f2 = -(mu - 1)/R
+      const invF2 = -(selectedLiquidMu - 1) / ACTUAL_R;
+      // 1/F = 1/f1 + 1/f2
+      const invF = (1 / ACTUAL_F1) + invF2;
+      return 1 / invF;
+    }
+
+    function toggleLiquidLayer() {
+      hasLiquid = !hasLiquid;
+      const btn = document.getElementById('btnToggleLiquid');
+      if (hasLiquid) {
+        btn.innerHTML = '<span>💧</span> Remove Liquid';
+        btn.classList.remove('btn-primary');
+        btn.classList.add('btn-outline');
+        showToast(`Introduced ${selectedLiquidName} drop between lens and mirror!`);
+      } else {
+        btn.innerHTML = '<span>💧</span> Add Liquid Drop';
+        btn.classList.add('btn-primary');
+        btn.classList.remove('btn-outline');
+        showToast('Cleaned liquid: Now testing dry convex lens!');
+      }
+      updatePhysics();
+    }
+
+    function onLiquidChange(val) {
+      selectedLiquidMu = parseFloat(val);
+      const sel = document.getElementById('selectLiquid');
+      selectedLiquidName = sel.options[sel.selectedIndex].text.split(' ')[0];
+      playTone(450, 0.05);
+      if (hasLiquid) {
+        showToast(`Switched liquid medium to ${selectedLiquidName} (μ = ${selectedLiquidMu})`);
+      }
+      updatePhysics();
+    }
+
+    function onHChange(val) {
+      currentH = parseFloat(val);
+      document.getElementById('valH').textContent = currentH.toFixed(1) + ' cm';
+      playTone(280 + currentH * 6, 0.015);
+      updatePhysics();
+    }
+
+    function adjustH(delta) {
+      let nextH = Math.min(45.0, Math.max(15.0, currentH + delta));
+      currentH = Math.round(nextH * 10) / 10;
+      document.getElementById('sliderH').value = currentH;
+      onHChange(currentH);
+    }
+
+    function onEyeChange(val) {
+      eyeShift = parseInt(val, 10);
+      const text = eyeShift === 0 ? 'Center' : (eyeShift > 0 ? `+${eyeShift} mm Right` : `${eyeShift} mm Left`);
+      document.getElementById('valEye').textContent = text;
+      renderCanvas();
+    }
+
+    function autoCoincide() {
+      const trueF = getTrueFocus();
+      currentH = Math.round(trueF * 10) / 10;
+      document.getElementById('sliderH').value = currentH;
+      document.getElementById('valH').textContent = currentH.toFixed(1) + ' cm';
+      playTone(680, 0.1, 'triangle');
+      showToast(`Coincided needle to focal height h = ${currentH.toFixed(1)} cm (Zero Parallax)!`);
+      updatePhysics();
+    }
+
+    function resetSetup() {
+      hasLiquid = false;
+      currentH = 20.0;
+      eyeShift = 0;
+      const btn = document.getElementById('btnToggleLiquid');
+      btn.innerHTML = '<span>💧</span> Add Liquid Drop';
+      btn.classList.add('btn-primary');
+      btn.classList.remove('btn-outline');
+      document.getElementById('sliderH').value = 20.0;
+      document.getElementById('valH').textContent = '20.0 cm';
+      document.getElementById('sliderEye').value = 0;
+      document.getElementById('valEye').textContent = 'Center';
+      updatePhysics();
+    }
+
+    function updatePhysics() {
+      const trueF = getTrueFocus();
+      const parallaxDiff = Math.abs(currentH - trueF);
+      const isZeroParallax = parallaxDiff <= 0.3;
+
+      document.getElementById('hudLiquid').textContent = hasLiquid ? `${selectedLiquidName} (μ = ${selectedLiquidMu})` : "No Liquid (Dry Lens f₁)";
+      document.getElementById('hudH').textContent = currentH.toFixed(1) + ' cm';
+      document.getElementById('hudFocusVal').textContent = trueF.toFixed(1) + ' cm';
+
+      const pElem = document.getElementById('hudParallax');
+      if (isZeroParallax) {
+        pElem.textContent = 'ZERO PARALLAX ✓';
+        pElem.style.color = '#10b981';
+      } else {
+        pElem.textContent = `Δh = ${parallaxDiff.toFixed(1)} cm`;
+        pElem.style.color = '#f59e0b';
+      }
+
+      if (!hasLiquid) {
+        document.getElementById('dispF1').textContent = currentH.toFixed(1) + ' cm';
+        document.getElementById('dispF').textContent = '-- cm';
+        document.getElementById('dispF2').textContent = '-- cm';
+        document.getElementById('dispMu').textContent = '--';
+      } else {
+        const F_meas = currentH;
+        // 1/f2 = 1/F - 1/f1
+        const invF2 = (1 / F_meas) - (1 / ACTUAL_F1);
+        const f2 = 1 / invF2;
+        // mu = 1 - R / f2
+        const muCalc = 1 - (ACTUAL_R / f2);
+
+        document.getElementById('dispF1').textContent = ACTUAL_F1.toFixed(1) + ' cm';
+        document.getElementById('dispF').textContent = F_meas.toFixed(1) + ' cm';
+        document.getElementById('dispF2').textContent = f2.toFixed(1) + ' cm';
+        document.getElementById('dispMu').textContent = muCalc.toFixed(3);
+      }
+
+      renderCanvas();
+    }
+
+    function renderCanvas() {
+      if (!ctx || !canvas) return;
+      const w = canvas.width / (window.devicePixelRatio || 1);
+      const h = canvas.height / (window.devicePixelRatio || 1);
+
+      ctx.clearRect(0, 0, w, h);
+
+      const tableBaseY = h - 50;
+      const centerX = w * 0.52;
+      const standX = centerX - 140;
+
+      // 1. Wooden Lab Bench Table
+      ctx.fillStyle = '#1e293b';
+      ctx.fillRect(centerX - 180, tableBaseY, 360, 24);
+      ctx.strokeStyle = '#334155';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(centerX - 180, tableBaseY, 360, 24);
+
+      // 2. Vertical Retort Stand Pillar
+      ctx.fillStyle = '#475569';
+      ctx.fillRect(standX, 35, 14, tableBaseY - 35);
+      ctx.strokeStyle = '#64748b';
+      ctx.strokeRect(standX, 35, 14, tableBaseY - 35);
+
+      // Vertical Metric Graduation on Pillar
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = '8px monospace';
+      ctx.textAlign = 'right';
+      for (let cm = 10; cm <= 45; cm += 5) {
+        const py = tableBaseY - (cm / 45) * (tableBaseY - 60);
+        ctx.fillRect(standX, py, 6, 1);
+        ctx.fillText(`${cm}`, standX - 2, py + 3);
+      }
+
+      // 3. Plane Mirror on Table
+      const mirrorW = 120;
+      const mirrorH = 8;
+      ctx.fillStyle = '#94a3b8';
+      ctx.fillRect(centerX - mirrorW / 2, tableBaseY - mirrorH, mirrorW, mirrorH);
+      ctx.strokeStyle = '#cbd5e1';
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(centerX - mirrorW / 2, tableBaseY - mirrorH, mirrorW, mirrorH);
+
+      // Mirror reflection hatches
+      ctx.strokeStyle = '#475569';
+      ctx.lineWidth = 1;
+      for (let mx = centerX - mirrorW / 2 + 6; mx < centerX + mirrorW / 2; mx += 10) {
+        ctx.beginPath();
+        ctx.moveTo(mx, tableBaseY);
+        ctx.lineTo(mx + 6, tableBaseY + 6);
+        ctx.stroke();
+      }
+
+      // 4. Liquid Layer (if toggled on)
+      const lensW = 90;
+      if (hasLiquid) {
+        ctx.save();
+        ctx.fillStyle = 'rgba(56, 189, 248, 0.45)';
+        ctx.strokeStyle = '#38bdf8';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(centerX - lensW / 2 + 6, tableBaseY - mirrorH);
+        ctx.lineTo(centerX + lensW / 2 - 6, tableBaseY - mirrorH);
+        ctx.quadraticCurveTo(centerX, tableBaseY - mirrorH - 6, centerX - lensW / 2 + 6, tableBaseY - mirrorH);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = '#38bdf8';
+        ctx.font = '9px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(`Plano-Concave ${selectedLiquidName} Lens`, centerX, tableBaseY - mirrorH + 18);
+        ctx.restore();
+      }
+
+      // 5. Convex Lens resting on mirror / liquid
+      const lensY = tableBaseY - mirrorH - 6;
+      ctx.save();
+      ctx.fillStyle = 'rgba(56, 189, 248, 0.2)';
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(centerX - lensW / 2, lensY);
+      ctx.quadraticCurveTo(centerX, lensY - 18, centerX + lensW / 2, lensY);
+      ctx.quadraticCurveTo(centerX, lensY + 6, centerX - lensW / 2, lensY);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = 'rgba(255,255,255,0.75)';
+      ctx.font = '10px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Convex Lens L (f₁ = 20 cm)', centerX, lensY - 22);
+      ctx.restore();
+
+      // 6. Needle Pointer Clamp on Stand
+      const needleTipY = tableBaseY - mirrorH - (currentH / 45) * (tableBaseY - 60);
+
+      // Stand Bosshead & Arm
+      ctx.fillStyle = '#1e293b';
+      ctx.strokeStyle = '#0284c7';
+      ctx.lineWidth = 2;
+      ctx.fillRect(standX - 6, needleTipY - 10, 26, 20);
+      ctx.strokeRect(standX - 6, needleTipY - 10, 26, 20);
+
+      ctx.fillStyle = '#475569';
+      ctx.fillRect(standX + 20, needleTipY - 4, centerX - (standX + 20), 8);
+
+      // Real Upright Needle Pin
+      const apparentNeedleX = centerX - (eyeShift * 0.4);
+      drawVerticalNeedle(apparentNeedleX, needleTipY, '#f59e0b', true, `Object Pointer (${currentH.toFixed(1)} cm)`);
+
+      // 7. Inverted Reflected Image formed by mirror reflection
+      const trueF = getTrueFocus();
+      const trueImageTipY = tableBaseY - mirrorH - (trueF / 45) * (tableBaseY - 60);
+      const apparentImageX = centerX + (eyeShift * 1.6);
+      drawVerticalNeedle(apparentImageX, trueImageTipY, '#38bdf8', false, 'Inverted Image');
+
+      // 8. Ray Tracing Paths
+      drawReflectionRays(centerX, apparentNeedleX, needleTipY, lensY, tableBaseY - mirrorH);
+
+      // 9. Parallax Visual Cue
+      const parallaxDiff = Math.abs(currentH - trueF);
+      if (parallaxDiff > 0.3 && Math.abs(eyeShift) > 0) {
+        ctx.strokeStyle = '#f59e0b';
+        ctx.lineWidth = 1.5;
+        ctx.setLineDash([3, 3]);
+        ctx.beginPath();
+        ctx.moveTo(apparentNeedleX, needleTipY);
+        ctx.lineTo(apparentImageX, trueImageTipY);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillStyle = '#f59e0b';
+        ctx.font = '10px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('Parallax Gap', (apparentNeedleX + apparentImageX) / 2, (needleTipY + trueImageTipY) / 2 - 8);
+      }
+    }
+
+    function drawReflectionRays(cx, nx, ny, lensY, mirrorY) {
+      ctx.save();
+      ctx.lineWidth = 1.2;
+
+      // Incident ray from needle to lens
+      ctx.strokeStyle = 'rgba(245, 158, 11, 0.7)';
+      ctx.beginPath();
+      ctx.moveTo(nx, ny);
+      ctx.lineTo(cx - 24, lensY);
+      ctx.moveTo(nx, ny);
+      ctx.lineTo(cx + 24, lensY);
+      ctx.stroke();
+
+      // Parallel rays from lens to plane mirror
+      ctx.strokeStyle = 'rgba(56, 189, 248, 0.7)';
+      ctx.beginPath();
+      ctx.moveTo(cx - 24, lensY);
+      ctx.lineTo(cx - 24, mirrorY);
+      ctx.moveTo(cx + 24, lensY);
+      ctx.lineTo(cx + 24, mirrorY);
+      ctx.stroke();
+
+      ctx.restore();
+    }
+
+    function drawVerticalNeedle(x, tipY, color, isPointingDown, label) {
+      ctx.save();
+      const length = 38;
+      const baseEndY = isPointingDown ? (tipY - length) : (tipY + length);
+
+      // Needle body
+      ctx.strokeStyle = color;
+      ctx.fillStyle = color;
+      ctx.lineWidth = 2.5;
+
+      ctx.beginPath();
+      ctx.moveTo(x, baseEndY);
+      ctx.lineTo(x, tipY);
+      ctx.stroke();
+
+      // Needle sharp tip
+      ctx.beginPath();
+      ctx.moveTo(x - 3.5, tipY + (isPointingDown ? -6 : 6));
+      ctx.lineTo(x + 3.5, tipY + (isPointingDown ? -6 : 6));
+      ctx.lineTo(x, tipY);
+      ctx.fill();
+
+      // Label
+      ctx.fillStyle = color;
+      ctx.font = '10px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(label, x, isPointingDown ? (tipY - length - 6) : (tipY + length + 14));
+      ctx.restore();
+    }
+
+    // Observation Recording (Async Toast)
+    function recordObservation() {
+      const trueF = getTrueFocus();
+      const isZeroParallax = Math.abs(currentH - trueF) <= 0.4;
+
+      if (!isZeroParallax) {
+        showToast('Parallax is present! Adjust pointer height to coincide needle tip with image.', 'error');
+        return;
+      }
+
+      let F_meas = hasLiquid ? currentH : ACTUAL_F1 * 1.5; // placeholder if recorded in liquid mode
+      let f2_calc = (ACTUAL_F1 * F_meas) / (ACTUAL_F1 - F_meas);
+      let mu_calc = 1 - (ACTUAL_R / f2_calc);
+
+      const obs = {
+        sno: observations.length + 1,
+        liquid: selectedLiquidName,
+        f1: ACTUAL_F1.toFixed(1),
+        F: hasLiquid ? currentH.toFixed(1) : (ACTUAL_F1 * 1.5).toFixed(1),
+        f2: hasLiquid ? f2_calc.toFixed(1) : '-60.0',
+        R: ACTUAL_R.toFixed(1),
+        mu: hasLiquid ? mu_calc.toFixed(3) : selectedLiquidMu.toFixed(3)
+      };
+
+      observations.push(obs);
+      renderTable();
+      playTone(850, 0.1, 'sine');
+      showToast(`Recorded Observation #${obs.sno}: Liquid ${obs.liquid}, μ = ${obs.mu}`);
+    }
+
+    function populateStandardObservations() {
+      observations = [
+        { sno: 1, liquid: "Water", f1: "20.0", F: "30.0", f2: "-60.0", R: "20.0", mu: "1.333" },
+        { sno: 2, liquid: "Glycerine", f1: "20.0", F: "38.2", f2: "-42.0", R: "20.0", mu: "1.476" },
+        { sno: 3, liquid: "Castor Oil", f1: "20.0", F: "38.5", f2: "-41.6", R: "20.0", mu: "1.481" },
+        { sno: 4, liquid: "Turpentine Oil", f1: "20.0", F: "37.7", f2: "-42.6", R: "20.0", mu: "1.469" }
+      ];
+      renderTable();
+      showToast('Populated standard set of 4 liquid observations!');
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById('obsTableBody');
+      tbody.innerHTML = '';
+
+      if (observations.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="color:var(--text-secondary); padding:1rem;">No observations logged yet. Find f1 and F, then click "Record to Observation Table".</td></tr>';
+        document.getElementById('meanMuVal').textContent = '--';
+        return;
+      }
+
+      let lastMu = '--';
+      let lastLiq = 'Water';
+      observations.forEach(o => {
+        lastMu = o.mu;
+        lastLiq = o.liquid;
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${o.sno}</td>
+          <td><strong style="color:#38bdf8;">${o.liquid}</strong></td>
+          <td>${o.f1}</td>
+          <td>${o.F}</td>
+          <td>${o.f2}</td>
+          <td>${o.R}</td>
+          <td style="color:var(--accent); font-weight:700;">${o.mu}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      document.getElementById('meanLiquidName').textContent = lastLiq;
+      document.getElementById('meanMuVal').textContent = lastMu;
+    }
+
+    function clearTable() {
+      if (confirm('Clear all recorded observations?')) {
+        observations = [];
+        renderTable();
+      }
+    }
+
+    function exportCSV() {
+      if (observations.length === 0) {
+        showToast('No observation data to export!', 'error');
+        return;
+      }
+      let csv = "Obs #,Liquid,f1 (cm),F (cm),f2 (cm),R (cm),Refractive Index mu\n";
+      observations.forEach(o => {
+        csv += `${o.sno},${o.liquid},${o.f1},${o.F},${o.f2},${o.R},${o.mu}\n`;
+      });
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `refractive_index_liquid_lens_${Date.now()}.csv`;
+      a.click();
+    }
+
+    // Quiz Questions
+    const quizData = [
+      {
+        q: "What type of lens is formed by the liquid drop trapped between the convex lens and the flat plane mirror?",
+        options: [
+          "Plano-concave lens",
+          "Plano-convex lens",
+          "Double concave lens",
+          "Cylindrical lens"
+        ],
+        answer: 0
+      },
+      {
+        q: "Why does the combination focal length $F$ increase when a liquid drop is introduced?",
+        options: [
+          "Because the plano-concave liquid lens has negative power, reducing the overall converging power of the combination",
+          "Because the liquid absorbs light rays",
+          "Because the plane mirror moves downward",
+          "Because light speed increases in the liquid"
+        ],
+        answer: 0
+      },
+      {
+        q: "In this experiment, why does the inverted real image coincide with the pointer needle tip without parallax?",
+        options: [
+          "Rays emerge parallel from the lens at focus, reflect back along the same path from the mirror, and reconverge at the focus",
+          "Because of total internal reflection inside the mirror",
+          "Because the needle is electrified",
+          "Because diffraction cancels the blur"
+        ],
+        answer: 0
+      },
+      {
+        q: "How can the radius of curvature $R$ of the convex lens's curved surface be independently measured in the lab?",
+        options: [
+          "Using a spherometer on the curved face of the lens",
+          "Using a vernier caliper on the rim",
+          "Using a screw gauge on the center",
+          "Using an ammeter"
+        ],
+        answer: 0
+      }
+    ];
+
+    function buildQuiz() {
+      const container = document.getElementById('quizContainer');
+      container.innerHTML = '';
+      quizData.forEach((item, qIdx) => {
+        const div = document.createElement('div');
+        div.className = 'quiz-item';
+        div.innerHTML = `
+          <div class="quiz-q">${qIdx + 1}. ${item.q}</div>
+          <div class="quiz-options">
+            ${item.options.map((opt, oIdx) => `
+              <div class="quiz-opt" onclick="checkAnswer(${qIdx}, ${oIdx}, this)">${opt}</div>
+            `).join('')}
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function checkAnswer(qIdx, selectedIdx, elem) {
+      const parent = elem.parentElement;
+      if (parent.dataset.answered) return;
+      parent.dataset.answered = "true";
+
+      const correctIdx = quizData[qIdx].answer;
+      const options = parent.querySelectorAll('.quiz-opt');
+
+      if (selectedIdx === correctIdx) {
+        elem.classList.add('correct');
+        playTone(587, 0.1, 'triangle');
+        showToast('Correct answer! Well done.', 'success');
+      } else {
+        elem.classList.add('wrong');
+        options[correctIdx].classList.add('correct');
+        playTone(220, 0.15, 'sawtooth');
+        showToast('Incorrect. The correct option is highlighted in green.', 'error');
+      }
+    }
+  </script>
+</body>
+</html>

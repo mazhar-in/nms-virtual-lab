@@ -877,6 +877,78 @@
             <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">Wheatstone's Bridge Simulator</span>
           </a>
         </li>
+        <li>
+          <a href="#exp13" class="sidebar-nav-link" id="nav-exp13">
+            <span class="sidebar-nav-badge">13</span>
+            <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">Frequency of AC Mains with Sonometer</span>
+          </a>
+        </li>
+        <li>
+          <a href="#exp14" class="sidebar-nav-link" id="nav-exp14">
+            <span class="sidebar-nav-badge">14</span>
+            <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">Galvanometer: Resistance &amp; Figure of Merit</span>
+          </a>
+        </li>
+        <li>
+          <a href="#exp15" class="sidebar-nav-link" id="nav-exp15">
+            <span class="sidebar-nav-badge">15</span>
+            <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">Conversion of Galvanometer into Voltmeter</span>
+          </a>
+        </li>
+        <li>
+          <a href="#exp16" class="sidebar-nav-link" id="nav-exp16">
+            <span class="sidebar-nav-badge">16</span>
+            <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">Concave Mirror: Focal Length (u–v)</span>
+          </a>
+        </li>
+        <li>
+          <a href="#exp17" class="sidebar-nav-link" id="nav-exp17">
+            <span class="sidebar-nav-badge">17</span>
+            <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">Convex Mirror: Focal Length</span>
+          </a>
+        </li>
+        <li>
+          <a href="#exp18" class="sidebar-nav-link" id="nav-exp18">
+            <span class="sidebar-nav-badge">18</span>
+            <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">Convex Lens: Focal Length (u–v)</span>
+          </a>
+        </li>
+        <li>
+          <a href="#exp19" class="sidebar-nav-link" id="nav-exp19">
+            <span class="sidebar-nav-badge">19</span>
+            <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">Concave Lens: Focal Length</span>
+          </a>
+        </li>
+        <li>
+          <a href="#exp20" class="sidebar-nav-link" id="nav-exp20">
+            <span class="sidebar-nav-badge">20</span>
+            <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">Prism: Minimum Deviation (i–δ)</span>
+          </a>
+        </li>
+        <li>
+          <a href="#exp21" class="sidebar-nav-link" id="nav-exp21">
+            <span class="sidebar-nav-badge">21</span>
+            <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">Travelling Microscope: Glass Slab</span>
+          </a>
+        </li>
+        <li>
+          <a href="#exp22" class="sidebar-nav-link" id="nav-exp22">
+            <span class="sidebar-nav-badge">22</span>
+            <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">Liquid Lens: Refractive Index</span>
+          </a>
+        </li>
+        <li>
+          <a href="#exp23" class="sidebar-nav-link" id="nav-exp23">
+            <span class="sidebar-nav-badge">23</span>
+            <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">Liquid: Concave &amp; Plane Mirror</span>
+          </a>
+        </li>
+        <li>
+          <a href="#exp24" class="sidebar-nav-link" id="nav-exp24">
+            <span class="sidebar-nav-badge">24</span>
+            <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">P-N Junction Diode: I–V Curve</span>
+          </a>
+        </li>
 
       </ul>
     </aside>
@@ -2157,8 +2229,1118 @@
   </div>
 </div></div>
         </div>
+      <!-- Experiment 13 -->
+      <article class="exp-manual-card" id="exp13">
+        <div class="card-header-bar">
+          <div>
+            <div class="exp-id-pill">EXPERIMENT 13 • Class XI / XII Physics</div>
+            <h2 class="exp-manual-title">Frequency of AC Mains with Sonometer</h2>
+          </div>
+          <div class="card-top-actions">
+            <a href="sonometer-ac-frequency-virtual-lab.html" class="btn-sim-launch" target="_blank" title="Launch simulation in new window">
+              <span>🚀 Launch Simulator</span>
+            </a>
+            <button class="btn-print-exp" onclick="window.print()" title="Print this experiment">
+              <span>🖨️</span> Print
+            </button>
+          </div>
+        </div>
+
+        <!-- 1. Aim -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>🎯</span> Aim of the Experiment</div>
+          <div class="sec-body">
+            <p>To determine the frequency of alternating current (AC) mains using a sonometer (by observing the resonant vibration of a stretched wire driven by electromagnetic force).</p>
+          </div>
+        </div>
+
+        <!-- 2. Apparatus -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>🧰</span> Apparatus & Materials Required</div>
+          <div class="sec-body">
+            <p>A sonometer with a non-magnetic wire (brass or copper) or soft iron wire, two sharp knife-edge bridges ($A$ and $B$), a step-down transformer (2V–6V AC), a strong permanent horseshoe magnet (or AC electromagnet), a weight hanger with slotted 500g weights, an inverted V-shaped light paper rider, a screw gauge micrometer, and a meter scale.</p>
+          </div>
+        </div>
+
+        <!-- 3. Theory -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>📐</span> Governing Theory & Formulae</div>
+          <div class="sec-body">
+            <p>The fundamental frequency of transverse standing waves in a stretched wire of length $l$, tension $T = Mg$, and linear mass density $m$ is:</p>
+            <div class="formula-callout">
+              $$\nu_0 = \frac{1}{2l}\sqrt{\frac{T}{m}}$$
+            </div>
+            <p><strong>Case 1 (Method A: Non-magnetic wire carrying AC in transverse B-field):</strong> By Fleming's Left-Hand Rule, the Lorentz force alternates direction once per half cycle of the AC current. Thus, the wire is driven at the AC mains frequency $f$:</p>
+            <div class="formula-callout">
+              $$f = \frac{1}{2l}\sqrt{\frac{T}{m}} \implies \frac{\sqrt{T}}{l} = 2f\sqrt{m} = \text{constant}$$
+            </div>
+            <p><strong>Case 2 (Method B: Ferromagnetic soft iron wire under an AC electromagnet):</strong> The soft iron wire is attracted twice per AC cycle (during both positive and negative half-cycles). Hence, the wire oscillates at $2f$, yielding:</p>
+            <div class="formula-callout">
+              $$2f = \frac{1}{2l}\sqrt{\frac{T}{m}} \implies f = \frac{1}{4l}\sqrt{\frac{T}{m}}$$
+            </div>
+            <p>The linear mass density of the wire is determined from its radius $r = d/2$ and density $\rho$: $m = \pi r^2 \rho$.</p>
+          </div>
+        </div>
+
+        <!-- 4. Procedure -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>📝</span> Step-by-Step Procedure</div>
+          <div class="sec-body">
+            <ol>
+              <li>Suspend a known mass $M$ (e.g. 1.0 kg) on the hanger to establish wire tension $T = Mg$.</li>
+              <li>Position the horseshoe magnet (or electromagnet) at the exact midpoint between bridges $A$ and $B$.</li>
+              <li>Place a light inverted V paper rider on the wire at the midpoint (fundamental antinode).</li>
+              <li>Switch on the safe low-voltage AC supply from the step-down transformer.</li>
+              <li>Gently slide movable Bridge $B$ towards the resonant length. As resonance approaches, the paper rider will flutter vigorously; at exact resonance ($l_0$), the rider is violently thrown off ("flies off!").</li>
+              <li>Note the resonant length $l_1$ while increasing length and $l_2$ while decreasing length. Record the mean length $l = (l_1 + l_2)/2$.</li>
+              <li>Repeat for suspended loads $M = 1.0, 1.5, 2.0, 2.5, 3.0\text{ kg}$.</li>
+              <li>Plot a graph of $\sqrt{T}$ against $l$. The slope of this straight line through the origin equals $2f\sqrt{m}$, from which $f = \frac{\text{Slope}}{2\sqrt{m}}$.</li>
+            </ol>
+          </div>
+        </div>
+
+        <!-- 5. Observations -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>📊</span> Observation Tables & Sample Readings</div>
+          <div class="sec-body">
+            <div class="table-container">
+              <table class="obs-table">
+                <thead>
+                  <tr>
+                    <th>S.No.</th>
+                    <th>Mass $M$ (kg)</th>
+                    <th>Tension $T = Mg$ (N)</th>
+                    <th>$\sqrt{T}$ ($\text{N}^{1/2}$)</th>
+                    <th>Resonant Length $l$ (cm)</th>
+                    <th>$l$ (m)</th>
+                    <th>$\frac{\sqrt{T}}{l}$ ($\text{N}^{1/2}/\text{m}$)</th>
+                    <th>Frequency $f$ (Hz)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>1</td><td>1.0</td><td>9.80</td><td>3.130</td><td>63.2</td><td>0.632</td><td>4.95</td><td>50.1</td></tr>
+                  <tr><td>2</td><td>1.5</td><td>14.70</td><td>3.834</td><td>77.4</td><td>0.774</td><td>4.95</td><td>50.0</td></tr>
+                  <tr><td>3</td><td>2.0</td><td>19.60</td><td>4.427</td><td>89.4</td><td>0.894</td><td>4.95</td><td>50.0</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- 6. Precautions -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>⚠️</span> Precautions & Sources of Error</div>
+          <div class="sec-body">
+            <ul>
+              <li>Ensure the wire is kink-free, uniform in cross-section, and rests firmly on the sharp edges of the knife bridges.</li>
+              <li>Keep the pulley wheel frictionless and well lubricated.</li>
+              <li>Always use safe low-voltage AC (2V–6V) from a step-down transformer to prevent electric shock and avoid wire heating ($I^2Rt$).</li>
+              <li>The paper rider must be placed exactly at the center between the bridges where the antinode occurs.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 7. Viva Voce -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>💬</span> Practical Viva-Voce Questions</div>
+          <div class="sec-body">
+            <div class="viva-box">
+              <div class="viva-item">
+                <div class="viva-q">Q1: What is the standard frequency of AC mains in India?</div>
+                <div class="viva-a">A: 50 Hz (or 50 cycles per second). In the United States, it is 60 Hz.</div>
+              </div>
+              <div class="viva-item">
+                <div class="viva-q">Q2: Why does the wire vibrate with AC frequency $f$ in a transverse magnetic field?</div>
+                <div class="viva-a">A: By Fleming's Left-Hand Rule, the magnetic Lorentz force $F = I L \times B$ changes direction every time current reverses sign. One complete AC cycle produces one complete oscillation of mechanical force.</div>
+              </div>
+              <div class="viva-item">
+                <div class="viva-q">Q3: Why does a soft iron wire vibrate at $2f$ under an AC electromagnet?</div>
+                <div class="viva-a">A: An electromagnet magnetizes and attracts ferromagnetic soft iron during both the positive and negative peaks of the AC cycle. Thus, attraction occurs twice per cycle ($2f$).</div>
+              </div>
+            </div>
+          </div>
+        </div>
       </article>
-    
+
+      <!-- Experiment 14 -->
+      <article class="exp-manual-card" id="exp14">
+        <div class="card-header-bar">
+          <div>
+            <div class="exp-id-pill">EXPERIMENT 14 • Class XII Physics</div>
+            <h2 class="exp-manual-title">Resistance of a Galvanometer by Half-Deflection Method &amp; Figure of Merit</h2>
+          </div>
+          <div class="card-top-actions">
+            <a href="galvanometer-resistance-half-deflection-virtual-lab.html" class="btn-sim-launch" target="_blank" title="Launch simulation in new window">
+              <span>🚀 Launch Simulator</span>
+            </a>
+            <button class="btn-print-exp" onclick="window.print()" title="Print this experiment">
+              <span>🖨️</span> Print
+            </button>
+          </div>
+        </div>
+
+        <!-- 1. Aim -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>🎯</span> Aim of the Experiment</div>
+          <div class="sec-body">
+            <p>To determine the resistance of a moving coil galvanometer by half-deflection method and to find its figure of merit ($k$).</p>
+          </div>
+        </div>
+
+        <!-- 2. Apparatus -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>🧰</span> Apparatus &amp; Materials Required</div>
+          <div class="sec-body">
+            <p>A Weston-type moving coil galvanometer, a regulated DC power source / 2V accumulator, a high resistance box ($R$, range $1000 - 10000\ \Omega$), a low resistance box ($S$, range $1 - 250\ \Omega$), two one-way plug keys ($K_1$ and $K_2$), connecting wires, and sandpaper.</p>
+          </div>
+        </div>
+
+        <!-- 3. Theory -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>📐</span> Governing Theory &amp; Formulae</div>
+          <div class="sec-body">
+            <p><strong>1. Determination of Galvanometer Resistance ($G$):</strong></p>
+            <p>When high resistance $R$ is connected in series with the galvanometer across an EMF $E$, closing key $K_1$ with key $K_2$ open yields current:</p>
+            <div class="formula-callout">
+              $$I = \frac{E}{R + G} = k \cdot \theta$$
+            </div>
+            <p>where $\theta$ is the initial deflection and $k$ is the figure of merit. When shunt resistance $S$ is connected in parallel with the galvanometer by closing key $K_2$, the galvanometer current becomes:</p>
+            <div class="formula-callout">
+              $$I_g = \frac{E \cdot S}{R(G + S) + G \cdot S} = k \cdot \theta'$$
+            </div>
+            <p>If $S$ is adjusted so that the deflection becomes exactly half ($\theta' = \frac{\theta}{2}$), then:</p>
+            <div class="formula-callout">
+              $$G = \frac{R \cdot S}{R - S}$$
+            </div>
+            <p>Because $R$ is chosen to be much larger than $S$ ($R \gg S$), $(R - S) \approx R$, leading to $G \approx S$.</p>
+
+            <p><strong>2. Figure of Merit ($k$):</strong></p>
+            <p>The figure of merit $k$ is the current required to produce unit division deflection on the galvanometer scale:</p>
+            <div class="formula-callout">
+              $$k = \frac{E}{(R + G)\theta} \quad \text{(A/div)}$$
+            </div>
+            <p>The current sensitivity is $S_i = \frac{1}{k}$, and the full-scale deflection current for $n = 30$ divisions is $I_g = n \cdot k$.</p>
+          </div>
+        </div>
+
+        <!-- 4. Procedure -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>📋</span> Standard Experimental Procedure</div>
+          <div class="sec-body">
+            <ol class="procedure-list">
+              <li>Clean the ends of all connecting leads with sandpaper to eliminate contact oxidation.</li>
+              <li>Connect the battery $E$, high resistance box $R$, key $K_1$, and galvanometer $G$ in series. Connect shunt box $S$ and key $K_2$ in parallel across the galvanometer terminals.</li>
+              <li>Ensure all plugs in resistance boxes are tightly seated. Initially, leave key $K_2$ open.</li>
+              <li>Unplug a high resistance (e.g. $4000\ \Omega$ to $6000\ \Omega$) from box $R$, and insert key $K_1$.</li>
+              <li>Fine-tune $R$ so that the deflection $\theta$ on the galvanometer scale is an even number within the upper readable range (e.g. 26, 28, or 30 divisions). Record $R$ and $\theta$.</li>
+              <li>Keeping $R$ unchanged, insert plug key $K_2$. The deflection drops due to current bypass through shunt $S$.</li>
+              <li>Adjust the resistance in shunt box $S$ until the deflection becomes exactly half of $\theta$ ($\theta' = \theta / 2$). Record $S$ and $\theta/2$.</li>
+              <li>Repeat the procedure for at least 4 to 5 different values of $R$ and initial deflection $\theta$.</li>
+              <li>Calculate $G = \frac{R \cdot S}{R - S}$ and $k = \frac{E}{(R + G)\theta}$ for each set and determine mean values.</li>
+            </ol>
+          </div>
+        </div>
+
+        <!-- 5. Observation Table -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>📊</span> Observation Table</div>
+          <div class="sec-body">
+            <p><strong>EMF of Cell $E = 2.00\text{ V}$, Total Scale Divisions $n = 30$</strong></p>
+            <div class="table-wrap">
+              <table class="manual-obs-table">
+                <thead>
+                  <tr>
+                    <th>S.No.</th>
+                    <th>High Resistance $R$ (Ω)</th>
+                    <th>Deflection $\theta$ (div)</th>
+                    <th>Shunt Resistance $S$ (Ω)</th>
+                    <th>Half-Deflection $\theta/2$ (div)</th>
+                    <th>Galvanometer Resistance $G = \frac{RS}{R-S}$ (Ω)</th>
+                    <th>Figure of Merit $k = \frac{E}{(R+G)\theta}$ (A/div)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>1</td>
+                    <td>4500</td>
+                    <td>22</td>
+                    <td>75</td>
+                    <td>11</td>
+                    <td>76.3</td>
+                    <td>1.99 × 10⁻⁵</td>
+                  </tr>
+                  <tr>
+                    <td>2</td>
+                    <td>4000</td>
+                    <td>24</td>
+                    <td>75</td>
+                    <td>12</td>
+                    <td>76.4</td>
+                    <td>2.04 × 10⁻⁵</td>
+                  </tr>
+                  <tr>
+                    <td>3</td>
+                    <td>3500</td>
+                    <td>28</td>
+                    <td>75</td>
+                    <td>14</td>
+                    <td>76.6</td>
+                    <td>2.00 × 10⁻⁵</td>
+                  </tr>
+                  <tr>
+                    <td>4</td>
+                    <td>3200</td>
+                    <td>30</td>
+                    <td>75</td>
+                    <td>15</td>
+                    <td>76.8</td>
+                    <td>2.03 × 10⁻⁵</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p style="margin-top:0.75rem;"><strong>Mean Galvanometer Resistance ($G$):</strong> $76.5\ \Omega$ | <strong>Mean Figure of Merit ($k$):</strong> $2.02 \times 10^{-5}\text{ A/div}$</p>
+          </div>
+        </div>
+
+        <!-- 6. Precautions -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>⚠️</span> Precautions &amp; Sources of Error</div>
+          <div class="sec-body">
+            <ul class="precautions-list">
+              <li>Always unplug high resistance in $R$ before inserting key $K_1$ to protect the delicate suspension and pointer of the galvanometer.</li>
+              <li>Plugs in both resistance boxes must be firmly turned to minimize contact resistance.</li>
+              <li>The EMF of the battery must remain constant throughout the run; avoid leaving $K_1$ closed continuously.</li>
+              <li>The deflection $\theta$ should preferably be an even number so that dividing by 2 yields an exact whole scale division.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 7. Viva Voce -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>💬</span> Viva-Voce Questions &amp; Answers</div>
+          <div class="sec-body">
+            <div class="viva-box">
+              <div class="viva-item">
+                <div class="viva-q">Q1: What is a moving coil galvanometer and upon what principle does it function?</div>
+                <div class="viva-a">A: It is an instrument used to detect very small electric currents. It functions on the principle that a current-carrying coil suspended in a uniform radial magnetic field experiences a deflecting magnetic torque: $\tau = N I A B$, which is counterbalanced by restoring torque of a phosphor-bronze spring: $\tau = C \theta$.</div>
+              </div>
+              <div class="viva-item">
+                <div class="viva-q">Q2: Why is the scale of a moving coil galvanometer linear?</div>
+                <div class="viva-a">A: Cylindrical pole pieces and a soft iron core create a uniform <em>radial</em> magnetic field where the plane of the coil remains parallel to magnetic field lines at all angles ($\sin\theta = 1$). Hence, deflecting torque is directly proportional to current ($\theta \propto I$).</div>
+              </div>
+              <div class="viva-item">
+                <div class="viva-q">Q3: Why must resistance $R$ be much greater than shunt $S$?</div>
+                <div class="viva-a">A: When $R \gg S$, the total circuit resistance changes negligibly upon connecting $S$ in parallel with $G$. This ensures the total current drawn from the cell remains practically constant, validating $G = \frac{RS}{R-S} \approx S$.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Experiment 15 -->
+      <article class="exp-manual-card" id="exp15">
+        <div class="card-header-bar">
+          <div>
+            <div class="exp-id-pill">EXPERIMENT 15 • Class XII Physics</div>
+            <h2 class="exp-manual-title">Conversion of Galvanometer into a Voltmeter of Desired Range &amp; Verification</h2>
+          </div>
+          <div class="card-top-actions">
+            <a href="galvanometer-to-voltmeter-virtual-lab.html" class="btn-sim-launch" target="_blank" title="Launch simulation in new window">
+              <span>🚀 Launch Simulator</span>
+            </a>
+            <button class="btn-print-exp" onclick="window.print()" title="Print this experiment">
+              <span>🖨️</span> Print
+            </button>
+          </div>
+        </div>
+
+        <!-- 1. Aim -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>🎯</span> Aim of the Experiment</div>
+          <div class="sec-body">
+            <p>To convert the given galvanometer (of known resistance $G$ and figure of merit $k$) into a voltmeter of desired range (say $0 - 3\text{ V}$) and to verify the same with a standard voltmeter.</p>
+          </div>
+        </div>
+
+        <!-- 2. Apparatus -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>🧰</span> Apparatus &amp; Materials Required</div>
+          <div class="sec-body">
+            <p>A moving coil galvanometer of known resistance $G$ and figure of merit $k$, a standard calibrated DC voltmeter ($0 - 3\text{ V}$), a high resistance box / multiplier resistor $R$, a DC battery / accumulator (4V), a wire-wound rheostat configured as a potential divider, a plug key, and connecting wires.</p>
+          </div>
+        </div>
+
+        <!-- 3. Theory -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>📐</span> Governing Theory &amp; Formulae</div>
+          <div class="sec-body">
+            <p>A moving coil galvanometer is converted into a voltmeter by connecting a calculated high multiplier resistance $R$ in <strong>series</strong> with it.</p>
+            <p>1. <strong>Full-scale deflection current:</strong></p>
+            <div class="formula-callout">
+              $$I_g = n \cdot k$$
+            </div>
+            <p>where $n$ is the total scale divisions ($n = 30$) and $k$ is the figure of merit.</p>
+            <p>2. <strong>Series multiplier resistance $R$ for target range $V$:</strong></p>
+            <div class="formula-callout">
+              $$R = \frac{V}{I_g} - G$$
+            </div>
+            <p>3. <strong>Least count and observed voltage:</strong></p>
+            <div class="formula-callout">
+              $$\text{Least Count (LC)} = \frac{V}{n} \implies V_2 = \theta \times \text{LC}$$
+            </div>
+            <p>4. <strong>Verification error:</strong></p>
+            <div class="formula-callout">
+              $$\Delta V = V_2 - V_1$$
+            </div>
+            <p>where $V_1$ is the reading observed on the standard master voltmeter.</p>
+          </div>
+        </div>
+
+        <!-- 4. Procedure -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>📋</span> Standard Experimental Procedure</div>
+          <div class="sec-body">
+            <ol class="procedure-list">
+              <li>Record the galvanometer parameters: coil resistance $G$ and figure of merit $k$ (determined from Experiment 14), and total scale divisions $n$.</li>
+              <li>Calculate the full-scale current $I_g = n \cdot k$ and the required series multiplier resistance $R = \frac{V}{I_g} - G$ for the desired voltage range $V$ (e.g. $0 - 3.0\text{ V}$).</li>
+              <li>Unplug the calculated value of resistance $R$ from the high resistance box and connect it in series with the galvanometer. This combination acts as the converted voltmeter.</li>
+              <li>Set up the potential divider verification circuit: connect the DC battery across the fixed end terminals of the wire-wound rheostat through a plug key.</li>
+              <li>Connect the standard voltmeter and the converted galvanometer voltmeter in parallel between one fixed terminal and the movable slider jockey of the rheostat.</li>
+              <li>Insert the plug key and position the slider jockey near the minimum voltage end.</li>
+              <li>Gradually advance the jockey so that the standard voltmeter reads $0.5\text{ V}, 1.0\text{ V}, 1.5\text{ V}, \dots$ Record standard voltmeter reading $V_1$ and galvanometer deflection $\theta$.</li>
+              <li>Compute converted voltage $V_2 = \theta \times \text{LC}$ and determine the discrepancy $\Delta V = V_2 - V_1$.</li>
+              <li>Plot the calibration error curve: error $\Delta V$ on the vertical axis versus standard voltmeter reading $V_1$ on the horizontal axis.</li>
+            </ol>
+          </div>
+        </div>
+
+        <!-- 5. Observation Table -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>📊</span> Observation Table</div>
+          <div class="sec-body">
+            <p><strong>Range: $0 - 3.0\text{ V}$, $G = 75\ \Omega$, $k = 20\ \mu\text{A/div}$, $I_g = 600\ \mu\text{A}$, Multiplier $R = 4925\ \Omega$, $\text{LC} = 0.1\text{ V/div}$</strong></p>
+            <div class="table-wrap">
+              <table class="manual-obs-table">
+                <thead>
+                  <tr>
+                    <th>S.No.</th>
+                    <th>Standard Voltmeter Reading $V_1$ (V)</th>
+                    <th>Galvanometer Deflection $\theta$ (div)</th>
+                    <th>Converted Voltmeter Reading $V_2 = \theta \times \text{LC}$ (V)</th>
+                    <th>Error $\Delta V = V_2 - V_1$ (V)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>1</td>
+                    <td>0.50</td>
+                    <td>5.0</td>
+                    <td>0.50</td>
+                    <td>0.00</td>
+                  </tr>
+                  <tr>
+                    <td>2</td>
+                    <td>1.00</td>
+                    <td>10.1</td>
+                    <td>1.01</td>
+                    <td>+0.01</td>
+                  </tr>
+                  <tr>
+                    <td>3</td>
+                    <td>1.50</td>
+                    <td>15.0</td>
+                    <td>1.50</td>
+                    <td>0.00</td>
+                  </tr>
+                  <tr>
+                    <td>4</td>
+                    <td>2.00</td>
+                    <td>19.9</td>
+                    <td>1.99</td>
+                    <td>-0.01</td>
+                  </tr>
+                  <tr>
+                    <td>5</td>
+                    <td>2.50</td>
+                    <td>25.1</td>
+                    <td>2.51</td>
+                    <td>+0.01</td>
+                  </tr>
+                  <tr>
+                    <td>6</td>
+                    <td>3.00</td>
+                    <td>30.0</td>
+                    <td>3.00</td>
+                    <td>0.00</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p style="margin-top:0.75rem;"><strong>Conclusion:</strong> The calculated and observed voltages agree closely with deviations well within permissible calibration limits ($\pm 0.02\text{ V}$).</p>
+          </div>
+        </div>
+
+        <!-- 6. Viva Voce -->
+        <div class="manual-sec">
+          <div class="sec-heading"><span>💬</span> Viva-Voce Questions &amp; Answers</div>
+          <div class="sec-body">
+            <div class="viva-box">
+              <div class="viva-item">
+                <div class="viva-q">Q1: Why is a voltmeter connected in parallel with circuit components?</div>
+                <div class="viva-a">A: Potential difference exists between two points in a circuit. Connecting a voltmeter in parallel allows it to sample this potential difference without interrupting current flow in the branch.</div>
+              </div>
+              <div class="viva-item">
+                <div class="viva-q">Q2: Why must a voltmeter have very high resistance?</div>
+                <div class="viva-a">A: If a voltmeter drew significant current, it would lower the effective resistance of the circuit branch and alter the potential difference being measured. A very high resistance ensures negligible current is drawn.</div>
+              </div>
+              <div class="viva-item">
+                <div class="viva-q">Q3: How is a galvanometer converted into an ammeter instead of a voltmeter?</div>
+                <div class="viva-a">A: To convert into an ammeter, a very low resistance (shunt $S = \frac{I_g \cdot G}{I - I_g}$) is connected in <strong>parallel</strong> with the galvanometer, allowing large current to bypass the coil.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- EXPERIMENT 16 -->
+      <article class="exp-manual-card" id="exp16">
+        <div class="card-header-bar">
+          <div>
+            <div class="exp-id-pill">EXPERIMENT 16 • CLASS XII • RAY OPTICS</div>
+            <h2 class="exp-manual-title">Focal Length of Concave Mirror by u–v Method</h2>
+          </div>
+          <div class="card-top-actions">
+            <a href="concave-mirror-focal-length-virtual-lab.html" class="btn-sim-launch">
+              <span>🚀</span> Launch Simulator
+            </a>
+            <button class="btn-print-exp" onclick="window.print()">🖨️ Print Manual</button>
+          </div>
+        </div>
+
+        <div class="manual-sec">
+          <div class="sec-heading"><span>🎯</span> Aim of the Experiment</div>
+          <div class="sec-body">
+            <p>To find the value of $v$ for different values of $u$ in case of a concave mirror and to find its focal length ($f$).</p>
+          </div>
+        </div>
+
+        <div class="manual-sec">
+          <div class="sec-heading"><span>📐</span> Apparatus &amp; Principle</div>
+          <div class="sec-body">
+            <p><strong>Apparatus:</strong> Optical bench with four uprights, concave mirror with holder, two optical pins (object pin and image pin), knitting needle (for index correction), spirit level.</p>
+            <div class="formula-callout">
+              $$\frac{1}{f} = \frac{1}{v} + \frac{1}{u} \implies f = \frac{u \cdot v}{u + v}$$
+              $$\text{Where } u = \text{distance of object pin from mirror pole, } v = \text{distance of image pin from mirror pole.}$$
+            </div>
+          </div>
+        </div>
+
+        <div class="manual-sec">
+          <div class="sec-heading"><span>🔬</span> Step-by-Step Procedure</div>
+          <div class="sec-body">
+            <ol style="margin-left:1.5rem; line-height:1.7;">
+              <li>Level the optical bench with a spirit level and mount the concave mirror in a holder at one end.</li>
+              <li>Determine rough focal length ($f_{\text{rough}}$) by focusing a distant tree or building on a white card.</li>
+              <li>Place the object needle at a distance greater than $f$ (between $f$ and $2f$, or beyond $2f$).</li>
+              <li>Observe the inverted real image of the object pin. Move the image pin along the bench until its tip coincides with the inverted tip of the image.</li>
+              <li>Remove parallax between the image pin tip and image tip by shifting the eye laterally.</li>
+              <li>Record the positions of mirror, object pin, and image pin. Repeat for at least 5 different values of $u$.</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="manual-sec">
+          <div class="sec-heading"><span>📊</span> Observation Table</div>
+          <div class="sec-body">
+            <div class="table-container">
+              <table class="obs-table">
+                <thead>
+                  <tr>
+                    <th>Obs #</th>
+                    <th>Mirror Pos (cm)</th>
+                    <th>Object Pin $u$ (cm)</th>
+                    <th>Image Pin $v$ (cm)</th>
+                    <th>Focal Length $f = \frac{uv}{u+v}$ (cm)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>1</td><td>0.0</td><td>35.0</td><td>30.0</td><td>16.15</td></tr>
+                  <tr><td>2</td><td>0.0</td><td>32.0</td><td>32.0</td><td>16.00</td></tr>
+                  <tr><td>3</td><td>0.0</td><td>30.0</td><td>34.3</td><td>16.01</td></tr>
+                  <tr><td>4</td><td>0.0</td><td>28.0</td><td>37.3</td><td>16.00</td></tr>
+                  <tr><td>5</td><td>0.0</td><td>26.0</td><td>41.6</td><td>16.00</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p style="margin-top:0.75rem;"><strong>Result:</strong> Mean focal length of concave mirror $f = 16.03\text{ cm}$.</p>
+          </div>
+        </div>
+
+        <div class="manual-sec">
+          <div class="sec-heading"><span>💬</span> Viva-Voce Questions &amp; Answers</div>
+          <div class="sec-body">
+            <div class="viva-box">
+              <div class="viva-item">
+                <div class="viva-q">Q1: What is optical parallax?</div>
+                <div class="viva-a">A: Parallax is the apparent relative displacement between two objects when viewed from two different vantage points due to separation along the line of sight.</div>
+              </div>
+              <div class="viva-item">
+                <div class="viva-q">Q2: How do you determine whether the image needle is in front or behind the image?</div>
+                <div class="viva-a">A: The object closer to the eye moves in the direction opposite to the eye shift; the object farther away moves in the same direction as the eye shift.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- EXPERIMENT 17 -->
+      <article class="exp-manual-card" id="exp17">
+        <div class="card-header-bar">
+          <div>
+            <div class="exp-id-pill">EXPERIMENT 17 • CLASS XII • RAY OPTICS</div>
+            <h2 class="exp-manual-title">Focal Length of Convex Mirror Using Auxiliary Convex Lens</h2>
+          </div>
+          <div class="card-top-actions">
+            <a href="convex-mirror-focal-length-virtual-lab.html" class="btn-sim-launch">
+              <span>🚀</span> Launch Simulator
+            </a>
+            <button class="btn-print-exp" onclick="window.print()">🖨️ Print Manual</button>
+          </div>
+        </div>
+
+        <div class="manual-sec">
+          <div class="sec-heading"><span>🎯</span> Aim of the Experiment</div>
+          <div class="sec-body">
+            <p>To find the focal length of a convex mirror, using an auxiliary convex lens.</p>
+          </div>
+        </div>
+
+        <div class="manual-sec">
+          <div class="sec-heading"><span>📐</span> Principle &amp; Formula</div>
+          <div class="sec-body">
+            <p>A convex mirror forms a virtual image for a real object. By placing an auxiliary convex lens, a real converging beam is formed. When the convex mirror is placed in the path, rays falling normally reflect back along their paths if the center of curvature $C$ coincides with the point $I$ where rays would have focused.</p>
+            <div class="formula-callout">
+              $$R = I - M, \quad f = \frac{R}{2} = \frac{I - M}{2}$$
+              $$\text{Where } M = \text{position of convex mirror, } I = \text{position of image without mirror.}$$
+            </div>
+          </div>
+        </div>
+
+        <div class="manual-sec">
+          <div class="sec-heading"><span>📊</span> Observation Table</div>
+          <div class="sec-body">
+            <div class="table-container">
+              <table class="obs-table">
+                <thead>
+                  <tr>
+                    <th>Obs #</th>
+                    <th>Lens Pos (cm)</th>
+                    <th>Image Pos without Mirror $I$ (cm)</th>
+                    <th>Mirror Pos $M$ (cm)</th>
+                    <th>Radius $R = I - M$ (cm)</th>
+                    <th>Focal Length $f = R/2$ (cm)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>1</td><td>40.0</td><td>75.0</td><td>55.0</td><td>20.0</td><td>10.00</td></tr>
+                  <tr><td>2</td><td>40.0</td><td>75.0</td><td>54.9</td><td>20.1</td><td>10.05</td></tr>
+                  <tr><td>3</td><td>42.0</td><td>77.0</td><td>57.0</td><td>20.0</td><td>10.00</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p style="margin-top:0.75rem;"><strong>Result:</strong> Mean focal length of convex mirror $f = 10.02\text{ cm}$.</p>
+          </div>
+        </div>
+
+        <div class="manual-sec">
+          <div class="sec-heading"><span>💬</span> Viva-Voce Questions</div>
+          <div class="sec-body">
+            <div class="viva-box">
+              <div class="viva-item">
+                <div class="viva-q">Q1: Why is an auxiliary convex lens required?</div>
+                <div class="viva-a">A: A convex mirror always diverges incident rays from a real object and forms an inaccessible virtual image behind itself. The auxiliary lens produces a converging beam acting as a virtual object.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- EXPERIMENT 18 -->
+      <article class="exp-manual-card" id="exp18">
+        <div class="card-header-bar">
+          <div>
+            <div class="exp-id-pill">EXPERIMENT 18 • CLASS XII • RAY OPTICS</div>
+            <h2 class="exp-manual-title">Focal Length of Convex Lens (u–v Graphs)</h2>
+          </div>
+          <div class="card-top-actions">
+            <a href="convex-lens-focal-length-virtual-lab.html" class="btn-sim-launch">
+              <span>🚀</span> Launch Simulator
+            </a>
+            <button class="btn-print-exp" onclick="window.print()">🖨️ Print Manual</button>
+          </div>
+        </div>
+
+        <div class="manual-sec">
+          <div class="sec-heading"><span>🎯</span> Aim of the Experiment</div>
+          <div class="sec-body">
+            <p>To find the focal length of a convex lens by plotting graphs between $u$ and $v$ or between $1/u$ and $1/v$.</p>
+          </div>
+        </div>
+
+        <div class="manual-sec">
+          <div class="sec-heading"><span>📐</span> Working Formula</div>
+          <div class="sec-body">
+            <div class="formula-callout">
+              $$\frac{1}{f} = \frac{1}{v} - \frac{1}{u} \implies f = \frac{u \cdot v}{u + v} \quad \text{(with sign convention: } u < 0, v > 0\text{)}$$
+              $$\text{From } \frac{1}{u}\text{ vs }\frac{1}{v}\text{ graph: } \frac{1}{f} = \text{intercept on either axis.}$$
+            </div>
+          </div>
+        </div>
+
+        <div class="manual-sec">
+          <div class="sec-heading"><span>📊</span> Observation Table</div>
+          <div class="sec-body">
+            <div class="table-container">
+              <table class="obs-table">
+                <thead>
+                  <tr>
+                    <th>Obs #</th>
+                    <th>$u$ (cm)</th>
+                    <th>$v$ (cm)</th>
+                    <th>$1/u$ ($\text{cm}^{-1}$)</th>
+                    <th>$1/v$ ($\text{cm}^{-1}$)</th>
+                    <th>$f = \frac{uv}{u+v}$ (cm)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>1</td><td>25.0</td><td>37.5</td><td>0.0400</td><td>0.0267</td><td>15.00</td></tr>
+                  <tr><td>2</td><td>30.0</td><td>30.0</td><td>0.0333</td><td>0.0333</td><td>15.00</td></tr>
+                  <tr><td>3</td><td>35.0</td><td>26.25</td><td>0.0286</td><td>0.0381</td><td>15.00</td></tr>
+                  <tr><td>4</td><td>40.0</td><td>24.0</td><td>0.0250</td><td>0.0417</td><td>15.00</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p style="margin-top:0.75rem;"><strong>Result:</strong> Mean focal length of convex lens $f = 15.00\text{ cm}$; Optical Power $P = +6.67\text{ D}$.</p>
+          </div>
+        </div>
+      </article>
+
+      <!-- EXPERIMENT 19 -->
+      <article class="exp-manual-card" id="exp19">
+        <div class="card-header-bar">
+          <div>
+            <div class="exp-id-pill">EXPERIMENT 19 • CLASS XII • RAY OPTICS</div>
+            <h2 class="exp-manual-title">Focal Length of Concave Lens Using Auxiliary Convex Lens</h2>
+          </div>
+          <div class="card-top-actions">
+            <a href="concave-lens-focal-length-virtual-lab.html" class="btn-sim-launch">
+              <span>🚀</span> Launch Simulator
+            </a>
+            <button class="btn-print-exp" onclick="window.print()">🖨️ Print Manual</button>
+          </div>
+        </div>
+
+        <div class="manual-sec">
+          <div class="sec-heading"><span>🎯</span> Aim of the Experiment</div>
+          <div class="sec-body">
+            <p>To find the focal length of a concave lens, using an auxiliary convex lens.</p>
+          </div>
+        </div>
+
+        <div class="manual-sec">
+          <div class="sec-heading"><span>📐</span> Working Formula</div>
+          <div class="sec-body">
+            <div class="formula-callout">
+              $$\frac{1}{f} = \frac{1}{v} - \frac{1}{u} \implies f = \frac{u \cdot v}{u - v}$$
+              $$\text{Where } u = I_1 - L_2 \text{ (virtual object distance), } v = I_2 - L_2 \text{ (real image distance).}$$
+            </div>
+          </div>
+        </div>
+
+        <div class="manual-sec">
+          <div class="sec-heading"><span>📊</span> Observation Table</div>
+          <div class="sec-body">
+            <div class="table-container">
+              <table class="obs-table">
+                <thead>
+                  <tr>
+                    <th>Obs #</th>
+                    <th>$L_1$ Pos (cm)</th>
+                    <th>$I_1$ Pos (cm)</th>
+                    <th>$L_2$ Pos (cm)</th>
+                    <th>$I_2$ Pos (cm)</th>
+                    <th>$u = I_1 - L_2$</th>
+                    <th>$v = I_2 - L_2$</th>
+                    <th>$f = \frac{uv}{u-v}$ (cm)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>1</td><td>30.0</td><td>60.0</td><td>48.0</td><td>72.0</td><td>+12.0</td><td>+24.0</td><td>-24.00</td></tr>
+                  <tr><td>2</td><td>30.0</td><td>60.0</td><td>46.0</td><td>81.0</td><td>+14.0</td><td>+35.0</td><td>-23.33</td></tr>
+                  <tr><td>3</td><td>30.0</td><td>60.0</td><td>50.0</td><td>66.7</td><td>+10.0</td><td>+16.7</td><td>-24.92</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p style="margin-top:0.75rem;"><strong>Result:</strong> Mean focal length of concave lens $f = -24.08\text{ cm}$.</p>
+          </div>
+        </div>
+      </article>
+
+      <!-- EXPERIMENT 20 -->
+      <article class="exp-manual-card" id="exp20">
+        <div class="card-header-bar">
+          <div>
+            <div class="exp-id-pill">EXPERIMENT 20 • CLASS XII • RAY OPTICS</div>
+            <h2 class="exp-manual-title">Angle of Minimum Deviation for a Prism (i–δ Graph)</h2>
+          </div>
+          <div class="card-top-actions">
+            <a href="prism-minimum-deviation-virtual-lab.html" class="btn-sim-launch">
+              <span>🚀</span> Launch Simulator
+            </a>
+            <button class="btn-print-exp" onclick="window.print()">🖨️ Print Manual</button>
+          </div>
+        </div>
+
+        <div class="manual-sec">
+          <div class="sec-heading"><span>🎯</span> Aim of the Experiment</div>
+          <div class="sec-body">
+            <p>To determine angle of minimum deviation for a given prism by plotting a graph between angle of incidence and angle of deviation.</p>
+          </div>
+        </div>
+
+        <div class="manual-sec">
+          <div class="sec-heading"><span>📐</span> Governing Formulas</div>
+          <div class="sec-body">
+            <div class="formula-callout">
+              $$\delta = i + e - A$$
+              $$\mu = \frac{\sin\left(\frac{A + D_m}{2}\right)}{\sin\left(\frac{A}{2}\right)}$$
+              $$\text{For equilateral prism, } A = 60^\circ, \quad \mu = \frac{\sin(30^\circ + D_m/2)}{\sin 30^\circ}$$
+            </div>
+          </div>
+        </div>
+
+        <div class="manual-sec">
+          <div class="sec-heading"><span>📊</span> Observation Table</div>
+          <div class="sec-body">
+            <div class="table-container">
+              <table class="obs-table">
+                <thead>
+                  <tr>
+                    <th>Obs #</th>
+                    <th>Angle of Incidence $i$ (deg)</th>
+                    <th>Angle of Emergence $e$ (deg)</th>
+                    <th>Angle of Deviation $\delta = i+e-A$ (deg)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>1</td><td>35.0°</td><td>70.2°</td><td>45.2°</td></tr>
+                  <tr><td>2</td><td>40.0°</td><td>58.8°</td><td>38.8°</td></tr>
+                  <tr><td>3</td><td>45.0°</td><td>52.3°</td><td>37.3°</td></tr>
+                  <tr><td>4</td><td>48.6°</td><td>48.6°</td><td>37.2° (Minimum Dm)</td></tr>
+                  <tr><td>5</td><td>55.0°</td><td>43.8°</td><td>38.8°</td></tr>
+                  <tr><td>6</td><td>60.0°</td><td>41.2°</td><td>41.2°</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p style="margin-top:0.75rem;"><strong>Result:</strong> Minimum deviation $D_m = 37.2^\circ$; Refractive index $\mu = 1.500$.</p>
+          </div>
+        </div>
+      </article>
+
+      <!-- EXPERIMENT 21 -->
+      <article class="exp-manual-card" id="exp21">
+        <div class="card-header-bar">
+          <div>
+            <div class="exp-id-pill">EXPERIMENT 21 • CLASS XII • OPTICAL INSTRUMENTS</div>
+            <h2 class="exp-manual-title">Refractive Index of Glass Slab Using Travelling Microscope</h2>
+          </div>
+          <div class="card-top-actions">
+            <a href="travelling-microscope-glass-slab-virtual-lab.html" class="btn-sim-launch">
+              <span>🚀</span> Launch Simulator
+            </a>
+            <button class="btn-print-exp" onclick="window.print()">🖨️ Print Manual</button>
+          </div>
+        </div>
+
+        <div class="manual-sec">
+          <div class="sec-heading"><span>🎯</span> Aim of the Experiment</div>
+          <div class="sec-body">
+            <p>To determine refractive index of a glass slab using a travelling microscope.</p>
+          </div>
+        </div>
+
+        <div class="manual-sec">
+          <div class="sec-heading"><span>📐</span> Working Formula &amp; Least Count</div>
+          <div class="sec-body">
+            <div class="formula-callout">
+              $$\mu = \frac{\text{Real Depth}}{\text{Apparent Depth}} = \frac{R_3 - R_1}{R_3 - R_2}$$
+              $$\text{Least Count (LC)} = \frac{1\text{ MSD}}{50} = \frac{0.05\text{ cm}}{50} = 0.001\text{ cm}$$
+            </div>
+          </div>
+        </div>
+
+        <div class="manual-sec">
+          <div class="sec-heading"><span>📊</span> Observation Table</div>
+          <div class="sec-body">
+            <div class="table-container">
+              <table class="obs-table">
+                <thead>
+                  <tr>
+                    <th>Obs #</th>
+                    <th>$R_1$ Paper Mark (cm)</th>
+                    <th>$R_2$ Apparent Mark (cm)</th>
+                    <th>$R_3$ Top Dust (cm)</th>
+                    <th>Real Depth $R_3-R_1$ (cm)</th>
+                    <th>Apparent Depth $R_3-R_2$ (cm)</th>
+                    <th>$\mu = \frac{R_3-R_1}{R_3-R_2}$</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>1</td><td>2.000</td><td>2.600</td><td>3.800</td><td>1.800</td><td>1.200</td><td>1.500</td></tr>
+                  <tr><td>2</td><td>2.100</td><td>2.701</td><td>3.900</td><td>1.800</td><td>1.199</td><td>1.501</td></tr>
+                  <tr><td>3</td><td>2.200</td><td>2.802</td><td>4.000</td><td>1.800</td><td>1.198</td><td>1.502</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p style="margin-top:0.75rem;"><strong>Result:</strong> Mean refractive index of glass slab $\mu = 1.501$.</p>
+          </div>
+        </div>
+      </article>
+
+      <!-- EXPERIMENT 22 -->
+      <article class="exp-manual-card" id="exp22">
+        <div class="card-header-bar">
+          <div>
+            <div class="exp-id-pill">EXPERIMENT 22 • CLASS XII • RAY OPTICS</div>
+            <h2 class="exp-manual-title">Refractive Index of Liquid (Liquid Lens Method)</h2>
+          </div>
+          <div class="card-top-actions">
+            <a href="refractive-index-liquid-lens-virtual-lab.html" class="btn-sim-launch">
+              <span>🚀</span> Launch Simulator
+            </a>
+            <button class="btn-print-exp" onclick="window.print()">🖨️ Print Manual</button>
+          </div>
+        </div>
+
+        <div class="manual-sec">
+          <div class="sec-heading"><span>🎯</span> Aim of the Experiment</div>
+          <div class="sec-body">
+            <p>To find the refractive index of a liquid using convex lens and plane mirror.</p>
+          </div>
+        </div>
+
+        <div class="manual-sec">
+          <div class="sec-heading"><span>📐</span> Working Formulas</div>
+          <div class="sec-body">
+            <div class="formula-callout">
+              $$\frac{1}{f_2} = \frac{1}{F} - \frac{1}{f_1} \implies f_2 = \frac{f_1 \cdot F}{f_1 - F}$$
+              $$\mu = 1 - \frac{R}{f_2} = 1 + \frac{R}{|f_2|}$$
+            </div>
+          </div>
+        </div>
+
+        <div class="manual-sec">
+          <div class="sec-heading"><span>📊</span> Observation Table</div>
+          <div class="sec-body">
+            <div class="table-container">
+              <table class="obs-table">
+                <thead>
+                  <tr>
+                    <th>Obs #</th>
+                    <th>Liquid</th>
+                    <th>$f_1$ Dry Lens (cm)</th>
+                    <th>$F$ Combination (cm)</th>
+                    <th>$f_2$ Liquid Lens (cm)</th>
+                    <th>$R$ (cm)</th>
+                    <th>$\mu = 1 - R/f_2$</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>1</td><td>Water</td><td>20.0</td><td>30.0</td><td>-60.0</td><td>20.0</td><td>1.333</td></tr>
+                  <tr><td>2</td><td>Glycerine</td><td>20.0</td><td>38.2</td><td>-42.0</td><td>20.0</td><td>1.476</td></tr>
+                  <tr><td>3</td><td>Castor Oil</td><td>20.0</td><td>38.5</td><td>-41.6</td><td>20.0</td><td>1.481</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p style="margin-top:0.75rem;"><strong>Result:</strong> Refractive index of water $\mu_w = 1.333$; Glycerine $\mu_g = 1.476$.</p>
+          </div>
+        </div>
+      </article>
+
+      <!-- EXPERIMENT 23 -->
+      <article class="exp-manual-card" id="exp23">
+        <div class="card-header-bar">
+          <div>
+            <div class="exp-id-pill">EXPERIMENT 23 • CLASS XII • RAY OPTICS</div>
+            <h2 class="exp-manual-title">Refractive Index of Liquid Using Concave Mirror &amp; Plane Mirror</h2>
+          </div>
+          <div class="card-top-actions">
+            <a href="refractive-index-liquid-concave-mirror-virtual-lab.html" class="btn-sim-launch">
+              <span>🚀</span> Launch Simulator
+            </a>
+            <button class="btn-print-exp" onclick="window.print()">🖨️ Print Manual</button>
+          </div>
+        </div>
+
+        <div class="manual-sec">
+          <div class="sec-heading"><span>🎯</span> Aim of the Experiment</div>
+          <div class="sec-body">
+            <p>To find the refractive index of a liquid using a concave mirror and a plane mirror.</p>
+          </div>
+        </div>
+
+        <div class="manual-sec">
+          <div class="sec-heading"><span>📐</span> Working Formula</div>
+          <div class="sec-body">
+            <div class="formula-callout">
+              $$\mu = \frac{h_1 - h_0}{h_2 - h_0}$$
+              $$\text{Where: } h_1 = \text{height of needle tip above dry concave mirror at } C \ (h_1 = R),$$
+              $$h_0 = \text{height of plane mirror strip resting on liquid surface from pole,}$$
+              $$h_2 = \text{height of needle tip when coincident with image through liquid-mirror combination.}$$
+              $$\text{For a thin layer of liquid } (h_0 \approx 0): \quad \mu \approx \frac{h_1}{h_2}$$
+            </div>
+          </div>
+        </div>
+
+        <div class="manual-sec">
+          <div class="sec-heading"><span>📊</span> Observation Table</div>
+          <div class="sec-body">
+            <div class="table-container">
+              <table class="obs-table">
+                <thead>
+                  <tr>
+                    <th>Obs #</th>
+                    <th>Liquid</th>
+                    <th>$h_1$ Dry Mirror (cm)</th>
+                    <th>$h_0$ Strip Surface (cm)</th>
+                    <th>$h_2$ Liquid Coincidence (cm)</th>
+                    <th>$\mu = \frac{h_1 - h_0}{h_2 - h_0}$</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>1</td><td>Water</td><td>30.0</td><td>1.0</td><td>22.8</td><td>1.330</td></tr>
+                  <tr><td>2</td><td>Glycerine</td><td>30.0</td><td>1.0</td><td>20.7</td><td>1.472</td></tr>
+                  <tr><td>3</td><td>Castor Oil</td><td>30.0</td><td>1.0</td><td>20.6</td><td>1.480</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p style="margin-top:0.75rem;"><strong>Result:</strong> Refractive index of water $\mu_w = 1.330$; Glycerine $\mu_g = 1.472$; Castor Oil $\mu_c = 1.480$.</p>
+          </div>
+        </div>
+
+        <div class="manual-sec">
+          <div class="sec-heading"><span>💬</span> Viva-Voce Questions</div>
+          <div class="sec-body">
+            <div class="viva-box">
+              <div class="viva-item">
+                <div class="viva-q">Q1: Why is the needle placed at the center of curvature $C$ of the concave mirror?</div>
+                <div class="viva-a">A: Rays originating from the center of curvature strike the spherical mirror normally along its radii and retrace their path, forming an inverted real image of the same size at $C$ with zero parallax.</div>
+              </div>
+              <div class="viva-item">
+                <div class="viva-q">Q2: Why does the apparent center of curvature move closer when liquid is poured into the mirror?</div>
+                <div class="viva-a">A: Refraction at the flat upper surface of the liquid bends the rays toward the normal as they enter the denser medium, making the center of curvature appear closer to the surface by a factor of $\mu$.</div>
+              </div>
+              <div class="viva-item">
+                <div class="viva-q">Q3: What is the purpose of placing a plane mirror strip on the liquid surface?</div>
+                <div class="viva-a">A: It establishes a direct reference for the height $h_0$ of the upper liquid surface from the mirror pole, allowing precise calculation via $\mu = \frac{h_1 - h_0}{h_2 - h_0}$.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- EXPERIMENT 24 -->
+      <article class="exp-manual-card" id="exp24">
+        <div class="card-header-bar">
+          <div>
+            <div class="exp-id-pill">EXPERIMENT 24 • CLASS XII • SEMICONDUCTOR ELECTRONICS</div>
+            <h2 class="exp-manual-title">P-N Junction Diode I–V Characteristics</h2>
+          </div>
+          <div class="card-top-actions">
+            <a href="pn-junction-diode-virtual-lab.html" class="btn-sim-launch">
+              <span>🚀</span> Launch Simulator
+            </a>
+            <button class="btn-print-exp" onclick="window.print()">🖨️ Print Manual</button>
+          </div>
+        </div>
+
+        <div class="manual-sec">
+          <div class="sec-heading"><span>🎯</span> Aim of the Experiment</div>
+          <div class="sec-body">
+            <p>To draw the $I-V$ characteristic curve for a p-n junction diode in forward and reverse bias.</p>
+          </div>
+        </div>
+
+        <div class="manual-sec">
+          <div class="sec-heading"><span>📐</span> Principle &amp; Dynamic Resistance</div>
+          <div class="sec-body">
+            <div class="formula-callout">
+              $$r_{\text{dynamic}} = \frac{\Delta V}{\Delta I}$$
+              $$\text{Forward dynamic resistance } r_f = \frac{\Delta V_F}{\Delta I_F} \quad (\sim 10-50\ \Omega)$$
+              $$\text{Reverse dynamic resistance } r_r = \frac{\Delta V_R}{\Delta I_R} \quad (\sim \text{Mega-ohms})$$
+            </div>
+          </div>
+        </div>
+
+        <div class="manual-sec">
+          <div class="sec-heading"><span>📊</span> Observation Tables</div>
+          <div class="sec-body">
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+              <div>
+                <h4 style="color:#10b981; margin-bottom:0.4rem;">Forward Bias</h4>
+                <div class="table-container">
+                  <table class="obs-table">
+                    <thead><tr><th>$V_F$ (V)</th><th>$I_F$ (mA)</th></tr></thead>
+                    <tbody>
+                      <tr><td>0.20</td><td>0.02</td></tr>
+                      <tr><td>0.40</td><td>0.10</td></tr>
+                      <tr><td>0.60</td><td>0.42</td></tr>
+                      <tr><td>0.70</td><td>1.25</td></tr>
+                      <tr><td>0.80</td><td>10.5</td></tr>
+                      <tr><td>0.90</td><td>28.0</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div>
+                <h4 style="color:#ef4444; margin-bottom:0.4rem;">Reverse Bias</h4>
+                <div class="table-container">
+                  <table class="obs-table">
+                    <thead><tr><th>$V_R$ (V)</th><th>$I_R$ (μA)</th></tr></thead>
+                    <tbody>
+                      <tr><td>5.0</td><td>1.2</td></tr>
+                      <tr><td>10.0</td><td>1.4</td></tr>
+                      <tr><td>20.0</td><td>1.8</td></tr>
+                      <tr><td>30.0</td><td>2.5</td></tr>
+                      <tr><td>35.0</td><td>18.5</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <p style="margin-top:0.75rem;"><strong>Result:</strong> Silicon diode knee voltage $V_k \approx 0.70\text{ V}$; Breakdown voltage $V_z \approx 35\text{ V}$; Forward dynamic resistance $r_f \approx 18.2\ \Omega$.</p>
+          </div>
+        </div>
+
+        <div class="manual-sec">
+          <div class="sec-heading"><span>💬</span> Viva-Voce Questions</div>
+          <div class="sec-body">
+            <div class="viva-box">
+              <div class="viva-item">
+                <div class="viva-q">Q1: What is knee voltage?</div>
+                <div class="viva-a">A: The forward bias voltage at which diode current begins to increase exponentially ($0.7\text{ V}$ for Si, $0.3\text{ V}$ for Ge).</div>
+              </div>
+              <div class="viva-item">
+                <div class="viva-q">Q2: Why is reverse current measured in microamperes while forward in milliamperes?</div>
+                <div class="viva-a">A: Forward current is carried by majority carriers (high density), whereas reverse saturation current is carried solely by thermally generated minority carriers (very low density).</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
       </div>
     </main>
   </div>
